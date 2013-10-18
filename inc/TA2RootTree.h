@@ -22,7 +22,7 @@
 
 #define TA2ROOTTREE_MAX_TAGGER		256
 #define TA2ROOTTREE_MAX_PARTICLE	128
-#define TA2ROOTTREE_MAX_HITS		512
+#define TA2ROOTTREE_MAX_HITS		512  // Why 512 ?
 
 enum {
     ERT_OUTPUT_FOLDER = 30250,
@@ -52,7 +52,7 @@ private:
     char        fileName[64];
     
     //Particles    
-    Int_t			nParticles;		//
+    Int_t			nParticles;		
     Double_t*		Px;
     Double_t*		Py;
     Double_t*		Pz;
@@ -68,10 +68,15 @@ private:
     //Apparatus
     UChar_t*		Apparatus;
     
-    // Charged detector energies
+    //Charged detector energies
     Double_t*		d_E;
     Double_t*		WC1_E;
     Double_t*		WC2_E;
+
+	//Wire Chamber vertex reconstruction
+    Double_t* 		WC_Vertex_X;
+    Double_t* 		WC_Vertex_Y;
+    Double_t* 		WC_Vertex_Z;
     
     //Hits
     Int_t			nNaI_Hits;
@@ -89,18 +94,16 @@ private:
     Int_t			nWC2_Hits;
     Int_t*			WC2_Hits;
     
-    // Trigger TBD
+    //Trigger TBD
     Double_t 		ESum;
     Int_t 			CBMult; 	//or Detector Energies
 	Int_t			TAPSMult;
-    
     
     //Scalers
     Int_t			eventNumber;
     Int_t			eventID;
     Int_t			Scaler;
     
-    //
     
 public:
 	TA2RootTree(const char*, TA2Analysis*);

@@ -156,7 +156,10 @@ void    TA2RootTree::PostInit()
 	treeEvent->Branch("Apparatus", Apparatus, "Apparatus[nParticles]/b");
 	treeEvent->Branch("d_E", d_E, "d_E[nParticles]/D");	
 	treeEvent->Branch("WC1_E", WC1_E, "WC1_E[nParticles]/D");	
-	treeEvent->Branch("WC1_E", WC1_E, "WC1_E[nParticles]/D");
+	treeEvent->Branch("WC2_E", WC2_E, "WC2_E[nParticles]/D");
+	treeEvent->Branch("WC_Vertex_X", WC_Vertex_X, "WC_Vertex_X[nParticles]/D");	
+	treeEvent->Branch("WC_Vertex_Y", WC_Vertex_Y, "WC_Vertex_Y[nParticles]/D");	
+	treeEvent->Branch("WC_Vertex_Z", WC_Vertex_Z, "WC_Vertex_Z[nParticles]/D");	
 	
 	treeEvent->Branch("nNaI_Hits", &nNaI_Hits, "nNaI_Hits/I");
 	treeEvent->Branch("NaI_Hits", NaI_Hits, "NaI_Hits[nNaI_Hits]/I");
@@ -188,7 +191,7 @@ void    TA2RootTree::Reconstruct()
 	//Is Scaler Read
 	if(gAR->IsScalerRead())
 	{
-	//treeScaler->Fill();		
+		//treeScaler->Fill();		
 	}
 	
 	// Collect Tagger M0 Hits
@@ -212,7 +215,6 @@ void    TA2RootTree::Reconstruct()
 	
 	// Collect CB Hits
     nParticles	= fCB->GetNParticle();      
-    //printf("nCB_Hits: %d",nCB_Hits);
 	for(int i=0; i<nParticles; i++)
 	{
 		Px[i]			= fCB->GetParticles(i).GetPx();
@@ -221,24 +223,37 @@ void    TA2RootTree::Reconstruct()
 		E[i]			= fCB->GetParticles(i).GetE();
 		time[i]			= fCB->GetParticles(i).GetTime();
 		
-		NaI_E[i]		= fCB->GetParticles(i).GetE();
-    	BaF2_E;
-    	PbWO4_E;
-    	PID_E;
-    	Veto_E;
-    	WC1_E;
-    	WC2_E;
+//		clusterSize[i]  = // Will be included
+
+//		Apparatus 		= // Mark as CB
+//    	d_E[i]			= // PID Energy		
+//   	WC1_E[i]		= // Will be included
+//	 	WC2_E[i]    	= // Will be included
+//	 	WC_Vertex_X[i]  = // Will be included
+//	 	WC_Vertex_Y[i]  = // Will be included
+//	 	WC_Vertex_Z[i]  = // Will be included
+
 	}
-	// Collect CB Hits
-	for(int i=0; i<fCB->GetNParticle(); i++)
+	// Collect TAPS Hits
+	for(int i=0; i<fTAPS->GetNParticle(); i++)
 	{
-		Px[nParticles+i]			= fTAPS->GetParticles(i).GetPx();
-		Py[nParticles+i]			= fTAPS->GetParticles(i).GetPy();
-		Pz[nParticles+i]			= fTAPS->GetParticles(i).GetPz();
-		E[nParticles+i]				= fTAPS->GetParticles(i).GetE();
-		time[nParticles+i]			= fTAPS->GetParticles(i).GetTime();
+		Px[nParticles+i]		= fTAPS->GetParticles(i).GetPx();
+		Py[nParticles+i]		= fTAPS->GetParticles(i).GetPy();
+		Pz[nParticles+i]		= fTAPS->GetParticles(i).GetPz();
+		E[nParticles+i]			= fTAPS->GetParticles(i).GetE();
+		time[nParticles+i]		= fTAPS->GetParticles(i).GetTime();
+
+//		clusterSize[nParticles+i]   = // Will be included
+
+//		Apparatus[nParticles+i]		= // Mark as TAPS
+//    	d_E[nParticles+i]			= // VETO Energy		
+//   	WC1_E[nParticles+i]			= 0.0; // Will be included
+//	 	WC2_E[nParticles+i]    		= 0.0; // Will be included
+//	 	WC_Vertex_X[nParticles+i]  	= 0.0; // Will be included
+//	 	WC_Vertex_Y[nParticles+i]  	= 0.0; // Will be included
+//	 	WC_Vertex_Z[nParticles+i]  	= 0.0; // Will be included    			
 	}
-	nParticles
+	nparticles += fTAPS->GetNParticle(); // update number of particles
 	
 	//treeEvent->Fill();
 	
