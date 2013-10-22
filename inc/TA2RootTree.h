@@ -102,7 +102,6 @@ private:
     //Scalers
     Int_t			eventNumber;
     Int_t			eventID;
-    Int_t			Scaler;
     
     
 public:

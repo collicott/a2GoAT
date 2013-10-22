@@ -58,8 +58,7 @@ TA2RootTree::TA2RootTree(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL
                                                                     CBMult(0),
                                                                     TAPSMult(0),
                                                                     eventNumber(0),
-                                                                    eventID(0),
-                                                                    Scaler(0)
+                                                                    eventID(0)
 {
     strcpy(outputFolder,"~");
     strcpy(fileName,"RootTree");
@@ -182,7 +181,11 @@ void    TA2RootTree::PostInit()
 	
 	treeScaler->Branch("eventNumber", &eventNumber, "eventNumber/I");
 	treeScaler->Branch("eventID", &eventID, "eventID/I");
-	treeScaler->Branch("Scaler", &Scaler, "Scaler/I");
+	Char_t	str[128];
+	sprintf(str, "Scaler[%d]/I", gAR->GetMaxScaler());
+	treeScaler->Branch("Scaler", gAR->GetScaler(), str);
+	
+	eventNumber	= 0;
 }
 
 
@@ -191,7 +194,10 @@ void    TA2RootTree::Reconstruct()
 	//Is Scaler Read
 	if(gAR->IsScalerRead())
 	{
-		//treeScaler->Fill();		
+		eventID	= gUA->GetNDAQEvent();
+		
+		treeScaler->Fill();		
+		return;
 	}
 	
 	// Collect Tagger M0 Hits
@@ -254,6 +260,11 @@ void    TA2RootTree::Reconstruct()
 //	 	WC_Vertex_Z[nParticles+i]  	= 0.0; // Will be included    			
 	}
 	nparticles += fTAPS->GetNParticle(); // update number of particles
+	
+	
+	
+	//increment event number
+	eventNumber++;
 	
 	//treeEvent->Fill();
 	
