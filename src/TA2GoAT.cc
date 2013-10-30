@@ -1,28 +1,28 @@
 //*************************************************************************
-//* Author: Patrik Ott
+//* Author: Patrik Ott, Cristina Collicott
 //*************************************************************************
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// TA2RootTree                                                          //
+// TA2GoAT                                                              //
 //                                                                      //
 // This class is organising the output to ROOT files                    //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
 
-#include "TA2RootTree.h"
+#include "TA2GoAT.h"
 
-ClassImp(TA2RootTree)
-
-
+ClassImp(TA2GoAT)
 
 
 
-TA2RootTree::TA2RootTree(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, Analysis),
+
+
+TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, Analysis),
                                                                     file(0),
-                                                                    tree(0),
-                                                                    treeTagger(0),
+                                                                    treeEvent(0),
+                                                                    treeScaler(0),
                                                                     nParticles(0),
                                                                     Px(0),
                                                                     Py(0),
@@ -33,13 +33,13 @@ TA2RootTree::TA2RootTree(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL
                                                                     nTagged(0),
                                                                     tagged_ch(0),
                                                                     tagged_t(0),
-                                                                    NaI_E(0),
-                                                                    BaF2_E(0),
-                                                                    PbWO4_E(0),
-                                                                    PID_E(0),
-                                                                    Veto_E(0),
+                                                                    Apparatus(0),
+                                                                    d_E(0),
+                                                                    WC0_E(0),
                                                                     WC1_E(0),
-                                                                    WC2_E(0),
+                                                                    WC_Vertex_X(0),
+                                                                    WC_Vertex_Y(0),
+                                                                    WC_Vertex_Z(0),
                                                                     nNaI_Hits(0),
                                                                     NaI_Hits(0),
                                                                     nBaF2_Hits(0),
@@ -50,10 +50,10 @@ TA2RootTree::TA2RootTree(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL
                                                                     PID_Hits(0),
                                                                     nVeto_Hits(0),
                                                                     Veto_Hits(0),
+                                                                    nWC0_Hits(0),
+                                                                    WC0_Hits(0),
                                                                     nWC1_Hits(0),
                                                                     WC1_Hits(0),
-                                                                    nWC2_Hits(0),
-                                                                    WC2_Hits(0),
                                                                     ESum(0),
                                                                     CBMult(0),
                                                                     TAPSMult(0),
@@ -67,7 +67,7 @@ TA2RootTree::TA2RootTree(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL
 }
 
 
-TA2RootTree::~TA2RootTree()
+TA2GoAT::~TA2GoAT()
 {
 	if(treeEvent)
 		delete treeEvent;
@@ -78,22 +78,40 @@ TA2RootTree::~TA2RootTree()
 }
 
 
-void    TA2RootTree::LoadVariable()
+void    TA2GoAT::LoadVariable()
 {
+	// Including histogram output for testing purposes (quick check of variables)
     TA2AccessSQL::LoadVariable();
+
+    TA2DataManager::LoadVariable("nParticles", 	&nParticles,	EISingleX);
+    TA2DataManager::LoadVariable("Px", 			Px,				EDMultiX);
+    TA2DataManager::LoadVariable("Py", 			Py,				EDMultiX);
+    TA2DataManager::LoadVariable("Pz", 			Pz,				EDMultiX);
+    TA2DataManager::LoadVariable("E", 			E,				EDMultiX);
+    TA2DataManager::LoadVariable("time", 		time,			EDMultiX);
+
+    TA2DataManager::LoadVariable("nTagged", 	&nTagged,		EISingleX);
+    TA2DataManager::LoadVariable("taggedCh", 	tagged_ch,		EIMultiX);
+    TA2DataManager::LoadVariable("taggedT", 	tagged_t,		EDMultiX);    
+
+    TA2DataManager::LoadVariable("dE", 			d_E,			EDMultiX);
+    TA2DataManager::LoadVariable("WC0E", 		WC0_E,			EDMultiX);   
+    TA2DataManager::LoadVariable("WC1E", 		WC1_E,			EDMultiX); 
+    return;
+    
 }
 
 
-void    TA2RootTree::SetConfig(Char_t* line, Int_t key)
+void    TA2GoAT::SetConfig(Char_t* line, Int_t key)
 {
     switch(key)
     {
-    case ERT_OUTPUT_FOLDER:
+    case EG_OUTPUT_FOLDER:
         strcpy(outputFolder,line);
         while(outputFolder[strlen(outputFolder)-1]=='\n' || outputFolder[strlen(outputFolder)-1]=='\r')
 			outputFolder[strlen(outputFolder)-1]='\0';
         return;
-    case ERT_FILE_NAME:
+    case EG_FILE_NAME:
         strcpy(fileName,line);
         while(fileName[strlen(fileName)-1]=='\n' || fileName[strlen(fileName)-1]=='\r')
 			fileName[strlen(fileName)-1]='\0';
@@ -103,39 +121,59 @@ void    TA2RootTree::SetConfig(Char_t* line, Int_t key)
     }
 }
 
-void    TA2RootTree::PostInit()
+void    TA2GoAT::PostInit()
 {
-    TA2AccessSQL::PostInit();
+//    TA2AccessSQL::PostInit();
     
-    Px			= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    Py			= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    Pz			= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    E			= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    time		= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    clusterSize	= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
+    Px			= new Double_t[TA2GoAT_MAX_PARTICLE];
+    Py			= new Double_t[TA2GoAT_MAX_PARTICLE];
+    Pz			= new Double_t[TA2GoAT_MAX_PARTICLE];
+    E			= new Double_t[TA2GoAT_MAX_PARTICLE];
+    time		= new Double_t[TA2GoAT_MAX_PARTICLE];
+    clusterSize	= new UChar_t[TA2GoAT_MAX_PARTICLE];
     
-    tagged_ch	= new Int_t[TA2ROOTTREE_MAX_TAGGER];
-    tagged_t	= new Double_t[TA2ROOTTREE_MAX_TAGGER];
+    tagged_ch	= new Int_t[TA2GoAT_MAX_TAGGER];
+    tagged_t	= new Double_t[TA2GoAT_MAX_TAGGER];
     
-    Apparatus	= new UChar_t[TA2ROOTTREE_MAX_PARTICLE];
-    d_E			= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    WC1_E		= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
-    WC2_E		= new Double_t[TA2ROOTTREE_MAX_PARTICLE];
+    Apparatus	= new UChar_t[TA2GoAT_MAX_PARTICLE];
+    d_E			= new Double_t[TA2GoAT_MAX_PARTICLE];
+    WC0_E		= new Double_t[TA2GoAT_MAX_PARTICLE];
+    WC1_E		= new Double_t[TA2GoAT_MAX_PARTICLE];
     
-    NaI_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
-    BaF2_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
-    PbWO4_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
-    PID_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
-    Veto_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
-    WC1_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
-    WC2_Hits	= new Int_t[TA2ROOTTREE_MAX_HITS];
+    NaI_Hits	= new Int_t[TA2GoAT_MAX_HITS];
+    BaF2_Hits	= new Int_t[TA2GoAT_MAX_HITS];
+    PbWO4_Hits	= new Int_t[TA2GoAT_MAX_HITS];
+    PID_Hits	= new Int_t[TA2GoAT_MAX_HITS];
+    Veto_Hits	= new Int_t[TA2GoAT_MAX_HITS];
+    WC0_Hits	= new Int_t[TA2GoAT_MAX_HITS];
+    WC1_Hits	= new Int_t[TA2GoAT_MAX_HITS];
     
     printf("---------\n");
     printf("Init Tree\n");
     printf("---------\n");
     
-    Char_t	str[256];
-    sprintf(str, "%s/%s_%d.root", outputFolder, fileName, GetRunNumber());
+    // Append input filename to output tree name.
+    TString fullName;
+    if(gAR->GetProcessType() == EMCProcess) fullName = gAR->GetTreeFileList(0);        
+    else  fullName = gAR->GetFileName();
+		
+	int length = fullName.Length();
+	int last = 0;
+	for (int i = 0; i < length; i++)
+	{
+		int index = fullName.Index("/"); 
+		fullName.Remove(0,index+1);	
+		if (index == -1) break;
+		last += index+1; 
+	}
+	Char_t inFile[256], str[256];
+    if(gAR->GetProcessType() == EMCProcess) 
+		sscanf( gAR->GetTreeFileList(0)+last, "%[^.].root\n", inFile);       
+    else    
+		sscanf( gAR->GetFileName()+last, "%[^.].dat\n", inFile);	
+
+    sprintf(str, "%s/%s_%s.root", outputFolder, fileName, inFile);        
+        
     file		= new TFile(str,"RECREATE");
 	treeEvent	= new TTree("treeEvent", "treeEvent");
 	treeScaler	= new TTree("treeScaler", "treeScaler");
@@ -146,7 +184,7 @@ void    TA2RootTree::PostInit()
 	treeEvent->Branch("Pz", Pz, "Pz[nParticles]/D");
 	treeEvent->Branch("E",  E,  "E[nParticles]/D");	
 	treeEvent->Branch("time", time, "time[nParticles]/D");
-	treeEvent->Branch("clusterSize", clusterSize, "clusterSize[nParticles]/D");
+	treeEvent->Branch("clusterSize", clusterSize, "clusterSize[nParticles]/b");
     
 	treeEvent->Branch("nTagged", &nTagged,"nTagged/I");
 	treeEvent->Branch("tagged_ch", tagged_ch, "tagged_ch[nTagged]/I");
@@ -154,8 +192,8 @@ void    TA2RootTree::PostInit()
     
 	treeEvent->Branch("Apparatus", Apparatus, "Apparatus[nParticles]/b");
 	treeEvent->Branch("d_E", d_E, "d_E[nParticles]/D");	
-	treeEvent->Branch("WC1_E", WC1_E, "WC1_E[nParticles]/D");	
-	treeEvent->Branch("WC2_E", WC2_E, "WC2_E[nParticles]/D");
+	treeEvent->Branch("WC0_E", WC0_E, "WC0_E[nParticles]/D");	
+	treeEvent->Branch("WC1_E", WC1_E, "WC1_E[nParticles]/D");
 	treeEvent->Branch("WC_Vertex_X", WC_Vertex_X, "WC_Vertex_X[nParticles]/D");	
 	treeEvent->Branch("WC_Vertex_Y", WC_Vertex_Y, "WC_Vertex_Y[nParticles]/D");	
 	treeEvent->Branch("WC_Vertex_Z", WC_Vertex_Z, "WC_Vertex_Z[nParticles]/D");	
@@ -170,10 +208,10 @@ void    TA2RootTree::PostInit()
 	treeEvent->Branch("PID_Hits", PID_Hits, "PID_Hits[nPID_Hits]/I");
 	treeEvent->Branch("nVeto_Hits", &nVeto_Hits, "nVeto_Hits/I");
 	treeEvent->Branch("Veto_Hits", Veto_Hits, "Veto_Hits[nVeto_Hits]/I");
+	treeEvent->Branch("nWC0_Hits", &nWC0_Hits, "nWC0_Hits/I");
+	treeEvent->Branch("WC0_Hits", WC0_Hits, "WC0_Hits[nWC0_Hits]/I");
 	treeEvent->Branch("nWC1_Hits", &nWC1_Hits, "nWC1_Hits/I");
 	treeEvent->Branch("WC1_Hits", WC1_Hits, "WC1_Hits[nWC1_Hits]/I");
-	treeEvent->Branch("nWC2_Hits", &nWC2_Hits, "nWC2_Hits/I");
-	treeEvent->Branch("WC2_Hits", WC2_Hits, "WC2_Hits[nWC2_Hits]/I");
 	
 	treeEvent->Branch("ESum", &ESum, "ESum/D");
 	treeEvent->Branch("CBMult", &CBMult, "CBMult/I");
@@ -181,42 +219,50 @@ void    TA2RootTree::PostInit()
 	
 	treeScaler->Branch("eventNumber", &eventNumber, "eventNumber/I");
 	treeScaler->Branch("eventID", &eventID, "eventID/I");
-	Char_t	str[128];
-	sprintf(str, "Scaler[%d]/I", gAR->GetMaxScaler());
-	treeScaler->Branch("Scaler", gAR->GetScaler(), str);
+	printf("GetMaxScaler: %d\n", GetMaxScaler());
+	sprintf(str, "Scaler[%d]/i", GetMaxScaler());
+	treeScaler->Branch("Scaler", fScaler, str);
+	
+	gROOT->cd();
 	
 	eventNumber	= 0;
+	
+	// Default SQL-physics initialisation
+    TA2AccessSQL::PostInit();	
+
 }
 
 
-void    TA2RootTree::Reconstruct()
+void    TA2GoAT::Reconstruct()
 {
 	//Is Scaler Read
 	if(gAR->IsScalerRead())
 	{
-		eventID	= gUA->GetNDAQEvent();
+		eventID	= gAN->GetNDAQEvent();
 		
+		//for(int i=0; i<GetMaxScaler(); i++)
+		//	printf("Scaler%d: %d\n", i, fScaler[i]);
 		treeScaler->Fill();		
 		return;
 	}
 	
 	// Collect Tagger M0 Hits
-	nTagged	= fTagger->GetNhits();
+	nTagged	= fLadder->GetNhits();
 	for(int i=0; i<nTagged; i++)
 	{
-		tagged_ch[i]	= fTagger->GetHits(i);
-		tagged_t[i]		= (fTagger->GetTime())[i];
+		tagged_ch[i]	= fLadder->GetHits(i);
+		tagged_t[i]		= (fLadder->GetTimeOR())[i];
 	}
 	
 	// Collect Tagger M0 Hits
-	for(int m=1; m<GetNMultihit(); m++)
+	for(int m=1; m<fLadder->GetNMultihit(); m++)
 	{
-		for(int i=0; i<fTagger->GetNhitsM(m); i++)
+		for(int i=0; i<fLadder->GetNhitsM(m); i++)
 		{
-			tagged_ch[nTagged+i]	= (fTagger->GetHitsM(m))[i];
-			tagged_t[nTagged+i]		= (fTagger->GetTimeM(m))[i];
+			tagged_ch[nTagged+i]	= (fLadder->GetHitsM(m))[i];
+			tagged_t[nTagged+i]		= (fLadder->GetTimeORM(m))[i];
 		}
-		nTagged	+= fTagger->GetNhitsM(m);
+		nTagged	+= fLadder->GetNhitsM(m);
 	}
 	
 	// Collect CB Hits
@@ -227,14 +273,12 @@ void    TA2RootTree::Reconstruct()
 		Py[i]			= fCB->GetParticles(i).GetPy();
 		Pz[i]			= fCB->GetParticles(i).GetPz();
 		E[i]			= fCB->GetParticles(i).GetE();
-		time[i]			= fCB->GetParticles(i).GetTime();
-		
-//		clusterSize[i]  = // Will be included
-
-//		Apparatus 		= // Mark as CB
-//    	d_E[i]			= // PID Energy		
-//   	WC1_E[i]		= // Will be included
-//	 	WC2_E[i]    	= // Will be included
+		time[i]			= fCB->GetParticles(i).GetTime();	
+		clusterSize[i]  = (UChar_t)fCB->GetParticles(i).GetClusterSize();
+		Apparatus[i]	= (UChar_t)EAppCB;	
+		d_E[i]			= fCB->GetParticles(i).GetVetoEnergy();
+//   	WC0_E[i]		= // Will be included
+//	 	WC1_E[i]    	= // Will be included
 //	 	WC_Vertex_X[i]  = // Will be included
 //	 	WC_Vertex_Y[i]  = // Will be included
 //	 	WC_Vertex_Z[i]  = // Will be included
@@ -243,35 +287,44 @@ void    TA2RootTree::Reconstruct()
 	// Collect TAPS Hits
 	for(int i=0; i<fTAPS->GetNParticle(); i++)
 	{
-		Px[nParticles+i]		= fTAPS->GetParticles(i).GetPx();
-		Py[nParticles+i]		= fTAPS->GetParticles(i).GetPy();
-		Pz[nParticles+i]		= fTAPS->GetParticles(i).GetPz();
-		E[nParticles+i]			= fTAPS->GetParticles(i).GetE();
-		time[nParticles+i]		= fTAPS->GetParticles(i).GetTime();
-
-//		clusterSize[nParticles+i]   = // Will be included
-
-//		Apparatus[nParticles+i]		= // Mark as TAPS
-//    	d_E[nParticles+i]			= // VETO Energy		
-//   	WC1_E[nParticles+i]			= 0.0; // Will be included
-//	 	WC2_E[nParticles+i]    		= 0.0; // Will be included
+		Px[nParticles+i]			= fTAPS->GetParticles(i).GetPx();
+		Py[nParticles+i]			= fTAPS->GetParticles(i).GetPy();
+		Pz[nParticles+i]			= fTAPS->GetParticles(i).GetPz();
+		E[nParticles+i]				= fTAPS->GetParticles(i).GetE();
+		time[nParticles+i]			= fTAPS->GetParticles(i).GetTime();
+		clusterSize[nParticles+i]	= (UChar_t)fTAPS->GetParticles(i).GetClusterSize();
+		Apparatus[nParticles+i]		= (UChar_t)EAppTAPS;
+		d_E[nParticles+i]			= fTAPS->GetParticles(i).GetVetoEnergy();
+//   	WC0_E[nParticles+i]			= 0.0; // Will be included
+//	 	WC1_E[nParticles+i]    		= 0.0; // Will be included
 //	 	WC_Vertex_X[nParticles+i]  	= 0.0; // Will be included
 //	 	WC_Vertex_Y[nParticles+i]  	= 0.0; // Will be included
 //	 	WC_Vertex_Z[nParticles+i]  	= 0.0; // Will be included    			
 	}
-	nparticles += fTAPS->GetNParticle(); // update number of particles
+	nParticles += fTAPS->GetNParticle(); // update number of particles
+
+	//Apply EndBuffer
+    Px[nParticles] = EBufferEnd;
+    Py[nParticles] = EBufferEnd;
+    Pz[nParticles] = EBufferEnd;
+    E[nParticles] = EBufferEnd;
+    time[nParticles] = EBufferEnd;
+    WC0_E[nParticles] = EBufferEnd;
+    WC1_E[nParticles] = EBufferEnd;
+	d_E[nParticles] = EBufferEnd;    
+    tagged_ch[nTagged] = EBufferEnd;
+    tagged_t[nTagged] = EBufferEnd;	
 	
-	
-	
+	//Fill Tree
+	treeEvent->Fill();
+
+
+
 	//increment event number
-	eventNumber++;
-	
-	//treeEvent->Fill();
-	
-	
+	eventNumber++;	
 }
 
-void    TA2RootTree::Finish()
+void    TA2GoAT::Finish()
 {
 	printf("------------------\n");
 	printf("Write Tree to file\n");
@@ -296,7 +349,7 @@ void    TA2RootTree::Finish()
 	TA2AccessSQL::Finish();
 }
 
-void    TA2RootTree::ParseMisc(char* line)
+void    TA2GoAT::ParseMisc(char* line)
 {
 	TA2AccessSQL::ParseMisc(line);
 }

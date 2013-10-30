@@ -4,15 +4,15 @@
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// TA2RootTree                                                          //
+// TA2GoAT                                               	            //
 //                                                                      //
 // This class is organising the output to ROOT files                    //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __TA2RootTree_h__
-#define __TA2RootTree_h__
+#ifndef __TA2GoAT_h__
+#define __TA2GoAT_h__
 
 
 #include "TFile.h"
@@ -20,19 +20,19 @@
 
 #include "TA2AccessSQL.h"
 
-#define TA2ROOTTREE_MAX_TAGGER		256
-#define TA2ROOTTREE_MAX_PARTICLE	128
-#define TA2ROOTTREE_MAX_HITS		512  // Why 512 ?
+#define TA2GoAT_MAX_TAGGER		1024
+#define TA2GoAT_MAX_PARTICLE	128
+#define TA2GoAT_MAX_HITS		720  
 
 enum {
-    ERT_OUTPUT_FOLDER = 30250,
-    ERT_FILE_NAME,
+    EG_OUTPUT_FOLDER = 30250,
+    EG_FILE_NAME,
 };
 
 static const Map_t RootTreeConfigKeys[] = {
     // General keys
-    {"RootTree-Output-Folder:"       	, ERT_OUTPUT_FOLDER},
-    {"RootTree-File-Name:"           	, ERT_FILE_NAME},
+    {"RootTree-Output-Folder:"       	, EG_OUTPUT_FOLDER},
+    {"RootTree-File-Name:"           	, EG_FILE_NAME},
     // Termination
     {NULL        , -1           }
 };
@@ -41,7 +41,7 @@ static const Map_t RootTreeConfigKeys[] = {
 
 
 
-class	TA2RootTree	: public TA2AccessSQL
+class	TA2GoAT	: public TA2AccessSQL
 {
 private:
 	TFile*		file;				// outFile
@@ -58,10 +58,10 @@ private:
     Double_t*		Pz;
     Double_t*		E;
     Double_t*		time;
-    UChar_t*		clusterSize;
+    UChar_t*	    clusterSize;
     
     //Tagger
-    Int_t			nTagger;
+    Int_t			nTagged;
     Int_t*			tagged_ch;
     Double_t*		tagged_t;
     
@@ -70,8 +70,8 @@ private:
     
     //Charged detector energies
     Double_t*		d_E;
+    Double_t*		WC0_E;
     Double_t*		WC1_E;
-    Double_t*		WC2_E;
 
 	//Wire Chamber vertex reconstruction
     Double_t* 		WC_Vertex_X;
@@ -89,10 +89,10 @@ private:
     Int_t*			PID_Hits;
     Int_t			nVeto_Hits;
     Int_t*			Veto_Hits;
+    Int_t			nWC0_Hits;
+    Int_t*			WC0_Hits;
     Int_t			nWC1_Hits;
     Int_t*			WC1_Hits;
-    Int_t			nWC2_Hits;
-    Int_t*			WC2_Hits;
     
     //Trigger TBD
     Double_t 		ESum;
@@ -105,8 +105,8 @@ private:
     
     
 public:
-	TA2RootTree(const char*, TA2Analysis*);
-	~TA2RootTree();
+	TA2GoAT(const char*, TA2Analysis*);
+	~TA2GoAT();
 	
 	virtual void LoadVariable();            //Creates histograms
     virtual void SetConfig(Char_t*, Int_t); //Parses general information from configuration file
@@ -115,7 +115,7 @@ public:
     virtual void PostInit();                //Initialisation etc.
     virtual void Finish();                //Initialisation etc.
 
-	ClassDef(TA2RootTree, 1)
+	ClassDef(TA2GoAT, 1)
 };
 
 
