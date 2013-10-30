@@ -49,8 +49,8 @@ private:
     
     //Charged detector energies
     Double_t*		d_E;
+    Double_t*		WC0_E;
     Double_t*		WC1_E;
-    Double_t*		WC2_E;
 
 	//Wire Chamber vertex reconstruction
     Double_t* 		WC_Vertex_X;
@@ -68,10 +68,10 @@ private:
     Int_t*			PID_Hits;
     Int_t			nVeto_Hits;
     Int_t*			Veto_Hits;
+    Int_t			nWC0_Hits;
+    Int_t*			WC0_Hits;
     Int_t			nWC1_Hits;
     Int_t*			WC1_Hits;
-    Int_t			nWC2_Hits;
-    Int_t*			WC2_Hits;
     
     //Trigger TBD
     Double_t 		ESum;
@@ -114,10 +114,10 @@ public:
 	
     Double_t*		Get_d_E()					{return d_E;}
     Double_t		Get_d_E(const Int_t index)	{return d_E[index];}
+    Double_t*		GetWC0_E					{return WC0_E;}
+    Double_t		GetWC0_E(const Int_t index)	{return WC0_E[index];}
     Double_t*		GetWC1_E					{return WC1_E;}
     Double_t		GetWC1_E(const Int_t index)	{return WC1_E[index];}
-    Double_t*		GetWC2_E					{return WC2_E;}
-    Double_t		GetWC2_E(const Int_t index)	{return WC2_E[index];}
     
     Double_t* 		GetWC_Vertex_X()					{return WC_Vertex_X;}
     Double_t* 		GetWC_Vertex_X(const Int_t index)	{return WC_Vertex_X[index];}

@@ -38,8 +38,8 @@ TA2TreeManager::TA2TreeManager() 										: 	TA2AccessSQL(Name, Analysis),
 																			PbWO4_E(0),
 																			PID_E(0),
 																			Veto_E(0),
+																			WC0_E(0),
 																			WC1_E(0),
-																			WC2_E(0),
 																			nNaI_Hits(0),
 																			NaI_Hits(0),
 																			nBaF2_Hits(0),
@@ -50,10 +50,10 @@ TA2TreeManager::TA2TreeManager() 										: 	TA2AccessSQL(Name, Analysis),
 																			PID_Hits(0),
 																			nVeto_Hits(0),
 																			Veto_Hits(0),
+																			nWC0_Hits(0),
+																			WC0_Hits(0),
 																			nWC1_Hits(0),
 																			WC1_Hits(0),
-																			nWC2_Hits(0),
-																			WC2_Hits(0),
 																			ESum(0),
 																			CBMult(0),
 																			TAPSMult(0),
@@ -73,16 +73,16 @@ TA2TreeManager::TA2TreeManager() 										: 	TA2AccessSQL(Name, Analysis),
     
     Apparatus	= new UChar_t[TA2TREEMANAGER_MAX_PARTICLE];
     d_E			= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
+    WC0_E		= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
     WC1_E		= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
-    WC2_E		= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
     
     NaI_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
     BaF2_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
     PbWO4_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
     PID_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
     Veto_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
+    WC0_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
     WC1_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
-    WC2_Hits	= new Int_t[TA2TREEMANAGER_MAX_HITS];
 }
 
 
@@ -128,8 +128,8 @@ Bool_t    TA2TreeManager::OpenTree(const char* treefile)
     
 	treeEvent->SetBranchAddress("Apparatus", &Apparatus);
 	treeEvent->SetBranchAddress("d_E", &d_E);	
-	treeEvent->SetBranchAddress("WC1_E", &WC1_E);	
-	treeEvent->SetBranchAddress("WC2_E", &WC2_E);
+	treeEvent->SetBranchAddress("WC0_E", &WC0_E);	
+	treeEvent->SetBranchAddress("WC1_E", &WC1_E);
 	treeEvent->SetBranchAddress("WC_Vertex_X", &WC_Vertex_X);	
 	treeEvent->SetBranchAddress("WC_Vertex_Y", &WC_Vertex_Y);	
 	treeEvent->SetBranchAddress("WC_Vertex_Z", &WC_Vertex_Z);	
@@ -144,10 +144,10 @@ Bool_t    TA2TreeManager::OpenTree(const char* treefile)
 	treeEvent->SetBranchAddress("PID_Hits", &PID_Hits);
 	treeEvent->SetBranchAddress("nVeto_Hits", &nVeto_Hits);
 	treeEvent->SetBranchAddress("Veto_Hits", &Veto_Hits);
+	treeEvent->SetBranchAddress("nWC0_Hits", &nWC0_Hits);
+	treeEvent->SetBranchAddress("WC0_Hits", &WC0_Hits);
 	treeEvent->SetBranchAddress("nWC1_Hits", &nWC1_Hits);
 	treeEvent->SetBranchAddress("WC1_Hits", &WC1_Hits);
-	treeEvent->SetBranchAddress("nWC2_Hits", &nWC2_Hits);
-	treeEvent->SetBranchAddress("WC2_Hits", &WC2_Hits);
 	
 	treeEvent->SetBranchAddress("ESum", &ESum);
 	treeEvent->SetBranchAddress("CBMult", &CBMult);
