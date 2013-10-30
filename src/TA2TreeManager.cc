@@ -66,7 +66,7 @@ TA2TreeManager::TA2TreeManager() 										: 	TA2AccessSQL(Name, Analysis),
     Pz			= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
     E			= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
     time		= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
-    clusterSize	= new Double_t[TA2TREEMANAGER_MAX_PARTICLE];
+    clusterSize	= new UChar_t[TA2TREEMANAGER_MAX_PARTICLE];
     
     tagged_ch	= new Int_t[TA2TREEMANAGER_MAX_TAGGER];
     tagged_t	= new Double_t[TA2TREEMANAGER_MAX_TAGGER];

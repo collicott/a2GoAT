@@ -37,8 +37,7 @@ private:
     Double_t*		Pz;
     Double_t*		E;
     Double_t*		time;
-    Double_t*		clusterSize;
-    //UChar_t*		clusterSize;
+    UChar_t*		clusterSize;
     
     //Tagger
     Int_t			nTagged;
