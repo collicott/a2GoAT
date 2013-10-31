@@ -11,19 +11,19 @@
 //////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __TA2TreeManager_h__
-#define __TA2TreeManager_h__
+#ifndef __GTreeManager_h__
+#define __GTreeManager_h__
 
 
 #include "TFile.h"
 #include "TTree.h"
 
-#define TA2TREEMANAGER_MAX_TAGGER		256
-#define TA2TREEMANAGER_MAX_PARTICLE	128
-#define TA2TREEMANAGER_MAX_HITS		512  // Why 512 ?
+#define GTREEMANAGER_MAX_TAGGER	256
+#define GTREEMANAGER_MAX_PARTICLE	128
+#define GTREEMANAGER_MAX_HITS		720
 
 
-class	TA2TreeManager
+class	GTreeManager
 {
 private:
 	TFile*		file;				// outFile
@@ -83,13 +83,24 @@ private:
     Int_t			EventID;
     UInt_t*			Scaler;
     
+    //private members
+    Int_t			firstValidEvent;
+    Int_t			lastValidEvent;
+    Int_t			actualEvent;
     
 public:
-	TA2TreeManager();
-	~TA2TreeManager();
+	GTreeManager();
+	~GTreeManager();
 	
 	void	Reset();
 	Bool_t	OpenTree(const char* treefile);
+	Bool_t	FindValidEvents();
+	Bool_t	GetEntry();
+	Bool_t	GetEntry(const Int_t index);
+	void	TraverseEntries(const Int_t min, const Int_t max);
+	void	TraverseEntries(const Int_t max)					{TraverseEntries(firstValidEvent, max);}
+	void	TraverseEntries()									{TraverseEntries(firstValidEvent, lastValidEvent);}
+	void	Reconstruct();
 	
 	Int_t			GetNParticles()				{return nParticles;}		
     Double_t*		GetPx()						{return Px;}			
@@ -126,7 +137,9 @@ public:
     Double_t* 		GetWC_Vertex_Z()					{return WC_Vertex_Z;}
     Double_t* 		GetWC_Vertex_Z(const Int_t index)	{return WC_Vertex_Z[index];}
     
-	ClassDef(TA2TreeManager, 1)
+    Int_t			GetActualEvent()					{return actualEvent;}
+    
+    
 };
 
 
