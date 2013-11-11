@@ -18,82 +18,85 @@
 #include "TFile.h"
 #include "TTree.h"
 
-#define GTREEMANAGER_MAX_TAGGER	256
+#define GTREEMANAGER_MAX_TAGGER		1024
 #define GTREEMANAGER_MAX_PARTICLE	128
-#define GTREEMANAGER_MAX_HITS		720
+#define GTREEMANAGER_MAX_HITS		860
 
 
 class	GTreeManager
 {
 private:
 	TFile*		file;				// outFile
-	TTree*		treeEvent;			// treeEvent
-	TTree*		treeScaler; 		// treeScaler
+	TTree*		treeRawEvent;		// Raw particle information (filled each event)
+	TTree*		treeTagger;			// Tagger information (filled each event)
+	TTree* 		treeTrigger;		// Trigger information (filled each event)
+	TTree* 		treeDetectorHits;	// Detector system hit patterns (filled each event)
+	TTree*		treeScaler; 		// Scaler read information (filled each scaler read)
 
     //Particles    
-    Int_t			nParticles;		
-    Double_t*		Px;
-    Double_t*		Py;
-    Double_t*		Pz;
-    Double_t*		E;
-    Double_t*		time;
-    UChar_t*		clusterSize;
+    Int_t		nParticles;		
+    Double_t*	Px;
+    Double_t*	Py;
+   	Double_t*	Pz;
+    Double_t*	E;
+    Double_t*	time;
+    UChar_t*    clusterSize;
     
     //Tagger
-    Int_t			nTagged;
-    Int_t*			tagged_ch;
-    Double_t*		tagged_t;
+    Int_t		nTagged;
+    Int_t*		tagged_ch;
+    Double_t*	tagged_t;
     
     //Apparatus
-    UChar_t*		Apparatus;
+    UChar_t*	Apparatus;
     
     //Charged detector energies
-    Double_t*		d_E;
-    Double_t*		WC0_E;
-    Double_t*		WC1_E;
+    Double_t*	d_E;
+    Double_t*	WC0_E;
+    Double_t*	WC1_E;
 
 	//Wire Chamber vertex reconstruction
-    Double_t* 		WC_Vertex_X;
-    Double_t* 		WC_Vertex_Y;
-    Double_t* 		WC_Vertex_Z;
+   	Double_t* 	WC_Vertex_X;
+   	Double_t* 	WC_Vertex_Y;
+   	Double_t* 	WC_Vertex_Z;
     
-    //Hits
-    Int_t			nNaI_Hits;
-    Int_t*			NaI_Hits;
-    Int_t			nBaF2_Hits;
-    Int_t*			BaF2_Hits;
-    Int_t			nPbWO4_Hits;
-    Int_t*			PbWO4_Hits;
-    Int_t			nPID_Hits;
-    Int_t*			PID_Hits;
-    Int_t			nVeto_Hits;
-    Int_t*			Veto_Hits;
-    Int_t			nWC0_Hits;
-    Int_t*			WC0_Hits;
-    Int_t			nWC1_Hits;
-    Int_t*			WC1_Hits;
+   	//Hits
+   	Int_t		nNaI_Hits;
+   	Int_t*		NaI_Hits;
+   	Int_t		nPID_Hits;
+   	Int_t*		PID_Hits;
+   	Int_t		nWC_Hits;
+   	Int_t*		WC_Hits;
+   	Int_t		nBaF2_PbWO4_Hits;
+   	Int_t*		BaF2_PbWO4_Hits;
+   	Int_t		nVeto_Hits;
+   	Int_t*		Veto_Hits;
     
-    //Trigger TBD
-    Double_t 		ESum;
-    Int_t 			CBMult; 	//or Detector Energies
-	Int_t			TAPSMult;
-    
+   	//Trigger TBD
+   	Double_t 	ESum;
+   	Int_t 		CBMult; 	//or Detector Energies
+	Int_t		TAPSMult;
     //Scalers
-    Int_t			EventNumber;
-    Int_t			EventID;
-    UInt_t*			Scaler;
+    Int_t		EventNumber;
+    Int_t		EventID;
+    UInt_t*		Scaler;
     
     //private members
-    Int_t			firstValidEvent;
-    Int_t			lastValidEvent;
-    Int_t			actualEvent;
+    Int_t		firstValidEvent;
+    Int_t		lastValidEvent;
+    Int_t		actualEvent;
     
 public:
 	GTreeManager();
 	~GTreeManager();
 	
 	void	Reset();
-	Bool_t	OpenTree(const char* treefile);
+	Bool_t	OpenFile(const char* treefile);
+	Bool_t	OpenTreeRawEvent(TFile* file);
+	Bool_t	OpenTreeTagger(TFile* file);
+	Bool_t	OpenTreeTrigger(TFile* file);
+	Bool_t	OpenTreeDetectorHits(TFile* file);
+	Bool_t	OpenTreeScaler(TFile* file);
 	Bool_t	FindValidEvents();
 	Bool_t	GetEntry();
 	Bool_t	GetEntry(const Int_t index);
