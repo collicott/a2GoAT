@@ -48,8 +48,7 @@ GTreeManager::GTreeManager() 	: 	TA2AccessSQL(Name, Analysis),
                                     nVeto_Hits(0),
                                     Veto_Hits(0),
                                     ESum(0),
-                                    CBMult(0),
-                                    TAPSMult(0),
+                                    Mult(0),
 								    EventNumber(0),
 							 	    EventID(0),
 								    Scaler(0),
@@ -78,12 +77,11 @@ GTreeManager::GTreeManager() 	: 	TA2AccessSQL(Name, Analysis),
     
     NaI_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
     PID_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
-    WC_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
+    WC_Hits		= new Int_t[GTREEMANAGER_MAX_HITS];
     BaF2_PbWO4_Hits = new Int_t[GTREEMANAGER_MAX_HITS];
     Veto_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
    
 }
-
 
 GTreeManager::~GTreeManager()
 {
@@ -109,8 +107,10 @@ Bool_t	  GTreeManager::OpenFile(const char* treefile)
 	return kTRUE;
 }
 
-Bool_t    GTreeManager::OpenTreeRawEvent(TFile* file)
+Bool_t    GTreeManager::OpenTreeRawEvent()
 {
+	if(!file) return kFALSE; 
+	
 	treeRawEvent = (TTree*)file->Get("treeRawEvent");
 	if(!treeRawEvent) return kFALSE;
 	cout << "treeRawEvent opened." << endl;
@@ -133,9 +133,10 @@ Bool_t    GTreeManager::OpenTreeRawEvent(TFile* file)
 	return kTRUE;
 }
 
-
-Bool_t    GTreeManager::OpenTreeTagger(TFile* file)
+Bool_t    GTreeManager::OpenTreeTagger()
 {
+	if(!file) return kFALSE;
+	
 	treeTagger = (TTree*)file->Get("treeTagger");
 	if(!treeTagger) return kFALSE;
 	cout << "treeTagger opened." << endl;
@@ -147,21 +148,24 @@ Bool_t    GTreeManager::OpenTreeTagger(TFile* file)
 	return kTRUE;	
 }
 
-Bool_t    GTreeManager::OpenTreeTrigger(TFile* file)
+Bool_t    GTreeManager::OpenTreeTrigger()
 {
+	if(!file) return kFALSE;
+
 	treeTrigger = (TTree*)file->Get("treeTrigger");
 	if(!treeTrigger) return kFALSE;
 	cout << "treeTrigger opened." << endl;
 
 	treeTrigger->SetBranchAddress("ESum", &ESum);
-	treeTrigger->SetBranchAddress("CBMult", &CBMult);
-	treeTrigger->SetBranchAddress("TAPSMult", &TAPSMult);
+	treeTrigger->SetBranchAddress("Mult", &Mult);
 	
 	return kTRUE;
 }
 
-Bool_t    GTreeManager::OpenTreeDetectorHits(TFile* file)
+Bool_t    GTreeManager::OpenTreeDetectorHits()
 {
+	if(!file) return kFALSE;
+
 	treeDetectorHits = (TTree*)file->Get("treeDetectorHits");
 	if(!treeDetectorHits) return kFALSE;
 	cout << "treeDetectorHits opened." << endl;
@@ -180,8 +184,10 @@ Bool_t    GTreeManager::OpenTreeDetectorHits(TFile* file)
 	return kTRUE;	
 }
 
-Bool_t    GTreeManager::OpenTreeScaler(TFile* file)
+Bool_t    GTreeManager::OpenTreeScaler()
 {
+	if(!file) return kFALSE;
+
 	treeScaler = (TTree*)file->Get("treeScaler");
 	if(!treeScaler) return kFALSE;
 	cout << "treeScaler opened." << endl;
@@ -196,26 +202,66 @@ Bool_t    GTreeManager::OpenTreeScaler(TFile* file)
 
 Bool_t	GTreeManager::FindValidEvents()
 {
-	treeScaler->GetEntry(0);
-	firstValidEvent	= EventNumber;
-	treeScaler->GetEntry(treeScaler->GetEntries()-1);
-	lastValidEvent	= EventNumber-1;
+	if(!treeScaler) OpenTreeScaler();
+
+	if(treeScaler)
+	{
+		treeScaler->GetEntry(0);
+		firstValidEvent	= EventNumber;
+		treeScaler->GetEntry(treeScaler->GetEntries()-1);
+		lastValidEvent	= EventNumber-1;
+		cout << "Valid events determined from scaler tree" << endl;
+		cout << "Events from " << firstValidEvent << 
+				" to " << lastValidEvent << " are valid." << endl;
+		return kTRUE;	
+	}
 	
-	cout << "Events from " << firstValidEvent << " to " << lastValidEvent << " are valid." << endl;
+	cout << "Valid events count not be determined from scaler tree" << endl;
 	
-	return kTRUE;
-	
+	firstValidEvent = 0;
+
+	if (treeRawEvent)
+	{
+		lastValidEvent = (Int_t)treeRawEvent->GetEntries();
+		cout << "Total #Events deterimed from treeRawEvent" << endl;
+		return kTRUE;
+	}
+	if (treeTagger)
+	{
+		lastValidEvent = (Int_t)treeTagger->GetEntries();
+		cout << "Total #Events deterimed from treeTagger" << endl;
+		return kTRUE;
+	}
+	if (treeTrigger)
+	{
+		lastValidEvent = (Int_t)treeTrigger->GetEntries();
+		cout << "Total #Events deterimed from treeTrigger" << endl;
+		return kTRUE;
+	}
+	if (treeDetectorHits)
+	{
+		lastValidEvent = (Int_t)treeDetectorHits->GetEntries();
+		cout << "Total #Events deterimed from treeDetectorHits" << endl;
+		return kTRUE;
+	}		
+
+	return kFALSE;
 }
 
 Bool_t	GTreeManager::GetEntry()
-{
-	if(actualEvent < firstValidEvent)
-		actualEvent = firstValidEvent;
-	else if(actualEvent < lastValidEvent)
-		actualEvent++;
-	else 	return kFALSE;
+{	
+	if(!actualEvent) actualEvent = -1;
 	
-	treeEvent->GetEntry(actualEvent);
+	if(actualEvent < firstValidEvent) actualEvent = firstValidEvent;
+	else if(actualEvent < lastValidEvent) actualEvent++;
+	else return kFALSE;
+	
+	if (treeRawEvent) 		treeRawEvent->GetEntry(actualEvent);
+	if (treeTagger) 		treeTagger->GetEntry(actualEvent);
+	if (treeTrigger) 		treeTrigger->GetEntry(actualEvent);
+	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
+	if (treeScaler) 	 	treeScaler->GetEntry(actualEvent);
+	
 	return kTRUE;
 }
 
@@ -226,7 +272,14 @@ Bool_t	GTreeManager::GetEntry(const Int_t index)
 	
 	actualEvent = index;
 	treeEvent->GetEntry(index);
+	treeTrigger->GetEntry(index)
 	return kTRUE;
+}
+
+void	GTreeManager::TraverseEntries()
+{
+	GTreeManager::GetEntry();
+	Reconstruct();
 }
 
 void	GTreeManager::TraverseEntries(const Int_t min, const Int_t max)

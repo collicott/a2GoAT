@@ -74,8 +74,8 @@ private:
     
    	//Trigger TBD
    	Double_t 	ESum;
-   	Int_t 		CBMult; 	//or Detector Energies
-	Int_t		TAPSMult;
+   	Int_t 		Mult;
+	
     //Scalers
     Int_t		EventNumber;
     Int_t		EventID;
@@ -92,18 +92,18 @@ public:
 	
 	void	Reset();
 	Bool_t	OpenFile(const char* treefile);
-	Bool_t	OpenTreeRawEvent(TFile* file);
-	Bool_t	OpenTreeTagger(TFile* file);
-	Bool_t	OpenTreeTrigger(TFile* file);
-	Bool_t	OpenTreeDetectorHits(TFile* file);
-	Bool_t	OpenTreeScaler(TFile* file);
+	Bool_t	OpenTreeRawEvent();
+	Bool_t	OpenTreeTagger();
+	Bool_t	OpenTreeTrigger();
+	Bool_t	OpenTreeDetectorHits();
+	Bool_t	OpenTreeScaler();
 	Bool_t	FindValidEvents();
 	Bool_t	GetEntry();
 	Bool_t	GetEntry(const Int_t index);
 	void	TraverseEntries(const Int_t min, const Int_t max);
-	void	TraverseEntries(const Int_t max)					{TraverseEntries(firstValidEvent, max);}
-	void	TraverseEntries()									{TraverseEntries(firstValidEvent, lastValidEvent);}
-	void	Reconstruct();
+	void	TraverseEntries(const Int_t max) {TraverseEntries(firstValidEvent, max);}
+	void	TraverseEntries()				 {TraverseEntries(firstValidEvent, lastValidEvent);}
+	virtual void	Reconstruct();
 	
 	Int_t			GetNParticles()				{return nParticles;}		
     Double_t*		GetPx()						{return Px;}			
@@ -140,6 +140,29 @@ public:
     Double_t* 		GetWC_Vertex_Z()					{return WC_Vertex_Z;}
     Double_t* 		GetWC_Vertex_Z(const Int_t index)	{return WC_Vertex_Z[index];}
     
+	Double_t 		GetESum()	{return ESum;}
+	Int_t	 		GetMult()	{return Mult;}	
+    
+    Int_t			GetNNaI_Hits()						{return nNaI_Hits;}
+    Int_t*			GetNaI_Hits()			 			{return NaI_Hits;}
+    Int_t			GetNaI_Hits(const Int_t index)		{return NaI_Hits[index];}
+
+    Int_t			GetNPID_Hits()						{return nPID_Hits;}
+    Int_t*			GetPID_Hits()			 			{return PID_Hits;}
+    Int_t			GetPID_Hits(const Int_t index)		{return PID_Hits[index];}
+
+    Int_t			GetNWC_Hits()						{return nWC_Hits;}
+    Int_t*			GetWC_Hits()			 			{return WC_Hits;}
+    Int_t			GetWC_Hits(const Int_t index)		{return WC_Hits[index];}
+
+    Int_t			GetNBaF2_PbWO4_Hits()					{return nBaF2_PbWO4_Hits;}
+    Int_t*			GetBaF2_PbWO4_Hits()			 		{return BaF2_PbWO4_Hits;}
+    Int_t			GetBaF2_PbWO4_Hits(const Int_t index)	{return BaF2_PbWO4_Hits[index];}    
+
+    Int_t			GetNVeto_Hits()						{return nVeto_Hits;}
+    Int_t*			GetVeto_Hits()			 			{return Veto_Hits;}
+    Int_t			GetVeto_Hits(const Int_t index)		{return Veto_Hits[index];}
+            
     Int_t			GetActualEvent()					{return actualEvent;}
     
     
