@@ -102,6 +102,7 @@ Bool_t	  GTreeManager::OpenFile(const char* treefile)
 {
 	file	= TFile::Open(treefile);
 	if(!file) return kFALSE;
+	// Do Zombie check here!
 	cout << "file " << treefile << " opened." << endl;
 	
 	return kTRUE;
@@ -250,11 +251,9 @@ Bool_t	GTreeManager::FindValidEvents()
 
 Bool_t	GTreeManager::GetEntry()
 {	
-	if(!actualEvent) actualEvent = -1;
-	
-	if(actualEvent < firstValidEvent) actualEvent = firstValidEvent;
-	else if(actualEvent < lastValidEvent) actualEvent++;
-	else return kFALSE;
+	if(actualEvent < firstValidEvent) actualEvent = firstValidEvent - 1;
+	else if(actualEvent >= lastValidEvent) return kFALSE;
+	actualEvent++;
 	
 	if (treeRawEvent) 		treeRawEvent->GetEntry(actualEvent);
 	if (treeTagger) 		treeTagger->GetEntry(actualEvent);
@@ -271,15 +270,14 @@ Bool_t	GTreeManager::GetEntry(const Int_t index)
 	if(index > lastValidEvent)  return kFALSE;
 	
 	actualEvent = index;
-	treeEvent->GetEntry(index);
-	treeTrigger->GetEntry(index)
+	
+	if (treeRawEvent) 		treeRawEvent->GetEntry(actualEvent);
+	if (treeTagger) 		treeTagger->GetEntry(actualEvent);
+	if (treeTrigger) 		treeTrigger->GetEntry(actualEvent);
+	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
+	if (treeScaler) 	 	treeScaler->GetEntry(actualEvent);
+	
 	return kTRUE;
-}
-
-void	GTreeManager::TraverseEntries()
-{
-	GTreeManager::GetEntry();
-	Reconstruct();
 }
 
 void	GTreeManager::TraverseEntries(const Int_t min, const Int_t max)
@@ -289,7 +287,7 @@ void	GTreeManager::TraverseEntries(const Int_t min, const Int_t max)
 	if(checkedmin < firstValidEvent) 	 checkedmin = firstValidEvent;
 	if(checkedmin > lastValidEvent)  	 checkedmin = lastValidEvent;
 	if(checkedmax < checkedmin) 	 	 checkedmax = checkedmin;
-	else if(checkedmax > lastValidEvent) checkedmax = lastValidEvent;
+	if(checkedmax > lastValidEvent) 	 checkedmax = lastValidEvent;
 	
 	printf("checkedmin: %d\n", checkedmin);
 	printf("checkedmax: %d\n", checkedmax);
@@ -303,6 +301,5 @@ void	GTreeManager::TraverseEntries(const Int_t min, const Int_t max)
 
 void	GTreeManager::Reconstruct()
 {
-	printf("%d\n", actualEvent);
-	//for(int i=0; i<1000; i++);
+	("No reconstruction class found in Parent\n");
 }

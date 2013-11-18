@@ -85,7 +85,12 @@ private:
     Int_t		firstValidEvent;
     Int_t		lastValidEvent;
     Int_t		actualEvent;
-    
+
+protected:
+	void	TraverseEntries(const Int_t min, const Int_t max);
+	void	TraverseEntries(const Int_t max) {TraverseEntries(firstValidEvent, max);}
+	void	TraverseEntries()				 {TraverseEntries(firstValidEvent, lastValidEvent);}
+	
 public:
 	GTreeManager();
 	~GTreeManager();
@@ -100,9 +105,7 @@ public:
 	Bool_t	FindValidEvents();
 	Bool_t	GetEntry();
 	Bool_t	GetEntry(const Int_t index);
-	void	TraverseEntries(const Int_t min, const Int_t max);
-	void	TraverseEntries(const Int_t max) {TraverseEntries(firstValidEvent, max);}
-	void	TraverseEntries()				 {TraverseEntries(firstValidEvent, lastValidEvent);}
+
 	virtual void	Reconstruct();
 	
 	Int_t			GetNParticles()				{return nParticles;}		
