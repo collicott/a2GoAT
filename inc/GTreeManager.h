@@ -105,6 +105,7 @@ public:
 	Bool_t	FindValidEvents();
 	Bool_t	GetEntry();
 	Bool_t	GetEntry(const Int_t index);
+	int	main();	
 
 	virtual void	Reconstruct();
 	
@@ -129,19 +130,19 @@ public:
     UChar_t*		GetApparatus()					{return Apparatus;}
     UChar_t			GetApparatus(const Int_t index)	{return Apparatus[index];}
 	
-    Double_t*		Get_d_E()					{return d_E;}
-    Double_t		Get_d_E(const Int_t index)	{return d_E[index];}
-    Double_t*		GetWC0_E					{return WC0_E;}
+    Double_t*		Get_dE()					{return d_E;}
+    Double_t		Get_dE(const Int_t index)	{return d_E[index];}
+    Double_t*		GetWC0_E()					{return WC0_E;}
     Double_t		GetWC0_E(const Int_t index)	{return WC0_E[index];}
-    Double_t*		GetWC1_E					{return WC1_E;}
+    Double_t*		GetWC1_E()					{return WC1_E;}
     Double_t		GetWC1_E(const Int_t index)	{return WC1_E[index];}
     
     Double_t* 		GetWC_Vertex_X()					{return WC_Vertex_X;}
-    Double_t* 		GetWC_Vertex_X(const Int_t index)	{return WC_Vertex_X[index];}
+    Double_t 		GetWC_Vertex_X(const Int_t index)	{return WC_Vertex_X[index];}
     Double_t* 		GetWC_Vertex_Y()					{return WC_Vertex_Y;}
-    Double_t* 		GetWC_Vertex_Y(const Int_t index)	{return WC_Vertex_Y[index];}
+    Double_t 		GetWC_Vertex_Y(const Int_t index)	{return WC_Vertex_Y[index];}
     Double_t* 		GetWC_Vertex_Z()					{return WC_Vertex_Z;}
-    Double_t* 		GetWC_Vertex_Z(const Int_t index)	{return WC_Vertex_Z[index];}
+    Double_t 		GetWC_Vertex_Z(const Int_t index)	{return WC_Vertex_Z[index];}
     
 	Double_t 		GetESum()	{return ESum;}
 	Int_t	 		GetMult()	{return Mult;}	

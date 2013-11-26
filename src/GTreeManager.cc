@@ -1,27 +1,18 @@
-//*************************************************************************
-//* Author: Patrik Ott
-//*************************************************************************
-
-//////////////////////////////////////////////////////////////////////////
-//                                                                      //
-// GTreeManager                                                          //
-//                                                                      //
-// This class is organising the output to ROOT files                    //
-//                                                                      //
-//////////////////////////////////////////////////////////////////////////
 
 
-#include "inc/GTreeManager.h"
+#include "GTreeManager.h"
+#include<iostream>
+using namespace std;
 
-GTreeManager::GTreeManager() 	: 	TA2AccessSQL(Name, Analysis),
-									file(0),
-									treeRawEvent(0),
-									treeTagger(0),
-									treeTrigger(0),
-									treeDetectorHits(0),
-									treeScaler(0),
-									nParticles(0),
-									Px(0),
+GTreeManager::GTreeManager() :	
+				file(0),
+				treeRawEvent(0),
+				treeTagger(0),
+				treeTrigger(0),
+				treeDetectorHits(0),
+				treeScaler(0),
+				nParticles(0),
+				Px(0),
                                     Py(0),
                                     Pz(0),
                                     E(0),
@@ -53,7 +44,7 @@ GTreeManager::GTreeManager() 	: 	TA2AccessSQL(Name, Analysis),
 							 	    EventID(0),
 								    Scaler(0),
 								    firstValidEvent(0),
-								    lastValidEvent(0)
+								    lastValidEvent(0),
 								    actualEvent(-1)
 {
     Px		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
@@ -100,11 +91,11 @@ void	GTreeManager::Reset()
 
 Bool_t	  GTreeManager::OpenFile(const char* treefile)
 {
-	file	= TFile::Open(treefile);
+/*	file	= TFile::Open(treefile);
 	if(!file) return kFALSE;
 	// Do Zombie check here!
 	cout << "file " << treefile << " opened." << endl;
-	
+*/	
 	return kTRUE;
 }
 
@@ -195,7 +186,7 @@ Bool_t    GTreeManager::OpenTreeScaler()
 	
 	treeScaler->SetBranchAddress("eventNumber", &EventNumber);
 	treeScaler->SetBranchAddress("eventID", &EventID);
-	Scaler		= new UInt_t[treeScaler->GetLeaf("Scaler")->GetLen()];
+//	Scaler		= new UInt_t[treeScaler->GetLeaf("Scaler")->GetLen()];
 	treeScaler->SetBranchAddress("Scaler", Scaler);
 	
 	return kTRUE;
@@ -294,12 +285,12 @@ void	GTreeManager::TraverseEntries(const Int_t min, const Int_t max)
 	for(int i=checkedmin; i<=checkedmax; i++)
 	{
 		actualEvent = i;
-		treeEvent->GetEntry(i);
+		GetEntry(i);
 		Reconstruct();
 	}
 }
 
 void	GTreeManager::Reconstruct()
 {
-	("No reconstruction class found in Parent\n");
+	printf("No reconstruction class found in Parent\n");
 }
