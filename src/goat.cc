@@ -21,10 +21,37 @@
 #include <fstream>
 using namespace std;
 
-int main(int argc, char *argv[]){
+class TreeTest : public GTreeManager
+{
+	public:
+TreeTest();
+void Reconstruct();
+};
+
+
+TreeTest::TreeTest() : GTreeManager()
+{
+}
+
+
+void TreeTest::Reconstruct()
+{
+	printf("I'm in yo goat file\N");
+}
+
+int main(int argc, char *argv[])
+{
+  TreeTest* gTree = new TreeTest();
+
+  char* filename = Form("/home/cristina/RootTree_Compton_354.root");
+  //gTree->Analysis(filename);
+  
+  GTreeManager* test = (GTreeManager*)gTree;
+  test->Analysis(filename);
 
   printf("Mehhh\n");
   return 0;
 }
+
 
 #endif

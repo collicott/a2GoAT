@@ -1,8 +1,5 @@
 
-
 #include "GTreeManager.h"
-#include<iostream>
-using namespace std;
 
 GTreeManager::GTreeManager() :	
 				file(0),
@@ -13,64 +10,65 @@ GTreeManager::GTreeManager() :
 				treeScaler(0),
 				nParticles(0),
 				Px(0),
-                                    Py(0),
-                                    Pz(0),
-                                    E(0),
-                                    time(0),
-                                    clusterSize(0),
-                                    Apparatus(0),
-                                    d_E(0),
-                                    WC0_E(0),
-                                    WC1_E(0),
-                                    WC_Vertex_X(0),
-                                    WC_Vertex_Y(0),
-                                    WC_Vertex_Z(0),
-                                    nTagged(0),
-                                    tagged_ch(0),
-                                    tagged_t(0),
-                                    nNaI_Hits(0),
-                                    NaI_Hits(0),
-                                    nPID_Hits(0),
-                                    PID_Hits(0),
-                                    nWC_Hits(0),
-	                                WC_Hits(0),
-	                                nBaF2_PbWO4_Hits(0), 
-	                                BaF2_PbWO4_Hits(0),
-                                    nVeto_Hits(0),
-                                    Veto_Hits(0),
-                                    ESum(0),
-                                    Mult(0),
-								    EventNumber(0),
-							 	    EventID(0),
-								    Scaler(0),
-								    firstValidEvent(0),
-								    lastValidEvent(0),
-								    actualEvent(-1)
+				Py(0),
+				Pz(0),
+				E(0),
+				time(0),
+				clusterSize(0),
+				Apparatus(0),
+				d_E(0),
+				WC0_E(0),
+				WC1_E(0),
+				WC_Vertex_X(0),
+				WC_Vertex_Y(0),
+				WC_Vertex_Z(0),
+				nTagged(0),
+				tagged_ch(0),
+				tagged_t(0),
+				nNaI_Hits(0),
+				NaI_Hits(0),
+				nPID_Hits(0),
+				PID_Hits(0),
+				nWC_Hits(0),
+				WC_Hits(0),
+				nBaF2_PbWO4_Hits(0), 
+				BaF2_PbWO4_Hits(0),
+				nVeto_Hits(0),
+				Veto_Hits(0),
+				ESum(0),
+				Mult(0),
+				EventNumber(0),
+				EventID(0),
+				Scaler(0),
+				NScaler(0),
+				firstValidEvent(0),
+				lastValidEvent(0),
+				actualEvent(-1)
 {
-    Px		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    Py		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    Pz		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    E		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    time	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    clusterSize	= new UChar_t[GTREEMANAGER_MAX_PARTICLE];
+    	Px		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	Py		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	Pz		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	E		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	time		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	clusterSize	= new UChar_t[GTREEMANAGER_MAX_PARTICLE];
     
-    tagged_ch	= new Int_t[GTREEMANAGER_MAX_TAGGER];
-    tagged_t	= new Double_t[GTREEMANAGER_MAX_TAGGER];
+    	tagged_ch	= new Int_t[GTREEMANAGER_MAX_TAGGER];
+    	tagged_t	= new Double_t[GTREEMANAGER_MAX_TAGGER];
     
-    Apparatus	= new UChar_t[GTREEMANAGER_MAX_PARTICLE];
-    d_E		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    WC0_E	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    WC1_E	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	Apparatus	= new UChar_t[GTREEMANAGER_MAX_PARTICLE];
+    	d_E		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	WC0_E		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	WC1_E		= new Double_t[GTREEMANAGER_MAX_PARTICLE];
 
-    WC_Vertex_X	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    WC_Vertex_Y	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
-    WC_Vertex_Z	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	WC_Vertex_X	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	WC_Vertex_Y	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
+    	WC_Vertex_Z	= new Double_t[GTREEMANAGER_MAX_PARTICLE];
     
-    NaI_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
-    PID_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
-    WC_Hits		= new Int_t[GTREEMANAGER_MAX_HITS];
-    BaF2_PbWO4_Hits = new Int_t[GTREEMANAGER_MAX_HITS];
-    Veto_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
+    	NaI_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
+    	PID_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
+    	WC_Hits		= new Int_t[GTREEMANAGER_MAX_HITS];
+    	BaF2_PbWO4_Hits = new Int_t[GTREEMANAGER_MAX_HITS];
+    	Veto_Hits	= new Int_t[GTREEMANAGER_MAX_HITS];
    
 }
 
@@ -84,18 +82,18 @@ void	GTreeManager::Reset()
 	if(treeRawEvent) 	 delete treeRawEvent;
 	if(treeTagger)    	 delete treeTagger;
 	if(treeTrigger)  	 delete treeTrigger;
-	if(treeDetectorHits) delete treeDetectorHits;
+	if(treeDetectorHits) 	 delete treeDetectorHits;
 	if(treeScaler) 	 	 delete treeScaler;
     if(file)			 delete file;
 }
 
 Bool_t	  GTreeManager::OpenFile(const char* treefile)
 {
-/*	file	= TFile::Open(treefile);
+	file	= TFile::Open(treefile);
 	if(!file) return kFALSE;
-	// Do Zombie check here!
+	if(file->IsZombie()) return kFALSE;
 	cout << "file " << treefile << " opened." << endl;
-*/	
+	
 	return kTRUE;
 }
 
@@ -186,8 +184,8 @@ Bool_t    GTreeManager::OpenTreeScaler()
 	
 	treeScaler->SetBranchAddress("eventNumber", &EventNumber);
 	treeScaler->SetBranchAddress("eventID", &EventID);
-//	Scaler		= new UInt_t[treeScaler->GetLeaf("Scaler")->GetLen()];
 	treeScaler->SetBranchAddress("Scaler", Scaler);
+	NScaler = treeScaler->GetLeaf("Scaler")->GetLen();
 	
 	return kTRUE;
 }	
@@ -246,11 +244,11 @@ Bool_t	GTreeManager::GetEntry()
 	else if(actualEvent >= lastValidEvent) return kFALSE;
 	actualEvent++;
 	
-	if (treeRawEvent) 		treeRawEvent->GetEntry(actualEvent);
-	if (treeTagger) 		treeTagger->GetEntry(actualEvent);
-	if (treeTrigger) 		treeTrigger->GetEntry(actualEvent);
+	if (treeRawEvent) 	treeRawEvent->GetEntry(actualEvent);
+	if (treeTagger) 	treeTagger->GetEntry(actualEvent);
+	if (treeTrigger) 	treeTrigger->GetEntry(actualEvent);
 	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
-	if (treeScaler) 	 	treeScaler->GetEntry(actualEvent);
+	if (treeScaler) 	treeScaler->GetEntry(actualEvent);
 	
 	return kTRUE;
 }
@@ -262,11 +260,11 @@ Bool_t	GTreeManager::GetEntry(const Int_t index)
 	
 	actualEvent = index;
 	
-	if (treeRawEvent) 		treeRawEvent->GetEntry(actualEvent);
-	if (treeTagger) 		treeTagger->GetEntry(actualEvent);
-	if (treeTrigger) 		treeTrigger->GetEntry(actualEvent);
+	if (treeRawEvent) 	treeRawEvent->GetEntry(actualEvent);
+	if (treeTagger) 	treeTagger->GetEntry(actualEvent);
+	if (treeTrigger) 	treeTrigger->GetEntry(actualEvent);
 	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
-	if (treeScaler) 	 	treeScaler->GetEntry(actualEvent);
+	if (treeScaler) 	treeScaler->GetEntry(actualEvent);
 	
 	return kTRUE;
 }
@@ -290,7 +288,21 @@ void	GTreeManager::TraverseEntries(const Int_t min, const Int_t max)
 	}
 }
 
+void    GTreeManager::Analysis(const char* filename)
+{
+	OpenFile(filename);
+	OpenTreeDetectorHits();
+	FindValidEvents();
+	TraverseEntries();
+
+
+
+}
+
+
 void	GTreeManager::Reconstruct()
 {
+	printf("I'm in yo TreeManager");
 	printf("No reconstruction class found in Parent\n");
 }
+
