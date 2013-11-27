@@ -36,12 +36,13 @@ TreeTest::TreeTest() : GTreeManager()
 
 void TreeTest::Reconstruct()
 {
-	printf("I'm in yo goat file\N");
+    printf("I'm in yo goat file\n");
 }
 
 int main(int argc, char *argv[])
 {
   TreeTest* gTree = new TreeTest();
+  //GInputTreeManager* ggg = new GInputTreeManager();
 
   char* filename = Form("/home/cristina/RootTree_Compton_354.root");
   //gTree->Analysis(filename);
