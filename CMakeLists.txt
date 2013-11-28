@@ -28,6 +28,8 @@ include_directories(inc)
 
 add_executable(goat
    src/goat.cc 
+   inc/GParticleReconstruction2UnchargedHits.h
+   src/GParticleReconstruction2UnchargedHits.cc
    inc/GParticleReconstruction.h
    src/GParticleReconstruction.cc
    src/GInputTreeManager.cc

@@ -71,16 +71,19 @@ private:
     Int_t		EventNumber;
     Int_t		EventID;
     UInt_t*		Scaler;
-	Int_t		NScaler;
+    Int_t		NScaler;
 
-protected:
-    //protected members
+	//protected members
     Int_t		firstValidEvent;
     Int_t		lastValidEvent;
     Int_t		actualEvent;
-
-    void GetEntry();
-    void GetEntry(const Int_t index);
+    
+protected:
+	void    CheckRange(Int_t& min, Int_t& max);
+    void 	GetInputEntryFast();                // without testing index
+    void	TraverseInputEntries(const Int_t min, const Int_t max);
+    void	TraverseInputEntries(const Int_t max) 					{TraverseInputEntries(firstValidEvent, max);}
+    void	TraverseInputEntries()		 							{TraverseInputEntries(firstValidEvent, lastValidEvent);}
 	
 public:
     GInputTreeManager();
@@ -93,78 +96,80 @@ public:
 	Bool_t	OpenTreeDetectorHits();
 	Bool_t	OpenTreeScaler();
     Bool_t	FindValidEvents();
+	Bool_t	GetInputEntry();
+	Bool_t	GetInputEntry(const Int_t index);
     virtual void	Reset();
+    virtual Bool_t	Analyse(const char* intreefile, const char* outtreefile, const Int_t Min = -1, const Int_t Max = -1) = 0;
     virtual void    Reconstruct() = 0;
+    virtual	void	Print();
 	
-    Int_t		GetNParticles()             {return nParticles;}
-    Double_t*	GetPx()                     {return Px;}
-    Double_t	GetPx(const Int_t index)	{return Px[index];}
-    Double_t*	GetPy()                     {return Py;}
-    Double_t	GetPy(const Int_t index)	{return Py[index];}
-    Double_t*	GetPz()                     {return Pz;}
-    Double_t	GetPz(const Int_t index)	{return Pz[index];}
-    Double_t*	GetE()                      {return E;}
-    Double_t	GetE(const Int_t index)		{return E[index];}
-    Double_t*	GetTime()                   {return time;}
-    Double_t	GetTime(const Int_t index)	{return time[index];}
+    		Int_t		GetNParticles()             const	{return nParticles;}
+    const	Double_t*	GetPx()                     const	{return Px;}
+    		Double_t	GetPx(const Int_t index)	const	{return Px[index];}
+    const	Double_t*	GetPy()                     const	{return Py;}
+    		Double_t	GetPy(const Int_t index)	const	{return Py[index];}
+    const	Double_t*	GetPz()                     const	{return Pz;}
+    		Double_t	GetPz(const Int_t index)	const	{return Pz[index];}
+    const	Double_t*	GetE()                      const	{return E;}
+    		Double_t	GetE(const Int_t index)		const	{return E[index];}
+    const	Double_t*	GetTime()                   const	{return time;}
+    		Double_t	GetTime(const Int_t index)	const	{return time[index];}
     
-    TLorentzVector	GetVector(const Int_t index)	{return TLorentzVector(Px[index], Py[index], Pz[index], E[index]);}
+    TLorentzVector	GetVector(const Int_t index)	const	{return TLorentzVector(Px[index], Py[index], Pz[index], E[index]);}
     
-    Int_t		GetNTagged()                    {return nTagged;}
-    Int_t*		GetTagged_ch()               	{return tagged_ch;}
-    Int_t		GetTagged_ch(const Int_t index)	{return tagged_ch[index];}
-    Double_t*	GetTagged_t()                   {return tagged_t;}
-    Double_t	GetTagged_t(const Int_t index)	{return tagged_t[index];}
+    		Int_t		GetNTagged()                    const	{return nTagged;}
+    const	Int_t*		GetTagged_ch()               	const	{return tagged_ch;}
+    		Int_t		GetTagged_ch(const Int_t index)	const	{return tagged_ch[index];}
+    const	Double_t*	GetTagged_t()                   const	{return tagged_t;}
+    		Double_t	GetTagged_t(const Int_t index)	const	{return tagged_t[index];}
     
-    UChar_t*	GetApparatus()                  {return Apparatus;}
-    UChar_t		GetApparatus(const Int_t index)	{return Apparatus[index];}
+    const	UChar_t*	GetApparatus()                  const	{return Apparatus;}
+    		UChar_t		GetApparatus(const Int_t index)	const	{return Apparatus[index];}
 
-    Double_t*	Get_dE()                    {return d_E;}
-    Double_t	Get_dE(const Int_t index)	{return d_E[index];}
-    Double_t*	GetWC0_E()                  {return WC0_E;}
-    Double_t	GetWC0_E(const Int_t index)	{return WC0_E[index];}
-    Double_t*	GetWC1_E()                  {return WC1_E;}
-    Double_t	GetWC1_E(const Int_t index)	{return WC1_E[index];}
+    const	Double_t*	Get_dE()                    const	{return d_E;}
+    		Double_t	Get_dE(const Int_t index)	const	{return d_E[index];}
+    const	Double_t*	GetWC0_E()                  const	{return WC0_E;}
+    		Double_t	GetWC0_E(const Int_t index)	const	{return WC0_E[index];}
+    const	Double_t*	GetWC1_E()                  const	{return WC1_E;}
+    		Double_t	GetWC1_E(const Int_t index)	const	{return WC1_E[index];}
     
-    Double_t* 	GetWC_Vertex_X()                    {return WC_Vertex_X;}
-   	Double_t 	GetWC_Vertex_X(const Int_t index)	{return WC_Vertex_X[index];}
-    Double_t* 	GetWC_Vertex_Y()                    {return WC_Vertex_Y;}
-    Double_t 	GetWC_Vertex_Y(const Int_t index)	{return WC_Vertex_Y[index];}
-    Double_t* 	GetWC_Vertex_Z()                    {return WC_Vertex_Z;}
-    Double_t 	GetWC_Vertex_Z(const Int_t index)	{return WC_Vertex_Z[index];}
+    const	Double_t* 	GetWC_Vertex_X()                    const	{return WC_Vertex_X;}
+   			Double_t 	GetWC_Vertex_X(const Int_t index)	const	{return WC_Vertex_X[index];}
+    const	Double_t* 	GetWC_Vertex_Y()                    const	{return WC_Vertex_Y;}
+    		Double_t 	GetWC_Vertex_Y(const Int_t index)	const	{return WC_Vertex_Y[index];}
+    const	Double_t* 	GetWC_Vertex_Z()                    const	{return WC_Vertex_Z;}
+    		Double_t 	GetWC_Vertex_Z(const Int_t index)	const	{return WC_Vertex_Z[index];}
     
-	Double_t 	GetESum()	{return ESum;}
-	Int_t	 	GetMult()	{return Mult;}	
+			Double_t 	GetESum()	const	{return ESum;}
+			Int_t	 	GetMult()	const	{return Mult;}	
     
-    Int_t 		GetNScaler()    			{return NScaler;}
-    Int_t 		GetEventID()        		{return EventID;}
-    Int_t 		GetEventNumber()        	{return EventNumber;}
-    UInt_t*		GetScaler()                 {return	Scaler;}
-    UInt_t		GetScaler(const Int_t index){return	Scaler[index];}
+    		Int_t 		GetNScaler()    			const	{return NScaler;}
+    		Int_t 		GetEventID()        		const	{return EventID;}
+    		Int_t 		GetEventNumber()        	const	{return EventNumber;}
+    const	UInt_t*		GetScaler()                 const	{return	Scaler;}
+    		UInt_t		GetScaler(const Int_t index)const	{return	Scaler[index];}
 
-    Int_t		GetNNaI_Hits()              	{return nNaI_Hits;}
-    Int_t*		GetNaI_Hits()           		{return NaI_Hits;}
-    Int_t		GetNaI_Hits(const Int_t index)	{return NaI_Hits[index];}
+    		Int_t		GetNNaI_Hits()              	const	{return nNaI_Hits;}
+    const	Int_t*		GetNaI_Hits()           		const	{return NaI_Hits;}
+    		Int_t		GetNaI_Hits(const Int_t index)	const	{return NaI_Hits[index];}
 
-    Int_t		GetNPID_Hits()      			{return nPID_Hits;}
-    Int_t*		GetPID_Hits()               	{return PID_Hits;}
-    Int_t		GetPID_Hits(const Int_t index)	{return PID_Hits[index];}
+    		Int_t		GetNPID_Hits()      			const	{return nPID_Hits;}
+    const	Int_t*		GetPID_Hits()               	const	{return PID_Hits;}
+    		Int_t		GetPID_Hits(const Int_t index)	const	{return PID_Hits[index];}
 
-    Int_t		GetNWC_Hits()       			{return nWC_Hits;}
-    Int_t*		GetWC_Hits()                	{return WC_Hits;}
-    Int_t		GetWC_Hits(const Int_t index)	{return WC_Hits[index];}
+    		Int_t		GetNWC_Hits()       			const	{return nWC_Hits;}
+    const	Int_t*		GetWC_Hits()                	const	{return WC_Hits;}
+    		Int_t		GetWC_Hits(const Int_t index)	const	{return WC_Hits[index];}
 
-    Int_t		GetNBaF2_PbWO4_Hits()                   {return nBaF2_PbWO4_Hits;}
-    Int_t*		GetBaF2_PbWO4_Hits()                    {return BaF2_PbWO4_Hits;}
-    Int_t		GetBaF2_PbWO4_Hits(const Int_t index)	{return BaF2_PbWO4_Hits[index];}
+    		Int_t		GetNBaF2_PbWO4_Hits()                   const	{return nBaF2_PbWO4_Hits;}
+    const	Int_t*		GetBaF2_PbWO4_Hits()                    const	{return BaF2_PbWO4_Hits;}
+    		Int_t		GetBaF2_PbWO4_Hits(const Int_t index)	const	{return BaF2_PbWO4_Hits[index];}
 
-    Int_t		GetNVeto_Hits()                 {return nVeto_Hits;}
-    Int_t*		GetVeto_Hits()                  {return Veto_Hits;}
-    Int_t		GetVeto_Hits(const Int_t index)	{return Veto_Hits[index];}
-            
-    Int_t		GetActualEvent()		{return actualEvent;}
-    
-    
+			Int_t		GetNVeto_Hits()                 const	{return nVeto_Hits;}
+    const	Int_t*		GetVeto_Hits()                  const	{return Veto_Hits;}
+    		Int_t		GetVeto_Hits(const Int_t index)	const	{return Veto_Hits[index];}
+    		
+			Int_t		GetActualEvent()	const	{return actualEvent;}
 };
 
 

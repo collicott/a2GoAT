@@ -27,12 +27,14 @@ using namespace std;
 int main(int argc, char *argv[])
 {
   GParticleReconstruction* gTree = new GParticleReconstruction;
+  //GTreeManager* gTree2 = new GTreeManager;
 
   char* filename = Form("/media/Elements/daten/PhysTree_CB_41900.root");
   char* filename2 = Form("/media/Elements/daten/out_PhysTree_CB_41900.root");
   
   GTreeManager* test = (GTreeManager*)gTree;
-  test->Analysis(filename, filename2, 0, 500);
+  //test->Analyse(filename, filename2, 0, 500);
+  test->Analyse(filename, filename2);
 
   printf("Mehhh\n");
   return 0;

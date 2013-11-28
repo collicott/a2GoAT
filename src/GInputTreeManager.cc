@@ -238,13 +238,69 @@ Bool_t	GInputTreeManager::FindValidEvents()
 	return kFALSE;
 }
 
-void GInputTreeManager::GetEntry()
+void    GInputTreeManager::CheckRange(Int_t& min, Int_t& max)
 {
-		printf("GInputTreeManager::GetEntry\n");
-		
+	if(min < firstValidEvent) 	 min = firstValidEvent;
+    if(min > lastValidEvent)  	 min = lastValidEvent;
+    if(max < 0)                  max = lastValidEvent;
+    if(max < min)                max = min;
+    if(max > lastValidEvent) 	 max = lastValidEvent;
+}
+
+void GInputTreeManager::GetInputEntryFast()
+{
+	actualEvent++;
     if (treeRawEvent)       treeRawEvent->GetEntry(actualEvent);
     if (treeTagger)         treeTagger->GetEntry(actualEvent);
     if (treeTrigger)        treeTrigger->GetEntry(actualEvent);
 	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
-    if (treeScaler)         treeScaler->GetEntry(actualEvent);
+}
+
+Bool_t	GInputTreeManager::GetInputEntry()
+{
+	printf("GTreeManager::GetEntry\n");
+	if(actualEvent < firstValidEvent) actualEvent = firstValidEvent - 1;
+	else if(actualEvent >= lastValidEvent) return kFALSE;
+	actualEvent++;
+	
+    if (treeRawEvent)       treeRawEvent->GetEntry(actualEvent);
+    if (treeTagger)         treeTagger->GetEntry(actualEvent);
+    if (treeTrigger)        treeTrigger->GetEntry(actualEvent);
+	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
+
+	return kTRUE;
+}
+
+Bool_t	GInputTreeManager::GetInputEntry(const Int_t index)
+{
+	printf("GTreeManager::GetEntry %d\n", index);
+	if(index < firstValidEvent) return kFALSE;
+	if(index > lastValidEvent)  return kFALSE;
+	
+	actualEvent = index;
+
+	if (treeRawEvent)       treeRawEvent->GetEntry(actualEvent);
+    if (treeTagger)         treeTagger->GetEntry(actualEvent);
+    if (treeTrigger)        treeTrigger->GetEntry(actualEvent);
+	if (treeDetectorHits) 	treeDetectorHits->GetEntry(actualEvent);
+
+	return kTRUE;
+}
+
+
+void	GInputTreeManager::TraverseInputEntries(const Int_t min, const Int_t max)
+{
+    actualEvent = min-1;
+    for(int i=min; i<=max; i++)
+	{
+		GetInputEntryFast();
+		//Print();
+		Reconstruct();
+	}
+}
+
+
+void	GInputTreeManager::Print()
+{
+	cout << "Event Number " << actualEvent << " with " << nParticles << " Hits" << endl;
 }

@@ -15,36 +15,24 @@
 #define __GParticleReconstruction_h__
 
 
-#include "GTreeManager.h"
-
-#include "TH1D.h"
+#include "GParticleReconstruction2UnchargedHits.h"
 
 
 #define	GPR_MAX_MAMI_ENERGY	1600
 
-class	GParticleReconstruction : public GTreeManager
+class	GParticleReconstruction : public GParticleReconstruction2UnchargedHits
 {
 private:
-	TLorentzVector	initialParticle[6];
-	TLorentzVector	reconstructedParticle[3];
-	
-	// 2 Gamma
-	Double_t	invMass2g;
-	Double_t	invMass2gSq;
-	TH1D*		histInvMass2g;
-	TH1D*		histInvMass2gSq;
-	
-	Bool_t	InitHistograms();
-    void	Reconstruct2Hits();
+	virtual Bool_t	InitHistograms()		{GParticleReconstruction2UnchargedHits::InitHistograms();}
     
 public:
 	GParticleReconstruction();
 	~GParticleReconstruction();
 	
-	void	ClearHistograms();
-	
-	virtual void	Analysis(const char* inputtreefile, const char* outputfilename = 0);
+	virtual void	ClearHistograms()		{GParticleReconstruction2UnchargedHits::ClearHistograms();}
+	virtual Bool_t	Analyse(const char* intreefile, const char* outtreefile, const Int_t Min = -1, const Int_t Max = -1);
 	virtual void	Reconstruct();
+    virtual Bool_t	Write()					{GParticleReconstruction2UnchargedHits::Write();}
 };
 
 

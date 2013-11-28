@@ -2,10 +2,7 @@
 #include "GParticleReconstruction.h"
 
 
-GParticleReconstruction::GParticleReconstruction(): invMass2g(0),
-													invMass2gSq(0),
-													histInvMass2g(0),
-													histInvMass2gSq(0)
+GParticleReconstruction::GParticleReconstruction()
 {
 }
 
@@ -13,55 +10,68 @@ GParticleReconstruction::~GParticleReconstruction()
 {
 }
 
-Bool_t	GParticleReconstruction::InitHistograms()
+Bool_t	GParticleReconstruction::Analyse(const char* intreefile, const char* outtreefile, const Int_t Min, const Int_t Max)
 {
-	if(!histInvMass2g)
-	{
-		histInvMass2g	= new TH1D("InvMasss2g", "Invariant Mass of 2 Gamma", GPR_MAX_MAMI_ENERGY, 0, GPR_MAX_MAMI_ENERGY);
-		if(!histInvMass2g)	return kFALSE;
-	}
-	if(!histInvMass2gSq)
-	{
-		histInvMass2gSq	= new TH1D("histInvMass2gSq", "Squared Invariant Mass of 2 Gamma", GPR_MAX_MAMI_ENERGY, 0, GPR_MAX_MAMI_ENERGY * GPR_MAX_MAMI_ENERGY);
-		if(!histInvMass2gSq)	return kFALSE;
-	}
+	if(!OpenInputFile(intreefile))		return kFALSE;
+	if(!OpenOutputFile(outtreefile))	return kFALSE;
+	if(!FindValidEvents())				return kFALSE;
+	
+	Int_t	checkedMin	= Min;
+	Int_t	checkedMax	= Max;
+	CheckRange(checkedMin, checkedMax);
+	
+	if(!OpenTreeRawEvent())	return kFALSE;
+	if(!InitTreePi0())		return kFALSE;
+	if(!InitTreeEta())		return kFALSE;
+	if(!InitTreeEtap())		return kFALSE;
+	if(!InitHistograms())	return kFALSE;
+	ClearHistograms();
+	
+	TraverseInputEntries(checkedMin, checkedMax);
+	
+	if(!Write())	return kFALSE;
 	
 	return kTRUE;
-}
-
-void	GParticleReconstruction::Reconstruct2Hits()
-{
-	initialParticle[0]	= GetVector(0);
-	initialParticle[1]	= GetVector(1);
-	
-	reconstructedParticle[0]	= initialParticle[0] + initialParticle[1];
-	invMass2gSq	= reconstructedParticle[0].M2();
-	invMass2g	= invMass2gSq < 0.0 ? -TMath::Sqrt(-invMass2gSq) : TMath::Sqrt(invMass2gSq);
-	histInvMass2gSq->Fill(invMass2gSq);
-	histInvMass2g->Fill(invMass2g);
-}
-
-void	GParticleReconstruction::ClearHistograms()
-{
-	histInvMass2g->Reset();
-	histInvMass2gSq->Reset();
-}
-
-void    GParticleReconstruction::Analysis(const char* inputtreefile, const char* outputfilename)
-{
-    if(InitHistograms())
-    {
-		ClearHistograms();
-        GTreeManager::Analysis(inputtreefile, outputfilename);
-	}
 }
 
 void	GParticleReconstruction::Reconstruct()
 {
 	switch(GetNParticles())
 	{
+	case 0:
+		return;
+	case 1:
+		return;
 	case 2:
-		Reconstruct2Hits();
+		Reconstruct2UnchargedHits();
+		return;
+	case 3:
+		return;
+	case 4:
+		return;
+	case 5:
+		return;
+	case 6:
+		return;
+	case 7:
+		return;
+	case 8:
+		return;
+	case 9:
+		return;
+	case 10:
+		return;
+	case 11:
+		return;
+	case 12:
+		return;
+	case 13:
+		return;
+	case 14:
+		return;
+	case 15:
+		return;
+	case 16:
 		return;
 	default:
 		printf("No Reconstruction methode for %d Hits found in GParticleReconstruction\n", GetNParticles());
