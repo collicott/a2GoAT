@@ -240,6 +240,8 @@ Bool_t	GInputTreeManager::FindValidEvents()
 
 void GInputTreeManager::GetEntry()
 {
+		printf("GInputTreeManager::GetEntry\n");
+		
     if (treeRawEvent)       treeRawEvent->GetEntry(actualEvent);
     if (treeTagger)         treeTagger->GetEntry(actualEvent);
     if (treeTrigger)        treeTrigger->GetEntry(actualEvent);

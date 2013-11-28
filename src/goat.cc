@@ -15,40 +15,24 @@
 #include "TSystem.h"
 #include "TSystemDirectory.h"
 #include "TSystemFile.h"
-#include "GTreeManager.h"
+#include "GParticleReconstruction.h"
 
 #include <iostream>
 #include <fstream>
 using namespace std;
 
-class TreeTest : public GTreeManager
-{
-	public:
-TreeTest();
-void Reconstruct();
-};
 
 
-TreeTest::TreeTest() : GTreeManager()
-{
-}
-
-
-void TreeTest::Reconstruct()
-{
-    printf("I'm in yo goat file\n");
-}
 
 int main(int argc, char *argv[])
 {
-  TreeTest* gTree = new TreeTest();
-  //GInputTreeManager* ggg = new GInputTreeManager();
+  GParticleReconstruction* gTree = new GParticleReconstruction;
 
-  char* filename = Form("/home/cristina/RootTree_Compton_354.root");
-  //gTree->Analysis(filename);
+  char* filename = Form("/media/Elements/daten/PhysTree_CB_41900.root");
+  char* filename2 = Form("/media/Elements/daten/out_PhysTree_CB_41900.root");
   
   GTreeManager* test = (GTreeManager*)gTree;
-  test->Analysis(filename);
+  test->Analysis(filename, filename2, 0, 500);
 
   printf("Mehhh\n");
   return 0;
