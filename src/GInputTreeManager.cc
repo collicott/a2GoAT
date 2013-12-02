@@ -295,7 +295,7 @@ void	GInputTreeManager::TraverseInputEntries(const Int_t min, const Int_t max)
 	{
 		GetInputEntryFast();
 		//Print();
-		Reconstruct();
+		Analyse();
 	}
 }
 

@@ -22,19 +22,30 @@
 using namespace std;
 
 
-
-
 int main(int argc, char *argv[])
 {
-  GParticleReconstruction* gTree = new GParticleReconstruction;
-  //GTreeManager* gTree2 = new GTreeManager;
+  GParticleReconstruction* gP = new GParticleReconstruction;
+  char* filename; char* filename2;
 
-  char* filename = Form("/media/Elements/daten/PhysTree_CB_41900.root");
-  char* filename2 = Form("/media/Elements/daten/out_PhysTree_CB_41900.root");
-  
-  GTreeManager* test = (GTreeManager*)gTree;
-  //test->Analyse(filename, filename2, 0, 500);
-  test->Analyse(filename, filename2);
+ printf("%s\n",argv[1]);
+ 
+  if (strcmp(argv[1],"Patrik") == 0)
+  {
+	filename = Form("/media/Elements/daten/PhysTree_CB_41900.root");
+	filename2 = Form("/media/Elements/daten/out_PhysTree_CB_41900.root");
+  }
+  else if (strcmp(argv[1],"Cristina") == 0)
+ {
+	filename = Form("/home/cristina/RootTree_Compton_354.root");
+	filename2 = Form("/home/cristina/out_RootTree_Compton_354.root");
+  }
+  else
+  {
+	printf("Who are you?\n");
+	return 0;
+  }
+
+  gP->Init(filename, filename2);
 
   printf("Mehhh\n");
   return 0;

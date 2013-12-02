@@ -30,8 +30,10 @@ public:
 	~GParticleReconstruction();
 	
 	virtual void	ClearHistograms()		{GParticleReconstruction2UnchargedHits::ClearHistograms();}
-	virtual Bool_t	Analyse(const char* intreefile, const char* outtreefile, const Int_t Min = -1, const Int_t Max = -1);
+	virtual Bool_t	Init(const char* intreefile, const char* outtreefile, const Int_t Min = -1, const Int_t Max = -1);
+	virtual void	Analyse();
 	virtual void	Reconstruct();
+	virtual void 	ChargedReconstruction();
     virtual Bool_t	Write()					{GParticleReconstruction2UnchargedHits::Write();}
 };
 

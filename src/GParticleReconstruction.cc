@@ -10,7 +10,7 @@ GParticleReconstruction::~GParticleReconstruction()
 {
 }
 
-Bool_t	GParticleReconstruction::Analyse(const char* intreefile, const char* outtreefile, const Int_t Min, const Int_t Max)
+Bool_t	GParticleReconstruction::Init(const char* intreefile, const char* outtreefile, const Int_t Min, const Int_t Max)
 {
 	if(!OpenInputFile(intreefile))		return kFALSE;
 	if(!OpenOutputFile(outtreefile))	return kFALSE;
@@ -34,46 +34,20 @@ Bool_t	GParticleReconstruction::Analyse(const char* intreefile, const char* outt
 	return kTRUE;
 }
 
+void    GParticleReconstruction::Analyse()
+{
+		Bool_t FindChargedParticles;
+		if(FindChargedParticles) ChargedReconstruction();
+		Reconstruct();
+	
+}
+
 void	GParticleReconstruction::Reconstruct()
 {
-	switch(GetNParticles())
-	{
-	case 0:
-		return;
-	case 1:
-		return;
-	case 2:
-		Reconstruct2UnchargedHits();
-		return;
-	case 3:
-		return;
-	case 4:
-		return;
-	case 5:
-		return;
-	case 6:
-		return;
-	case 7:
-		return;
-	case 8:
-		return;
-	case 9:
-		return;
-	case 10:
-		return;
-	case 11:
-		return;
-	case 12:
-		return;
-	case 13:
-		return;
-	case 14:
-		return;
-	case 15:
-		return;
-	case 16:
-		return;
-	default:
-		printf("No Reconstruction methode for %d Hits found in GParticleReconstruction\n", GetNParticles());
-	}
+	// Do particle pairs
+}
+
+void	GParticleReconstruction::ChargedReconstruction()
+{
+	
 }
