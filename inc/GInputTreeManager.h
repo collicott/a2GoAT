@@ -5,7 +5,21 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TLeaf.h"
+#include "TCanvas.h"
+#include "TChain.h"
+#include "TF1.h"
+#include "TGraph.h"
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TH3F.h"
 #include "TLorentzVector.h"
+#include "TMath.h"
+#include "TROOT.h"
+#include "TStyle.h"
+#include "TSystem.h"
+#include "TSystemDirectory.h"
+#include "TSystemFile.h"
+
 #include<iostream>
 using namespace std;
 
@@ -82,10 +96,11 @@ protected:
 	void    CheckRange(Int_t& min, Int_t& max);
     void 	GetInputEntryFast();                // without testing index
     void	TraverseInputEntries(const Int_t min, const Int_t max);
-    void	TraverseInputEntries(const Int_t max) 					{TraverseInputEntries(firstValidEvent, max);}
-    void	TraverseInputEntries()		 							{TraverseInputEntries(firstValidEvent, lastValidEvent);}
+    void	TraverseInputEntries(const Int_t max) 	{TraverseInputEntries(firstValidEvent, max);}
+    void	TraverseInputEntries()		 			{TraverseInputEntries(firstValidEvent, lastValidEvent);}
 	
 public:
+
     GInputTreeManager();
     virtual ~GInputTreeManager();
 
@@ -99,7 +114,7 @@ public:
 	Bool_t	GetInputEntry();
 	Bool_t	GetInputEntry(const Int_t index);
     virtual void	Reset();
-    virtual Bool_t	Init(const char* intreefile, const char* outtreefile, const Int_t Min = -1, const Int_t Max = -1) = 0;
+    virtual Bool_t	Init(const char* intreefile, const char* outtreefile) = 0;
     virtual void    Reconstruct() = 0;
     virtual void 	Analyse()=0;
     virtual	void	Print();
@@ -171,6 +186,8 @@ public:
     		Int_t		GetVeto_Hits(const Int_t index)	const	{return Veto_Hits[index];}
     		
 			Int_t		GetActualEvent()	const	{return actualEvent;}
+			
+	const	Int_t		GetMaxParticle()	{return GINPUTTREEMANAGER_MAX_PARTICLE;}
 };
 
 

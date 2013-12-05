@@ -27,7 +27,7 @@ link_directories(${ROOT_LIBRARY_DIR})
 include_directories(inc)
 
 add_executable(goat
-   src/goat.cc 
+   src/GoAT.cc 
    inc/GParticleReconstruction2UnchargedHits.h
    src/GParticleReconstruction2UnchargedHits.cc
    inc/GParticleReconstruction.h

@@ -82,7 +82,7 @@ void	GInputTreeManager::Reset()
 	if(treeRawEvent) 	 delete treeRawEvent;
 	if(treeTagger)    	 delete treeTagger;
 	if(treeTrigger)  	 delete treeTrigger;
-	if(treeDetectorHits) 	 delete treeDetectorHits;
+	if(treeDetectorHits) delete treeDetectorHits;
 	if(treeScaler) 	 	 delete treeScaler;
     if(file)			 delete file;
 }
@@ -294,8 +294,7 @@ void	GInputTreeManager::TraverseInputEntries(const Int_t min, const Int_t max)
     for(int i=min; i<=max; i++)
 	{
 		GetInputEntryFast();
-		//Print();
-		Analyse();
+		Reconstruct();
 	}
 }
 

@@ -1,40 +1,51 @@
-//*************************************************************************
-//* Author: Patrik Ott
-//*************************************************************************/
-
-//////////////////////////////////////////////////////////////////////////
-//                                                                      //
-// TA2RootTree                                                          //
-//                                                                      //
-// This class is organising the output to ROOT files                    //
-//                                                                      //
-//////////////////////////////////////////////////////////////////////////
-
 
 #ifndef __GParticleReconstruction_h__
 #define __GParticleReconstruction_h__
 
+#include "GTreeManager.h"
 
-#include "GParticleReconstruction2UnchargedHits.h"
-
-
-#define	GPR_MAX_MAMI_ENERGY	1600
-
-class	GParticleReconstruction : public GParticleReconstruction2UnchargedHits
+class	GParticleReconstruction : public GTreeManager
 {
 private:
-	virtual Bool_t	InitHistograms()		{GParticleReconstruction2UnchargedHits::InitHistograms();}
-    
+
+	Bool_t 		FindChargedParticles;
+	Bool_t 		ReconstructMesons;
+	
+	Int_t* 		PDG;
+	Bool_t* 	Identified;
+	Int_t		nIdentified;
+
+	Double_t	m_pi0;
+	Double_t	m_eta;
+	Double_t	m_etaP;
+
+	Int_t 		pdg_pi0;
+	Int_t 		pdg_eta;
+	Int_t 		pdg_etaP;
+	
+	Double_t	width_pi0;
+	Double_t	width_eta;
+	Double_t	width_etaP;
+	
+	
+protected:
+	    
 public:
 	GParticleReconstruction();
 	~GParticleReconstruction();
 	
-	virtual void	ClearHistograms()		{GParticleReconstruction2UnchargedHits::ClearHistograms();}
-	virtual Bool_t	Init(const char* intreefile, const char* outtreefile, const Int_t Min = -1, const Int_t Max = -1);
+	virtual Bool_t	Init(const char* intreefile, const char* outtreefile) {return kTRUE;}
 	virtual void	Analyse();
 	virtual void	Reconstruct();
+    virtual Bool_t	Write();
+    
+	virtual Bool_t	PostInit();
 	virtual void 	ChargedReconstruction();
-    virtual Bool_t	Write()					{GParticleReconstruction2UnchargedHits::Write();}
+	virtual void 	MesonReconstruction();	
+	virtual void	PrimaryMesonReconstruction();
+	virtual void	SecondaryMesonReconstruction();
+	
+
 };
 
 

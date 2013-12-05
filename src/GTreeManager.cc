@@ -117,7 +117,6 @@ Bool_t    GTreeManager::OpenTreeEtap()
 
 void	GTreeManager::Reconstruct()
 {
-	printf("I'm in yo TreeManager");
 	printf("No Reconstruct method found in Parent\n");
 }
 
