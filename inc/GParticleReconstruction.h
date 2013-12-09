@@ -9,7 +9,7 @@ class	GParticleReconstruction : public GTreeManager
 private:
 
 	Bool_t 		FindChargedParticles;
-	Bool_t 		ReconstructMesons;
+	Bool_t 		ReconstructMesons;	
 	
 	Int_t* 		PDG;
 	Bool_t* 	Identified;
@@ -27,23 +27,27 @@ private:
 	Double_t	width_eta;
 	Double_t	width_etaP;
 	
+	Int_t 		nMeson;
+	Int_t		nPi0;
+	Int_t		nEta;
 	
+	
+
 protected:
 	    
 public:
 	GParticleReconstruction();
 	~GParticleReconstruction();
-	
+
 	virtual Bool_t	Init(const char* intreefile, const char* outtreefile) {return kTRUE;}
 	virtual void	Analyse();
 	virtual void	Reconstruct();
     virtual Bool_t	Write();
     
-	virtual Bool_t	PostInit();
-	virtual void 	ChargedReconstruction();
-	virtual void 	MesonReconstruction();	
-	virtual void	PrimaryMesonReconstruction();
-	virtual void	SecondaryMesonReconstruction();
+	Bool_t	PostInit();
+	void 	ChargedReconstruction();
+	void 	MesonReconstruction();	
+	void	AddParticle(Int_t pdg_code);
 	
 
 };

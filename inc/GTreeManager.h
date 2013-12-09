@@ -1,47 +1,22 @@
 #ifndef __GTreeManager_h__
 #define __GTreeManager_h__
 
-
 #include "GInputTreeManager.h"
-
 
 #define GTREEMANAGER_MAX_TAGGER		1024
 #define GTREEMANAGER_MAX_PARTICLE	128
 #define GTREEMANAGER_MAX_HITS		860
 
-struct	SGTM_Pi0
-{
-	UChar_t		n;
-    UChar_t*	child1;
-    UChar_t*	child2;
-};
-struct	SGTM_Eta
-{
-	UChar_t		n2g;
-    UChar_t*	child2g1;
-    UChar_t*	child2g2;
-};
-struct	SGTM_Etap
-{
-	UChar_t		n2g;
-    UChar_t*	child2g1;
-    UChar_t*	child2g2;
-};
-
 class	GTreeManager    : public GInputTreeManager
 {
 private:
-	TFile*		file;				// outFile
-    TTree*		treePi0;			// reconstructed Pi0s
-    TTree*		treeEta;			// reconstructed Etas
-    TTree*		treeEtap;			// reconstructed Etaps
+	TFile*		file;					// outFile
+    TTree*		treeParticles;			// reconstructed Pi0s
 
     //Reconstructed Particles
-    UInt_t			rawEventNumber;
-    SGTM_Pi0		pi0;
-    SGTM_Eta		eta;
-    SGTM_Etap		etap;
+    UInt_t		rawEventNumber;
     
+ 	
 
 protected:
     Int_t       offsetToInputTree;
@@ -49,27 +24,45 @@ protected:
     void	GetEntryFast();
     void	TraverseEntries(const Int_t min, const Int_t max);
     void	TraverseEntries(const Int_t max) 					{TraverseEntries(0, max);}
-    //void	TraverseEntries()		 							{TraverseEntries(firstValidEvent, lastValidEvent);}
-    void	FillPi0(const UChar_t ParticleChild1, const UChar_t ParticleChild2)	{pi0.child1[pi0.n] = ParticleChild1; pi0.child2[pi0.n] = ParticleChild2; pi0.n++;}
-    void	FillEta(const UChar_t ParticleChild1, const UChar_t ParticleChild2)	{eta.child2g1[eta.n2g] = ParticleChild1; eta.child2g2[eta.n2g] = ParticleChild2; eta.n2g++;}
-    void	FillEtap(const UChar_t ParticleChild1, const UChar_t ParticleChild2){etap.child2g1[etap.n2g] = ParticleChild1; etap.child2g2[etap.n2g] = ParticleChild2; etap.n2g++;}
-	void	FillPi0()	{rawEventNumber = GetActualEvent(); treePi0->Fill();}
-	void	FillEta()	{rawEventNumber = GetActualEvent(); treeEta->Fill();}
-	void	FillEtap()	{rawEventNumber = GetActualEvent(); treeEtap->Fill();}
-	void	Fill()		{rawEventNumber = GetActualEvent(); treePi0->Fill(); treeEta->Fill(); treeEtap->Fill();}
+	void	Fill()		{rawEventNumber = GetActualEvent(); treeParticles->Fill();}
 	
 public:
+
+    //Particles    
+    Int_t		gP_nParticles;
+    Int_t 		gP_PDG;
+    Double_t*	gP_Px;
+    Double_t*	gP_Py;
+   	Double_t*	gP_Pz;
+    Double_t*	gP_E;
+   	Double_t*	gP_time;
+    UChar_t*    gP_clusterSize;
+        
+    UChar_t*	gP_Apparatus;
+    
+    Double_t*	gP_d_E;
+    Double_t*	gP_WC0_E;
+    Double_t*	gP_WC1_E;
+    
+   	Double_t* 	gP_WC_Vertex_X;
+   	Double_t* 	gP_WC_Vertex_Y;
+   	Double_t* 	gP_WC_Vertex_Z;    
+   	
+   	Double_t* 	gP_Meson_phot_Px;
+   	Double_t* 	gP_Meson_phot_Py;
+   	Double_t* 	gP_Meson_phot_Pz;
+   	Double_t* 	gP_Meson_phot_E; 
+   	Int_t*		gP_Meson_phot_Index; 
+   	
+   	
 	GTreeManager();
     virtual ~GTreeManager();
 	
     Bool_t	OpenOutputFile(const char* treefile);
-    Bool_t  InitTreePi0();
-    Bool_t  OpenTreePi0();
-    Bool_t  InitTreeEta();
-    Bool_t  OpenTreeEta();
-    Bool_t  InitTreeEtap();
-    Bool_t  OpenTreeEtap();
-    void	Clear()			{pi0.n = 0; eta.n2g = 0; etap.n2g = 0;}
+    Bool_t  InitTreeParticles();
+    Bool_t  OpenTreeParticles();
+
+    void	Clear()	{;}
     virtual void	Reset();
     virtual void	Reconstruct();
     virtual Bool_t	Write();

@@ -8,16 +8,13 @@ using namespace std;
 #include "GParticleReconstruction.h"
 #include "GTreeManager.h"
 
-class	GoAT : public GTreeManager
+class	GoAT : public GParticleReconstruction
 {
 private:
     char* file_in;
 	char* file_out;
-	GParticleReconstruction* gP = new GParticleReconstruction;
 	Bool_t UseParticleReconstruction;
-	
-	
-		
+
 protected:
 
 

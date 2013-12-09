@@ -28,12 +28,7 @@ include_directories(inc)
 
 add_executable(goat
    src/GoAT.cc 
-   inc/GParticleReconstruction2UnchargedHits.h
-   src/GParticleReconstruction2UnchargedHits.cc
-   inc/GParticleReconstruction.h
    src/GParticleReconstruction.cc
    src/GInputTreeManager.cc
-   inc/GInputTreeManager.h
-   src/GTreeManager.cc
-   inc/GTreeManager.h)
+   src/GTreeManager.cc)
 target_link_libraries(goat ${ROOT_LIBRARIES})

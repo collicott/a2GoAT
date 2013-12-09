@@ -130,6 +130,8 @@ public:
     		Double_t	GetE(const Int_t index)		const	{return E[index];}
     const	Double_t*	GetTime()                   const	{return time;}
     		Double_t	GetTime(const Int_t index)	const	{return time[index];}
+    		
+    		UChar_t 	GetClusterSize(const Int_t index) const 	{return clusterSize[index];}
     
     TLorentzVector	GetVector(const Int_t index)	const	{return TLorentzVector(Px[index], Py[index], Pz[index], E[index]);}
     
@@ -187,7 +189,7 @@ public:
     		
 			Int_t		GetActualEvent()	const	{return actualEvent;}
 			
-	const	Int_t		GetMaxParticle()	{return GINPUTTREEMANAGER_MAX_PARTICLE;}
+//	const	Int_t		GetMaxParticle()	{return GINPUTTREEMANAGER_MAX_PARTICLE;}
 };
 
 
