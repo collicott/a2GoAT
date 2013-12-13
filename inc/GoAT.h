@@ -26,5 +26,6 @@ public:
     virtual void 	Analyse();
 	virtual void	Reconstruct();
     virtual Bool_t	Write();
+    virtual Bool_t	Sort();
 };
 #endif

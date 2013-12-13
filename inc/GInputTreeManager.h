@@ -23,7 +23,7 @@
 #include<iostream>
 using namespace std;
 
-#define GINPUTTREEMANAGER_MAX_TAGGER		1024
+#define GINPUTTREEMANAGER_MAX_TAGGER	1024
 #define GINPUTTREEMANAGER_MAX_PARTICLE	128
 #define GINPUTTREEMANAGER_MAX_HITS		860
 
@@ -189,7 +189,6 @@ public:
     		
 			Int_t		GetActualEvent()	const	{return actualEvent;}
 			
-//	const	Int_t		GetMaxParticle()	{return GINPUTTREEMANAGER_MAX_PARTICLE;}
 };
 
 

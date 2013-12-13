@@ -51,7 +51,7 @@ Bool_t	GoAT::Init(const char* file_in, const char* file_out)
 {	
 	
 	if(!OpenInputFile(file_in))		return kFALSE;	
-//	if(!OpenOutputFile(file_out))	return kFALSE;
+	if(!OpenOutputFile(file_out))	return kFALSE;
 
 	if(!OpenTreeRawEvent())			return kFALSE;
 	if(!OpenTreeTagger())			return kFALSE;
@@ -59,7 +59,7 @@ Bool_t	GoAT::Init(const char* file_in, const char* file_out)
 
 	if(!FindValidEvents())			return kFALSE;
 
-	// Read Which reconstruction steps are desired
+	// Read Which reconstruction steps are desired perform post init
 	Bool_t UseParticleReconstruction = kTRUE;
 	GParticleReconstruction::PostInit();
 
@@ -71,18 +71,34 @@ Bool_t	GoAT::Init(const char* file_in, const char* file_out)
 void	GoAT::Analyse()
 {
 	TraverseInputEntries();
+	printf("nPi0 == %d  nEta == %d  nEtaP == %d \n", 
+			GetNPi0(),	GetNEta(),	GetNEtaP());
+			
+	CloseOutputFile();
 }
 
 void	GoAT::Reconstruct()
 {
 	if(GetActualEvent() % 10000 == 0) printf("Event: %d\n",GetActualEvent());
-//	printf("Event: %d    nParticles: %d  Px: %f\n",GetActualEvent(),GetNParticles(),GetPx(0));
+
 	GParticleReconstruction::Reconstruct();
+	
+	if(Sort()) FillEvent();
 }
 
 Bool_t 	GoAT::Write()
 {
 	return kTRUE;
+}
+
+Bool_t GoAT::Sort()
+{
+	
+	// Check conditions
+	if(GP_GetNParticles() != 1) return kFALSE;
+
+	return kTRUE;
+
 }
 
 

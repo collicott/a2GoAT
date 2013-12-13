@@ -45,10 +45,10 @@ GInputTreeManager::GInputTreeManager() :
 				lastValidEvent(0),
 				actualEvent(-1)
 {
-        Px		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-        Py		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-        Pz		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-        E		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        Px			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        Py			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        Pz			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        E			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
         time		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
         clusterSize	= new UChar_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     
@@ -56,7 +56,7 @@ GInputTreeManager::GInputTreeManager() :
         tagged_t	= new Double_t[GINPUTTREEMANAGER_MAX_TAGGER];
     
         Apparatus	= new UChar_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-        d_E		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        d_E			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
         WC0_E		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
         WC1_E		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 
