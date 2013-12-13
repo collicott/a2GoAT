@@ -9,10 +9,13 @@ GInputTreeManager::GInputTreeManager() :
 				treeDetectorHits(0),
 				treeScaler(0),
 				nParticles(0),
-				Px(0),
-				Py(0),
-				Pz(0),
+//				Px(0),
+	//			Py(0),
+		//		Pz(0),
 				E(0),
+				Mass(0),
+				Theta(0),
+				Phi(0),
 				time(0),
 				clusterSize(0),
 				Apparatus(0),
@@ -45,12 +48,15 @@ GInputTreeManager::GInputTreeManager() :
 				lastValidEvent(0),
 				actualEvent(-1)
 {
-        Px			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-        Py			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-        Pz			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+ //       Px			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+   //     Py			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+     //   Pz			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
         E			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        Theta		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+        Phi			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];        
         time		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
         clusterSize	= new UChar_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    Mass			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];      
     
         tagged_ch	= new Int_t[GINPUTTREEMANAGER_MAX_TAGGER];
         tagged_t	= new Double_t[GINPUTTREEMANAGER_MAX_TAGGER];
@@ -106,10 +112,12 @@ Bool_t    GInputTreeManager::OpenTreeRawEvent()
 	cout << "treeRawEvent opened." << endl;
 	
 	treeRawEvent->SetBranchAddress("nParticles",&nParticles);
-	treeRawEvent->SetBranchAddress("Px", Px);
-	treeRawEvent->SetBranchAddress("Py", Py);
-	treeRawEvent->SetBranchAddress("Pz", Pz);
+//	treeRawEvent->SetBranchAddress("Px", Px);
+	//treeRawEvent->SetBranchAddress("Py", Py);
+	//treeRawEvent->SetBranchAddress("Pz", Pz);
 	treeRawEvent->SetBranchAddress("E",  E);	
+	treeRawEvent->SetBranchAddress("Theta", Theta);
+	treeRawEvent->SetBranchAddress("Phi",  Phi);		
 	treeRawEvent->SetBranchAddress("time", time);
 	treeRawEvent->SetBranchAddress("clusterSize", clusterSize);
 	treeRawEvent->SetBranchAddress("Apparatus", Apparatus);

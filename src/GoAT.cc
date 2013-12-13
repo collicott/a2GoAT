@@ -95,7 +95,7 @@ Bool_t GoAT::Sort()
 {
 	
 	// Check conditions
-	if(GP_GetNParticles() != 1) return kFALSE;
+//	if(GP_GetNParticles() != 1) return kFALSE;
 
 	return kTRUE;
 

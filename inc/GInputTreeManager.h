@@ -40,10 +40,12 @@ private:
 
     //Particles    
     Int_t		nParticles;
-    Double_t*	Px;
+/*    Double_t*	Px;
     Double_t*	Py;
-   	Double_t*	Pz;
+   	Double_t*	Pz;*/
     Double_t*	E;
+    Double_t* 	Theta;
+    Double_t* 	Phi;
    	Double_t*	time;
     UChar_t*    clusterSize;
     
@@ -98,6 +100,8 @@ protected:
     void	TraverseInputEntries(const Int_t min, const Int_t max);
     void	TraverseInputEntries(const Int_t max) 	{TraverseInputEntries(firstValidEvent, max);}
     void	TraverseInputEntries()		 			{TraverseInputEntries(firstValidEvent, lastValidEvent);}
+
+    Double_t* 	Mass;
 	
 public:
 
@@ -120,20 +124,27 @@ public:
     virtual	void	Print();
 	
     		Int_t		GetNParticles()             const	{return nParticles;}
-    const	Double_t*	GetPx()                     const	{return Px;}
+/*    const	Double_t*	GetPx()                     const	{return Px;}
     		Double_t	GetPx(const Int_t index)	const	{return Px[index];}
     const	Double_t*	GetPy()                     const	{return Py;}
     		Double_t	GetPy(const Int_t index)	const	{return Py[index];}
     const	Double_t*	GetPz()                     const	{return Pz;}
-    		Double_t	GetPz(const Int_t index)	const	{return Pz[index];}
+    		Double_t	GetPz(const Int_t index)	const	{return Pz[index];}*/
     const	Double_t*	GetE()                      const	{return E;}
-    		Double_t	GetE(const Int_t index)		const	{return E[index];}
+    		Double_t	GetE(const Int_t index)		const	{return E[index];}    
+    		    		
+    const	Double_t*	GetTheta()                  	const	{return Theta;}
+    		Double_t	GetTheta(const Int_t index)		const	{return Theta[index];}
+    const	Double_t*	GetPhi()                  		const	{return Phi;}
+    		Double_t	GetPhi(const Int_t index)		const	{return Phi[index];} 
+    		
+    		Double_t	GetThetaRad(const Int_t index)	const	{return Theta[index] * TMath::DegToRad();}
+     		Double_t	GetPhiRad(const Int_t index)	const	{return Theta[index] * TMath::DegToRad();}
+    		    
     const	Double_t*	GetTime()                   const	{return time;}
     		Double_t	GetTime(const Int_t index)	const	{return time[index];}
     		
     		UChar_t 	GetClusterSize(const Int_t index) const 	{return clusterSize[index];}
-    
-    TLorentzVector	GetVector(const Int_t index)	const	{return TLorentzVector(Px[index], Py[index], Pz[index], E[index]);}
     
     		Int_t		GetNTagged()                    const	{return nTagged;}
     const	Int_t*		GetTagged_ch()               	const	{return tagged_ch;}
@@ -188,7 +199,19 @@ public:
     		Int_t		GetVeto_Hits(const Int_t index)	const	{return Veto_Hits[index];}
     		
 			Int_t		GetActualEvent()	const	{return actualEvent;}
-			
+
+	void 	SetInputMass(Int_t index, Double_t value)	{Mass[index] 	= value;}
+	
+   TLorentzVector	GetVector(const Int_t index) const	{
+						TLorentzVector part;
+						Double_t Energy = E[index] + Mass[index];
+						Double_t rho = sqrt(Energy*Energy - Mass[index]*Mass[index]);
+						part.SetPxPyPzE(1,1,1,Energy);
+						part.SetRho(rho);
+						part.SetPhi(Phi[index]);
+						part.SetTheta(Theta[index]);
+						return part;
+					}				
 };
 
 

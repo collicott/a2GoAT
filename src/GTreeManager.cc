@@ -10,6 +10,9 @@ GTreeManager::GTreeManager() :
 				Py(0),
 				Pz(0),
 				E(0),
+				Theta(0),
+				Phi(0),
+				Mass(0),		
 				time(0),
 				clusterSize(0),
 				Apparatus(0),
@@ -30,7 +33,10 @@ GTreeManager::GTreeManager() :
     Py				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     Pz				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     E				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-    time				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    Theta			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];    
+    Phi				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];  
+    Mass			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];      
+    time			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     clusterSize		= new UChar_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     
     Apparatus		= new UChar_t[GINPUTTREEMANAGER_MAX_PARTICLE];
@@ -99,21 +105,24 @@ Bool_t  GTreeManager::InitTreeParticles()
 	if(!treeParticles) return kFALSE;
 	cout << "treeParticles created." << endl;
 	
-	treeParticles->Branch("nParticles",&nParticles);
-	treeParticles->Branch("PDG",PDG);
-	treeParticles->Branch("Px", Px);
-	treeParticles->Branch("Py", Py);
-	treeParticles->Branch("Pz", Pz);
-	treeParticles->Branch("E",  E);	
-	treeParticles->Branch("time", time);
-	treeParticles->Branch("clusterSize", clusterSize);
-	treeParticles->Branch("Apparatus", Apparatus);
-	treeParticles->Branch("d_E", d_E);	
-	treeParticles->Branch("WC0_E", WC0_E);	
-	treeParticles->Branch("WC1_E", WC1_E);
-	treeParticles->Branch("WC_Vertex_X", WC_Vertex_X);	
-	treeParticles->Branch("WC_Vertex_Y", WC_Vertex_Y);	
-	treeParticles->Branch("WC_Vertex_Z", WC_Vertex_Z);	
+	treeParticles->Branch("nParticles",&nParticles,"nParticles/I");
+	treeParticles->Branch("PDG",PDG,"PDG[nParticles]/I");
+	treeParticles->Branch("Px", Px,"Px[nParticles]/D");
+	treeParticles->Branch("Py", Py,"Py[nParticles]/D");
+	treeParticles->Branch("Pz", Pz,"Pz[nParticles]/D");
+	treeParticles->Branch("E",  E,"E[nParticles]/D");
+	treeParticles->Branch("Mass",  Mass,"Mass[nParticles]/D");		
+	treeParticles->Branch("Theta",  Theta,"Theta[nParticles]/D");	
+	treeParticles->Branch("Phi",  Phi,"Phi[nParticles]/D");
+	treeParticles->Branch("time", time,"time[nParticles]/D");
+	treeParticles->Branch("clusterSize", clusterSize,"clusterSize[nParticles]/b");
+	treeParticles->Branch("Apparatus", Apparatus,"Apparatus[nParticles]/b");
+	treeParticles->Branch("d_E", d_E, "d_E[nParticles]/D");
+	treeParticles->Branch("WC0_E", WC0_E, "WC0_E[nParticles]/D");
+	treeParticles->Branch("WC1_E", WC1_E, "WC0_E[nParticles]/D");
+	treeParticles->Branch("WC_Vertex_X", WC_Vertex_X, "WC_Vertex_X[nParticles]/D");
+	treeParticles->Branch("WC_Vertex_Y", WC_Vertex_Y, "WC_Vertex_Y[nParticles]/D");
+	treeParticles->Branch("WC_Vertex_Z", WC_Vertex_Z, "WC_Vertex_Z[nParticles]/D");
 /*	treeParticles->Branch("Meson_phot_Px",Meson_phot_Px);
 	treeParticles->Branch("Meson_phot_Py",Meson_phot_Py);
 	treeParticles->Branch("Meson_phot_Pz",Meson_phot_Pz);
@@ -140,6 +149,10 @@ void	GTreeManager::Reconstruct()
 Bool_t	GTreeManager::FillEvent()
 {
 	// Fill event into tree
+	for (Int_t i = 0; i < nParticles; i ++) 
+	{
+		printf("Event: %d -- Particle: %d -- %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f\n", GetActualEvent(), i, Px[i], Py[i], Pz[i], Theta[i], Phi[i], Mass[i]);
+	}
 	if(treeParticles)	treeParticles->Fill();
 
 	return kTRUE;

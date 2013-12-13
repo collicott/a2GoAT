@@ -19,7 +19,10 @@ private:
 	Double_t	m_pi0;
 	Double_t	m_eta;
 	Double_t	m_etaP;
-
+	Double_t	m_proton;
+	Double_t 	m_chpi;
+	Double_t	m_electron;
+	
 	Int_t 		pdg_rootino;
 	Int_t 		pdg_pi0;
 	Int_t 		pdg_eta;

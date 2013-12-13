@@ -23,6 +23,9 @@ private:
     Double_t*	Py;
    	Double_t*	Pz;
     Double_t*	E;
+    Double_t*	Theta;
+    Double_t*	Mass; 
+    Double_t*	Phi; 
    	Double_t*	time;
     UChar_t*    clusterSize;
         
@@ -65,14 +68,15 @@ public:
     virtual void	Reconstruct();
 	virtual void	Print();
 	
-	
 	void	SetNParticles(Int_t index)   	{nParticles = index;}
 	void	SetPDG(Int_t index, Int_t value) {PDG[index] = value;}	
-	
 	void	SetPx(Int_t index, Double_t value)	{Px[index] 	= value;}
 	void	SetPy(Int_t index, Double_t value)	{Py[index] 	= value;}
 	void	SetPz(Int_t index, Double_t value)	{Pz[index] 	= value;}
 	void	SetE(Int_t index, Double_t value)		{E[index] 	= value;}
+	void	SetTheta(Int_t index, Double_t value)	{Theta[index] 	= value;}
+	void	SetPhi(Int_t index, Double_t value)		{Phi[index] 	= value;}		
+
 	void	SetTime(Int_t index, Double_t value)	{time[index] = value;}
 
 	void	SetClusterSize(Int_t index, Int_t value)	{clusterSize[index] = value;}
@@ -86,6 +90,9 @@ public:
 	void	SetWC_Vertex_Y(Int_t index, Double_t value)	{WC_Vertex_Y[index] = value;}
 	void	SetWC_Vertex_Z(Int_t index, Double_t value)	{WC_Vertex_Z[index] = value;}
 	
+	void 	SetMass(Int_t index, Double_t value)		{Mass[index] 	= value;}
+
+
 };
 
 
