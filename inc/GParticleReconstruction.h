@@ -9,6 +9,19 @@ class	GParticleReconstruction : public GTreeManager
 private:
 
 	Bool_t 		FindChargedParticles;
+	
+	TFile* 		CutFile;
+	TCutG* 		Cut;
+   	TCutG* 		Cut_CB_proton; 
+   	TCutG* 		Cut_CB_pion; 
+   	TCutG* 		Cut_TAPS_proton; 
+   	TCutG* 		Cut_TAPS_pion; 
+   	
+   	TCutG* 		Cut_proton;
+   	TCutG*		Cut_pion;
+
+   	
+	
 	Bool_t 		ReconstructMesons;	
 	
 	Int_t* 		PDG;
@@ -34,18 +47,20 @@ private:
 	Double_t	width_pi0;
 	Double_t	width_eta;
 	Double_t	width_etaP;
-	
-	Int_t 		nProton;
-	Int_t 		nElectron;		
-	Int_t		nChPion;
 
    	Int_t 		nPi0;
    	Int_t 		nEta;
    	Int_t 		nEtaP;
-   	   	
+ 	Int_t 		nProton;
+	Int_t		nChPion;
+	Int_t 		nElectron;		
+
    	Int_t 		Total_NPi0;
    	Int_t 		Total_NEta;
    	Int_t 		Total_NEtaP;
+   	Int_t 		Total_NProton;
+   	Int_t 		Total_NChPion;
+   	Int_t 		Total_NElectron;		
    	
 protected:
 	    
@@ -66,11 +81,16 @@ public:
 	void	AddParticle(Int_t pdg_code, Int_t i) 
 			{Int_t index_list[1]; index_list[0] = i; AddParticle(pdg_code, 1, index_list);}
 
+	TCutG*	OpenCutFile(Char_t* filename, Char_t* cutname);
+
 	// Make some variables available for sorting/printing
 	Int_t 	GP_GetNParticles()	const 	{return nParticles;}
     Int_t	GetNPi0() 	const	{return Total_NPi0;}
     Int_t	GetNEta() 	const	{return Total_NEta;}	
-    Int_t	GetNEtaP() 	const	{return Total_NEtaP;}	
+    Int_t	GetNEtaP() 	const	{return Total_NEtaP;}
+    Int_t	GetNProton() 	const	{return Total_NProton;}
+    Int_t	GetNChPion() 	const	{return Total_NChPion;}
+   
 
 };
 

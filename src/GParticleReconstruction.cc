@@ -10,10 +10,16 @@ GParticleReconstruction::GParticleReconstruction() :
 							nPi0(0),
 							nEta(0),
 							nEtaP(0),
+							nProton(0),
+							nChPion(0),
+							nElectron(0),
 							
 							Total_NPi0(0),
 							Total_NEta(0),
-							Total_NEtaP(0)						
+							Total_NEtaP(0),
+							Total_NProton(0),
+							Total_NChPion(0),
+							Total_NElectron(0)
 {
 	Identified 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 	PDG 		= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
@@ -28,9 +34,33 @@ Bool_t	GParticleReconstruction::PostInit()
 	//Setup configs	(read in from file)
 	FindChargedParticles = kTRUE;
 	ReconstructMesons = kTRUE;
-	
-	InitTreeParticles();
 
+	InitTreeParticles();
+	if (FindChargedParticles) 
+	{
+		Char_t* cutfile = Form("cuts/CB_DeltaE-E_Proton.root");
+		Char_t* cutname = Form("Proton");
+		Cut_CB_proton = OpenCutFile(cutfile,cutname);
+		
+		cutfile  = Form("cuts/CB_DeltaE-E_Pion.root");
+		cutname  = Form("Pion");
+		Cut_CB_pion   = OpenCutFile(cutfile,cutname);
+		
+		cutfile  = Form("cuts/TAPS_DeltaE-E.root");
+		cutname  = Form("CutProton");
+		Cut_TAPS_proton   = OpenCutFile(cutfile,cutname);
+		
+		cutfile  = Form("cuts/TAPS_DeltaE-E.root");
+		cutname  = Form("CutPiplus");
+		Cut_TAPS_pion   = OpenCutFile(cutfile,cutname);		
+				
+	}
+
+	width_pi0 	 = 20.0;
+	width_eta 	 = 44.0;
+	width_etaP 	 = 60.0;
+
+	// read from PDG database in future (not configs)
 	m_pi0  = 135.0;
 	m_eta  = 545.0;
 	m_etaP = 958.0;
@@ -40,15 +70,11 @@ Bool_t	GParticleReconstruction::PostInit()
 	
 	pdg_rootino = 0;
 	pdg_pi0  = 1;
-	pdg_eta  = 2;
+	pdg_eta  = 2; 
 	pdg_etaP = 3;	
 	pdg_proton = 4;
 	pdg_chpi = 5;
 	pdg_electron = 6;
-	
-	width_pi0 	 = 20.0;
-	width_eta 	 = 44.0;
-	width_etaP 	 = 60.0;
 
 	return kTRUE;
 }
@@ -56,6 +82,13 @@ Bool_t	GParticleReconstruction::PostInit()
 void	GParticleReconstruction::Reconstruct()
 {
 	nParticles = 0;
+	nPi0  = 0;	
+	nEta  = 0;	
+	nEtaP = 0;
+	nProton = 0;
+	nChPion = 0;
+	nElectron = 0;
+	
 	SetNParticles(nParticles);	
 	
 	for (int i = 0; i < GetNParticles(); i++){
@@ -66,38 +99,56 @@ void	GParticleReconstruction::Reconstruct()
 	if(FindChargedParticles) ChargedReconstruction();
 	if(ReconstructMesons)	 MesonReconstruction();
 
-	Total_NPi0 	+= nPi0;
-	Total_NEta 	+= nEta;	
-	Total_NEtaP += nEtaP;	
-
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
+		if (Identified[i] == 2) AddParticle(pdg_chpi,i);		
 		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
 	}
+
+	Total_NPi0 	+= nPi0;
+	Total_NEta 	+= nEta;	
+	Total_NEtaP += nEtaP;
+	Total_NProton += nProton;
+	Total_NChPion += nChPion;
+	Total_NElectron += nElectron;	
 
 }
 
 void	GParticleReconstruction::ChargedReconstruction()
 {
-	// Check dE and E > 0
-	// Check apparatus
-	// Call correct cut file
-	// Test XY
-
+	
 	nProton	 	= 0;
 	nElectron 	= 0;	
 	nChPion		= 0;	
 	
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
-		if((Get_dE(i) > 0.) && (Get_dE(i) < 100.) && (GetEk(i) > 0.) && (GetEk(i) < 300.))
+		if (GetApparatus(i) == EAppCB) 
 		{
-			// No test for now, I'm GOD! call it a proton! 
-			// Found a proton!
+			Cut_proton  = Cut_CB_proton;
+			Cut_pion	= Cut_CB_pion;
+		}
+		else if (GetApparatus(i) == EAppTAPS)
+		{
+			Cut_proton  = Cut_TAPS_proton;
+			Cut_pion	= Cut_TAPS_pion;
+		}
+			
+		if(Cut_proton->IsInside(GetEk(i),Get_dE(i)))
+		{
 			SetInputMass(i,m_proton);			
 			AddParticle(pdg_proton,i);  //  <--- Look it's a proton!
 			Identified[i] = 1;
+			nProton++;
 		}
+		if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
+		{
+			SetInputMass(i,m_chpi);			
+			// Not ready to include in full particle list because the
+			// charged pion may be part of an eta decay
+			Identified[i] = 2; // Temporary state
+			nChPion++;
+		}	
 	}			
 				
 }
@@ -114,10 +165,6 @@ void	GParticleReconstruction::MesonReconstruction()
 	Int_t 		ndaughter = 0;
 	Int_t		daughter_list[GetNParticles()];
 
-	nPi0  = 0;	
-	nEta  = 0;	
-	nEtaP = 0;
-	
 	TLorentzVector	initialParticle[GetNParticles()];
 	TLorentzVector	reaction_p4;	
 		
@@ -339,3 +386,16 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	
 }
 
+TCutG*	GParticleReconstruction::OpenCutFile(Char_t* filename, Char_t* cutname)
+{
+	CutFile 	= new TFile(filename, "READ");
+	Cut 		= (TCutG*)CutFile->Get(cutname);
+	
+	TCutG* Cut_clone = Cut;
+	CutFile->Close();
+
+	
+	cout << "cut file " << filename << " opened." << endl;
+	return Cut_clone;
+	
+}

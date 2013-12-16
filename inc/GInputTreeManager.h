@@ -19,6 +19,7 @@
 #include "TSystem.h"
 #include "TSystemDirectory.h"
 #include "TSystemFile.h"
+#include "TCutG.h"
 
 #include<iostream>
 using namespace std;
@@ -26,14 +27,16 @@ using namespace std;
 #define GINPUTTREEMANAGER_MAX_TAGGER	1024
 #define GINPUTTREEMANAGER_MAX_PARTICLE	128
 #define GINPUTTREEMANAGER_MAX_HITS		860
+#define EAppCB  1
+#define EAppTAPS 2
 
 
 class	GInputTreeManager
 {
 private:
-	TFile*		file;			// outFile
+	TFile*		file;				// outFile
 	TTree*		treeRawEvent;		// Raw particle information (filled each event)
-	TTree*		treeTagger;		// Tagger information (filled each event)
+	TTree*		treeTagger;			// Tagger information (filled each event)
 	TTree* 		treeTrigger;		// Trigger information (filled each event)
 	TTree* 		treeDetectorHits;	// Detector system hit patterns (filled each event)
 	TTree*		treeScaler; 		// Scaler read information (filled each scaler read)

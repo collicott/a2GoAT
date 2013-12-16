@@ -71,8 +71,8 @@ Bool_t	GoAT::Init(const char* file_in, const char* file_out)
 void	GoAT::Analyse()
 {
 	TraverseInputEntries();
-	printf("nPi0 == %d  nEta == %d  nEtaP == %d \n", 
-			GetNPi0(),	GetNEta(),	GetNEtaP());
+	printf("nPi0 == %d  nEta == %d  nEtaP == %d  nProton == %d  nChPion == %d \n", 
+			GetNPi0(),	GetNEta(),	GetNEtaP(),  GetNProton(),	GetNChPion());
 			
 	CloseOutputFile();
 }
