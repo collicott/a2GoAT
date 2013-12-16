@@ -72,7 +72,7 @@ void	GParticleReconstruction::Reconstruct()
 
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
-//		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
+		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
 	}
 
 }
@@ -90,12 +90,12 @@ void	GParticleReconstruction::ChargedReconstruction()
 	
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
-		if((Get_dE(i) > 0.) && (Get_dE(i) < 100.) && (GetE(i) > 0.) && (GetE(i) < 300.))
+		if((Get_dE(i) > 0.) && (Get_dE(i) < 100.) && (GetEk(i) > 0.) && (GetEk(i) < 300.))
 		{
 			// No test for now, I'm GOD! call it a proton! 
 			// Found a proton!
 			SetInputMass(i,m_proton);			
-//			AddParticle(pdg_proton,i);  //  <--- Look it's a proton!
+			AddParticle(pdg_proton,i);  //  <--- Look it's a proton!
 			Identified[i] = 1;
 		}
 	}			
@@ -152,14 +152,14 @@ void	GParticleReconstruction::MesonReconstruction()
 	if ((diff_eta <= 1.0) && (diff_eta < diff_etaP))
 	{
 		// Reaction is an eta!		
-///		AddParticle(pdg_eta,ndaughter,daughter_list);
+		AddParticle(pdg_eta,ndaughter,daughter_list);
 		nEta++;
 		return;		
 	}
 	if ((diff_etaP <= 1.0) && (diff_etaP < diff_eta))
 	{
 		// Reaction is an eta'!
-///		AddParticle(pdg_etaP,ndaughter,daughter_list);
+		AddParticle(pdg_etaP,ndaughter,daughter_list);
 		nEtaP++;
 		return;
 	}				
@@ -241,7 +241,7 @@ void	GParticleReconstruction::MesonReconstruction()
 			ndaughter = 2;
 			daughter_list[0] = index1[i];
 			daughter_list[1] = index2[i];
-//			AddParticle(pdg_eta,ndaughter,daughter_list);
+			AddParticle(pdg_eta,ndaughter,daughter_list);
 			nEta++;
 		}
 		if( tempID[i] == pdg_etaP) 			
@@ -250,7 +250,7 @@ void	GParticleReconstruction::MesonReconstruction()
 			ndaughter = 2;
 			daughter_list[0] = index1[i];
 			daughter_list[1] = index2[i];
-//			AddParticle(pdg_etaP,ndaughter,daughter_list);
+			AddParticle(pdg_etaP,ndaughter,daughter_list);
 			nEtaP++;
 		}
 		
@@ -263,7 +263,7 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 
 	TLorentzVector part  = GetVector(index_list[0]);
 	
-	Double_t E			 = GetE(index_list[0]);
+	Double_t Ek			 = GetEk(index_list[0]);
 	Double_t time		 = GetTime(index_list[0]);
 	Double_t dE 		 = Get_dE(index_list[0]);
 	Double_t WCO_E 		 = GetWC0_E(index_list[0]);	
@@ -285,7 +285,7 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 		{
 			part += GetVector(index_list[i]);
 
-			E 	 	+= GetE(index_list[i]); 	
+			Ek 	 	+= GetEk(index_list[i]); 	
 			time 	+= GetTime(index_list[i]);
 			dE 	 	+= Get_dE(index_list[i]); 		
 		
@@ -322,7 +322,7 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	SetTheta(nParticles,Theta);
 	SetPhi(nParticles,Phi);	
 	SetMass(nParticles,Mass);
-	SetE(nParticles,E);
+	SetEk(nParticles,Ek);
 	SetTime(nParticles,time);
 	SetClusterSize(nParticles,clusterSize);
 	SetApparatus(nParticles,Apparatus);

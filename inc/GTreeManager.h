@@ -22,7 +22,7 @@ private:
     Double_t*	Px;
     Double_t*	Py;
    	Double_t*	Pz;
-    Double_t*	E;
+    Double_t*	Ek;
     Double_t*	Theta;
     Double_t*	Mass; 
     Double_t*	Phi; 
@@ -73,7 +73,7 @@ public:
 	void	SetPx(Int_t index, Double_t value)	{Px[index] 	= value;}
 	void	SetPy(Int_t index, Double_t value)	{Py[index] 	= value;}
 	void	SetPz(Int_t index, Double_t value)	{Pz[index] 	= value;}
-	void	SetE(Int_t index, Double_t value)		{E[index] 	= value;}
+	void	SetEk(Int_t index, Double_t value)		{Ek[index] 	= value;}
 	void	SetTheta(Int_t index, Double_t value)	{Theta[index] 	= value;}
 	void	SetPhi(Int_t index, Double_t value)		{Phi[index] 	= value;}		
 
@@ -91,8 +91,7 @@ public:
 	void	SetWC_Vertex_Z(Int_t index, Double_t value)	{WC_Vertex_Z[index] = value;}
 	
 	void 	SetMass(Int_t index, Double_t value)		{Mass[index] 	= value;}
-
-
+			
 };
 
 

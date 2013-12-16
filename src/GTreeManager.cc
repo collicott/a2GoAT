@@ -9,7 +9,7 @@ GTreeManager::GTreeManager() :
 				Px(0),
 				Py(0),
 				Pz(0),
-				E(0),
+				Ek(0),
 				Theta(0),
 				Phi(0),
 				Mass(0),		
@@ -32,7 +32,7 @@ GTreeManager::GTreeManager() :
 	Px				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     Py				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     Pz				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-    E				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    Ek				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     Theta			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];    
     Phi				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];  
     Mass			= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];      
@@ -110,7 +110,7 @@ Bool_t  GTreeManager::InitTreeParticles()
 	treeParticles->Branch("Px", Px,"Px[nParticles]/D");
 	treeParticles->Branch("Py", Py,"Py[nParticles]/D");
 	treeParticles->Branch("Pz", Pz,"Pz[nParticles]/D");
-	treeParticles->Branch("E",  E,"E[nParticles]/D");
+	treeParticles->Branch("Ek",  Ek,"Ek[nParticles]/D");
 	treeParticles->Branch("Mass",  Mass,"Mass[nParticles]/D");		
 	treeParticles->Branch("Theta",  Theta,"Theta[nParticles]/D");	
 	treeParticles->Branch("Phi",  Phi,"Phi[nParticles]/D");
@@ -151,7 +151,7 @@ Bool_t	GTreeManager::FillEvent()
 	// Fill event into tree
 	for (Int_t i = 0; i < nParticles; i ++) 
 	{
-		printf("Event: %d -- Particle: %d -- %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f\n", GetActualEvent(), i, Px[i], Py[i], Pz[i], Theta[i], Phi[i], Mass[i]);
+//		printf("Event: %d -- Particle: %d -- %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f\n", GetActualEvent(), i, Px[i], Py[i], Pz[i], Theta[i], Phi[i], Mass[i]);
 	}
 	if(treeParticles)	treeParticles->Fill();
 

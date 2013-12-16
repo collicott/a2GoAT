@@ -40,10 +40,7 @@ private:
 
     //Particles    
     Int_t		nParticles;
-/*    Double_t*	Px;
-    Double_t*	Py;
-   	Double_t*	Pz;*/
-    Double_t*	E;
+    Double_t*	Ek;
     Double_t* 	Theta;
     Double_t* 	Phi;
    	Double_t*	time;
@@ -124,14 +121,8 @@ public:
     virtual	void	Print();
 	
     		Int_t		GetNParticles()             const	{return nParticles;}
-/*    const	Double_t*	GetPx()                     const	{return Px;}
-    		Double_t	GetPx(const Int_t index)	const	{return Px[index];}
-    const	Double_t*	GetPy()                     const	{return Py;}
-    		Double_t	GetPy(const Int_t index)	const	{return Py[index];}
-    const	Double_t*	GetPz()                     const	{return Pz;}
-    		Double_t	GetPz(const Int_t index)	const	{return Pz[index];}*/
-    const	Double_t*	GetE()                      const	{return E;}
-    		Double_t	GetE(const Int_t index)		const	{return E[index];}    
+    const	Double_t*	GetEk()                      const	{return Ek;}
+    		Double_t	GetEk(const Int_t index)		const	{return Ek[index];}    
     		    		
     const	Double_t*	GetTheta()                  	const	{return Theta;}
     		Double_t	GetTheta(const Int_t index)		const	{return Theta[index];}
@@ -201,17 +192,26 @@ public:
 			Int_t		GetActualEvent()	const	{return actualEvent;}
 
 	void 	SetInputMass(Int_t index, Double_t value)	{Mass[index] 	= value;}
-	
-   TLorentzVector	GetVector(const Int_t index) const	{
-						TLorentzVector part;
-						Double_t Energy = E[index] + Mass[index];
-						Double_t rho = sqrt(Energy*Energy - Mass[index]*Mass[index]);
-						part.SetPxPyPzE(1,1,1,Energy);
-						part.SetRho(rho);
-						part.SetPhi(Phi[index]);
-						part.SetTheta(Theta[index]);
-						return part;
-					}				
+
+		
+ //   TLorentzVector        GetVector(const Int_t index) const {return TLorentzVector(Px[index], Py[index], Pz[index], E[index]);}
+    
+   TLorentzVector	GetVector(const Int_t index) const	
+					{
+
+						Double_t T 	= Ek[index];
+						Double_t M  = Mass[index];
+						Double_t th = Theta[index] * TMath::DegToRad();
+						Double_t ph = Phi[index]   * TMath::DegToRad();
+												
+						Double_t E 	= T + M;
+						Double_t P 	= TMath::Sqrt(E*E - M*M);
+						Double_t Px = P* sin(th)*cos(ph);
+						Double_t Py = P* sin(th)*sin(ph);						
+						Double_t Pz = P* cos(th);
+						
+						return TLorentzVector(Px, Py, Pz, E);
+					}					
 };
 
 
