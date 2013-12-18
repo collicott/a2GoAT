@@ -2,6 +2,11 @@
 #define __GTreeManager_h__
 
 #include "GInputTreeManager.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+#include <cstdio>
+#include <string> 
 
 #define GTREEMANAGER_MAX_TAGGER		1024
 #define GTREEMANAGER_MAX_PARTICLE	128
@@ -48,9 +53,10 @@ private:
 protected:
     Int_t       offsetToInputTree;
 
-    void	GetEntryFast();
-    void	TraverseEntries(const Int_t min, const Int_t max);
-    void	TraverseEntries(const Int_t max) {TraverseEntries(0, max);}
+ 	Char_t*		global_config_file;
+    void		GetEntryFast();
+    void		TraverseEntries(const Int_t min, const Int_t max);
+    void		TraverseEntries(const Int_t max) {TraverseEntries(0, max);}
 	
 public:
 
@@ -91,7 +97,12 @@ public:
 	void	SetWC_Vertex_Z(Int_t index, Double_t value)	{WC_Vertex_Z[index] = value;}
 	
 	void 	SetMass(Int_t index, Double_t value)		{Mass[index] 	= value;}
-			
+
+	std::string config;	
+	void 	SetConfigFile(Char_t* config_file)	{global_config_file = config_file;}
+			Char_t* GetConfigFile()	{return global_config_file;}	
+
+    string	ReadConfig(const std::string& key_in, Char_t* configname);	
 };
 
 

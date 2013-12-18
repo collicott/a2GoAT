@@ -1,0 +1,38 @@
+#=======================================================================
+# Global Config file for a GoAT analysis
+#=======================================================================
+
+#-----------------------------------------------------------------------
+# General Setup
+#-----------------------------------------------------------------------
+
+Input-File: /home/cristina/RootTree_Compton_354.root
+Output-File: /home/cristina/out_RootTree_Compton_354.root 
+
+#-----------------------------------------------------------------------
+# Particle Reconstruction
+#-----------------------------------------------------------------------
+Do-Particle-Reconstruction: 1
+
+Do-Charged-Particle-Reconstruction: 1
+
+Cut-dE-E-CB-Proton: 	cuts/CB_DeltaE-E_Proton.root Proton
+Cut-dE-E-TAPS-Pion: 	cuts/TAPS_DeltaE-E.root	CutPiplus
+Cut-dE-E-TAPS-Proton: 	cuts/TAPS_DeltaE-E.root CutProton
+Cut-dE-E-CB-Pion: 		cuts/CB_DeltaE-E_Pion.root Pion
+
+Do-Meson-Reconstruction: 1
+Cut-IM-Width-Pi0: 20
+Cut-IM-Width-Eta: 44
+Cut-IM-Width-Eta-Prime: 60
+
+#-----------------------------------------------------------------------
+# Sorting Preferences
+#-----------------------------------------------------------------------
+# Just turn off a sort completely to ignore a sorting preference
+
+#						Total 	CB		TAPS
+Sort-Number-Particles: 	3 =		1 +		1 +
+
+Sort-Proton
+

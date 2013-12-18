@@ -149,10 +149,6 @@ void	GTreeManager::Reconstruct()
 Bool_t	GTreeManager::FillEvent()
 {
 	// Fill event into tree
-	for (Int_t i = 0; i < nParticles; i ++) 
-	{
-//		printf("Event: %d -- Particle: %d -- %6.2f %6.2f %6.2f %6.2f %6.2f %6.2f\n", GetActualEvent(), i, Px[i], Py[i], Pz[i], Theta[i], Phi[i], Mass[i]);
-	}
 	if(treeParticles)	treeParticles->Fill();
 
 	return kTRUE;
@@ -162,4 +158,49 @@ void	GTreeManager::Print()
 {
 	GInputTreeManager::Print();
 
+}
+
+	string GTreeManager::ReadConfig(const std::string& key_in, Char_t* configname)
+{
+	std::string key = key_in;
+	std::transform(key.begin(), key.end(),key.begin(), ::toupper);
+	
+	std::string str;
+	std::string values;
+	
+	ifstream configfile;
+
+	configfile.open(configname);
+		
+	if (configfile.is_open())
+	{
+		while ( getline (configfile,str) ) 
+		{
+			std::string::size_type begin = str.find_first_not_of(" \f\t\v");
+			if(begin == std::string::npos) continue;		
+			if(std::string("#").find(str[begin]) != std::string::npos)	continue;
+			if(std::string("//").find(str[begin]) != std::string::npos)	continue;
+			
+			std::string firstWord;
+			
+			try {
+				firstWord = str.substr(0,str.find(" "));
+			}
+			catch(std::exception& e) {
+				firstWord = str.erase(str.find_first_of(" "),str.find_first_of(" "));
+			}
+			std::transform(firstWord.begin(),firstWord.end(),firstWord.begin(), ::toupper);
+			firstWord.erase(firstWord.end()-1);	
+			values = str.substr(str.find(" ")+1,str.length());
+
+			if (strcmp(firstWord.c_str(),key.c_str()) == 0) 
+			{
+				configfile.close();
+				return values;				
+			}
+		}
+		configfile.close();
+	}
+
+	return "";
 }

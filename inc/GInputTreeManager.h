@@ -96,7 +96,7 @@ private:
     
 protected:
 	void    CheckRange(Int_t& min, Int_t& max);
-    void 	GetInputEntryFast();                // without testing index
+    void 	GetInputEntryFast();                	// without testing index
     void	TraverseInputEntries(const Int_t min, const Int_t max);
     void	TraverseInputEntries(const Int_t max) 	{TraverseInputEntries(firstValidEvent, max);}
     void	TraverseInputEntries()		 			{TraverseInputEntries(firstValidEvent, lastValidEvent);}

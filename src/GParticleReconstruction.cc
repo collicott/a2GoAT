@@ -31,35 +31,75 @@ GParticleReconstruction::~GParticleReconstruction()
 
 Bool_t	GParticleReconstruction::PostInit()
 {
-	//Setup configs	(read in from file)
-	FindChargedParticles = kTRUE;
-	ReconstructMesons = kTRUE;
+	cout << endl << "Particle Reconstruction turned ON" << endl;
 
+	cout << "Opening particle reconstruction tree:" << endl;	
 	InitTreeParticles();
-	if (FindChargedParticles) 
+	cout << endl;
+	
+	config = ReadConfig("Do-Charged-Particle-Reconstruction",GetConfigFile());	
+	sscanf( config.c_str(), "%d\n", &ReconstructChargedParticles);
+
+	if (ReconstructChargedParticles) 
 	{
-		Char_t* cutfile = Form("cuts/CB_DeltaE-E_Proton.root");
-		Char_t* cutname = Form("Proton");
-		Cut_CB_proton = OpenCutFile(cutfile,cutname);
+		cout << "Charged particle reconstruction is active:" << endl;
+	
+		config = ReadConfig("Cut-dE-E-CB-Proton",GetConfigFile());	
+		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
+		Cut_CB_proton = OpenCutFile(cutfilename,cutname);
 		
-		cutfile  = Form("cuts/CB_DeltaE-E_Pion.root");
-		cutname  = Form("Pion");
-		Cut_CB_pion   = OpenCutFile(cutfile,cutname);
-		
-		cutfile  = Form("cuts/TAPS_DeltaE-E.root");
-		cutname  = Form("CutProton");
-		Cut_TAPS_proton   = OpenCutFile(cutfile,cutname);
-		
-		cutfile  = Form("cuts/TAPS_DeltaE-E.root");
-		cutname  = Form("CutPiplus");
-		Cut_TAPS_pion   = OpenCutFile(cutfile,cutname);		
-				
+		config = ReadConfig("Cut-dE-E-CB-Pion",GetConfigFile());	
+		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
+		Cut_CB_pion   = OpenCutFile(cutfilename,cutname);
+
+		config = ReadConfig("Cut-dE-E-TAPS-Pion",GetConfigFile());	
+		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
+		Cut_TAPS_pion   = OpenCutFile(cutfilename,cutname);	
+
+		config = ReadConfig("Cut-dE-E-TAPS-Proton",GetConfigFile());	
+		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
+		Cut_TAPS_proton   = OpenCutFile(cutfilename,cutname);
+		cout << endl;
 	}
+	else cout << "Charged particle reconstruction is NOT active." << endl;
+	
+	config = ReadConfig("Do-Meson-Reconstruction",GetConfigFile());	
+	sscanf( config.c_str(), "%d\n", &ReconstructMesons);
 
-	width_pi0 	 = 20.0;
-	width_eta 	 = 44.0;
-	width_etaP 	 = 60.0;
+	if (ReconstructMesons) 
+	{
+		cout << "Meson reconstruction is active:" << endl;
 
+		config = ReadConfig("Cut-IM-Width-Pi0",GetConfigFile());	
+		sscanf( config.c_str(), "%lf\n", &width_pi0);
+		if(width_pi0) cout << "Pi0 IM width cut set to " << width_pi0 << " MeV" << endl;
+		else 
+		{
+			width_pi0 = DEFAULT_PI0_IM_WIDTH; 
+			cout << "Pi0 IM width cut set to default (" << width_pi0 << " MeV)" << endl;
+		}
+
+		config = ReadConfig("Cut-IM-Width-Eta",GetConfigFile());	
+		sscanf( config.c_str(), "%lf\n", &width_eta);
+		if(width_pi0) cout << "Eta IM width cut set to " << width_eta << " MeV" << endl;
+		else 
+		{
+			width_eta = DEFAULT_ETA_IM_WIDTH; 
+			cout << "Pi0 IM width cut set to default (" << width_eta << " MeV)" << endl;
+		}
+
+		config = ReadConfig("Cut-IM-Width-Eta-Prime",GetConfigFile());	
+		sscanf( config.c_str(), "%lf\n", &width_etaP);
+		if(width_etaP) cout << "Eta-Prime IM width cut set to " << width_etaP << " MeV" << endl;
+		else 
+		{
+			width_etaP = DEFAULT_ETAP_IM_WIDTH; 
+			cout << "Eta-Prime IM width cut set to default (" << width_etaP << " MeV)" << endl;
+		}		
+		cout << endl;
+	}
+	else cout << "Meson reconstruction is NOT active." << endl;	
+	
 	// read from PDG database in future (not configs)
 	m_pi0  = 135.0;
 	m_eta  = 545.0;
@@ -96,7 +136,7 @@ void	GParticleReconstruction::Reconstruct()
 		SetInputMass(i,0.0);
 	}	
 	
-	if(FindChargedParticles) ChargedReconstruction();
+	if(ReconstructChargedParticles) ChargedReconstruction();
 	if(ReconstructMesons)	 MesonReconstruction();
 
 	for (int i = 0; i < GetNParticles(); i++) 
@@ -394,8 +434,8 @@ TCutG*	GParticleReconstruction::OpenCutFile(Char_t* filename, Char_t* cutname)
 	TCutG* Cut_clone = Cut;
 	CutFile->Close();
 
-	
-	cout << "cut file " << filename << " opened." << endl;
+	cout << "cut file " << filename << 
+						" opened (Cut-name = " << cutname << ")"<< endl;
 	return Cut_clone;
 	
 }

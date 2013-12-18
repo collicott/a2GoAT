@@ -3,12 +3,19 @@
 #define __GParticleReconstruction_h__
 
 #include "GTreeManager.h"
+#define DEFAULT_PI0_IM_WIDTH 20.0
+#define DEFAULT_ETA_IM_WIDTH 44.0
+#define DEFAULT_ETAP_IM_WIDTH 60.0
 
 class	GParticleReconstruction : public GTreeManager
 {
 private:
 
-	Bool_t 		FindChargedParticles;
+	Bool_t 		ReconstructChargedParticles;
+	Bool_t		ReconstructMesons;
+
+	char 		cutfilename[256];
+	char 		cutname[256];	
 	
 	TFile* 		CutFile;
 	TCutG* 		Cut;
@@ -19,10 +26,6 @@ private:
    	
    	TCutG* 		Cut_proton;
    	TCutG*		Cut_pion;
-
-   	
-	
-	Bool_t 		ReconstructMesons;	
 	
 	Int_t* 		PDG;
 	Int_t* 		Identified;
@@ -62,6 +65,7 @@ private:
    	Int_t 		Total_NChPion;
    	Int_t 		Total_NElectron;		
    	
+   	Int_t 		i;
 protected:
 	    
 public:
