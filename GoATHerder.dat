@@ -8,6 +8,7 @@
 
 Input-File: /home/cristina/RootTree_Compton_354.root
 Output-File: /home/cristina/out_RootTree_Compton_354.root 
+Period-Macro: 10000
 
 #-----------------------------------------------------------------------
 # Particle Reconstruction
@@ -31,8 +32,6 @@ Cut-IM-Width-Eta-Prime: 60
 #-----------------------------------------------------------------------
 # Just turn off a sort completely to ignore a sorting preference
 
-#						Total 	CB		TAPS
-Sort-Number-Particles: 	3 =		1 +		1 +
-
-Sort-Proton
-
+#							Total 	CB		TAPS
+Sort-Raw-Number-Particles: 	3=		3=		0=
+Sort-Proton: 3

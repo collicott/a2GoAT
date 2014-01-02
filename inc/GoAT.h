@@ -7,14 +7,15 @@ using namespace std;
 #include <cstdio>
 #include <string> 
 
+#include "GSort.h"
 #include "GParticleReconstruction.h"
 #include "GTreeManager.h"
 
-class	GoAT : public GParticleReconstruction
+class	GoAT : public GSort
 {
 private:
-    char* 	file_in;
-	char* 	file_out;
+    char 	file_in[256];
+	char 	file_out[256];
 	Bool_t 	UseParticleReconstruction;
 	
 	Int_t 	SortNumberParticles;	
@@ -32,11 +33,11 @@ public:
     GoAT();
     virtual ~GoAT();
 
-    virtual Bool_t	Init(const char* file_in, const char* file_out, Char_t* file_config);	
+    virtual Bool_t	Init(Char_t* file_config);	
+    
     virtual void 	Analyse();
 	virtual void	Reconstruct();
     virtual Bool_t	Write();
-    virtual Bool_t	Sort();
     
 };
 #endif

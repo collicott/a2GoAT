@@ -58,13 +58,6 @@ private:
 	Int_t		nChPion;
 	Int_t 		nElectron;		
 
-   	Int_t 		Total_NPi0;
-   	Int_t 		Total_NEta;
-   	Int_t 		Total_NEtaP;
-   	Int_t 		Total_NProton;
-   	Int_t 		Total_NChPion;
-   	Int_t 		Total_NElectron;		
-   	
    	Int_t 		i;
 protected:
 	    
@@ -89,11 +82,11 @@ public:
 
 	// Make some variables available for sorting/printing
 	Int_t 	GP_GetNParticles()	const 	{return nParticles;}
-    Int_t	GetNPi0() 	const	{return Total_NPi0;}
-    Int_t	GetNEta() 	const	{return Total_NEta;}	
-    Int_t	GetNEtaP() 	const	{return Total_NEtaP;}
-    Int_t	GetNProton() 	const	{return Total_NProton;}
-    Int_t	GetNChPion() 	const	{return Total_NChPion;}
+    Int_t	GetNPi0() 			const	{return nPi0;}
+    Int_t	GetNEta() 			const	{return nEta;}	
+    Int_t	GetNEtaP() 			const	{return nEtaP;}
+    Int_t	GetNProton() 		const	{return nProton;}
+    Int_t	GetNChPion() 		const	{return nChPion;}
    
 
 };

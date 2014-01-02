@@ -28,7 +28,10 @@ include_directories(inc)
 
 add_executable(goat
    src/GoAT.cc 
+   src/GSort.cc
    src/GParticleReconstruction.cc
+   src/GTreeManager.cc
    src/GInputTreeManager.cc
-   src/GTreeManager.cc)
+   )
+
 target_link_libraries(goat ${ROOT_LIBRARIES})

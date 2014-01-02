@@ -6,20 +6,12 @@ GParticleReconstruction::GParticleReconstruction() :
 							Identified(0),
 							nParticles(0),
 							PDG(0),
-							
 							nPi0(0),
 							nEta(0),
 							nEtaP(0),
 							nProton(0),
 							nChPion(0),
-							nElectron(0),
-							
-							Total_NPi0(0),
-							Total_NEta(0),
-							Total_NEtaP(0),
-							Total_NProton(0),
-							Total_NChPion(0),
-							Total_NElectron(0)
+							nElectron(0)
 {
 	Identified 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 	PDG 		= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
@@ -33,7 +25,7 @@ Bool_t	GParticleReconstruction::PostInit()
 {
 	cout << endl << "Particle Reconstruction turned ON" << endl;
 
-	cout << "Opening particle reconstruction tree:" << endl;	
+	cout << "Opening particle reconstruction tree: ";	
 	InitTreeParticles();
 	cout << endl;
 	
@@ -145,13 +137,6 @@ void	GParticleReconstruction::Reconstruct()
 		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
 	}
 
-	Total_NPi0 	+= nPi0;
-	Total_NEta 	+= nEta;	
-	Total_NEtaP += nEtaP;
-	Total_NProton += nProton;
-	Total_NChPion += nChPion;
-	Total_NElectron += nElectron;	
-
 }
 
 void	GParticleReconstruction::ChargedReconstruction()
@@ -181,7 +166,7 @@ void	GParticleReconstruction::ChargedReconstruction()
 			Identified[i] = 1;
 			nProton++;
 		}
-		if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
+		else if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
 		{
 			SetInputMass(i,m_chpi);			
 			// Not ready to include in full particle list because the

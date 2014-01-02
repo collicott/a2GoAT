@@ -214,7 +214,26 @@ public:
 						Double_t Pz = P* cos(th);
 						
 						return TLorentzVector(Px, Py, Pz, E);
-					}					
+					}			
+					
+    		Int_t		GetNCB()	const 
+						{
+							Int_t NCB = 0;
+							for(Int_t i = 0; i < nParticles; i++) 
+							{
+								if (Apparatus[i] == EAppCB) NCB++;
+							}
+							return NCB;
+						}
+    		Int_t		GetNTAPS()	const 
+						{
+							Int_t NTAPS = 0;
+							for(Int_t i = 0; i < nParticles; i++) 
+							{
+								if (Apparatus[i] == EAppTAPS) NTAPS++;
+							}
+							return NTAPS;
+						}								
 };
 
 
