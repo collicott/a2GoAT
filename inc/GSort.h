@@ -13,20 +13,51 @@ class	GSort : public GParticleReconstruction
 {
 private:
 
-	Int_t 	SortRawNumberParticles;	 			// Sort on-off
-	Int_t  	Sort_raw_nParticles_total;
-	Int_t  	Sort_raw_nParticles_total_condition;
-    Int_t   Sort_raw_nParticles_CB;
-    Int_t   Sort_raw_nParticles_CB_condition;        
-    Int_t   Sort_raw_nParticles_TAPS;
-    Int_t   Sort_raw_nParticles_TAPS_condition;       	
+	Int_t 		SortRawNParticles;	 			// Sort on-off
+	Int_t  		SR_nPart_total;
+	Int_t  		SR_nPart_total_condition;
+    Int_t   	SR_nPart_CB;
+    Int_t   	SR_nPart_CB_condition;        
+    Int_t   	SR_nPart_TAPS;
+    Int_t   	SR_nPart_TAPS_condition;       	
     
+    Int_t 		SortNParticles;					// Sort on-off
+    Int_t 		S_nParticles;
+    Int_t		S_nParticles_condition;
     
     Int_t 		SortProton;						// Sort on-off
-    Int_t 		Sort_nProton;
-    Double_t 	Sort_Proton_theta_min;
-    Double_t	Sort_Proton_theta_max;
+    Int_t 		S_nProton;
+    Int_t 		S_nProton_condition;
+    Double_t 	S_Proton_theta_min;
+    Double_t	S_Proton_theta_max;
 
+    Int_t 		SortChPion;						// Sort on-off
+    Int_t 		S_nChPion;
+    Int_t 		S_nChPion_condition;
+    Double_t 	S_ChPion_theta_min;
+    Double_t	S_ChPion_theta_max;
+
+    Int_t 		SortPi0;						// Sort on-off
+    Int_t 		S_nPi0;
+    Int_t 		S_nPi0_condition;
+    Double_t 	S_Pi0_theta_min;
+    Double_t	S_Pi0_theta_max;
+
+    Int_t 		SortEta;						// Sort on-off
+    Int_t 		S_nEta;
+    Int_t 		S_nEta_condition;
+    Double_t 	S_Eta_theta_min;
+    Double_t	S_Eta_theta_max;
+
+    Int_t 		SortEtaP;						// Sort on-off
+    Int_t 		S_nEtaP;
+    Int_t 		S_nEtaP_condition;
+    Double_t 	S_EtaP_theta_min;
+    Double_t	S_EtaP_theta_max;
+    
+	char string_in1[256], string_in2[256], string_in3[256];
+	std::string string_out1, string_out2, string_out3;
+			    
 protected:
 	    
 public:
@@ -41,7 +72,8 @@ public:
 
     Bool_t	SortAnalyseEvent();
     Bool_t	SortFillEvent();
-//    Bool_t 	SortOnParticle(Int_t PDG, Int_t Num, Double_t ThetaMin, Double_t ThetaMax);
+    Bool_t 	SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
+    void	CheckConfigCondition(char string[], int *condition, std::string& string_out);
 };
 
 

@@ -17,14 +17,6 @@ private:
     char 	file_in[256];
 	char 	file_out[256];
 	Bool_t 	UseParticleReconstruction;
-	
-	Int_t 	SortNumberParticles;	
-	Int_t  	Sort_nParticles_total;
-	Int_t  	Sort_nParticles_total_condition;
-	Int_t  	Sort_nParticles_CB;
-	Int_t  	Sort_nParticles_CB_condition;	
-	Int_t  	Sort_nParticles_TAPS;
-	Int_t  	Sort_nParticles_TAPS_condition;		
 
 protected:
 

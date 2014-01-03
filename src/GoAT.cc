@@ -38,8 +38,7 @@ int main(int argc, char *argv[])
 
 
 GoAT::GoAT() :
-				UseParticleReconstruction(0),
-				SortNumberParticles(0)
+				UseParticleReconstruction(0)
 { 
 }
 

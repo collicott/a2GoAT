@@ -5,13 +5,7 @@
 GParticleReconstruction::GParticleReconstruction() :
 							Identified(0),
 							nParticles(0),
-							PDG(0),
-							nPi0(0),
-							nEta(0),
-							nEtaP(0),
-							nProton(0),
-							nChPion(0),
-							nElectron(0)
+							PDG(0)
 {
 	Identified 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 	PDG 		= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
@@ -92,35 +86,12 @@ Bool_t	GParticleReconstruction::PostInit()
 	}
 	else cout << "Meson reconstruction is NOT active." << endl;	
 	
-	// read from PDG database in future (not configs)
-	m_pi0  = 135.0;
-	m_eta  = 545.0;
-	m_etaP = 958.0;
-	m_proton = 938.3;
-	m_chpi = 139.6;
-	m_electron = 0.511;	
-	
-	pdg_rootino = 0;
-	pdg_pi0  = 1;
-	pdg_eta  = 2; 
-	pdg_etaP = 3;	
-	pdg_proton = 4;
-	pdg_chpi = 5;
-	pdg_electron = 6;
-
 	return kTRUE;
 }
 
 void	GParticleReconstruction::Reconstruct()
 {
 	nParticles = 0;
-	nPi0  = 0;	
-	nEta  = 0;	
-	nEtaP = 0;
-	nProton = 0;
-	nChPion = 0;
-	nElectron = 0;
-	
 	SetNParticles(nParticles);	
 	
 	for (int i = 0; i < GetNParticles(); i++){
@@ -133,7 +104,7 @@ void	GParticleReconstruction::Reconstruct()
 
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
-		if (Identified[i] == 2) AddParticle(pdg_chpi,i);		
+		if (Identified[i] == 2) AddParticle(pdg_chpion,i);		
 		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
 	}
 
@@ -141,10 +112,6 @@ void	GParticleReconstruction::Reconstruct()
 
 void	GParticleReconstruction::ChargedReconstruction()
 {
-	
-	nProton	 	= 0;
-	nElectron 	= 0;	
-	nChPion		= 0;	
 	
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
@@ -162,17 +129,13 @@ void	GParticleReconstruction::ChargedReconstruction()
 		if(Cut_proton->IsInside(GetEk(i),Get_dE(i)))
 		{
 			SetInputMass(i,m_proton);			
-			AddParticle(pdg_proton,i);  //  <--- Look it's a proton!
-			Identified[i] = 1;
-			nProton++;
+			AddParticle(pdg_proton,i);
+
 		}
 		else if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
 		{
-			SetInputMass(i,m_chpi);			
-			// Not ready to include in full particle list because the
-			// charged pion may be part of an eta decay
-			Identified[i] = 2; // Temporary state
-			nChPion++;
+			SetInputMass(i,m_chpion);			
+			Identified[i] = 2; // Temporary state (may be meson decay)
 		}	
 	}			
 				
@@ -223,16 +186,12 @@ void	GParticleReconstruction::MesonReconstruction()
 			
 	if ((diff_eta <= 1.0) && (diff_eta < diff_etaP))
 	{
-		// Reaction is an eta!		
 		AddParticle(pdg_eta,ndaughter,daughter_list);
-		nEta++;
 		return;		
 	}
 	if ((diff_etaP <= 1.0) && (diff_etaP < diff_eta))
 	{
-		// Reaction is an eta'!
 		AddParticle(pdg_etaP,ndaughter,daughter_list);
-		nEtaP++;
 		return;
 	}				
 	
@@ -300,30 +259,24 @@ void	GParticleReconstruction::MesonReconstruction()
 		
 		if( tempID[i] == pdg_pi0) 
 		{
-			// Found a pi0!
 			ndaughter = 2;
 			daughter_list[0] = index1[i];
 			daughter_list[1] = index2[i];
 			AddParticle(pdg_pi0,ndaughter,daughter_list);
-			nPi0++;
 		}			
 		if( tempID[i] == pdg_eta) 	
 		{
-			// Found an eta!
 			ndaughter = 2;
 			daughter_list[0] = index1[i];
 			daughter_list[1] = index2[i];
 			AddParticle(pdg_eta,ndaughter,daughter_list);
-			nEta++;
 		}
 		if( tempID[i] == pdg_etaP) 			
 		{
-			// Found an eta' !
 			ndaughter = 2;
 			daughter_list[0] = index1[i];
 			daughter_list[1] = index2[i];
 			AddParticle(pdg_etaP,ndaughter,daughter_list);
-			nEtaP++;
 		}
 		
 	}
@@ -332,6 +285,7 @@ void	GParticleReconstruction::MesonReconstruction()
 
 void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[])
 {
+	Identified[index_list[0]] = 1;
 
 	TLorentzVector part  = GetVector(index_list[0]);
 	
@@ -355,6 +309,8 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 
 		for(Int_t i = 1; i < nindex; i++)
 		{
+			Identified[index_list[i]] = 1;
+			
 			part += GetVector(index_list[i]);
 
 			Ek 	 	+= GetEk(index_list[i]); 	

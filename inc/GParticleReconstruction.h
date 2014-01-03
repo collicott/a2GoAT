@@ -7,6 +7,21 @@
 #define DEFAULT_ETA_IM_WIDTH 44.0
 #define DEFAULT_ETAP_IM_WIDTH 60.0
 
+#define	pdg_rootino 0
+#define	pdg_pi0 1
+#define	pdg_eta 2
+#define	pdg_etaP 3
+#define	pdg_proton 4
+#define	pdg_chpion 5
+#define	pdg_electron 6
+
+#define m_pi0 135.0
+#define	m_eta 545.0
+#define	m_etaP 958.0
+#define	m_proton 938.3
+#define	m_chpion 139.6
+#define	m_electron 0.511
+
 class	GParticleReconstruction : public GTreeManager
 {
 private:
@@ -27,38 +42,16 @@ private:
    	TCutG* 		Cut_proton;
    	TCutG*		Cut_pion;
 	
-	Int_t* 		PDG;
-	Int_t* 		Identified;
-	
-	Int_t 		nParticles;
-
-	Double_t	m_pi0;
-	Double_t	m_eta;
-	Double_t	m_etaP;
-	Double_t	m_proton;
-	Double_t 	m_chpi;
-	Double_t	m_electron;
-	
-	Int_t 		pdg_rootino;
-	Int_t 		pdg_pi0;
-	Int_t 		pdg_eta;
-	Int_t 		pdg_etaP;
-	Int_t		pdg_proton;
-	Int_t 		pdg_chpi;
-	Int_t		pdg_electron;
-	
 	Double_t	width_pi0;
 	Double_t	width_eta;
 	Double_t	width_etaP;
 
-   	Int_t 		nPi0;
-   	Int_t 		nEta;
-   	Int_t 		nEtaP;
- 	Int_t 		nProton;
-	Int_t		nChPion;
-	Int_t 		nElectron;		
-
+	Int_t* 		PDG;
+	Int_t* 		Identified;
+	
+	Int_t 		nParticles;
    	Int_t 		i;
+   	
 protected:
 	    
 public:
@@ -81,13 +74,7 @@ public:
 	TCutG*	OpenCutFile(Char_t* filename, Char_t* cutname);
 
 	// Make some variables available for sorting/printing
-	Int_t 	GP_GetNParticles()	const 	{return nParticles;}
-    Int_t	GetNPi0() 			const	{return nPi0;}
-    Int_t	GetNEta() 			const	{return nEta;}	
-    Int_t	GetNEtaP() 			const	{return nEtaP;}
-    Int_t	GetNProton() 		const	{return nProton;}
-    Int_t	GetNChPion() 		const	{return nChPion;}
-   
+ 
 
 };
 

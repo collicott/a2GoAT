@@ -32,6 +32,14 @@ Cut-IM-Width-Eta-Prime: 60
 #-----------------------------------------------------------------------
 # Just turn off a sort completely to ignore a sorting preference
 
-#							Total 	CB		TAPS
-Sort-Raw-Number-Particles: 	3=		3=		0=
-Sort-Proton: 3
+#					Total 	CB		TAPS
+SortRaw-NParticles: 3=		2=		1=
+
+Sort-NParticles: 	2=
+
+					Number		Theta-min	Theta-max
+Sort-Proton: 		1= 			0 			180
+#Sort-ChPion: 		1=			20			40
+Sort-Pi0: 			1= 			0 			180
+#Sort-Eta: 			1= 			60 			80
+#Sort-Eta-Prime: 	1= 			80			100

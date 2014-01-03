@@ -103,6 +103,12 @@ public:
 			Char_t* GetConfigFile()	{return global_config_file;}	
 
     string	ReadConfig(const std::string& key_in, Char_t* configname);	
+    
+	// Make some things available for sorting
+	Int_t 		GTree_GetNParticles()				const 	{return nParticles;}
+	Int_t 		GTree_GetPDG(const Int_t index)		const	{return PDG[index];}
+    Double_t	GTree_GetTheta(const Int_t index)	const	{return Theta[index];}
+        
 };
 
 
