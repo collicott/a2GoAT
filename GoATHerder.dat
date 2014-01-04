@@ -8,7 +8,7 @@
 
 Input-File: /home/cristina/RootTree_Compton_354.root
 Output-File: /home/cristina/out_RootTree_Compton_354.root 
-Period-Macro: 10000
+Period-Macro: 50000
 
 #-----------------------------------------------------------------------
 # Particle Reconstruction
@@ -16,11 +16,11 @@ Period-Macro: 10000
 Do-Particle-Reconstruction: 1
 
 Do-Charged-Particle-Reconstruction: 1
-
 Cut-dE-E-CB-Proton: 	cuts/CB_DeltaE-E_Proton.root Proton
+Cut-dE-E-CB-Pion: 		cuts/CB_DeltaE-E_Pion.root Pion
 Cut-dE-E-TAPS-Pion: 	cuts/TAPS_DeltaE-E.root	CutPiplus
 Cut-dE-E-TAPS-Proton: 	cuts/TAPS_DeltaE-E.root CutProton
-Cut-dE-E-CB-Pion: 		cuts/CB_DeltaE-E_Pion.root Pion
+Cut-dE-E-TAPS-Electron: cuts/TAPS_DeltaE-E.root CutElectron
 
 Do-Meson-Reconstruction: 1
 Cut-IM-Width-Pi0: 20
@@ -31,15 +31,16 @@ Cut-IM-Width-Eta-Prime: 60
 # Sorting Preferences
 #-----------------------------------------------------------------------
 # Just turn off a sort completely to ignore a sorting preference
+# Use +, - or = to set counters (ex. 3- will accept 3 or less)
 
 #					Total 	CB		TAPS
-SortRaw-NParticles: 3=		2=		1=
+#SortRaw-NParticles: 7+		6+		1=
 
-Sort-NParticles: 	2=
+#Sort-NParticles: 	2+
 
 					Number		Theta-min	Theta-max
-Sort-Proton: 		1= 			0 			180
+#Sort-Proton: 		1= 			0 			20
 #Sort-ChPion: 		1=			20			40
-Sort-Pi0: 			1= 			0 			180
-#Sort-Eta: 			1= 			60 			80
+#Sort-Pi0: 			1= 			0 			180
+#Sort-Eta: 			1= 			20 			180
 #Sort-Eta-Prime: 	1= 			80			100

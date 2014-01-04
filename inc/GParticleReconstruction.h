@@ -36,11 +36,26 @@ private:
 	TCutG* 		Cut;
    	TCutG* 		Cut_CB_proton; 
    	TCutG* 		Cut_CB_pion; 
+   	TCutG*		Cut_CB_electron;
    	TCutG* 		Cut_TAPS_proton; 
    	TCutG* 		Cut_TAPS_pion; 
+   	TCutG*		Cut_TAPS_electron;
+
+   	Int_t		Cut_CB_proton_active;   	
+   	Int_t		Cut_TAPS_proton_active;  
+   	Int_t 		Cut_proton_active;
    	
+   	Int_t		Cut_CB_pion_active;
+   	Int_t		Cut_TAPS_pion_active;
+   	Int_t 		Cut_pion_active;
+   	
+   	Int_t		Cut_CB_electron_active; 
+   	Int_t		Cut_TAPS_electron_active; 
+   	Int_t 		Cut_electron_active;
+   	   	   	
    	TCutG* 		Cut_proton;
    	TCutG*		Cut_pion;
+   	TCutG*		Cut_electron;
 	
 	Double_t	width_pi0;
 	Double_t	width_eta;

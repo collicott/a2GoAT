@@ -30,24 +30,87 @@ Bool_t	GParticleReconstruction::PostInit()
 	{
 		cout << "Charged particle reconstruction is active:" << endl;
 	
-		config = ReadConfig("Cut-dE-E-CB-Proton",GetConfigFile());	
-		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
-		Cut_CB_proton = OpenCutFile(cutfilename,cutname);
+		config = ReadConfig("Cut-dE-E-CB-Proton",GetConfigFile());
+		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_proton_active = 0;
+		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+		{
+			Cut_CB_proton_active = 1;
+			Cut_CB_proton = OpenCutFile(cutfilename,cutname);
+		}
+		else 
+		{
+			cout << "ERROR: Cut-dE-E-CB-Proton set improperly" << endl;
+			return kFALSE;
+		}
+
+		config = ReadConfig("Cut-dE-E-CB-Pion",GetConfigFile());
+		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_pion_active = 0;
+		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+		{
+			Cut_CB_pion_active = 1;
+			Cut_CB_pion = OpenCutFile(cutfilename,cutname);
+		}
+		else 
+		{
+			cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+			return kFALSE;
+		}
+
+		config = ReadConfig("Cut-dE-E-CB-Electron",GetConfigFile());
+		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_electron_active = 0;
+		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+		{
+			Cut_CB_electron_active = 1;
+			Cut_CB_electron = OpenCutFile(cutfilename,cutname);
+		}
+		else 
+		{
+			cout << "ERROR: Cut-dE-E-CB-Electron set improperly" << endl;
+			return kFALSE;
+		}
 		
-		config = ReadConfig("Cut-dE-E-CB-Pion",GetConfigFile());	
-		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
-		Cut_CB_pion   = OpenCutFile(cutfilename,cutname);
+		config = ReadConfig("Cut-dE-E-TAPS-Proton",GetConfigFile());
+		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_proton_active = 0;
+		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+		{
+			Cut_TAPS_proton_active = 1;
+			Cut_TAPS_proton = OpenCutFile(cutfilename,cutname);
+		}
+		else 
+		{
+			cout << "ERROR: Cut-dE-E-TAPS-Proton set improperly" << endl;
+			return kFALSE;
+		}
 
-		config = ReadConfig("Cut-dE-E-TAPS-Pion",GetConfigFile());	
-		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
-		Cut_TAPS_pion   = OpenCutFile(cutfilename,cutname);	
+		config = ReadConfig("Cut-dE-E-TAPS-Pion",GetConfigFile());
+		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_pion_active = 0;
+		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+		{
+			Cut_TAPS_pion_active = 1;
+			Cut_TAPS_pion = OpenCutFile(cutfilename,cutname);
+		}
+		else 
+		{
+			cout << "ERROR: Cut-dE-E-TAPS-Pion set improperly" << endl;
+			return kFALSE;
+		}
 
-		config = ReadConfig("Cut-dE-E-TAPS-Proton",GetConfigFile());	
-		sscanf( config.c_str(), "%s %s\n", cutfilename,cutname);
-		Cut_TAPS_proton   = OpenCutFile(cutfilename,cutname);
-		cout << endl;
+		config = ReadConfig("Cut-dE-E-TAPS-Electron",GetConfigFile());
+		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_electron_active = 0;
+		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+		{
+			Cut_TAPS_electron_active = 1;
+			Cut_TAPS_electron = OpenCutFile(cutfilename,cutname);
+		}
+		else 
+		{
+			cout << "ERROR: Cut-dE-E-TAPS-Electron set improperly" << endl;
+			return kFALSE;
+		}
+		
 	}
 	else cout << "Charged particle reconstruction is NOT active." << endl;
+	cout << endl;
 	
 	config = ReadConfig("Do-Meson-Reconstruction",GetConfigFile());	
 	sscanf( config.c_str(), "%d\n", &ReconstructMesons);
@@ -104,7 +167,8 @@ void	GParticleReconstruction::Reconstruct()
 
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
-		if (Identified[i] == 2) AddParticle(pdg_chpion,i);		
+		if (Identified[i] == 2) AddParticle(pdg_chpion,i);
+		if (Identified[i] == 3) AddParticle(pdg_electron,i);				
 		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
 	}
 
@@ -116,27 +180,80 @@ void	GParticleReconstruction::ChargedReconstruction()
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
 		if (GetApparatus(i) == EAppCB) 
-		{
-			Cut_proton  = Cut_CB_proton;
-			Cut_pion	= Cut_CB_pion;
+		{	
+			if(Cut_CB_proton_active)
+			{
+				Cut_proton = Cut_CB_proton;
+				Cut_proton_active = 1;
+			}
+			else Cut_proton_active = 0;
+			if(Cut_CB_proton_active)
+			{
+				Cut_pion = Cut_CB_pion;
+				Cut_pion_active = 1;
+			}
+			else Cut_pion_active = 0;
+			if(Cut_CB_electron_active)
+			{
+				Cut_electron = Cut_CB_electron;
+				Cut_electron_active = 1;
+			}
+			else Cut_electron_active = 0;
 		}
 		else if (GetApparatus(i) == EAppTAPS)
 		{
-			Cut_proton  = Cut_TAPS_proton;
-			Cut_pion	= Cut_TAPS_pion;
-		}
-			
-		if(Cut_proton->IsInside(GetEk(i),Get_dE(i)))
-		{
-			SetInputMass(i,m_proton);			
-			AddParticle(pdg_proton,i);
+			if(Cut_TAPS_proton_active)
+			{
+				Cut_proton = Cut_TAPS_proton;
+				Cut_proton_active = 1;
+			}
+			else Cut_proton_active = 0;
+			if(Cut_TAPS_proton_active)
+			{
+				Cut_pion = Cut_TAPS_pion;
+				Cut_pion_active = 1;
+			}
+			else Cut_pion_active = 0;
+			if(Cut_TAPS_electron_active)
+			{
+				Cut_electron = Cut_TAPS_electron;
+				Cut_electron_active = 1;
+			}
+			else Cut_electron_active = 0;	
 
 		}
-		else if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
+		if(Cut_proton_active) 
 		{
-			SetInputMass(i,m_chpion);			
-			Identified[i] = 2; // Temporary state (may be meson decay)
+			if(Cut_proton->IsInside(GetEk(i),Get_dE(i)))
+			{
+				SetInputMass(i,m_proton);			
+				AddParticle(pdg_proton,i);
+
+			}
+		}
+		
+		if(Cut_pion_active) 
+		{		
+			if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
+			{
+				SetInputMass(i,m_chpion);			
+				Identified[i] = 2; // Temporary state (may be meson decay)
+			}
+		}
+		
+		if(Cut_electron_active) 
+		{		
+			cout << "Checking electron" << endl;
+			
+			if(Cut_electron->IsInside(GetEk(i),Get_dE(i)))
+			{
+				cout << "FOUND ONE!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+				
+				SetInputMass(i,m_electron);			
+				Identified[i] = 3; // Temporary state (may be meson decay)
+			}
 		}	
+				
 	}			
 				
 }

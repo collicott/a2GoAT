@@ -202,5 +202,5 @@ void	GTreeManager::Print()
 		configfile.close();
 	}
 
-	return "";
+	return "nokey";
 }

@@ -16,6 +16,9 @@ class	GoAT : public GSort
 private:
     char 	file_in[256];
 	char 	file_out[256];
+	Int_t	UsePeriodMacro;
+	Int_t 	period;
+	
 	Bool_t 	UseParticleReconstruction;
 
 protected:

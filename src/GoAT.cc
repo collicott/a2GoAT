@@ -100,6 +100,9 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	if(!FindValidEvents())			return kFALSE;
 	cout << endl;
 		
+	config = ReadConfig("Period-Macro",GetConfigFile());
+	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
+		
 	cout << "Setting up sorting criteria:" << endl;	
 	cout << "==========================================================" << endl;	
 	if(!GSort::PostInit()) 
@@ -137,7 +140,11 @@ void	GoAT::Analyse()
 
 void	GoAT::Reconstruct()
 {
-	if(GetActualEvent() % 10000 == 0) printf("Event: %d\n",GetActualEvent());
+	if(UsePeriodMacro == 1)
+	{
+		if(GetActualEvent() % period == 0) 
+						printf("Event: %d\n",GetActualEvent());
+	}
 
 	if(SortAnalyseEvent())
 	{
