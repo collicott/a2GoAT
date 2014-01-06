@@ -1,9 +1,12 @@
 #ifndef __CINT__
 
 #include "GoAT.h"
+#include <time.h>
 
 int main(int argc, char *argv[])
 {
+	clock_t start, end;
+	start = clock();
 	
 	// Associate 1st terminal input with config file
 	Char_t* configfile;
@@ -32,6 +35,11 @@ int main(int argc, char *argv[])
 	}
 	
 	goat->Analyse();
+
+	end = clock();
+	cout << "Time required for execution: "
+	<< (double)(end-start)/CLOCKS_PER_SEC
+	<< " seconds." << "\n\n";
 
 	return 0;
 }
@@ -134,8 +142,10 @@ Bool_t	GoAT::Init(Char_t* configfile)
 
 void	GoAT::Analyse()
 {
+	cout << "Analysing ..." << endl;
 	TraverseInputEntries();			
 	CloseOutputFile();
+//	OutputStatistics();
 }
 
 void	GoAT::Reconstruct()
@@ -149,9 +159,9 @@ void	GoAT::Reconstruct()
 	if(SortAnalyseEvent())
 	{
 		if(UseParticleReconstruction) GParticleReconstruction::Reconstruct();
+		
+		if(SortFillEvent()) FillEvent();
 	}
-
-	if(SortFillEvent()) FillEvent();
 }
 
 Bool_t 	GoAT::Write()

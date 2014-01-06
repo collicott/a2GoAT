@@ -56,6 +56,30 @@ Bool_t	GSort::PostInit()
 	}
 	
 	// Cut on reconstructed number of particles
+	config = ReadConfig("SortRaw-CBEnergySum",GetConfigFile());
+	if (strcmp(config.c_str(), "nokey") == 0) SortRawCBESum = 0;
+	else if( sscanf(config.c_str(),"%lf %s\n",&SR_CBESum, string_in1) == 2 )
+	{
+		CheckConfigCondition(string_in1, &SR_CBESum_condition, string_out1);
+		if(SR_CBESum_condition == -1) SortRawCBESum = 0;
+		else SortRawCBESum = 1;
+		
+		if(SortRawCBESum == 1)
+			cout << "Sort: Crystal Ball Energy Sum " 
+				 << SR_CBESum << " "<< string_out1 << endl;
+		else 
+		{
+			cout << "SortRaw-CBEnergySum cut set improperly" <<endl;
+			cout << "Continuing with this cut turned off!" << endl;
+		 }
+		 cout << endl;
+	}	
+	else {
+		SortRawCBESum = 0;
+	}	
+	
+	
+	// Cut on reconstructed number of particles
 	config = ReadConfig("Sort-NParticles",GetConfigFile());
 	if (strcmp(config.c_str(), "nokey") == 0) SortNParticles = 0;
 	else if( sscanf( config.c_str(), "%d %s\n", 
@@ -216,11 +240,9 @@ void	GSort::Reconstruct()
 Bool_t GSort::SortAnalyseEvent()
 {
 	// Sort on raw variables before analysis (increases speed)
-	
+	Int_t i;	
 	if(SortRawNParticles == 1)
 	{
-		Int_t i;
-
 		// Total number of particles
 		i = SR_nPart_total_condition;
 		if(i == 0) { if (GetNParticles() < SR_nPart_total) {return kFALSE;}}
@@ -238,11 +260,18 @@ Bool_t GSort::SortAnalyseEvent()
 		if(i == 0) { if (GetNTAPS() < SR_nPart_TAPS) {return kFALSE;}}
 		else if(i == 1) {if (GetNTAPS() > SR_nPart_TAPS) {return kFALSE;}}
 		else if(i == 2) {if (GetNTAPS() != SR_nPart_TAPS) {return kFALSE;}}	
-
 	}
 	
+	if(SortRawCBESum == 1)
+	{
+		// Crystal Ball Energy Sum
+		i = SR_CBESum_condition;
+		if(i == 0) { if (GetESum() < SR_CBESum) {return kFALSE;}}
+		else if(i == 1) {if (GetESum() > SR_CBESum) {return kFALSE;}}
+		else if(i == 2) {if (GetESum() != SR_CBESum) {return kFALSE;}}
+	}	
+	
 	return kTRUE;
-
 }
 
 

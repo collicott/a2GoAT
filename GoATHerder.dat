@@ -6,9 +6,9 @@
 # General Setup
 #-----------------------------------------------------------------------
 
-Input-File: /home/cristina/RootTree_Compton_354.root
-Output-File: /home/cristina/out_RootTree_Compton_354.root 
-Period-Macro: 50000
+Input-File: /home/cristina/RootTreeFULL_Compton_354.root
+Output-File: /home/cristina/out_RootTreeFULL_Compton_354.root
+Period-Macro: 100000
 
 #-----------------------------------------------------------------------
 # Particle Reconstruction
@@ -33,14 +33,16 @@ Cut-IM-Width-Eta-Prime: 60
 # Just turn off a sort completely to ignore a sorting preference
 # Use +, - or = to set counters (ex. 3- will accept 3 or less)
 
-#					Total 	CB		TAPS
-#SortRaw-NParticles: 7+		6+		1=
+#						Total 	CB		TAPS
+SortRaw-NParticles: 	7=		6=		1=
 
-#Sort-NParticles: 	2+
+SortRaw-CBEnergySum: 	400+
+
+Sort-NParticles: 	2=
 
 					Number		Theta-min	Theta-max
-#Sort-Proton: 		1= 			0 			20
+Sort-Proton: 		1= 			0 			20
 #Sort-ChPion: 		1=			20			40
 #Sort-Pi0: 			1= 			0 			180
-#Sort-Eta: 			1= 			20 			180
+Sort-Eta: 			1= 			20 			180
 #Sort-Eta-Prime: 	1= 			80			100

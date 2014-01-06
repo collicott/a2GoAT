@@ -243,12 +243,8 @@ void	GParticleReconstruction::ChargedReconstruction()
 		
 		if(Cut_electron_active) 
 		{		
-			cout << "Checking electron" << endl;
-			
 			if(Cut_electron->IsInside(GetEk(i),Get_dE(i)))
 			{
-				cout << "FOUND ONE!!!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
-				
 				SetInputMass(i,m_electron);			
 				Identified[i] = 3; // Temporary state (may be meson decay)
 			}

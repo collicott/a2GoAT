@@ -118,6 +118,8 @@ Bool_t    GInputTreeManager::OpenTreeRawEvent()
 	treeRawEvent->SetBranchAddress("WC_Vertex_X", WC_Vertex_X);	
 	treeRawEvent->SetBranchAddress("WC_Vertex_Y", WC_Vertex_Y);	
 	treeRawEvent->SetBranchAddress("WC_Vertex_Z", WC_Vertex_Z);	
+
+	treeRawEvent_clone = treeRawEvent->CloneTree(0);
 	
 	return kTRUE;
 }
@@ -134,6 +136,8 @@ Bool_t    GInputTreeManager::OpenTreeTagger()
 	treeTagger->SetBranchAddress("tagged_ch", tagged_ch);
 	treeTagger->SetBranchAddress("tagged_t", tagged_t);
 	
+	treeTagger_clone = treeTagger->CloneTree(0);
+	
 	return kTRUE;	
 }
 
@@ -147,6 +151,8 @@ Bool_t    GInputTreeManager::OpenTreeTrigger()
 
 	treeTrigger->SetBranchAddress("ESum", &ESum);
 	treeTrigger->SetBranchAddress("Mult", &Mult);
+
+	treeTrigger_clone = treeTrigger->CloneTree(0);
 	
 	return kTRUE;
 }
@@ -169,6 +175,8 @@ Bool_t    GInputTreeManager::OpenTreeDetectorHits()
 	treeDetectorHits->SetBranchAddress("BaF2_PbWO4_Hits", BaF2_PbWO4_Hits);
 	treeDetectorHits->SetBranchAddress("nVeto_Hits", &nVeto_Hits);
 	treeDetectorHits->SetBranchAddress("Veto_Hits", Veto_Hits);
+
+	treeDetectorHits_clone = treeDetectorHits->CloneTree(0);	
 	
 	return kTRUE;	
 }
@@ -185,6 +193,8 @@ Bool_t    GInputTreeManager::OpenTreeScaler()
 	treeScaler->SetBranchAddress("eventID", &EventID);
 	treeScaler->SetBranchAddress("Scaler", Scaler);
 	NScaler = treeScaler->GetLeaf("Scaler")->GetLen();
+
+	treeScaler_clone = treeScaler->CloneTree(0);
 	
 	return kTRUE;
 }	

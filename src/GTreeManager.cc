@@ -88,7 +88,7 @@ Bool_t	  GTreeManager::CloseOutputFile()
 	}
 	
 	file->cd();
-	if(treeParticles)	treeParticles->Write();
+	WriteTrees();
 		
     file->Close();
 	cout << "closed output file."<< endl;
@@ -149,8 +149,31 @@ void	GTreeManager::Reconstruct()
 Bool_t	GTreeManager::FillEvent()
 {
 	// Fill event into tree
-	if(treeParticles)	treeParticles->Fill();
+	if(treeParticles)				treeParticles->Fill();
+	else 							treeRawEvent_clone->Fill();
 
+	if(treeTagger_clone) 			treeTagger_clone->Fill();
+	if(treeTrigger_clone)			treeTrigger_clone->Fill();
+	if(treeScaler_clone)			treeScaler_clone->Fill();
+	if(treeDetectorHits_clone)		treeDetectorHits_clone->Fill();
+	
+	return kTRUE;
+}
+
+Bool_t  GTreeManager::WriteTrees()
+{
+	if(!file) return kFALSE;
+	file->cd();
+	
+	// Write trees to file
+	if(treeParticles)				treeParticles->Write();
+	else if(treeRawEvent_clone)		treeRawEvent_clone->Write();
+	
+	if(treeTagger_clone)			treeTagger_clone->Write();
+	if(treeTrigger_clone)			treeTrigger_clone->Write();
+	if(treeScaler_clone)			treeScaler_clone->Write();
+	if(treeDetectorHits_clone)		treeDetectorHits_clone->Write();
+	
 	return kTRUE;
 }
 

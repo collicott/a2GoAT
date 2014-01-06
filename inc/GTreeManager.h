@@ -15,8 +15,8 @@ using namespace std;
 class	GTreeManager    : public GInputTreeManager
 {
 private:
-	TFile*		file;					// outFile
-    TTree*		treeParticles;			// reconstructed Pi0s
+	TFile*		file;				// outFile
+    TTree*		treeParticles;		// reconstructed
 
     //Reconstructed Particles
     UInt_t		rawEventNumber;
@@ -67,6 +67,7 @@ public:
     Bool_t  InitTreeParticles();
     Bool_t  OpenTreeParticles();
     virtual Bool_t 	FillEvent();
+    Bool_t	WriteTrees();     
     Bool_t	CloseOutputFile(); 
     
     void	Clear()	{;}

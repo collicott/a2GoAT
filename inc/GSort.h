@@ -20,6 +20,10 @@ private:
     Int_t   	SR_nPart_CB_condition;        
     Int_t   	SR_nPart_TAPS;
     Int_t   	SR_nPart_TAPS_condition;       	
+ 
+ 	Int_t 		SortRawCBESum;	 				// Sort on-off
+	Double_t  	SR_CBESum;
+	Int_t  		SR_CBESum_condition;
     
     Int_t 		SortNParticles;					// Sort on-off
     Int_t 		S_nParticles;

@@ -108,6 +108,12 @@ public:
     GInputTreeManager();
     virtual ~GInputTreeManager();
 
+	TTree*	treeRawEvent_clone;		// Raw particle information (filled when required)
+	TTree*	treeTagger_clone;		// Tagger information (filled when required)
+	TTree* 	treeTrigger_clone;		// Trigger information (filled when required)
+	TTree* 	treeDetectorHits_clone;	// Detector system hit patterns (filled when required)
+	TTree*	treeScaler_clone; 		// Scaler read information (filled when required)
+
     Bool_t	OpenInputFile(const char* treefile);
 	Bool_t	OpenTreeRawEvent();
 	Bool_t	OpenTreeTagger();
@@ -196,9 +202,6 @@ public:
 
 	void 	SetInputMass(Int_t index, Double_t value)	{Mass[index] 	= value;}
 
-		
- //   TLorentzVector        GetVector(const Int_t index) const {return TLorentzVector(Px[index], Py[index], Pz[index], E[index]);}
-    
    TLorentzVector	GetVector(const Int_t index) const	
 					{
 
