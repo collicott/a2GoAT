@@ -23,6 +23,7 @@ private:
     
     //Particles    
     Int_t		nParticles;
+    Int_t* 		Charge;
     Int_t* 		PDG;
     Double_t*	Px;
     Double_t*	Py;
@@ -33,22 +34,23 @@ private:
     Double_t*	Phi; 
    	Double_t*	time;
     UChar_t*    clusterSize;
-        
     UChar_t*	Apparatus;
-    
     Double_t*	d_E;
     Double_t*	WC0_E;
     Double_t*	WC1_E;
-    
    	Double_t* 	WC_Vertex_X;
    	Double_t* 	WC_Vertex_Y;
    	Double_t* 	WC_Vertex_Z;    
-   	
-   	Double_t* 	Meson_phot_Px;
-   	Double_t* 	Meson_phot_Py;
-   	Double_t* 	Meson_phot_Pz;
-   	Double_t* 	Meson_phot_E; 
-   	Int_t*		Meson_phot_Index; 
+
+	Int_t*		nDaughters;
+	Int_t 		nDaughterList;
+   	Int_t*		daughter_index;   	
+    Int_t*		daughter_PDG;
+   	Double_t* 	daughter_E; 
+   	Double_t*	daughter_Theta;
+   	Double_t*	daughter_Phi;
+
+
  	
 protected:
     Int_t       offsetToInputTree;
@@ -74,8 +76,11 @@ public:
     virtual void	Reset();
     virtual void	Reconstruct();
 	virtual void	Print();
+
+	void	SetCharge(Int_t index, Int_t value)	{Charge[index] = value;}
+	void	SetNParticles(Int_t value)   	{nParticles = value;}
+	void	SetNDaughters(Int_t index, Int_t value) {nDaughters[index] = value;}
 	
-	void	SetNParticles(Int_t index)   	{nParticles = index;}
 	void	SetPDG(Int_t index, Int_t value) {PDG[index] = value;}	
 	void	SetPx(Int_t index, Double_t value)	{Px[index] 	= value;}
 	void	SetPy(Int_t index, Double_t value)	{Py[index] 	= value;}
@@ -99,16 +104,26 @@ public:
 	
 	void 	SetMass(Int_t index, Double_t value)		{Mass[index] 	= value;}
 
+	void	SetNDaughterList(Int_t value)   	{nDaughterList = value;}
+	void	SetDaughter_index(Int_t index, Int_t value)	{daughter_index[index] 	= value;}
+	void	SetDaughter_E(Int_t index, Double_t value)		{daughter_E[index] 	= value;}
+	void	SetDaughter_Theta(Int_t index, Double_t value)	{daughter_Theta[index] 	= value;}
+	void	SetDaughter_Phi(Int_t index, Double_t value)	{daughter_Phi[index] 	= value;}
+	void	SetDaughter_PDG(Int_t index, Int_t value)		{daughter_PDG[index] 	= value;}
+
 	std::string config;	
 	void 	SetConfigFile(Char_t* config_file)	{global_config_file = config_file;}
 			Char_t* GetConfigFile()	{return global_config_file;}	
 
-    string	ReadConfig(const std::string& key_in, Char_t* configname);	
-    
+    string	ReadConfig(const std::string& key_in, Int_t instance, Char_t* configname);	
+    string	ReadConfig(const std::string& key_in, Int_t instance) {return ReadConfig(key_in,instance,GetConfigFile());}
+    string	ReadConfig(const std::string& key_in) {return ReadConfig(key_in,0,GetConfigFile());}
+
 	// Make some things available for sorting
 	Int_t 		GTree_GetNParticles()				const 	{return nParticles;}
 	Int_t 		GTree_GetPDG(const Int_t index)		const	{return PDG[index];}
     Double_t	GTree_GetTheta(const Int_t index)	const	{return Theta[index];}
+    Int_t 		GTree_GetCharge(const Int_t index) 	const 	{return Charge[index];}   
         
 };
 

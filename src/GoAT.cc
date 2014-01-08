@@ -62,7 +62,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 
 	cout << "Opening files: " << endl;
 	
-	config = ReadConfig("Input-File",GetConfigFile());
+	config = ReadConfig("Input-File");
 	if (strcmp(config.c_str(), "nokey") == 0)
 	{
 		cout << "No input file set!" << endl; 
@@ -79,7 +79,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 		return kFALSE;
 	}		
 
-	config = ReadConfig("Output-File",GetConfigFile());
+	config = ReadConfig("Output-File");
 	if (strcmp(config.c_str(), "nokey") == 0)
 	{
 		cout << "No output file set!" << endl; 
@@ -108,7 +108,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	if(!FindValidEvents())			return kFALSE;
 	cout << endl;
 		
-	config = ReadConfig("Period-Macro",GetConfigFile());
+	config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
 		
 	cout << "Setting up sorting criteria:" << endl;	
@@ -121,7 +121,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	
 	cout << "Setting up analysis classes:" << endl;	
 	cout << "==========================================================" << endl;	
-	config = ReadConfig("DO-PARTICLE-RECONSTRUCTION",GetConfigFile());	
+	config = ReadConfig("DO-PARTICLE-RECONSTRUCTION");	
 	sscanf( config.c_str(), "%d\n", &UseParticleReconstruction);
 	if(UseParticleReconstruction) 
 	{

@@ -201,6 +201,8 @@ public:
 			Int_t		GetActualEvent()	const	{return actualEvent;}
 
 	void 	SetInputMass(Int_t index, Double_t value)	{Mass[index] 	= value;}
+			Double_t 	GetInputMass(Int_t index) 	const    {return Mass[index];}
+	
 
    TLorentzVector	GetVector(const Int_t index) const	
 					{

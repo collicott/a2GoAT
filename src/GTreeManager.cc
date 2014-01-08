@@ -5,7 +5,9 @@ GTreeManager::GTreeManager() :
 				file(0),
 				treeParticles(0),
 				nParticles(0),
+				Charge(0),
 				PDG(0),
+				nDaughters(0),
 				Px(0),
 				Py(0),
 				Pz(0),
@@ -22,13 +24,16 @@ GTreeManager::GTreeManager() :
 				WC_Vertex_X(0),
 				WC_Vertex_Y(0),
 				WC_Vertex_Z(0),	
-				Meson_phot_Px(0),	
-   	          	Meson_phot_Py(0),	
-   	          	Meson_phot_Pz(0),	
-              	Meson_phot_E(0),	
-   	            Meson_phot_Index(0) 
+				nDaughterList(0),
+				daughter_index(0),	
+   	          	daughter_E(0),	
+   	          	daughter_Theta(0),	
+              	daughter_Phi(0),	
+   	            daughter_PDG(0) 
 {   
+	Charge			= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 	PDG				= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+	nDaughters 		= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];	
 	Px				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     Py				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     Pz				= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
@@ -48,11 +53,11 @@ GTreeManager::GTreeManager() :
     WC_Vertex_Y		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     WC_Vertex_Z		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
     
-    Meson_phot_Px	= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-    Meson_phot_Py	= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-    Meson_phot_Pz	= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-    Meson_phot_E	= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-    Meson_phot_Index	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    daughter_index	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    daughter_E		= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    daughter_Theta	= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    daughter_Phi	= new Double_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+    daughter_PDG	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 }
 
 GTreeManager::~GTreeManager()
@@ -106,7 +111,9 @@ Bool_t  GTreeManager::InitTreeParticles()
 	cout << "treeParticles created." << endl;
 	
 	treeParticles->Branch("nParticles",&nParticles,"nParticles/I");
+	treeParticles->Branch("Charge",Charge,"Charge[nParticles]/I");
 	treeParticles->Branch("PDG",PDG,"PDG[nParticles]/I");
+	treeParticles->Branch("nDaughters",	nDaughters,"nDaughters[nParticles]/I");
 	treeParticles->Branch("Px", Px,"Px[nParticles]/D");
 	treeParticles->Branch("Py", Py,"Py[nParticles]/D");
 	treeParticles->Branch("Pz", Pz,"Pz[nParticles]/D");
@@ -123,11 +130,12 @@ Bool_t  GTreeManager::InitTreeParticles()
 	treeParticles->Branch("WC_Vertex_X", WC_Vertex_X, "WC_Vertex_X[nParticles]/D");
 	treeParticles->Branch("WC_Vertex_Y", WC_Vertex_Y, "WC_Vertex_Y[nParticles]/D");
 	treeParticles->Branch("WC_Vertex_Z", WC_Vertex_Z, "WC_Vertex_Z[nParticles]/D");
-/*	treeParticles->Branch("Meson_phot_Px",Meson_phot_Px);
-	treeParticles->Branch("Meson_phot_Py",Meson_phot_Py);
-	treeParticles->Branch("Meson_phot_Pz",Meson_phot_Pz);
-	treeParticles->Branch("Meson_phot_E", Meson_phot_E);
-	treeParticles->Branch("Meson_phot_Index",Meson_phot_Index); */
+	treeParticles->Branch("nDaughterList",&nDaughterList,"nDaughterList/I");
+	treeParticles->Branch("daughter_index", daughter_index,	"daughter_index[nDaughterList]/I");
+	treeParticles->Branch("daughter_E", 	daughter_E,		"daughter_E[nDaughterList]/D");
+	treeParticles->Branch("daughter_Theta", daughter_Theta,	"daughter_Theta[nDaughterList]/D");
+	treeParticles->Branch("daughter_Phi", 	daughter_Phi,	"daughter_Phi[nDaughterList]/D");
+	treeParticles->Branch("daughter_PDG", 	daughter_PDG,	"daughter_PDG[nDaughterList]/I");
 	
 	return kTRUE;
 }
@@ -183,8 +191,9 @@ void	GTreeManager::Print()
 
 }
 
-	string GTreeManager::ReadConfig(const std::string& key_in, Char_t* configname)
+	string GTreeManager::ReadConfig(const std::string& key_in, Int_t instance, Char_t* configname)
 {
+	Int_t string_instance = 0;
 	std::string key = key_in;
 	std::transform(key.begin(), key.end(),key.begin(), ::toupper);
 	
@@ -207,19 +216,23 @@ void	GTreeManager::Print()
 			std::string firstWord;
 			
 			try {
-				firstWord = str.substr(0,str.find(" "));
+				firstWord = str.substr(0,str.find(":"));
 			}
 			catch(std::exception& e) {
-				firstWord = str.erase(str.find_first_of(" "),str.find_first_of(" "));
+				firstWord = str.erase(str.find_first_of(":"),str.find_first_of(":"));
 			}
 			std::transform(firstWord.begin(),firstWord.end(),firstWord.begin(), ::toupper);
-			firstWord.erase(firstWord.end()-1);	
-			values = str.substr(str.find(" ")+1,str.length());
+
+			values = str.substr(str.find(":")+1,str.length());
 
 			if (strcmp(firstWord.c_str(),key.c_str()) == 0) 
 			{
-				configfile.close();
-				return values;				
+				if (string_instance == instance) 
+				{
+					configfile.close();
+					return values;			
+				}
+				else string_instance++;
 			}
 		}
 		configfile.close();

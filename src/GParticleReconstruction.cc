@@ -5,10 +5,11 @@
 GParticleReconstruction::GParticleReconstruction() :
 							Identified(0),
 							nParticles(0),
-							PDG(0)
+							nDaughterList(0),
+							Charge(0)
 {
 	Identified 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-	PDG 		= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+	Charge	 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
 }
 
 GParticleReconstruction::~GParticleReconstruction()
@@ -23,14 +24,14 @@ Bool_t	GParticleReconstruction::PostInit()
 	InitTreeParticles();
 	cout << endl;
 	
-	config = ReadConfig("Do-Charged-Particle-Reconstruction",GetConfigFile());	
+	config = ReadConfig("Do-Charged-Particle-Reconstruction");	
 	sscanf( config.c_str(), "%d\n", &ReconstructChargedParticles);
 
 	if (ReconstructChargedParticles) 
 	{
 		cout << "Charged particle reconstruction is active:" << endl;
 	
-		config = ReadConfig("Cut-dE-E-CB-Proton",GetConfigFile());
+		config = ReadConfig("Cut-dE-E-CB-Proton");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_proton_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
@@ -43,7 +44,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			return kFALSE;
 		}
 
-		config = ReadConfig("Cut-dE-E-CB-Pion",GetConfigFile());
+		config = ReadConfig("Cut-dE-E-CB-Pion");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_pion_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
@@ -56,7 +57,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			return kFALSE;
 		}
 
-		config = ReadConfig("Cut-dE-E-CB-Electron",GetConfigFile());
+		config = ReadConfig("Cut-dE-E-CB-Electron");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_electron_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
@@ -69,7 +70,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			return kFALSE;
 		}
 		
-		config = ReadConfig("Cut-dE-E-TAPS-Proton",GetConfigFile());
+		config = ReadConfig("Cut-dE-E-TAPS-Proton");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_proton_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
@@ -82,7 +83,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			return kFALSE;
 		}
 
-		config = ReadConfig("Cut-dE-E-TAPS-Pion",GetConfigFile());
+		config = ReadConfig("Cut-dE-E-TAPS-Pion");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_pion_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
@@ -95,7 +96,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			return kFALSE;
 		}
 
-		config = ReadConfig("Cut-dE-E-TAPS-Electron",GetConfigFile());
+		config = ReadConfig("Cut-dE-E-TAPS-Electron");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_electron_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
@@ -112,14 +113,14 @@ Bool_t	GParticleReconstruction::PostInit()
 	else cout << "Charged particle reconstruction is NOT active." << endl;
 	cout << endl;
 	
-	config = ReadConfig("Do-Meson-Reconstruction",GetConfigFile());	
+	config = ReadConfig("Do-Meson-Reconstruction");	
 	sscanf( config.c_str(), "%d\n", &ReconstructMesons);
 
 	if (ReconstructMesons) 
 	{
 		cout << "Meson reconstruction is active:" << endl;
 
-		config = ReadConfig("Cut-IM-Width-Pi0",GetConfigFile());	
+		config = ReadConfig("Cut-IM-Width-Pi0");	
 		sscanf( config.c_str(), "%lf\n", &width_pi0);
 		if(width_pi0) cout << "Pi0 IM width cut set to " << width_pi0 << " MeV" << endl;
 		else 
@@ -128,7 +129,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			cout << "Pi0 IM width cut set to default (" << width_pi0 << " MeV)" << endl;
 		}
 
-		config = ReadConfig("Cut-IM-Width-Eta",GetConfigFile());	
+		config = ReadConfig("Cut-IM-Width-Eta");	
 		sscanf( config.c_str(), "%lf\n", &width_eta);
 		if(width_pi0) cout << "Eta IM width cut set to " << width_eta << " MeV" << endl;
 		else 
@@ -137,7 +138,7 @@ Bool_t	GParticleReconstruction::PostInit()
 			cout << "Pi0 IM width cut set to default (" << width_eta << " MeV)" << endl;
 		}
 
-		config = ReadConfig("Cut-IM-Width-Eta-Prime",GetConfigFile());	
+		config = ReadConfig("Cut-IM-Width-Eta-Prime");	
 		sscanf( config.c_str(), "%lf\n", &width_etaP);
 		if(width_etaP) cout << "Eta-Prime IM width cut set to " << width_etaP << " MeV" << endl;
 		else 
@@ -154,24 +155,67 @@ Bool_t	GParticleReconstruction::PostInit()
 
 void	GParticleReconstruction::Reconstruct()
 {
-	nParticles = 0;
-	SetNParticles(nParticles);	
+	InitEvent();
+	CheckNeutrality();
 	
-	for (int i = 0; i < GetNParticles(); i++){
-		Identified[i] = 0; 
-		SetInputMass(i,0.0);
-	}	
+	// Do TOF here!
+	// Do Neutron ID here! (TOF + Cluster size)
+	
+	PhotonReconstruction();	
 	
 	if(ReconstructChargedParticles) ChargedReconstruction();
-	if(ReconstructMesons)	 MesonReconstruction();
+	if(ReconstructMesons)	 		MesonReconstruction();
 
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
-		if (Identified[i] == 2) AddParticle(pdg_chpion,i);
-		if (Identified[i] == 3) AddParticle(pdg_electron,i);				
-		if (Identified[i] == 0) AddParticle(pdg_rootino,i);
-	}
+		// Finally add particles which were temporarily identified
+		if (Identified[i] == pdg_chpion) 	AddParticle(pdg_chpion,i);
+		if (Identified[i] == pdg_electron) 	AddParticle(pdg_electron,i);
+		if (Identified[i] == pdg_photon) 	AddParticle(pdg_photon,i);
+		if (Identified[i] == pdg_rootino) 	AddParticle(pdg_rootino,i);
 
+	}
+}
+
+void	GParticleReconstruction::InitEvent()
+{
+	nParticles = 0; 	SetNParticles(nParticles);
+	nDaughterList = 0; 	SetNDaughterList(nDaughterList);
+
+	// Mark everything as rootino	
+	for (int i = 0; i < GetNParticles(); i++)
+	{
+		Identified[i] = pdg_rootino; 
+		SetInputMass(i,0.0);
+	}	
+}
+
+void 	GParticleReconstruction::CheckNeutrality()
+{
+	// Rough start, this will soon be user controlled
+	for (int i = 0; i < GetNParticles(); i++){
+	
+		if (  ((Get_dE(i) > 0.0) && (Get_dE(i) < 1000.0)) 
+			|| (GetWC0_E(i) > 0.0) || (GetWC1_E(i) > 0.0) ) 
+		{
+			 Charge[i] = 1;
+		}
+		else Charge[i] = 0;
+	}
+}
+
+void	GParticleReconstruction::PhotonReconstruction()
+{
+	// Mark neutral rootinos as photons (for now)
+	// Note if neutron ID is done before this, they are left as neutrons
+	
+	for (int i = 0; i < GetNParticles(); i++) 
+	{
+		if ((Identified[i] == pdg_rootino) && (Charge[i] == 0))
+		{			
+			Identified[i] = pdg_photon;
+		}
+	}
 }
 
 void	GParticleReconstruction::ChargedReconstruction()
@@ -226,7 +270,7 @@ void	GParticleReconstruction::ChargedReconstruction()
 		{
 			if(Cut_proton->IsInside(GetEk(i),Get_dE(i)))
 			{
-				SetInputMass(i,m_proton);			
+				SetInputMass(i,m_proton);	
 				AddParticle(pdg_proton,i);
 
 			}
@@ -237,7 +281,7 @@ void	GParticleReconstruction::ChargedReconstruction()
 			if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
 			{
 				SetInputMass(i,m_chpion);			
-				Identified[i] = 2; // Temporary state (may be meson decay)
+				Identified[i] = pdg_chpion; 
 			}
 		}
 		
@@ -246,7 +290,7 @@ void	GParticleReconstruction::ChargedReconstruction()
 			if(Cut_electron->IsInside(GetEk(i),Get_dE(i)))
 			{
 				SetInputMass(i,m_electron);			
-				Identified[i] = 3; // Temporary state (may be meson decay)
+				Identified[i] = pdg_electron;
 			}
 		}	
 				
@@ -275,7 +319,8 @@ void	GParticleReconstruction::MesonReconstruction()
 
 		is_meson[i] = kFALSE;
 		
-		if (Identified[i] == 0) 
+		// Construct reaction four-vector ignoring protons and neutrons
+		if ((Identified[i] != pdg_proton) &&  (Identified[i] != pdg_neutron))
 		{
 			reaction_p4 += initialParticle[i];
 			daughter_list[ndaughter] = i;
@@ -284,7 +329,7 @@ void	GParticleReconstruction::MesonReconstruction()
 	}
 	 
 	// LEVEL 1:   
-	// Test full reaction 4 momentum (ignoring protons and electrons)
+	// Test full reaction 4 momentum (ignoring protons and neutrons)
 	// This is to test the following complex decays
 	// n' -> pi+  pi-  n      
 	// n' -> pi0  pi0  n
@@ -309,8 +354,8 @@ void	GParticleReconstruction::MesonReconstruction()
 	}				
 	
 	// LEVEL 2:
-	// Well that didn't work, let's try to make some 2 photon checks	
-	// Loop over possible 2-photon combinations (skip i=j, ij = ji)
+	// Well that didn't work, let's try to make some 2 particle checks	
+	// Loop over possible 2-particle combinations (skip i=j, ij = ji)
 	// to check pi0 -> 2g, n -> 2g , n' -> 2g
 	// Find all pairs within IM limits and sort by best Chi
 	// Don't double count in sorting!
@@ -319,11 +364,13 @@ void	GParticleReconstruction::MesonReconstruction()
 	Int_t k = 0;
 	for (int i = 0; i < GetNParticles(); i++) 
     {
-		if(Identified[i] == 1) continue;
+		if (Identified[i] == pdg_proton) 	continue;
+		if (Identified[i] == pdg_neutron) 	continue;
 		
 		for (int j = i+1; j < GetNParticles(); j++) 
 		{
-			if(Identified[j] == 1) continue;
+			if (Identified[j] == pdg_proton) 	continue;
+			if (Identified[j] == pdg_neutron) 	continue;
 			
 			TLorentzVector p4 = initialParticle[i] + initialParticle[j];
 			
@@ -398,7 +445,6 @@ void	GParticleReconstruction::MesonReconstruction()
 
 void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[])
 {
-	Identified[index_list[0]] = 1;
 
 	TLorentzVector part  = GetVector(index_list[0]);
 	
@@ -414,16 +460,30 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	
 	Int_t 	 clusterSize = GetClusterSize(index_list[0]);
 	UChar_t  Apparatus   = GetApparatus(index_list[0]);
+	Int_t  	 SumCharge   = Charge[index_list[0]];
+	
+	Int_t	 ndaughters 	 = 0;
 
 	if (nindex > 1) 
 	{	
+		// store in daughter list for meson analysis
+		SetDaughter_index(nDaughterList,nParticles);
+		SetDaughter_E(nDaughterList,	 GetEk(index_list[0]));
+		SetDaughter_Theta(nDaughterList, GetTheta(index_list[0]));
+		SetDaughter_Phi(nDaughterList,	 GetPhi(index_list[0]));
+		SetDaughter_PDG(nDaughterList,   Identified[index_list[0]]);
+		ndaughters++; 
+		nDaughterList++;		
+		
+		// Set new identification
+		Identified[index_list[0]] = pdg_code;
+				
 		// Improve this by adding check to see if it is a real value 
 		// and only include in average if it is real (aka E, dE, and WC vertex)
 
 		for(Int_t i = 1; i < nindex; i++)
 		{
-			Identified[index_list[i]] = 1;
-			
+	
 			part += GetVector(index_list[i]);
 
 			Ek 	 	+= GetEk(index_list[i]); 	
@@ -439,6 +499,20 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 			
 			clusterSize += GetClusterSize(index_list[i]);
 			if(Apparatus != GetApparatus(index_list[i])) Apparatus = 3;
+			
+			SumCharge += Charge[index_list[i]];
+			
+			// store in daughter list for meson analysis
+			SetDaughter_index(nDaughterList,nParticles);
+			SetDaughter_E(nDaughterList,	 GetEk(index_list[i]));
+			SetDaughter_Theta(nDaughterList,GetTheta(index_list[i]));
+			SetDaughter_Phi(nDaughterList,	 GetPhi(index_list[i]));
+			SetDaughter_PDG(nDaughterList,  Identified[index_list[i]]);
+			ndaughters++; 
+			nDaughterList++;			
+			
+			// Set new identification
+			Identified[index_list[i]] = pdg_code;			
 		}
 		
 		// Average some values
@@ -448,6 +522,7 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 		WC_Vertex_Z = WC_Vertex_Z/nindex;
 		
 	}
+	else Identified[index_list[0]] = pdg_code;
 	
 	Double_t Px 	= part.Px();
 	Double_t Py 	= part.Py();
@@ -457,6 +532,7 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	Double_t Mass   = part.M();
 	
 	SetPDG(nParticles,pdg_code);	
+	SetCharge(nParticles,SumCharge);
 	SetPx(nParticles,Px);
 	SetPy(nParticles,Py);
 	SetPz(nParticles,Pz);
@@ -473,6 +549,8 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	SetWC_Vertex_X(nParticles,WC_Vertex_X);
 	SetWC_Vertex_Y(nParticles,WC_Vertex_Y);
 	SetWC_Vertex_Z(nParticles,WC_Vertex_Z);
+	SetNDaughterList(nDaughterList);
+	SetNDaughters(nParticles,ndaughters);
 	
 	nParticles++;
 	

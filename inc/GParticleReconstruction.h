@@ -14,6 +14,8 @@
 #define	pdg_proton 4
 #define	pdg_chpion 5
 #define	pdg_electron 6
+#define pdg_photon 7
+#define pdg_neutron 8
 
 #define m_pi0 135.0
 #define	m_eta 545.0
@@ -61,10 +63,11 @@ private:
 	Double_t	width_eta;
 	Double_t	width_etaP;
 
-	Int_t* 		PDG;
 	Int_t* 		Identified;
+    Int_t* 		Charge;
 	
 	Int_t 		nParticles;
+	Int_t 		nDaughterList;
    	Int_t 		i;
    	
 protected:
@@ -80,6 +83,9 @@ public:
 
     
 	Bool_t	PostInit();
+	void	InitEvent();
+	void	CheckNeutrality();
+	void 	PhotonReconstruction();	
 	void 	ChargedReconstruction();
 	void 	MesonReconstruction();	
 	void	AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[]);

@@ -28,7 +28,19 @@ private:
     Int_t 		SortNParticles;					// Sort on-off
     Int_t 		S_nParticles;
     Int_t		S_nParticles_condition;
-    
+
+    Int_t 		SortCharged;					// Sort on-off
+    Int_t 		S_nCharged;
+    Int_t 		S_nCharged_condition;
+    Double_t 	S_Charged_theta_min;
+    Double_t	S_Charged_theta_max;
+
+    Int_t 		SortNeutral;					// Sort on-off
+    Int_t 		S_nNeutral;
+    Int_t 		S_nNeutral_condition;
+    Double_t 	S_Neutral_theta_min;
+    Double_t	S_Neutral_theta_max;
+        
     Int_t 		SortProton;						// Sort on-off
     Int_t 		S_nProton;
     Int_t 		S_nProton_condition;
@@ -59,6 +71,12 @@ private:
     Double_t 	S_EtaP_theta_min;
     Double_t	S_EtaP_theta_max;
     
+    Int_t 		SortElectron;					// Sort on-off
+    Int_t 		S_nElectron;
+    Int_t 		S_nElectron_condition;
+    Double_t 	S_Electron_theta_min;
+    Double_t	S_Electron_theta_max;    
+    
 	char string_in1[256], string_in2[256], string_in3[256];
 	std::string string_out1, string_out2, string_out3;
 			    
@@ -77,6 +95,7 @@ public:
     Bool_t	SortAnalyseEvent();
     Bool_t	SortFillEvent();
     Bool_t 	SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
+    Bool_t 	SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);    
     void	CheckConfigCondition(char string[], int *condition, std::string& string_out);
 };
 
