@@ -1,21 +1,20 @@
-#ifndef __GTreeManager_h__
-#define __GTreeManager_h__
+#ifndef __GoATTreeManager_h__
+#define __GoATTreeManager_h__
 
-#include "GInputTreeManager.h"
+#include "GAcquTreeManager.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 #include <cstdio>
 #include <string> 
 
-#define GTREEMANAGER_MAX_TAGGER		1024
-#define GTREEMANAGER_MAX_PARTICLE	128
-#define GTREEMANAGER_MAX_HITS		860
+#define GoATTREEMANAGER_MAX_TAGGER		1024
+#define GoATTREEMANAGER_MAX_PARTICLE	128
+#define GoATTREEMANAGER_MAX_HITS		860
 
-class	GTreeManager    : public GInputTreeManager
+class	GoATTreeManager    : public GAcquTreeManager
 {
 private:
-	TFile*		file;				// outFile
     TTree*		treeParticles;		// reconstructed
 
     //Reconstructed Particles
@@ -50,10 +49,12 @@ private:
    	Double_t*	daughter_Theta;
    	Double_t*	daughter_Phi;
 
-
+    Int_t		firstGoATEvent;
+    Int_t		lastGoATEvent;
+    Int_t		GoATEvent;
  	
 protected:
-    Int_t       offsetToInputTree;
+    Int_t       offsetToAcquTree;
 
  	Char_t*		global_config_file;
     void		GetEntryFast();
@@ -62,15 +63,29 @@ protected:
 	
 public:
 
-	GTreeManager();
-    virtual ~GTreeManager();
+	TFile*		GoATFile;			// GoATFile
+
+	GoATTreeManager();
+    virtual ~GoATTreeManager();
 	
-    Bool_t	OpenOutputFile(const char* treefile);
-    Bool_t  InitTreeParticles();
-    Bool_t  OpenTreeParticles();
+    Bool_t	OpenGoATFile(const char* treefile, Option_t* option);
+    Bool_t	OpenGoATFile(const char* treefile) {return OpenGoATFile(treefile,"RECREATE");}
+    Bool_t  InitTreeParticles(TFile* TreeFile);
+	Bool_t	InitTreeParticles() {return InitTreeParticles(GoATFile);}
+    Bool_t  OpenTreeParticles(TFile* TreeFile);
+	Bool_t	OpenTreeParticles() {return OpenTreeParticles(GoATFile);}    
     virtual Bool_t 	FillEvent();
-    Bool_t	WriteTrees();     
-    Bool_t	CloseOutputFile(); 
+    Bool_t	WriteTrees(TFile* TreeFile);
+	Bool_t	WriteTrees() {return WriteTrees(GoATFile);}    
+    Bool_t	CloseOutputFile(TFile* TreeFile); 
+	Bool_t	CloseOutputFile() {return CloseOutputFile(GoATFile);}    
+    
+    
+	Bool_t	FindValidGoATEvents();
+    void 	GetGoATEntryFast(); // without testing index
+    void	TraverseGoATEntries(const Int_t min, const Int_t max);
+    void	TraverseGoATEntries(const Int_t max) {TraverseGoATEntries(firstGoATEvent, max);}
+    void	TraverseGoATEntries()	{TraverseGoATEntries(firstGoATEvent, lastGoATEvent);}    
     
     void	Clear()	{;}
     virtual void	Reset();
@@ -119,11 +134,44 @@ public:
     string	ReadConfig(const std::string& key_in, Int_t instance) {return ReadConfig(key_in,instance,GetConfigFile());}
     string	ReadConfig(const std::string& key_in) {return ReadConfig(key_in,0,GetConfigFile());}
 
-	// Make some things available for sorting
-	Int_t 		GTree_GetNParticles()				const 	{return nParticles;}
-	Int_t 		GTree_GetPDG(const Int_t index)		const	{return PDG[index];}
-    Double_t	GTree_GetTheta(const Int_t index)	const	{return Theta[index];}
-    Int_t 		GTree_GetCharge(const Int_t index) 	const 	{return Charge[index];}   
+	// Make some things available for sorting/analysis
+	Int_t 		GoATTree_GetNParticles()				const 	{return nParticles;}
+	Int_t 		GoATTree_GetPDG(const Int_t index)		const	{return PDG[index];}
+    Int_t 		GoATTree_GetCharge(const Int_t index) 	const 	{return Charge[index];}   
+	Double_t	GoATTree_GetEk(const Int_t index)		const	{return Ek[index];}    
+ 	Double_t	GoATTree_GetTime(const Int_t index)		const	{return time[index];}
+ 	 		    		
+	Double_t	GoATTree_GetTheta(const Int_t index)	const	{return Theta[index];}
+	Double_t	GoATTree_GetPhi(const Int_t index)		const	{return Phi[index];} 
+	Double_t	GoATTree_GetThetaRad(const Int_t index)	const	{return Theta[index] * TMath::DegToRad();}
+	Double_t	GoATTree_GetPhiRad(const Int_t index)	const	{return Theta[index] * TMath::DegToRad();}
+		
+	UChar_t 	GoATTree_GetClusterSize(const Int_t index) 	const 	{return clusterSize[index];}
+	UChar_t		GoATTree_GetApparatus(const Int_t index)	const	{return Apparatus[index];}
+	Double_t	GoATTree_Get_dE(const Int_t index)			const	{return d_E[index];}
+	Double_t	GoATTree_GetWC0_E(const Int_t index)		const	{return WC0_E[index];}
+	Double_t	GoATTree_GetWC1_E(const Int_t index)		const	{return WC1_E[index];}
+
+	Double_t 	GoATTree_GetWC_Vertex_X(const Int_t index)	const	{return WC_Vertex_X[index];}
+	Double_t 	GoATTree_GetWC_Vertex_Y(const Int_t index)	const	{return WC_Vertex_Y[index];}
+	Double_t 	GoATTree_GetWC_Vertex_Z(const Int_t index)	const	{return WC_Vertex_Z[index];}
+
+   TLorentzVector	GetGoATVector(const Int_t index) const	
+					{
+
+						Double_t T 	= Ek[index];
+						Double_t M  = Mass[index];
+						Double_t th = Theta[index] * TMath::DegToRad();
+						Double_t ph = Phi[index]   * TMath::DegToRad();
+												
+						Double_t E 	= T + M;
+						Double_t P 	= TMath::Sqrt(E*E - M*M);
+						Double_t Px = P* sin(th)*cos(ph);
+						Double_t Py = P* sin(th)*sin(ph);						
+						Double_t Pz = P* cos(th);
+						
+						return TLorentzVector(Px, Py, Pz, E);
+					}
         
 };
 

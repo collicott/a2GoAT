@@ -6,8 +6,8 @@
 # General Setup
 #-----------------------------------------------------------------------
 
-Input-File:		/home/cristina/RootTreeFULL_Compton_354.root
-Output-File: 	/home/cristina/out_RootTree_Compton_354.root
+Input-File:		/home/cristina/Acqu_Compton_354.root
+Output-File: 	/home/cristina/GoAT_Compton_354.root
 
 Period-Macro:	100000
 
@@ -38,7 +38,7 @@ Cut-IM-Width-Eta-Prime: 60
 # Sort on number of raw particle tracks (total, CB, and TAPS)
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #						Total 	CB		TAPS
-SortRaw-NParticles: 	3=		0+		0+
+SortRaw-NParticles: 	2+		0+		0+
 
 
 # Sort on Trigger conditions (Crystal Ball Energy Sum)
@@ -48,12 +48,12 @@ SortRaw-CBEnergySum: 	100+
 
 # Sort on reconstructed particle properties
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Sort-NParticles: 	2=
+Sort-NParticles: 	1+
 
 				Type 	Number	Theta-min	Theta-max
-Sort-Particle:	proton		1= 		0 			50
+#Sort-Particle:	proton		1= 		0 			180
 Sort-Particle:	pi0			1= 		0 			180
-Sort-Particle:	charged		1= 		0 			50
+#Sort-Particle:	charged		2= 		0 			50
 #Sort-Particle:	neutral		1= 		0 			180
 
 # Note: (I'll put this here while we don't have a manual)

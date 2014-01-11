@@ -30,8 +30,14 @@ add_executable(goat
    src/GoAT.cc 
    src/GSort.cc
    src/GParticleReconstruction.cc
-   src/GTreeManager.cc
-   src/GInputTreeManager.cc
+   src/GoATTreeManager.cc
+   src/GAcquTreeManager.cc
    )
-
 target_link_libraries(goat ${ROOT_LIBRARIES})
+
+add_executable(pi0
+   src/PPi0.cc
+   src/GoATTreeManager.cc
+   src/GAcquTreeManager.cc
+   )
+target_link_libraries(pi0 ${ROOT_LIBRARIES})

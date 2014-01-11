@@ -9,7 +9,7 @@ using namespace std;
 
 #include "GSort.h"
 #include "GParticleReconstruction.h"
-#include "GTreeManager.h"
+#include "GoATTreeManager.h"
 
 class	GoAT : public GSort
 {

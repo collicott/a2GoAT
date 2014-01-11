@@ -2,7 +2,7 @@
 #ifndef __GParticleReconstruction_h__
 #define __GParticleReconstruction_h__
 
-#include "GTreeManager.h"
+#include "GoATTreeManager.h"
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
 #define DEFAULT_ETAP_IM_WIDTH 60.0
@@ -24,7 +24,7 @@
 #define	m_chpion 139.6
 #define	m_electron 0.511
 
-class	GParticleReconstruction : public GTreeManager
+class	GParticleReconstruction : public GoATTreeManager
 {
 private:
 
@@ -77,7 +77,6 @@ public:
 	GParticleReconstruction();
 	~GParticleReconstruction();
 
-	virtual Bool_t	Init(const char* intreefile, const char* outtreefile) {return kTRUE;}
 	virtual void	Analyse() {;}
 	virtual void	Reconstruct();
 

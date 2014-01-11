@@ -1,5 +1,5 @@
-#ifndef __GInputTreeManager_h__
-#define __GInputTreeManager_h__
+#ifndef __GAcquTreeManager_h__
+#define __GAcquTreeManager_h__
 
 
 #include "TFile.h"
@@ -24,17 +24,16 @@
 #include<iostream>
 using namespace std;
 
-#define GINPUTTREEMANAGER_MAX_TAGGER	1024
-#define GINPUTTREEMANAGER_MAX_PARTICLE	128
-#define GINPUTTREEMANAGER_MAX_HITS		860
+#define GAcquTREEMANAGER_MAX_TAGGER	1024
+#define GAcquTREEMANAGER_MAX_PARTICLE	128
+#define GAcquTREEMANAGER_MAX_HITS		860
 #define EAppCB  1
 #define EAppTAPS 2
 
 
-class	GInputTreeManager
+class	GAcquTreeManager
 {
 private:
-	TFile*		file;				// outFile
 	TTree*		treeRawEvent;		// Raw particle information (filled each event)
 	TTree*		treeTagger;			// Tagger information (filled each event)
 	TTree* 		treeTrigger;		// Trigger information (filled each event)
@@ -53,6 +52,7 @@ private:
     Int_t		nTagged;
     Int_t*		tagged_ch;
     Double_t*	tagged_t;
+    Double_t*	photonbeam_E;    
     
     //Apparatus
     UChar_t*	Apparatus;
@@ -90,23 +90,24 @@ private:
     Int_t		NScaler;
 
 	//protected members
-    Int_t		firstValidEvent;
-    Int_t		lastValidEvent;
-    Int_t		actualEvent;
+    Int_t		firstAcquEvent;
+    Int_t		lastAcquEvent;
+    Int_t		AcquEvent;
     
 protected:
 	void    CheckRange(Int_t& min, Int_t& max);
-    void 	GetInputEntryFast();                	// without testing index
-    void	TraverseInputEntries(const Int_t min, const Int_t max);
-    void	TraverseInputEntries(const Int_t max) 	{TraverseInputEntries(firstValidEvent, max);}
-    void	TraverseInputEntries()		 			{TraverseInputEntries(firstValidEvent, lastValidEvent);}
+    void 	GetAcquEntryFast();                	// without testing index
+    void	TraverseAcquEntries(const Int_t min, const Int_t max);
+    void	TraverseAcquEntries(const Int_t max) 	{TraverseAcquEntries(firstAcquEvent, max);}
+    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
 
     Double_t* 	Mass;
 	
 public:
+	TFile*		AcquFile;			// AcquFile
 
-    GInputTreeManager();
-    virtual ~GInputTreeManager();
+    GAcquTreeManager();
+    virtual ~GAcquTreeManager();
 
 	TTree*	treeRawEvent_clone;		// Raw particle information (filled when required)
 	TTree*	treeTagger_clone;		// Tagger information (filled when required)
@@ -114,17 +115,28 @@ public:
 	TTree* 	treeDetectorHits_clone;	// Detector system hit patterns (filled when required)
 	TTree*	treeScaler_clone; 		// Scaler read information (filled when required)
 
-    Bool_t	OpenInputFile(const char* treefile);
-	Bool_t	OpenTreeRawEvent();
-	Bool_t	OpenTreeTagger();
-	Bool_t	OpenTreeTrigger();
-	Bool_t	OpenTreeDetectorHits();
-	Bool_t	OpenTreeScaler();
-    Bool_t	FindValidEvents();
-	Bool_t	GetInputEntry();
-	Bool_t	GetInputEntry(const Int_t index);
+    Bool_t	OpenAcquFile(const char* treefile);
+    
+	Bool_t	OpenTreeRawEvent(TFile* TreeFile);
+	Bool_t	OpenTreeRawEvent() {return OpenTreeRawEvent(AcquFile);}
+	
+	Bool_t	OpenTreeTagger(TFile* TreeFile);
+	Bool_t	OpenTreeTagger() {return OpenTreeTagger(AcquFile);}
+		
+	Bool_t	OpenTreeTrigger(TFile* TreeFile);
+	Bool_t	OpenTreeTrigger() {return OpenTreeTrigger(AcquFile);}
+
+	Bool_t	OpenTreeDetectorHits(TFile* TreeFile);
+	Bool_t	OpenTreeDetectorHits() {return OpenTreeDetectorHits(AcquFile);}
+
+	Bool_t	OpenTreeScaler(TFile* TreeFile);
+	Bool_t	OpenTreeScaler() {return OpenTreeScaler(AcquFile);}
+		
+    Bool_t	FindValidAcquEvents();
+		
+	Bool_t	GetAcquEntry();
+	Bool_t	GetAcquEntry(const Int_t index);
     virtual void	Reset();
-    virtual Bool_t	Init(const char* intreefile, const char* outtreefile) = 0;
     virtual void    Reconstruct() = 0;
     virtual void 	Analyse()=0;
     virtual	void	Print();
@@ -151,7 +163,9 @@ public:
     		Int_t		GetTagged_ch(const Int_t index)	const	{return tagged_ch[index];}
     const	Double_t*	GetTagged_t()                   const	{return tagged_t;}
     		Double_t	GetTagged_t(const Int_t index)	const	{return tagged_t[index];}
-    
+    const	Double_t*	GetPhotonBeam_E()                   const	{return photonbeam_E;}
+    		Double_t	GetPhotonBeam_E(const Int_t index)	const	{return photonbeam_E[index];}
+    		    
     const	UChar_t*	GetApparatus()                  const	{return Apparatus;}
     		UChar_t		GetApparatus(const Int_t index)	const	{return Apparatus[index];}
 
@@ -198,7 +212,7 @@ public:
     const	Int_t*		GetVeto_Hits()                  const	{return Veto_Hits;}
     		Int_t		GetVeto_Hits(const Int_t index)	const	{return Veto_Hits[index];}
     		
-			Int_t		GetActualEvent()	const	{return actualEvent;}
+			Int_t		GetActualEvent()	const	{return AcquEvent;}
 
 	void 	SetInputMass(Int_t index, Double_t value)	{Mass[index] 	= value;}
 			Double_t 	GetInputMass(Int_t index) 	const    {return Mass[index];}

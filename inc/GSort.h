@@ -3,7 +3,7 @@
 #define __GSort_h__
 
 #include "GParticleReconstruction.h"
-#include "GTreeManager.h"
+#include "GoATTreeManager.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
@@ -87,7 +87,6 @@ public:
 	GSort();
 	~GSort();
 
-	virtual Bool_t	Init(const char* intreefile, const char* outtreefile) {return kTRUE;}
 	virtual void	Analyse() {;}
 	virtual void	Reconstruct();
 	Bool_t	PostInit();

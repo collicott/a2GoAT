@@ -326,13 +326,13 @@ Bool_t GSort::SortFillEvent()
 		switch (S_nParticles_condition) // Number of reconstructed part
 		{
 			case 0:
-				if(GTree_GetNParticles() < S_nParticles)  return kFALSE;
+				if(GoATTree_GetNParticles() < S_nParticles)  return kFALSE;
 				break;
 			case 1:
-				if(GTree_GetNParticles() > S_nParticles)  return kFALSE;
+				if(GoATTree_GetNParticles() > S_nParticles)  return kFALSE;
 				break;
 			case 2:
-				if(GTree_GetNParticles() != S_nParticles) return kFALSE;
+				if(GoATTree_GetNParticles() != S_nParticles) return kFALSE;
 				break;
 		}
 	}
@@ -417,13 +417,13 @@ Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin
 {
 	Int_t NumberFound = 0;
 	
-	for (Int_t i = 0; i < GTree_GetNParticles(); i++)
+	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if (GTree_GetPDG(i) == PDG)
+		if (GoATTree_GetPDG(i) == PDG)
 		{
 			// Check theta limits
-			if ((GTree_GetTheta(i) <= ThetaMin) || 
-				(GTree_GetTheta(i) >= ThetaMax))
+			if ((GoATTree_GetTheta(i) <= ThetaMin) || 
+				(GoATTree_GetTheta(i) >= ThetaMax))
 			return kFALSE;
 			NumberFound++;
 		}
@@ -452,13 +452,13 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 	switch (charge)
 	{
 		case 0: // Neutral sort
-			for (Int_t i = 0; i < GTree_GetNParticles(); i++)
+			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 			{
-				if (GTree_GetCharge(i) > 0)
+				if (GoATTree_GetCharge(i) > 0)
 				{
 					//Check theta limits
-					if ((GTree_GetTheta(i) <= ThetaMin) || 
-						(GTree_GetTheta(i) >= ThetaMax))
+					if ((GoATTree_GetTheta(i) <= ThetaMin) || 
+						(GoATTree_GetTheta(i) >= ThetaMax))
 					return kFALSE;
 					NumberFound++;
 				}
@@ -466,13 +466,13 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 			break;
 			
 		case 1: // Charged sort
-			for (Int_t i = 0; i < GTree_GetNParticles(); i++)
+			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 			{
-				if (GTree_GetCharge(i) != 0)
+				if (GoATTree_GetCharge(i) != 0)
 				{
 					//Check theta limits
-					if ((GTree_GetTheta(i) <= ThetaMin) || 
-						(GTree_GetTheta(i) >= ThetaMax))
+					if ((GoATTree_GetTheta(i) <= ThetaMin) || 
+						(GoATTree_GetTheta(i) >= ThetaMax))
 					return kFALSE;
 					NumberFound++;
 				}

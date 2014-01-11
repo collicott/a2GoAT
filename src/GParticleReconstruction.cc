@@ -8,8 +8,8 @@ GParticleReconstruction::GParticleReconstruction() :
 							nDaughterList(0),
 							Charge(0)
 {
-	Identified 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
-	Charge	 	= new Int_t[GINPUTTREEMANAGER_MAX_PARTICLE];
+	Identified 	= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
+	Charge	 	= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
 }
 
 GParticleReconstruction::~GParticleReconstruction()
@@ -530,6 +530,10 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	Double_t Theta 	= part.Theta() * TMath::RadToDeg();
 	Double_t Phi 	= part.Phi()   * TMath::RadToDeg();
 	Double_t Mass   = part.M();
+	Ek 				= part.E() - part.M();
+	
+//	if(pdg_code == pdg_pi0)
+	//cout << "NEW: " << Ek << "  PART: " << part.E() << "  MASS: " << part.M() << endl ;
 	
 	SetPDG(nParticles,pdg_code);	
 	SetCharge(nParticles,SumCharge);

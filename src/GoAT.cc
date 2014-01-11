@@ -5,9 +5,10 @@
 
 int main(int argc, char *argv[])
 {
+	
 	clock_t start, end;
 	start = clock();
-	
+
 	// Associate 1st terminal input with config file
 	Char_t* configfile;
 	if(argv[1]) configfile = argv[1];
@@ -41,6 +42,8 @@ int main(int argc, char *argv[])
 	<< (double)(end-start)/CLOCKS_PER_SEC
 	<< " seconds." << "\n\n";
 
+	
+
 	return 0;
 }
 
@@ -71,7 +74,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	else if( sscanf( config.c_str(), "%s\n", file_in) == 1 )
 	{			
 		cout << "INPUT  ";  
-		if(!OpenInputFile(file_in))	 return kFALSE;	
+		if(!OpenAcquFile(file_in))	 return kFALSE;	
 	}
 	else 
 	{
@@ -88,7 +91,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	else if( sscanf( config.c_str(), "%s\n", file_out) == 1 )
 	{			
 		cout << "OUTPUT ";  
-		if(!OpenOutputFile(file_out))	return kFALSE;
+		if(!OpenGoATFile(file_out))	return kFALSE;
 
 	}
 	else 
@@ -105,7 +108,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	cout << endl;
 	
 	cout << "Checking scaler reads for valid events:" << endl;	
-	if(!FindValidEvents())			return kFALSE;
+	if(!FindValidAcquEvents())		return kFALSE;
 	cout << endl;
 		
 	config = ReadConfig("Period-Macro");
@@ -143,7 +146,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 void	GoAT::Analyse()
 {
 	cout << "Analysing ..." << endl;
-	TraverseInputEntries();			
+	TraverseAcquEntries();			
 	CloseOutputFile();
 //	OutputStatistics();
 }
