@@ -129,8 +129,10 @@ void PPi0::MissingMass(Int_t pdg)
 
 			if (!IsPrompt(GetTagged_t(j)) && !IsRandom(GetTagged_t(j))) continue;
 			
+			beam 	= TLorentzVector(0.,0.,GetPhotonBeam_E(j),GetPhotonBeam_E(j));
 			missingp4 = beam + target - particle;
-		
+
+
 			if (IsPrompt(GetTagged_t(j))) MM_prompt->Fill(missingp4.M());
 			if (IsRandom(GetTagged_t(j))) MM_random->Fill(missingp4.M());			
 
