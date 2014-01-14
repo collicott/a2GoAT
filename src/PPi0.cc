@@ -56,108 +56,73 @@ Bool_t	PPi0::Init(Char_t* configfile)
 {
 
 	OpenGoATFile("/home/cristina/GoAT_Compton_354.root", "READ");
+	OpenPhysFile("/home/cristina/Pi0_Compton_354.root");
+	DefineHistograms();
 
 	cout << "Setting up tree files:" << endl;
 	if(!OpenTreeParticles(GoATFile)) 	return kFALSE;
 	if(!OpenTreeTagger(GoATFile))		return kFALSE;
-	if(!OpenTreeTrigger(GoATFile))		return kFALSE;
 	cout << endl;
 
 	cout << "Detmining valid for analysis:" << endl;	
-	if(!FindValidGoATEvents())		return kFALSE;	
+	if(!FindValidGoATEvents())			return kFALSE;	
 
 	// Set by user in the future...
-	targetmass = 938; 
-	target 	= TLorentzVector(0.,0.,0.,targetmass);
+	SetTarget(938);
+	SetPromptWindow(-20, 20);
+	SetRandomWindow1(-100,-40);
+	SetRandomWindow1(40,100);
+	SetPvRratio();
 
-	Prompt_low 		=  -20.0;
-	Prompt_high 	=   20.0; 
-	Random_low1   	= -100.0; 
-	Random_high1  	=  -40.0;
-	Random_low2   	=   40.0; 
-	Random_high2  	=  100.0;
-	
-	PvR_ratio = (Prompt_high - Prompt_low)
-		/((Random_high1 - Random_low1) + (Random_high2 - Random_low2));
-		
 	return kTRUE;
 }
 
 void	PPi0::Analyse()
 {
-	MM_prompt 	= new TH1D("MM_prompt",	"MM_prompt",1500,0,1500);
-	MM_random 	= new TH1D("MM_random",	"MM_random",1500,0,1500);
-	MM			= new TH1D("MM",		"MM",		1500,0,1500);
-	
 	cout << "Analysing ..." << endl;
-	TraverseGoATEntries();	
-
-	TFile *HistFile = new TFile("Hist_Compton_354.root", "RECREATE");
+	TraverseGoATEntries();
 	
-	MM->Add(MM_prompt,1);
-	MM->Add(MM_random,-PvR_ratio);
-
-	MM_prompt->Write();
-	MM_random->Write();
-	MM->Write();
-	HistFile->Close();
-
-
-
+	RandomSubtraction(MM_prompt_pi0,MM_random_pi0, MM_pi0);		
+	RandomSubtraction(MM_prompt_eta,MM_random_eta, MM_eta);		
+		
+	WriteHistograms();
+	ClosePhysFile();	
 }
 
 void	PPi0::Reconstruct()
 {
-	
-	// Calculate pi0 missing mass (current pdg_pi0 = 1 .. fix later)
-	MissingMass(1);
-	
-	
+	if(GetGoATEvent() % 10000 == 0) printf("Event: %d\n",GetGoATEvent());
+
+	MissingMass(1, MM_prompt_pi0, MM_random_pi0);
+	MissingMass(2, MM_prompt_eta, MM_random_eta);
+
 }
 
-void PPi0::MissingMass(Int_t pdg)
+void	PPi0::DefineHistograms()
 {
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
-	{
-		if (GoATTree_GetPDG(i) != pdg) continue; 
+
+	MM_prompt_pi0 	= new TH1D("MM_prompt_pi0",	"MM_prompt_pi0",1500,0,1500);
+	MM_random_pi0 	= new TH1D("MM_random_pi0",	"MM_random_pi0",1500,0,1500);
+	MM_pi0			= new TH1D("MM_pi0",		"MM_pi0",		1500,0,1500);
+	
+	MM_prompt_eta 	= new TH1D("MM_prompt_eta",	"MM_prompt_eta",1500,0,1500);
+	MM_random_eta 	= new TH1D("MM_random_eta",	"MM_random_eta",1500,0,1500);
+	MM_eta			= new TH1D("MM_eta",		"MM_eta",		1500,0,1500);	
+}
+
+Bool_t 	PPi0::WriteHistograms(TFile* pfile)
+{
+	if(!pfile) return kFALSE;
+	pfile->cd();
 		
-		// Get particle four vector
-		particle = GetGoATVector(i);
-		
-		for (Int_t j = 0; j < GetNTagged(); j++)
-		{
-
-			if (!IsPrompt(GetTagged_t(j)) && !IsRandom(GetTagged_t(j))) continue;
-			
-			beam 	= TLorentzVector(0.,0.,GetPhotonBeam_E(j),GetPhotonBeam_E(j));
-			missingp4 = beam + target - particle;
-
-
-			if (IsPrompt(GetTagged_t(j))) MM_prompt->Fill(missingp4.M());
-			if (IsRandom(GetTagged_t(j))) MM_random->Fill(missingp4.M());			
-
-		}
-	}
-}	
-
-Bool_t PPi0::IsPrompt(Double_t time)
-{
-	if ((time >= Prompt_low) && (time <= Prompt_high)) return kTRUE;
+	MM_prompt_pi0->Write();
+	MM_random_pi0->Write();
+	MM_pi0->Write();
 	
-	return kFALSE;
-}
+	MM_prompt_eta->Write();
+	MM_random_eta->Write();
+	MM_eta->Write();
 	
-Bool_t PPi0::IsRandom(Double_t time)
-{
-
-	if ((time >= Random_low1) && (time <= Random_high1)) return kTRUE;
-	if ((time >= Random_low2) && (time <= Random_high2)) return kTRUE;
-	
-	return kFALSE;
-}
-
-Bool_t 	PPi0::Write()
-{
 	return kTRUE;
 }
 

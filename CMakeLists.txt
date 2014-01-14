@@ -37,6 +37,7 @@ target_link_libraries(goat ${ROOT_LIBRARIES})
 
 add_executable(pi0
    src/PPi0.cc
+   src/PPhysics.cc
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
