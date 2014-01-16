@@ -462,8 +462,7 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	UChar_t  Apparatus   = GetApparatus(index_list[0]);
 	Int_t  	 SumCharge   = Charge[index_list[0]];
 	
-	Int_t	 ndaughters 	 = 0;
-
+	Int_t	 ndaughters  = 0;
 	if (nindex > 1) 
 	{	
 		// store in daughter list for meson analysis
@@ -472,8 +471,9 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 		SetDaughter_Theta(nDaughterList, GetTheta(index_list[0]));
 		SetDaughter_Phi(nDaughterList,	 GetPhi(index_list[0]));
 		SetDaughter_PDG(nDaughterList,   Identified[index_list[0]]);
-		ndaughters++; 
-		nDaughterList++;		
+		
+		ndaughters++; 	 // particle counter
+		nDaughterList++; // event counter 
 		
 		// Set new identification
 		Identified[index_list[0]] = pdg_code;
@@ -508,11 +508,13 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 			SetDaughter_Theta(nDaughterList,GetTheta(index_list[i]));
 			SetDaughter_Phi(nDaughterList,	 GetPhi(index_list[i]));
 			SetDaughter_PDG(nDaughterList,  Identified[index_list[i]]);
+
 			ndaughters++; 
 			nDaughterList++;			
 			
 			// Set new identification
-			Identified[index_list[i]] = pdg_code;			
+			Identified[index_list[i]] = pdg_code;		
+				
 		}
 		
 		// Average some values
@@ -531,9 +533,6 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	Double_t Phi 	= part.Phi()   * TMath::RadToDeg();
 	Double_t Mass   = part.M();
 	Ek 				= part.E() - part.M();
-	
-//	if(pdg_code == pdg_pi0)
-	//cout << "NEW: " << Ek << "  PART: " << part.E() << "  MASS: " << part.M() << endl ;
 	
 	SetPDG(nParticles,pdg_code);	
 	SetCharge(nParticles,SumCharge);

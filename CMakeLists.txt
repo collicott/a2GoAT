@@ -42,3 +42,11 @@ add_executable(pi0
    src/GAcquTreeManager.cc
    )
 target_link_libraries(pi0 ${ROOT_LIBRARIES})
+
+add_executable(eta
+   src/PEta.cc
+   src/PPhysics.cc
+   src/GoATTreeManager.cc
+   src/GAcquTreeManager.cc
+   )
+target_link_libraries(eta ${ROOT_LIBRARIES})

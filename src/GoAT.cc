@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	clock_t start, end;
 	start = clock();
 
-	// Associate 1st terminal input with config file
+	// Associate 1st terminal input with config file -------------------
 	Char_t* configfile;
 	if(argv[1]) configfile = argv[1];
 	else 
@@ -19,10 +19,36 @@ int main(int argc, char *argv[])
 	}
 	
 	// Check that file exists:
-	ifstream ifile(configfile);
-	if(!ifile)
+	ifstream cfile(configfile);
+	if(!cfile)
 	{
 		cout << "Config file " << configfile << " could not be found." << endl;
+		return 0;
+	}
+	
+	// Associate 2nd terminal input with the input file ----------------
+	Char_t* file_in;
+	if(argv[2]) file_in = argv[2];
+	else 
+	{
+		cout << "Please provide an input file" << endl;
+		return 0;
+	}
+	
+	// Check that input file exists:
+	ifstream ifile(file_in);
+	if(!ifile)
+	{
+		cout << "Input file " << configfile << " could not be found." << endl;
+		return 0;
+	}	
+	
+	// Associate 3rd terminal input with the output file ---------------
+	Char_t* file_out;
+	if(argv[3]) file_out = argv[3];
+	else 
+	{
+		cout << "Please provide an output file" << endl;
 		return 0;
 	}
 	
@@ -30,7 +56,7 @@ int main(int argc, char *argv[])
 	GoAT* goat = new GoAT;
 
 	// Perform full initialisation 
-	if(!goat->Init(configfile)){
+	if(!goat->Init(configfile, file_in, file_out)){
 		cout << "ERROR: GoAT Init failed!" << endl;
 		return 0;
 	}
@@ -57,48 +83,16 @@ GoAT::~GoAT()
 {
 }
 
-Bool_t	GoAT::Init(Char_t* configfile)
+Bool_t	GoAT::Init(Char_t* configfile, Char_t* file_in, Char_t* file_out)
 {
 	cout << endl << "Initialising GoAT analysis:" << endl;
 	cout << "==========================================================" << endl;	
 	SetConfigFile(configfile);
 
 	cout << "Opening files: " << endl;
+	if(!OpenAcquFile(file_in))	return kFALSE;	
+	if(!OpenGoATFile(file_out))	return kFALSE;	
 	
-	config = ReadConfig("Input-File");
-	if (strcmp(config.c_str(), "nokey") == 0)
-	{
-		cout << "No input file set!" << endl; 
-		return kFALSE;
-	}
-	else if( sscanf( config.c_str(), "%s\n", file_in) == 1 )
-	{			
-		cout << "INPUT  ";  
-		if(!OpenAcquFile(file_in))	 return kFALSE;	
-	}
-	else 
-	{
-		cout << "input file set incorrectly!" << endl; 
-		return kFALSE;
-	}		
-
-	config = ReadConfig("Output-File");
-	if (strcmp(config.c_str(), "nokey") == 0)
-	{
-		cout << "No output file set!" << endl; 
-		return kFALSE;
-	}
-	else if( sscanf( config.c_str(), "%s\n", file_out) == 1 )
-	{			
-		cout << "OUTPUT ";  
-		if(!OpenGoATFile(file_out))	return kFALSE;
-
-	}
-	else 
-	{
-		cout << "output file set incorrectly!" << endl; 
-		return kFALSE;
-	}
 	cout << endl;
 	
 	cout << "Setting up tree files:" << endl;

@@ -137,6 +137,7 @@ public:
 	// Make some things available for sorting/analysis
 	Int_t 		GoATTree_GetNParticles()				const 	{return nParticles;}
 	Int_t 		GoATTree_GetPDG(const Int_t index)		const	{return PDG[index];}
+	Int_t		GoATTree_GetNDaughters(const Int_t index)	const	{return nDaughters[index];}
     Int_t 		GoATTree_GetCharge(const Int_t index) 	const 	{return Charge[index];}   
 	Double_t	GoATTree_GetEk(const Int_t index)		const	{return Ek[index];}    
  	Double_t	GoATTree_GetTime(const Int_t index)		const	{return time[index];}
@@ -155,6 +156,11 @@ public:
 	Double_t 	GoATTree_GetWC_Vertex_X(const Int_t index)	const	{return WC_Vertex_X[index];}
 	Double_t 	GoATTree_GetWC_Vertex_Y(const Int_t index)	const	{return WC_Vertex_Y[index];}
 	Double_t 	GoATTree_GetWC_Vertex_Z(const Int_t index)	const	{return WC_Vertex_Z[index];}
+	
+	Int_t 		GoATTree_GetNDaughterList()					const 	{return nDaughterList;}
+	Int_t 		GoATTree_GetDaughter_PDG(const Int_t index)	const	{return daughter_PDG[index];}
+	Int_t 		GoATTree_GetDaughter_Index(const Int_t index)	const	{return daughter_index[index];}
+
 
    TLorentzVector	GetGoATVector(const Int_t index) const	
 					{

@@ -29,6 +29,10 @@ private:
 	TLorentzVector particle;
 	TLorentzVector missingp4;
 	
+	Double_t time;
+	Bool_t 	Prompt;
+	Bool_t 	Random;
+	
 protected:
 
 
@@ -41,7 +45,14 @@ public:
 	virtual void	Reconstruct();
     virtual Bool_t	Write();
 
-	void 	MissingMass(Int_t pdg, TH1* prompt, TH1* random);
+	void 	MissingMassPDG(Int_t pdg, TH1* Hprompt, TH1* Hrandom);
+	Bool_t	FillMissingMass(Int_t particle_index, TH1* Hprompt, TH1* Hrandom);
+	Bool_t 	FillMissingMassPair(Int_t particle_index, Int_t tagger_index, TH1* Hprompt, TH1* Hrandom);
+	
+	void 	FillTimePDG(Int_t pdg, TH1* Htime);	
+	void	ShowTimeCuts(TH1* timeH, TH1* cutsH, Double_t t1, Double_t t2, Double_t t3, Double_t t4, Double_t t5, Double_t t6);
+	void	ShowTimeCuts(TH1* timeH, TH1* cutsH) {ShowTimeCuts(timeH, cutsH, Random_low1, Random_high1, Prompt_low, Prompt_high, Random_low2, Random_high2);}
+	
 	Bool_t 	IsPrompt(Double_t time, Double_t t_low, Double_t t_high);
 	Bool_t 	IsPrompt(Double_t time) {return IsPrompt(time, Prompt_low, Prompt_high);}
 	Bool_t 	IsRandom(Double_t time, Double_t t_low1, Double_t t_high1, Double_t t_low2, Double_t t_high2 );

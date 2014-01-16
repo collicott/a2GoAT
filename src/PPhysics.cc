@@ -20,28 +20,62 @@ void	PPhysics::Reconstruct()
 {
 }
 
-void PPhysics::MissingMass(Int_t pdg, TH1* prompt, TH1* random)
+void PPhysics::MissingMassPDG(Int_t pdg, TH1* Hprompt, TH1* Hrandom)
+{
+	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+	{
+		if (GoATTree_GetPDG(i) != pdg) continue; 
+
+		particle = GetGoATVector(i);
+		
+		for (Int_t j = 0; j < GetNTagged(); j++)
+		{
+			FillMissingMassPair(i, j, Hprompt, Hrandom);
+		}
+	}
+}	
+
+Bool_t PPhysics::FillMissingMass(Int_t particle_index, TH1* Hprompt, TH1* Hrandom)
+{
+	for (Int_t i = 0; i < GetNTagged(); i++)
+	{
+		FillMissingMassPair(particle_index, i, Hprompt, Hrandom);
+	}
+	return kTRUE;	
+}
+
+Bool_t PPhysics::FillMissingMassPair(Int_t particle_index, Int_t tagger_index, TH1* Hprompt, TH1* Hrandom)
+{
+	time = GetTagged_t(tagger_index) - GoATTree_GetTime(particle_index);
+
+	Prompt = IsPrompt(time);
+	Random = IsRandom(time);
+	
+	if ((!Prompt) && (!Random)) return kFALSE;
+
+	particle	= GetGoATVector(particle_index);			
+	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
+	missingp4 	= beam + target - particle;
+
+	if (Prompt) Hprompt->Fill(missingp4.M());
+	if (Random) Hrandom->Fill(missingp4.M());						
+
+	return kTRUE;
+}
+
+void PPhysics::FillTimePDG(Int_t pdg, TH1* Htime)
 {
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
 		if (GoATTree_GetPDG(i) != pdg) continue; 
 		
-		// Get particle four vector
-		particle = GetGoATVector(i);
-		
 		for (Int_t j = 0; j < GetNTagged(); j++)
 		{
-			if (!IsPrompt(GetTagged_t(j)) && !IsRandom(GetTagged_t(j))) continue;
-			
-			beam 	= TLorentzVector(0.,0.,GetPhotonBeam_E(j),GetPhotonBeam_E(j));
-			missingp4 = beam + target - particle;
-
-			if (IsPrompt(GetTagged_t(j))) prompt->Fill(missingp4.M());
-			if (IsRandom(GetTagged_t(j))) random->Fill(missingp4.M());			
-
+			time = GetTagged_t(j) - GoATTree_GetTime(i);
+			Htime->Fill(time);
 		}
 	}
-}	
+}
 
 Bool_t PPhysics::IsPrompt(Double_t time, Double_t t_low, Double_t t_high)
 {
@@ -70,6 +104,31 @@ void	PPhysics::RandomSubtraction(TH1* prompt, TH1* random, TH1* sub, Double_t ra
 	sub->Add(prompt,1);
 	sub->Add(random,-ratio);
 
+}
+
+void	PPhysics::ShowTimeCuts(TH1* timeH, TH1* cutsH, Double_t t1, Double_t t2, 
+							 Double_t t3, Double_t t4, Double_t t5, Double_t t6)
+{
+	Double_t t;
+
+	for (Int_t i = timeH->GetXaxis()->FindBin(t1); i < timeH->GetXaxis()->FindBin(t2); i++)
+	{	
+		t = timeH->GetBinContent(i);
+		cutsH->SetBinContent(i,t);
+	}	
+
+	for (Int_t i = timeH->GetXaxis()->FindBin(t3); i < timeH->GetXaxis()->FindBin(t4); i++)
+	{	
+		t = timeH->GetBinContent(i);
+		cutsH->SetBinContent(i,t);
+	}	
+	
+	for (Int_t i = timeH->GetXaxis()->FindBin(t5); i < timeH->GetXaxis()->FindBin(t6); i++)
+	{	
+		t = timeH->GetBinContent(i);
+		cutsH->SetBinContent(i,t);
+	}	
+	
 }
 
 Bool_t	PPhysics::OpenPhysFile(const char* pfile)

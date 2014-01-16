@@ -12,16 +12,19 @@ using namespace std;
 class	PPi0 : public PPhysics
 {
 private:
-    char 	file_in[256];
-	char 	file_out[256];
+
+	TH1* 	time_pi0;
+	TH1* 	time_pi0_cuts;	
 
 	TH1* 	MM_prompt_pi0;
 	TH1* 	MM_random_pi0;
 	TH1* 	MM_pi0;
 	
-	TH1* 	MM_prompt_eta;
-	TH1* 	MM_random_eta;
-	TH1* 	MM_eta;
+	TH1* 	MM_prompt_pi0_p;
+	TH1* 	MM_random_pi0_p;
+	TH1* 	MM_pi0_p;
+	
+	Double_t time;
 	
 protected:
 
@@ -33,6 +36,7 @@ public:
     virtual Bool_t	Init(Char_t* file_config);	
     virtual void 	Analyse();
 	virtual void	Reconstruct();
+	void	PostReconstruction();
 
 	void	DefineHistograms();
 	Bool_t	WriteHistograms(TFile* pfile);
