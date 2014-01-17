@@ -25,12 +25,28 @@ Bool_t	GParticleReconstruction::PostInit()
 	cout << endl;
 	
 	config = ReadConfig("Do-Charged-Particle-Reconstruction");	
-	sscanf( config.c_str(), "%d\n", &ReconstructChargedParticles);
-
-	if (ReconstructChargedParticles) 
+	if (strcmp(config.c_str(), "nokey") == 0) ReconstructChargedParticles = 0;	
+	else if(sscanf( config.c_str(), "%d %lf %lf\n", 
+		 &ReconstructChargedParticles,&charged_theta_min,&charged_theta_max) == 3)
 	{
-		cout << "Charged particle reconstruction is active:" << endl;
+		cout << "Charged particle reconstruction is active over theta range [" << 
+		charged_theta_min << "," << charged_theta_max <<"]" << endl;
+	}	
+	else if(sscanf( config.c_str(), "%d \n",  &ReconstructChargedParticles) == 1)
+	{
+		charged_theta_min = 0.0;
+		charged_theta_max = 180.0;
+	}
+	else 
+	{
+		cout << "ERROR: Do-Charged-Particle-Reconstruction set improperly" << endl;
+		return kFALSE;
+	}
 	
+	if (ReconstructChargedParticles == 1) 
+	{
+		cout << "Full Charged particle reconstruction is active" << endl;
+		
 		config = ReadConfig("Cut-dE-E-CB-Proton");
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_proton_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
@@ -114,12 +130,28 @@ Bool_t	GParticleReconstruction::PostInit()
 	cout << endl;
 	
 	config = ReadConfig("Do-Meson-Reconstruction");	
-	sscanf( config.c_str(), "%d\n", &ReconstructMesons);
-
-	if (ReconstructMesons) 
+	if (strcmp(config.c_str(), "nokey") == 0) ReconstructMesons = 0;	
+	else if(sscanf( config.c_str(), "%d %lf %lf\n", 
+		 &ReconstructMesons,&meson_theta_min, &meson_theta_max) == 3)
 	{
-		cout << "Meson reconstruction is active:" << endl;
+		cout << "meson reconstruction is active over theta range [" << 
+		meson_theta_min << "," << meson_theta_max <<"]" << endl;
+	}
+	else if(sscanf( config.c_str(), "%d \n",  &ReconstructMesons) == 1)
+	{
+		cout << "Full meson reconstruction is active" << endl;
+		meson_theta_min = 0.0;
+		meson_theta_max = 180.0;
+	}
+	else 
+	{
+		cout << "ERROR: Do-Meson-Reconstruction set improperly" << endl;
+		return kFALSE;
+	}
+	
 
+	if (ReconstructMesons == 1) 
+	{
 		config = ReadConfig("Cut-IM-Width-Pi0");	
 		sscanf( config.c_str(), "%lf\n", &width_pi0);
 		if(width_pi0) cout << "Pi0 IM width cut set to " << width_pi0 << " MeV" << endl;
@@ -163,8 +195,8 @@ void	GParticleReconstruction::Reconstruct()
 	
 	PhotonReconstruction();	
 	
-	if(ReconstructChargedParticles) ChargedReconstruction();
-	if(ReconstructMesons)	 		MesonReconstruction();
+	if(ReconstructChargedParticles == 1) 	ChargedReconstruction();
+	if(ReconstructMesons == 1)	 			MesonReconstruction();
 
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
@@ -223,6 +255,9 @@ void	GParticleReconstruction::ChargedReconstruction()
 	
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
+		if (GetTheta(i) < charged_theta_min) continue; // user rejected theta region
+		if (GetTheta(i) > charged_theta_max) continue; // user rejected theta region
+		
 		if (GetApparatus(i) == EAppCB) 
 		{	
 			if(Cut_CB_proton_active)
@@ -315,6 +350,9 @@ void	GParticleReconstruction::MesonReconstruction()
 		
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
+		if (GetTheta(i) < meson_theta_min) continue; // user rejected theta region
+		if (GetTheta(i) > meson_theta_max) continue; // user rejected theta region
+		
 		initialParticle[i] = GetVector(i);
 
 		is_meson[i] = kFALSE;
@@ -364,6 +402,9 @@ void	GParticleReconstruction::MesonReconstruction()
 	Int_t k = 0;
 	for (int i = 0; i < GetNParticles(); i++) 
     {
+		if (GetTheta(i) < meson_theta_min) continue; // user rejected theta region
+		if (GetTheta(i) > meson_theta_max) continue; // user rejected theta region
+		
 		if (Identified[i] == pdg_proton) 	continue;
 		if (Identified[i] == pdg_neutron) 	continue;
 		

@@ -28,8 +28,8 @@ class	GParticleReconstruction : public GoATTreeManager
 {
 private:
 
-	Bool_t 		ReconstructChargedParticles;
-	Bool_t		ReconstructMesons;
+
+
 
 	char 		cutfilename[256];
 	char 		cutname[256];	
@@ -42,7 +42,11 @@ private:
    	TCutG* 		Cut_TAPS_proton; 
    	TCutG* 		Cut_TAPS_pion; 
    	TCutG*		Cut_TAPS_electron;
-
+	
+	Int_t 		ReconstructChargedParticles;
+	Double_t	charged_theta_min;
+	Double_t	charged_theta_max;
+	
    	Int_t		Cut_CB_proton_active;   	
    	Int_t		Cut_TAPS_proton_active;  
    	Int_t 		Cut_proton_active;
@@ -58,7 +62,11 @@ private:
    	TCutG* 		Cut_proton;
    	TCutG*		Cut_pion;
    	TCutG*		Cut_electron;
-	
+   	
+	Int_t		ReconstructMesons;
+	Double_t	meson_theta_min;
+	Double_t	meson_theta_max;
+		
 	Double_t	width_pi0;
 	Double_t	width_eta;
 	Double_t	width_etaP;
