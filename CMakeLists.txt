@@ -9,7 +9,8 @@ if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR AND NOT MSVC_IDE)
     )
 endif()
     
-include (cmake/settings.cmake)
+include(cmake/settings.cmake)
+include(cmake/doxygen.cmake)
 
 message(STATUS "*** Build Type:      " ${CMAKE_BUILD_TYPE})
 message(STATUS "*** Compiler Flags:  " ${DEFAULT_COMPILE_FLAGS})

@@ -1,4 +1,4 @@
-a2GoAT
+a2GoAT {#mainpage}
 ======
 
 GoAT == Generation of Analysis Trees
