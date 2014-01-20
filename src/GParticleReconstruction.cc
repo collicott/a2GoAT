@@ -189,9 +189,11 @@ void	GParticleReconstruction::Reconstruct()
 {
 	InitEvent();
 	CheckNeutrality();
-	
-	// Do TOF here!
-	// Do Neutron ID here! (TOF + Cluster size)
+    
+	/**
+	 * @todo Do TOF here!
+	 * @todo Do Neutron ID here! (TOF + Cluster size)
+	 **/
 	
 	PhotonReconstruction();	
 	

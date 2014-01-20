@@ -3,6 +3,12 @@
 #include "GoAT.h"
 #include <time.h>
 
+/**
+ * @brief the main routine
+ * @param argc number of parameters
+ * @param argv the parameters as strings
+ * @return exit code
+ */
 int main(int argc, char *argv[])
 {
 	
