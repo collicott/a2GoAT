@@ -124,8 +124,14 @@ Bool_t	GoAT::Init(Char_t* configfile, Char_t* file_in, Char_t* file_out)
 	
 	cout << "Setting up analysis classes:" << endl;	
 	cout << "==========================================================" << endl;	
-	config = ReadConfig("DO-PARTICLE-RECONSTRUCTION");	
-	sscanf( config.c_str(), "%d\n", &UseParticleReconstruction);
+    config = ReadConfig("DO-PARTICLE-RECONSTRUCTION");
+
+    {
+        int buffer=0;
+        sscanf( config.c_str(), "%d\n", &buffer);
+        UseParticleReconstruction = (buffer==1);
+    }
+
 	if(UseParticleReconstruction) 
 	{
 		if(!GParticleReconstruction::PostInit())
