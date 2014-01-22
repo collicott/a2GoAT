@@ -20,11 +20,17 @@ private:
 	TH1* 	MM_random_pi0;
 	TH1* 	MM_pi0;
 	
-	TH1* 	MM_prompt_pi0_p;
-	TH1* 	MM_random_pi0_p;
-	TH1* 	MM_pi0_p;
-	
+	Int_t 	nentries;
+	Int_t	TC;
+	Double_t E;
 	Double_t time;
+	Double_t theta;
+	Double_t thetaCM;
+	Double_t phi;
+	Double_t phiCM;
+	Double_t MissMass;
+	Double_t MissE;	
+	
 	
 protected:
 
@@ -38,6 +44,7 @@ public:
 	virtual void	Reconstruct();
 	void	PostReconstruction();
 
+	Bool_t 	InitPhysicsTree(TFile* F);
 	void	DefineHistograms();
 	Bool_t	WriteHistograms(TFile* pfile);
 	Bool_t	WriteHistograms() {return WriteHistograms(PhysFile);}

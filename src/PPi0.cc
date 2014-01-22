@@ -55,11 +55,12 @@ PPi0::~PPi0()
 Bool_t	PPi0::Init(Char_t* configfile)
 {
 
-	OpenGoATFile("/home/cristina/Pi0_GoAT_Compton_354.root", "READ");
-	OpenPhysFile("Pi0_PhysicsHistograms.root");
-	DefineHistograms();
+	OpenGoATFile("AnalysisFiles/Pi0_GoAT_Compton_354.root", "READ");
+	OpenPhysFile("AnalysisFiles/Pi0_PhysicsHistograms.root");
+//	DefineHistograms();
 
 	cout << "Setting up tree files:" << endl;
+	if(!InitPhysicsTree(PhysFile)) 		return kFALSE;
 	if(!OpenTreeParticles(GoATFile)) 	return kFALSE;
 	if(!OpenTreeTagger(GoATFile))		return kFALSE;
 	cout << endl;
@@ -90,10 +91,12 @@ void	PPi0::Analyse()
 	cout << "Analysing ..." << endl;
 	TraverseGoATEntries();
 	
-	PostReconstruction();		
-	WriteHistograms();
+//	PostReconstruction();		
+//	WriteHistograms();
 	ClosePhysFile();	
 }
+
+
 
 void	PPi0::Reconstruct()
 {
@@ -122,31 +125,50 @@ void	PPi0::Reconstruct()
 
 void  PPi0::PostReconstruction()
 {
-	RandomSubtraction(MM_prompt_pi0,MM_random_pi0, MM_pi0);		
+/*	RandomSubtraction(MM_prompt_pi0,MM_random_pi0, MM_pi0);		
 	RandomSubtraction(MM_prompt_pi0_p,MM_random_pi0_p, MM_pi0_p);	
 
-	ShowTimeCuts(time_pi0, time_pi0_cuts);
+	ShowTimeCuts(time_pi0, time_pi0_cuts);*/
 
+}
+
+Bool_t  PPi0::InitPhysicsTree(TFile* F)
+{
+	if(!F) return kFALSE;
+	F->cd();
+	
+	treePhysics = new TTree("treePhysics", "treePhysics");
+	if(!treePhysics) return kFALSE;
+	cout << "treePhysics created." << endl;
+	
+	treePhysics->Branch("nentries",	&nentries,	"nentries/I");
+	treePhysics->Branch("TC",		TC,			"TC[nentries]/I");
+	treePhysics->Branch("E",		E,			"E[nentries]/D");	
+	treePhysics->Branch("time",		time,		"time[nentries]/D");	
+	treePhysics->Branch("theta",	theta,		"theta[nentries]/D");
+	treePhysics->Branch("thetaCM",	thetaCM,	"thetaCM[nentries]/D");
+	treePhysics->Branch("phi",		phi,		"phi[nentries]/D");
+	treePhysics->Branch("phiCM",	phiCM,		"phiCM[nentries]/D");
+	treePhysics->Branch("MissMass",	MissMass,	"MissMass[nentries]/D");
+	treePhysics->Branch("MissE",	MissE,		"MissE[nentries]/D");
+		
+	return kTRUE;
 }
 
 void	PPi0::DefineHistograms()
 {
-	time_pi0		= new TH1D("time_pi0",		"time_pi0",		1000,-500,500);
+/*	time_pi0		= new TH1D("time_pi0",		"time_pi0",		1000,-500,500);
 	time_pi0_cuts	= new TH1D("time_pi0_cuts",	"time_pi0_cuts",1000,-500,500);
 
 	MM_prompt_pi0 	= new TH1D("MM_prompt_pi0",	"MM_prompt_pi0",1500,0,1500);
 	MM_random_pi0 	= new TH1D("MM_random_pi0",	"MM_random_pi0",1500,0,1500);
 	MM_pi0			= new TH1D("MM_pi0",		"MM_pi0",		1500,0,1500);
-	
-	MM_prompt_pi0_p = new TH1D("MM_prompt_pi0_p","MM_prompt_pi0_p",1500,0,1500);
-	MM_random_pi0_p = new TH1D("MM_random_pi0_p","MM_random_pi0_p",1500,0,1500);
-	MM_pi0_p		= new TH1D("MM_pi0_p",		 "MM_pi0_p",	   1500,0,1500);
-	
+	*/
 }
 
 Bool_t 	PPi0::WriteHistograms(TFile* pfile)
 {
-	if(!pfile) return kFALSE;
+/*	if(!pfile) return kFALSE;
 	pfile->cd();
 
 	time_pi0->Write();
@@ -155,11 +177,7 @@ Bool_t 	PPi0::WriteHistograms(TFile* pfile)
 	MM_prompt_pi0->Write();
 	MM_random_pi0->Write();
 	MM_pi0->Write();
-
-	MM_prompt_pi0_p->Write();
-	MM_random_pi0_p->Write();
-	MM_pi0_p->Write();
-	
+*/
 	return kTRUE;
 }
 
