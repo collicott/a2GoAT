@@ -604,6 +604,13 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	
 }
 
+/**
+ * @brief Load a cut from a ROOT file
+ * @param filename The ROOT file to open
+ * @param cutname The name of the TCutG object to load
+ * @return Pointer to the cut
+ * @throw bool false on any error
+ */
 TCutG*	GParticleReconstruction::OpenCutFile(Char_t* filename, Char_t* cutname)
 {
 	CutFile 	= new TFile(filename, "READ");
