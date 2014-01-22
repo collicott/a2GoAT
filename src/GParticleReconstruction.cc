@@ -607,7 +607,22 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 TCutG*	GParticleReconstruction::OpenCutFile(Char_t* filename, Char_t* cutname)
 {
 	CutFile 	= new TFile(filename, "READ");
-	Cut 		= (TCutG*)CutFile->Get(cutname);
+
+    if( !CutFile || !CutFile->IsOpen() ) {
+        cerr << "Can't open cut file: " << filename << endl;
+        throw false;
+    }
+
+
+    // Try to find a TCutG with the name we want
+    // GetObject checks the type to be TCutG,
+    // see http://root.cern.ch/root/html534/TDirectory.html#TDirectory:GetObject
+    CutFile->GetObject(cutname, Cut);
+
+    if( !Cut ) {
+        cerr << "Could not find a TCutG with the name " << cutname << " in " << filename << endl;
+        throw false;
+    }
 	
 	TCutG* Cut_clone = Cut;
 	CutFile->Close();
