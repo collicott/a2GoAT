@@ -51,8 +51,13 @@ Bool_t	GParticleReconstruction::PostInit()
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_proton_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
-			Cut_CB_proton_active = 1;
-			Cut_CB_proton = OpenCutFile(cutfilename,cutname);
+            try {
+                Cut_CB_proton_active = 1;
+                Cut_CB_proton = OpenCutFile(cutfilename,cutname);
+            } catch (...) {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
 		}
 		else 
 		{
@@ -64,8 +69,13 @@ Bool_t	GParticleReconstruction::PostInit()
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_pion_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
-			Cut_CB_pion_active = 1;
-			Cut_CB_pion = OpenCutFile(cutfilename,cutname);
+            try {
+                Cut_CB_pion_active = 1;
+                Cut_CB_pion = OpenCutFile(cutfilename,cutname);
+            } catch (...) {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
 		}
 		else 
 		{
@@ -77,8 +87,13 @@ Bool_t	GParticleReconstruction::PostInit()
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_CB_electron_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
-			Cut_CB_electron_active = 1;
-			Cut_CB_electron = OpenCutFile(cutfilename,cutname);
+            try {
+                Cut_CB_electron_active = 1;
+                Cut_CB_electron = OpenCutFile(cutfilename,cutname);
+            } catch (...) {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
 		}
 		else 
 		{
@@ -90,8 +105,13 @@ Bool_t	GParticleReconstruction::PostInit()
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_proton_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
-			Cut_TAPS_proton_active = 1;
-			Cut_TAPS_proton = OpenCutFile(cutfilename,cutname);
+            try {
+                Cut_TAPS_proton_active = 1;
+                Cut_TAPS_proton = OpenCutFile(cutfilename,cutname);
+            } catch (...) {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
 		}
 		else 
 		{
@@ -103,8 +123,13 @@ Bool_t	GParticleReconstruction::PostInit()
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_pion_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
-			Cut_TAPS_pion_active = 1;
-			Cut_TAPS_pion = OpenCutFile(cutfilename,cutname);
+            try {
+                Cut_TAPS_pion_active = 1;
+                Cut_TAPS_pion = OpenCutFile(cutfilename,cutname);
+            } catch (...) {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
 		}
 		else 
 		{
@@ -116,8 +141,13 @@ Bool_t	GParticleReconstruction::PostInit()
 		if (strcmp(config.c_str(), "nokey") == 0) Cut_TAPS_electron_active = 0;
 		else if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
 		{
-			Cut_TAPS_electron_active = 1;
-			Cut_TAPS_electron = OpenCutFile(cutfilename,cutname);
+            try {
+                Cut_TAPS_electron_active = 1;
+                Cut_TAPS_electron = OpenCutFile(cutfilename,cutname);
+            } catch (...) {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
 		}
 		else 
 		{
