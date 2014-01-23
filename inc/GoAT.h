@@ -14,8 +14,6 @@ using namespace std;
 class	GoAT : public GSort
 {
 private:
-    char 	file_in[256];
-	char 	file_out[256];
 	Int_t	UsePeriodMacro;
 	Int_t 	period;
 	
@@ -28,10 +26,11 @@ public:
     GoAT();
     virtual ~GoAT();
 
-    virtual Bool_t	Init(Char_t* configfile, Char_t* file_in, Char_t* file_out);	
+    virtual Bool_t	Init(Char_t* configfile);	
+    virtual Bool_t	File(Char_t* file_in, Char_t* file_out);
     
     virtual void 	Analyse();
-	virtual void	Reconstruct();
+    virtual void	Reconstruct();
     virtual Bool_t	Write();
     
 };

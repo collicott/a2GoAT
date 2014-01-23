@@ -20,10 +20,6 @@ Bool_t	GParticleReconstruction::PostInit()
 {
 	cout << endl << "Particle Reconstruction turned ON" << endl;
 
-	cout << "Opening particle reconstruction tree: ";	
-	InitTreeParticles();
-	cout << endl;
-	
 	config = ReadConfig("Do-Charged-Particle-Reconstruction");	
 	if (strcmp(config.c_str(), "nokey") == 0) ReconstructChargedParticles = 0;	
 	else if(sscanf( config.c_str(), "%d %lf %lf\n", 
@@ -211,7 +207,7 @@ Bool_t	GParticleReconstruction::PostInit()
 		cout << endl;
 	}
 	else cout << "Meson reconstruction is NOT active." << endl;	
-	
+
 	return kTRUE;
 }
 

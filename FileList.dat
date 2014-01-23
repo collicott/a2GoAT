@@ -1,0 +1,4 @@
+Input-Directory: /home/pmartel
+Output-Directory: /home/pmartel/Test/
+Input-File: Acqu_Compton_354.root
+Output-Prefix: What
