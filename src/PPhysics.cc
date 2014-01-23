@@ -63,6 +63,24 @@ Bool_t PPhysics::FillMissingMassPair(Int_t particle_index, Int_t tagger_index, T
 	return kTRUE;
 }
 
+Double_t PPhysics::CalcMissingMass(Int_t particle_index, Int_t tagger_index)
+{
+	particle	= GetGoATVector(particle_index);			
+	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
+	missingp4 	= beam + target - particle;						
+
+	return missingp4.M();
+}
+
+Double_t PPhysics::CalcMissingEnergy(Int_t particle_index, Int_t tagger_index)
+{
+	particle	= GetGoATVector(particle_index);			
+	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
+	missingp4 	= beam + target - particle;						
+
+	return missingp4.T();
+}
+
 void PPhysics::FillTimePDG(Int_t pdg, TH1* Htime)
 {
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
@@ -106,6 +124,13 @@ void	PPhysics::RandomSubtraction(TH1* prompt, TH1* random, TH1* sub, Double_t ra
 
 }
 
+void	PPhysics::RandomSubtraction(TH3* prompt, TH3* random, TH3* sub, Double_t ratio)
+{
+	sub->Add(prompt,1);
+	sub->Add(random,-ratio);
+
+}
+
 void	PPhysics::ShowTimeCuts(TH1* timeH, TH1* cutsH, Double_t t1, Double_t t2, 
 							 Double_t t3, Double_t t4, Double_t t5, Double_t t6)
 {
@@ -131,21 +156,21 @@ void	PPhysics::ShowTimeCuts(TH1* timeH, TH1* cutsH, Double_t t1, Double_t t2,
 	
 }
 
-Bool_t	PPhysics::OpenPhysFile(const char* pfile)
+Bool_t	PPhysics::OpenHistFile(const char* pfile, Option_t* option)
 {
-	PhysFile = new TFile(pfile, "RECREATE");
-	if(!PhysFile) return kFALSE;
-    if(PhysFile->IsZombie()) return kFALSE;
+	HistFile = new TFile(pfile, option);
+	if(!HistFile) return kFALSE;
+    if(HistFile->IsZombie()) return kFALSE;
     
-	cout << "PhysFile " << pfile << " opened." << endl;
+	cout << "HistFile " << pfile << " opened (option = "<< option << ")." << endl;
 	
 	return kTRUE;
 }
 
-Bool_t 	PPhysics::ClosePhysFile()
+Bool_t 	PPhysics::CloseHistFile()
 {
-	if(!PhysFile) return kFALSE;
-	PhysFile->Close();
+	if(!HistFile) return kFALSE;
+	HistFile->Close();
 	
 	return kTRUE;
 }

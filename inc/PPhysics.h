@@ -13,7 +13,6 @@ class	PPhysics : public GoATTreeManager
 {
 private:
 
-
 	Double_t targetmass;
 	Double_t Prompt_low;
 	Double_t Prompt_high;
@@ -48,7 +47,9 @@ public:
 	void 	MissingMassPDG(Int_t pdg, TH1* Hprompt, TH1* Hrandom);
 	Bool_t	FillMissingMass(Int_t particle_index, TH1* Hprompt, TH1* Hrandom);
 	Bool_t 	FillMissingMassPair(Int_t particle_index, Int_t tagger_index, TH1* Hprompt, TH1* Hrandom);
-	
+	Double_t CalcMissingMass(Int_t particle_index, Int_t tagger_index);
+	Double_t CalcMissingEnergy(Int_t particle_index, Int_t tagger_index);
+		
 	void 	FillTimePDG(Int_t pdg, TH1* Htime);	
 	void	ShowTimeCuts(TH1* timeH, TH1* cutsH, Double_t t1, Double_t t2, Double_t t3, Double_t t4, Double_t t5, Double_t t6);
 	void	ShowTimeCuts(TH1* timeH, TH1* cutsH) {ShowTimeCuts(timeH, cutsH, Random_low1, Random_high1, Prompt_low, Prompt_high, Random_low2, Random_high2);}
@@ -64,12 +65,18 @@ public:
 	void	SetRandomWindow2(Double_t t1, Double_t t2) {Random_low2 = t1; Random_high2 = t2;}
 	void 	SetPvRratio(Double_t value) {PvR_ratio = value;}
 	void 	SetPvRratio() {PvR_ratio = (Prompt_high - Prompt_low)/((Random_high1 - Random_low1) + (Random_high2 - Random_low2));}
+	
 	void	RandomSubtraction(TH1* prompt, TH1* random, TH1* sub, Double_t ratio);
 	void	RandomSubtraction(TH1* prompt, TH1* random, TH1* sub) {RandomSubtraction(prompt,random,sub,PvR_ratio);}
+	
+	void	RandomSubtraction(TH3* prompt, TH3* random, TH3* sub, Double_t ratio);
+	void	RandomSubtraction(TH3* prompt, TH3* random, TH3* sub) {RandomSubtraction(prompt,random,sub,PvR_ratio);}
 
-	TFile* 	PhysFile;
-	Bool_t 	OpenPhysFile(const char* pfile);
-	Bool_t	ClosePhysFile();
+	TFile* 	HistFile;
+	Bool_t 	OpenHistFile(const char* pfile, Option_t* option);
+	Bool_t 	OpenHistFile(const char* pfile) { return OpenHistFile(pfile,"RECREATE");}
+	Bool_t	CloseHistFile();	
+
 		
 };
 #endif
