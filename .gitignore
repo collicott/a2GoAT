@@ -11,8 +11,3 @@
 *.lai
 *.la
 *.a
-
-# some files usually ignored
-/CMakeLists.txt.user
-/doc/
-
