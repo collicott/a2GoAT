@@ -209,6 +209,11 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+	else
+	{
+		cout << "ERROR: No AcquRoot files found!" << endl;
+		return 0;
+	}
 
 	end = clock();
 	cout << "Time required for execution: "
@@ -267,7 +272,6 @@ Bool_t	GoAT::Init(const char* configfile)
 
 	cout << "Initialisation complete." << endl;
 	cout << "==========================================================" << endl << endl;
-
   
 	return kTRUE;
 }
@@ -304,6 +308,8 @@ void	GoAT::Analyse()
 	TraverseAcquEntries();			
 	CloseOutputFile();
 //	OutputStatistics();
+	cout << "File complete." << endl;
+	cout << "==========================================================" << endl << endl;	
 }
 
 void	GoAT::Reconstruct()
