@@ -74,10 +74,10 @@ void	GoATTreeManager::Reset()
 
 Bool_t	  GoATTreeManager::OpenGoATFile(const char* treefile, Option_t* option)
 {
-    GoATFile = TFile::Open(treefile, option);
+	GoATFile = TFile::Open(treefile, option);
     
 	if(!GoATFile) return kFALSE;
-    if(GoATFile->IsZombie()) return kFALSE;
+	if(GoATFile->IsZombie()) return kFALSE;
     
 	cout << "GoATFile " << treefile << " opened." << endl;
         
@@ -96,7 +96,7 @@ Bool_t	  GoATTreeManager::CloseOutputFile(TFile* TreeFile)
 	TreeFile->cd();
 	WriteTrees();
 		
-    TreeFile->Close();
+	TreeFile->Close();
 	cout << "closed output file."<< endl;
 	return kTRUE;
 }
@@ -186,14 +186,14 @@ void	GoATTreeManager::Reconstruct()
 Bool_t	GoATTreeManager::FillEvent()
 {
 	// Fill event into tree
-	if(treeParticles)				treeParticles->Fill();
-	else 							treeRawEvent_clone->Fill();
+	if(treeParticles)			treeParticles->Fill();
+	else if(treeRawEvent_clone)		treeRawEvent_clone->Fill();
 
 	if(treeTagger_clone) 			treeTagger_clone->Fill();
 	if(treeTrigger_clone)			treeTrigger_clone->Fill();
 	if(treeScaler_clone)			treeScaler_clone->Fill();
 	if(treeDetectorHits_clone)		treeDetectorHits_clone->Fill();
-	
+
 	return kTRUE;
 }
 
@@ -203,14 +203,14 @@ Bool_t  GoATTreeManager::WriteTrees(TFile* TreeFile)
 	TreeFile->cd();
 	
 	// Write trees to file
-	if(treeParticles)				treeParticles->Write();
+	if(treeParticles)      			treeParticles->Write();
 	else if(treeRawEvent_clone)		treeRawEvent_clone->Write();
-	
+
 	if(treeTagger_clone)			treeTagger_clone->Write();
 	if(treeTrigger_clone)			treeTrigger_clone->Write();
 	if(treeScaler_clone)			treeScaler_clone->Write();
 	if(treeDetectorHits_clone)		treeDetectorHits_clone->Write();
-	
+
 	return kTRUE;
 }
 
