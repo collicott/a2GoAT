@@ -18,112 +18,126 @@ int main(int argc, char *argv[])
 	clock_t start, end;
 	start = clock();
 
-	Char_t* configfile;
-	char serverfile[256] = "";
+	std::string configfile = "";
+	std::string serverfile = "";
+	std::string dir_in = "";
+	std::string dir_out = "";
+	std::string file_in = "";
+	std::string file_out = "";
+	std::string pre_in = "Acqu";
+	std::string pre_out = "GoAT";
 
-	char dir_in[256] = "";
-	char dir_out[256] = "";
-	char file_in[256] = "";
-	char file_out[256] = "";
-	char pre_in[256] = "Acqu";
-	char pre_out[256] = "GoAT";
-
-	std::string str;
+	Int_t length;
 	std::string flag;
-	std::string value;
 
 	if(argc == 1)
 	{
 		cout << "Please provide a config file" << endl;
 		return 0;
 	}
-	else if(argc == 2)
-	{
-		configfile = argv[1];
-		cout << "Searching config file " << configfile << " for input and output root file names" << endl << "None found" << endl;
-	}
+	else if(argc == 2) configfile = argv[1];
 	else
 	{
 		for(int i=1; i<argc; i++)
 		{
-			str = argv[i];
-			if(str.find_first_of("-") == 0)
+			flag = argv[i];
+			if(flag.find_first_of("-") == 0)
 			{
-				flag = str.substr(1,str.length()-1);
 				i++;
-				str = argv[i];
-				value = str;
-				if(strcmp(flag.c_str(), "s") == 0)
-				{
-					cout << "Server file '" << value << "' chosen" << endl;
-					sprintf(serverfile, "%s", value.c_str());
-				}
-				else if(strcmp(flag.c_str(), "d") == 0)
-				{
-					cout << "Input directory '" << value << "' chosen" << endl;
-					if(value.find_last_of("/") == (value.length()-1)) sprintf(dir_in,"%s",value.c_str());
-					else sprintf(dir_in,"%s/",value.c_str());
-				}
-				else if(strcmp(flag.c_str(), "D") == 0)
-				{
-					cout << "Output directory '" << value << "' chosen" << endl;
-					if(value.find_last_of("/") == (value.length()-1)) sprintf(dir_out,"%s",value.c_str());
-					else sprintf(dir_out,"%s/",value.c_str());
-				}
-				else if(strcmp(flag.c_str(), "f") == 0)
-				{
-					cout << "Input file '" << value << "' chosen" << endl;
-					sprintf(file_in, "%s", value.c_str());
-				}
-				else if(strcmp(flag.c_str(), "F") == 0)
-				{
-					cout << "Output file '" << value << "' chosen" << endl;
-					sprintf(file_out, "%s", value.c_str());
-				}
-				else if(strcmp(flag.c_str(), "p") == 0)
-				{
-					cout << "Input prefix '" << value << "' chosen" << endl;
-					sprintf(pre_in, "%s", value.c_str());
-				}
-				else if(strcmp(flag.c_str(), "P") == 0)
-				{
-					cout << "Output prefix '" << value << "' chosen" << endl;
-					sprintf(pre_out, "%s", value.c_str());
-				}
+				flag.erase(0,1);
+				if(strcmp(flag.c_str(), "s") == 0) serverfile = argv[i];
+				else if(strcmp(flag.c_str(), "d") == 0) dir_in = argv[i];
+				else if(strcmp(flag.c_str(), "D") == 0) dir_out = argv[i];
+				else if(strcmp(flag.c_str(), "f") == 0) file_in = argv[i];
+				else if(strcmp(flag.c_str(), "F") == 0) file_out = argv[i];
+				else if(strcmp(flag.c_str(), "p") == 0) pre_in = argv[i];
+				else if(strcmp(flag.c_str(), "P") == 0) pre_out = argv[i];
 				else
 				{
-					cout << "Unknown flag" << flag << endl;
+					cout << "Unknown flag " << flag << endl;
 					return 0;
 				}
 			}
 			else configfile = argv[i];
 		}
 	}
-	// Check that file exists:
-	ifstream cfile(configfile);
+
+	// Check that config file exists:
+	ifstream cfile(configfile.c_str());
 	if(!cfile)
 	{
 		cout << "Config file '" << configfile << "' could not be found." << endl;
 		return 0;
 	}
 
+	// If server file is specified, check that it exists
+	if(serverfile.length() > 0)
+	{
+		// Check that file exists:
+		ifstream sfile(serverfile.c_str());
+		if(!sfile)
+		{
+			cout << "Server file '" << serverfile << "' could not be found" << endl;
+			return 0;
+		}
+	}
+	// If no server file is specified, allow for checking in the config file
+	else serverfile = configfile;
+
 	// Create instance of GoAT class
 	GoAT* goat = new GoAT;
 
+	// Scan server or config file for file settings
+	flag = goat->ReadConfig("Input-Directory",0,(Char_t*)serverfile.c_str());	
+	flag.erase(0,flag.find_first_not_of(" "));
+	if(strcmp(flag.c_str(),"nokey") != 0) dir_in = flag;
+
+	flag = goat->ReadConfig("Output-Directory",0,(Char_t*)serverfile.c_str());	
+	flag.erase(0,flag.find_first_not_of(" "));
+	if(strcmp(flag.c_str(),"nokey") != 0) dir_out = flag;
+
+	flag = goat->ReadConfig("Input-File",0,(Char_t*)serverfile.c_str());	
+	flag.erase(0,flag.find_first_not_of(" "));
+	if(strcmp(flag.c_str(),"nokey") != 0) file_in = flag;
+
+	flag = goat->ReadConfig("Output-File",0,(Char_t*)serverfile.c_str());	
+	flag.erase(0,flag.find_first_not_of(" "));
+	if(strcmp(flag.c_str(),"nokey") != 0) file_out = flag;
+
+	flag = goat->ReadConfig("Input-Prefix",0,(Char_t*)serverfile.c_str());	
+	flag.erase(0,flag.find_first_not_of(" "));
+	if(strcmp(flag.c_str(),"nokey") != 0) pre_in = flag;
+
+	flag = goat->ReadConfig("Output-Prefix",0,(Char_t*)serverfile.c_str());	
+	flag.erase(0,flag.find_first_not_of(" "));
+	if(strcmp(flag.c_str(),"nokey") != 0) pre_out = flag;
+	// Finished scanning for file settings
+
+	// Fix directories to include final slash if not there
+	if(dir_in.find_last_of("/") != (dir_in.length()-1)) dir_in += "/";
+	if(dir_out.find_last_of("/") != (dir_out.length()-1)) dir_out += "/";
+
+	cout << "Server file '" << serverfile << "' chosen" << endl;
+	cout << "Input directory '" << dir_in << "' chosen" << endl;
+	cout << "Output directory '" << dir_out << "' chosen" << endl;
+	cout << "Input file '" << file_in << "' chosen" << endl;
+	cout << "Output file '" << file_out << "' chosen" << endl;
+	cout << "Input prefix '" << pre_in << "' chosen" << endl;
+	cout << "Output prefix '" << pre_out << "' chosen" << endl;
+
 	// Perform full initialisation 
-	if(!goat->Init(configfile))
+	if(!goat->Init(configfile.c_str()))
 	{
 		cout << "ERROR: GoAT Init failed!" << endl;
 		return 0;
 	}
 
-	Int_t length;
 	std::string file;
 	std::string prefix;
 	std::string suffix;
 
 	// If input file is specified, use it
-	if(strcmp(file_in,"") != 0)
+	if(file_in.length() > 0)
 	{
 		file = file_in;
 		length = file.length();
@@ -131,94 +145,66 @@ int main(int argc, char *argv[])
 		if(length >= 5)
 		{
 			// Add input directory to it
-			sprintf(file_in,"%s%s",dir_in,file_in);					
+			file_in = dir_in+file_in;
 			// If output file is specified, use it
-			if(strcmp(file_out,"") != 0)
+			if(file_out.length() > 0)
 			{
-				sprintf(file_out,"%s%s",dir_out,file_out);					
-				if(!goat->File(file_in, file_out)) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+				file_out = dir_out+file_out;
+				if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
 			}
 			// If output file is not specified, build it
 			else
 			{
 				// If output directory is not specified, build it
-				if(strcmp(dir_out,"") == 0)
+				if(dir_out.length() == 0)
 				{
 					prefix = file.substr(0,file.find_last_of("/")+1);
-					sprintf(dir_out,"%s%s",dir_in,prefix.c_str());					
+					dir_out = dir_in+prefix;
 				}
 				// If input prefix doesn't match, simply prepend output prefix to the file name
 				if(file.find(pre_in)>file.length()) suffix = ("_"+file.substr(file.find_last_of("/")+1,length-(file.find_last_of("/")+1)));
 				// If input prefix does match, switch prefixes
-				else suffix = file.substr(file.find_last_of("/")+1+strlen(pre_in),length-(file.find_last_of("/")+1+strlen(pre_in)));
+				else suffix = file.substr(file.find_last_of("/")+1+pre_in.length(),length-(file.find_last_of("/")+1+pre_in.length()));
 				// Build output file name
-				sprintf(file_out,"%s%s%s",dir_out,pre_out,suffix.c_str());					
+				file_out = dir_out+pre_out+suffix;
 				// Run GoAT
-				if(!goat->File(file_in, file_out)) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+				if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
 			}
 		}
 	}
-	// Otherwise if server file is specified, scan it
-	else if(strcmp(serverfile,"") != 0)
-	{
-		// Check that file exists:
-		ifstream sfile(serverfile);
-		if(!serverfile)
-		{
-			cout << "Server file '" << serverfile << "' could not be found" << endl;
-			return 0;
-		}
-		else cout << "Using Server file '"<< serverfile << "' for all file settings" << endl; 
-		value = goat->ReadConfig("Input-Directory",0,serverfile);	
-		if(value.find_last_of("/") != (value.length()-1)) value += "/";
-		if(strcmp(value.c_str(),"nokey") != 0) sscanf(value.c_str(), " %s\n", dir_in);
-		value = goat->ReadConfig("Output-Directory",0,serverfile);	
-		if(value.find_last_of("/") != (value.length()-1)) value += "/";
-		if(strcmp(value.c_str(),"nokey") != 0) sscanf(value.c_str(), " %s\n", dir_out);
-		value = goat->ReadConfig("Input-File",0,serverfile);	
-		if(strcmp(value.c_str(),"nokey") != 0) sscanf(value.c_str(), " %s\n", file_in);
-		value = goat->ReadConfig("Output-File",0,serverfile);	
-		if(strcmp(value.c_str(),"nokey") != 0) sscanf(value.c_str(), " %s\n", file_out);
-		value = goat->ReadConfig("Input-Prefix",0,serverfile);	
-		if(strcmp(value.c_str(),"nokey") != 0) sscanf(value.c_str(), " %s\n", pre_in);
-		value = goat->ReadConfig("Output-Prefix",0,serverfile);	
-		if(strcmp(value.c_str(),"nokey") != 0) sscanf(value.c_str(), " %s\n", pre_out);
-
-		cout << dir_in << endl;
-		cout << dir_out << endl;
-		cout << file_in << endl;
-		cout << file_out << endl;
-		cout << pre_in << endl;
-		cout << pre_out << endl;
-
-	}
 	// Otherwise if input directory is specified, scan it
-	else if(strcmp(dir_in,"") != 0)
+	else if(dir_in.length() > 0)
 	{
 		// If output directory is not specified, use the input directory
-		if(strcmp(dir_out,"") == 0) sprintf(dir_out,"%s",dir_in);
+		if(dir_out.length() == 0) dir_out = dir_in;
 
+		// Create list of files in input directory
 		TSystemFile *sys_file;
-		
-		TSystemDirectory *sys_dir = new TSystemDirectory("files",dir_in);
+		TSystemDirectory *sys_dir = new TSystemDirectory("files",dir_in.c_str());
 		TList *file_list = sys_dir->GetListOfFiles();
 		file_list->Sort();
 		TIter file_iter(file_list);
-		
+
+		// Iterate over files
 		while((sys_file=(TSystemFile*)file_iter()))
 		{
 			file = sys_file->GetName();
 			length = file.length();
+			// File should at least have '.root' at the end
 			if(length >= 5)
 			{
-				prefix = file.substr(0,strlen(pre_in));
+				//Check that prefixes and suffixes match
+				prefix = file.substr(0,pre_in.length());
 				suffix = file.substr(length-5,5);
-				if(((strcmp(prefix.c_str(),pre_in) == 0)) && (strcmp(suffix.c_str(),".root") == 0))
+				if(((strcmp(prefix.c_str(),pre_in.c_str()) == 0)) && (strcmp(suffix.c_str(),".root") == 0))
 				{
-					sprintf(file_in,"%s%s",dir_in,file.c_str());
-					suffix = file.substr(strlen(pre_in),length-strlen(pre_in));
-					sprintf(file_out,"%s%s%s",dir_out,pre_out,suffix.c_str());					
-					if(!goat->File(file_in, file_out)) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+					// Build input file name
+					file_in = dir_in+file;
+					// Build output file name
+					suffix = file.substr(pre_in.length(),length-pre_in.length());
+					file_out = dir_out+pre_out+suffix;					
+					// Run GoAT
+					if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
 				}
 			}
 		}
@@ -242,11 +228,11 @@ GoAT::~GoAT()
 {
 }
 
-Bool_t	GoAT::Init(Char_t* configfile)
+Bool_t	GoAT::Init(const char* configfile)
 {
 	cout << endl << "Initialising GoAT analysis:" << endl;
 	cout << "==========================================================" << endl;	
-	SetConfigFile(configfile);
+	SetConfigFile((Char_t*)configfile);
 		
 	config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
@@ -286,7 +272,7 @@ Bool_t	GoAT::Init(Char_t* configfile)
 	return kTRUE;
 }
 
-Bool_t	GoAT::File(Char_t* file_in, Char_t* file_out)
+Bool_t	GoAT::File(const char* file_in, const char* file_out)
 {
 	cout << "Opening files: " << endl;
 	if(!OpenAcquFile(file_in))	return kFALSE;	

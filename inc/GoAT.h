@@ -26,8 +26,8 @@ public:
     GoAT();
     virtual ~GoAT();
 
-    virtual Bool_t	Init(Char_t* configfile);	
-    virtual Bool_t	File(Char_t* file_in, Char_t* file_out);
+    virtual Bool_t	Init(const char* configfile);	
+    virtual Bool_t	File(const char* file_in, const char* file_out);
     
     virtual void 	Analyse();
     virtual void	Reconstruct();
