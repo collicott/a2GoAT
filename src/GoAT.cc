@@ -300,6 +300,7 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 	cout << endl;
 	
 	Analyse();
+	return kTRUE;
 }
 
 void	GoAT::Analyse()
@@ -308,7 +309,7 @@ void	GoAT::Analyse()
 	TraverseAcquEntries();			
 	CloseOutputFile();
 //	OutputStatistics();
-	cout << "File complete." << endl;
+	cout << endl << "File complete." << endl;
 	cout << "==========================================================" << endl << endl;	
 }
 
