@@ -75,6 +75,6 @@ public:
 
 	void	DefineHistograms();
 	Bool_t	WriteHistograms(TFile* pfile);
-	Bool_t	WriteHistograms() {return WriteHistograms(PhysFile);}
+	Bool_t	WriteHistograms() {return WriteHistograms(HistFile);}
 };
 #endif

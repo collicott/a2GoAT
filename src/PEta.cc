@@ -55,8 +55,8 @@ PEta::~PEta()
 Bool_t	PEta::Init(Char_t* configfile)
 {
 
-	OpenGoATFile("/home/cristina/Open_GoAT_Compton_354.root", "READ");
-	OpenPhysFile("Eta_PhysicsHistograms.root");
+	OpenGoATFile("AnalysisFiles/Open_GoAT_Compton_354.root", "READ");
+	OpenHistFile("AnalysisFiles/Eta_Hist.root");
 	DefineHistograms();
 
 	cout << "Setting up tree files:" << endl;
@@ -100,7 +100,7 @@ void	PEta::Analyse()
 	
 	PostReconstruction();		
 	WriteHistograms();
-	ClosePhysFile();	
+	CloseHistFile();	
 
 	Double_t BR;
 	
@@ -266,8 +266,8 @@ void	PEta::DefineHistograms()
 	MM_eta_n_3ol		  = new TH1D("MM_eta_n_3ol",	 "MM_eta_n_3ol",	   1500,0,1500);	
 
 	MM_prompt_eta_n_5om = new TH1D("MM_prompt_eta_n_5om","MM_prompt_eta_n_5om",1500,0,1500);
-	MM_random_eta_n_5om = new TH1D("MM_prompt_eta_n_5om","MM_prompt_eta_n_5om",1500,0,1500);
-	MM_eta_n_5om		  = new TH1D("MM_prompt_eta_n_5om",	 "MM_prompt_eta_n_5om",	   1500,0,1500);	
+	MM_random_eta_n_5om = new TH1D("MM_random_eta_n_5om","MM_random_eta_n_5om",1500,0,1500);
+	MM_eta_n_5om		= new TH1D("MM_eta_n_5om",	 "MM_eta_n_5om",	   1500,0,1500);	
 	
 	MM_prompt_eta_c = new TH1D("MM_prompt_eta_c","MM_prompt_eta_c",1500,0,1500);
 	MM_random_eta_c = new TH1D("MM_random_eta_c","MM_random_eta_c",1500,0,1500);
