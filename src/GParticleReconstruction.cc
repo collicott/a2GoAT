@@ -256,15 +256,34 @@ void	GParticleReconstruction::InitEvent()
 
 void 	GParticleReconstruction::CheckNeutrality()
 {
+
 	// Rough start, this will soon be user controlled
-	for (int i = 0; i < GetNParticles(); i++){
-	
-		if (  ((Get_dE(i) > 0.0) && (Get_dE(i) < 1000.0)) 
-			|| (GetWC0_E(i) > 0.0) || (GetWC1_E(i) > 0.0) ) 
+	Bool_t considerPID 	= kFALSE;
+	Bool_t considerMWPC = kTRUE;
+	Bool_t considerVETO = kTRUE;
+
+	for (int i = 0; i < GetNParticles(); i++)
+	{
+		Charge[i] = 0;
+		if(GetApparatus(i) == EAppCB)
 		{
-			 Charge[i] = 1;
+			if(considerMWPC == kTRUE)
+			{
+				if ((GetWC0_E(i) > 0.0) || (GetWC1_E(i) > 0.0)) 	Charge[i] = 1;
+			}
+			if(considerPID == kTRUE)
+			{
+				if ((Get_dE(i) > 0.0) && (Get_dE(i) < 1000.0)) 		Charge[i] = 1; 
+			}
+
 		}
-		else Charge[i] = 0;
+		if(GetApparatus(i) == EAppTAPS)
+		{
+			if(considerVETO == kTRUE)
+			{
+				if ((Get_dE(i) > 0.0) && (Get_dE(i) < 1000.0)) 		Charge[i] = 1;
+			}
+		}			
 	}
 }
 

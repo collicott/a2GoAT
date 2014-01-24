@@ -28,9 +28,6 @@ class	GParticleReconstruction : public GoATTreeManager
 {
 private:
 
-
-
-
 	char 		cutfilename[256];
 	char 		cutname[256];	
 	
