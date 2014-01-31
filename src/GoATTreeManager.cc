@@ -186,12 +186,11 @@ void	GoATTreeManager::Reconstruct()
 Bool_t	GoATTreeManager::FillEvent()
 {
 	// Fill event into tree
-	if(treeParticles)			treeParticles->Fill();
+	if(treeParticles)				treeParticles->Fill();
 	else if(treeRawEvent_clone)		treeRawEvent_clone->Fill();
 
 	if(treeTagger_clone) 			treeTagger_clone->Fill();
 	if(treeTrigger_clone)			treeTrigger_clone->Fill();
-	if(treeScaler_clone)			treeScaler_clone->Fill();
 	if(treeDetectorHits_clone)		treeDetectorHits_clone->Fill();
 
 	return kTRUE;

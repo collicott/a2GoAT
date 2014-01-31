@@ -4,41 +4,250 @@
 
 int main(int argc, char *argv[])
 {
-	
 	clock_t start, end;
 	start = clock();
 
-	// Associate 1st terminal input with config file
-	Char_t* configfile;
-	if(argv[1]) configfile = argv[1];
-	else 
+	// Initialise strings
+	std::string configfile = "";
+	std::string serverfile = "";
+	std::string dir_in = "";
+	std::string dir_out = "";
+	std::string file_in = "";
+	std::string tree_out = "";
+	std::string hist_out = "";	
+	std::string pre_in = "";
+	std::string pre_tree = "Pi0Tree";
+	std::string pre_hist = "Pi0Hist";
+
+	Int_t length;
+	std::string flag;
+
+	if(argc == 1)
 	{
 		cout << "Please provide a config file" << endl;
 		return 0;
 	}
-	
-	// Check that file exists:
-	ifstream ifile(configfile);
-	if(!ifile)
+	else if(argc == 2) configfile = argv[1];
+	else
 	{
-		cout << "Config file " << configfile << " could not be found." << endl;
+		for(int i=1; i<argc; i++)
+		{
+			flag = argv[i];
+			if(flag.find_first_of("-") == 0)
+			{
+				i++;
+				flag.erase(0,1);
+				if(strcmp(flag.c_str(), "s") == 0) serverfile = argv[i];
+				else if(strcmp(flag.c_str(), "d") == 0) dir_in = argv[i];
+				else if(strcmp(flag.c_str(), "D") == 0) dir_out = argv[i];
+				else if(strcmp(flag.c_str(), "f") == 0) file_in = argv[i];
+				else if(strcmp(flag.c_str(), "p") == 0) pre_in = argv[i];
+				else
+				{
+					cout << "Unknown flag " << flag << endl;
+					return 0;
+				}
+			}
+			else configfile = argv[i];
+		}
+	}
+
+	// Check that config file exists:
+	ifstream cfile(configfile.c_str());
+	if(!cfile)
+	{
+		cout << "Config file '" << configfile << "' could not be found." << endl;
 		return 0;
-	}	
-	
+	}
+
+	// If server file is specified, check that it exists
+	if(serverfile.length() > 0)
+	{
+		// Check that file exists:
+		ifstream sfile(serverfile.c_str());
+		if(!sfile)
+		{
+			cout << "Server file '" << serverfile << "' could not be found" << endl;
+			return 0;
+		}
+	}
+	// If no server file is specified, allow for checking in the config file
+	else serverfile = configfile;
+
 	// Create instance of PPi0 class
 	PPi0* ppi0 = new PPi0;
 
-	// Perform full initialisation 
-	if(!ppi0->Init(configfile, 	"AnalysisFiles/Pi0_Compton_354.root",
-								"AnalysisFiles/Pi0_Tree.root",
-								"AnalysisFiles/Pi0_Hist.root"))
+	// If unset, scan server or config file for file settings
+	if(dir_in.length() == 0)
 	{
-		cout << "ERROR: GoAT Init failed!" << endl;
-		return 0;
+		flag = ppi0->ReadConfig("Input-Directory",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) dir_in = flag;
 	}
 	
-	ppi0->Analyse();
+	if(dir_out.length() == 0)
+	{	
+		flag = ppi0->ReadConfig("Output-Directory",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) dir_out = flag;
+	}
 	
+	if(file_in.length() == 0)
+	{	
+		flag = ppi0->ReadConfig("Input-File",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) file_in = flag;
+	}
+	
+	if(pre_in.length() == 0)
+	{	
+		flag = ppi0->ReadConfig("Input-Prefix",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) pre_in = flag;
+	}
+	
+	// Finished scanning for file settings
+	
+	// Fix directories to include final slash if not there
+	if(dir_in.find_last_of("/") != (dir_in.length()-1)) dir_in += "/";
+	if(dir_out.find_last_of("/") != (dir_out.length()-1)) dir_out += "/";
+
+	// Output user settings (Set to defaults if still unspecified)
+	cout << endl << "User inputs" << endl;
+	cout << "Config file:      '" << configfile << "' chosen" << endl;
+	if(dir_in.length() != 0)  	cout << "Input directory:  '" << dir_in << "' chosen" << endl;
+	else { dir_in = "./";		cout << "Input directory:  '" << dir_in << "' chosen by default" << endl; }
+	if(dir_out.length() != 0)  	cout << "Output directory: '" << dir_out << "' chosen" << endl;
+	else { dir_out = dir_in; 	cout << "Output directory: '" << dir_out << "' chosen by default" << endl; }
+	if(file_in.length() != 0)  	cout << "Input file:       '" << file_in << "' chosen" << endl;
+	if(pre_in.length() != 0)  	cout << "Input prefix:     '" << pre_in << "' chosen" << endl;
+	else { pre_in = "GoAT"; 	cout << "Input prefix:     '" << pre_in << "' chosen by default" << endl; }
+	cout << endl;
+	
+	// Perform full initialisation 
+	if(!ppi0->Init(configfile.c_str()))
+	{
+		cout << "ERROR: PPi0 Init failed!" << endl;
+		return 0;
+	}
+
+	std::string file;
+	std::string prefix;
+	std::string suffix;
+
+	Int_t files_found = 0;
+	// If input file is specified, use it
+	if(file_in.length() > 0)
+	{
+		cout << "Searching for input file(s)" << endl;
+		file = file_in;
+		length = file.length();
+		// File should at least have '.root' at the end
+		if(length >= 5)
+		{
+			// Add input directory to it
+			file_in = dir_in+file_in;
+			cout << "Input file  '" << file_in << "' chosen" << endl;
+
+			// If output file is specified, use it
+			if(tree_out.length() > 0) tree_out = dir_out+tree_out;
+			// If output file is not specified, build it
+			else
+			{
+				// If tree output directory is not specified, build it
+				if(dir_out.length() == 0)
+				{
+					prefix = file.substr(0,file.find_last_of("/")+1);
+					dir_out = dir_in+prefix;
+				}
+				// If input prefix doesn't match, simply prepend output prefix to the file name
+				if(file.find(pre_in)>file.length()) suffix = ("_"+file.substr(file.find_last_of("/")+1,length-(file.find_last_of("/")+1)));
+				// If input prefix does match, switch prefixes
+				else suffix = file.substr(file.find_last_of("/")+1+pre_in.length(),length-(file.find_last_of("/")+1+pre_in.length()));
+				// Build output file name
+				tree_out = dir_out+pre_tree+suffix;
+			}
+
+			// If hist output file is specified, use it
+			if(hist_out.length() > 0) hist_out = dir_out+hist_out;
+			// If output file is not specified, build it
+			else
+			{
+				// If output directory is not specified, build it
+				if(dir_out.length() == 0)
+				{
+					prefix = file.substr(0,file.find_last_of("/")+1);
+					dir_out = dir_in+prefix;
+				}
+				// If input prefix doesn't match, simply prepend output prefix to the file name
+				if(file.find(pre_in)>file.length()) suffix = ("_"+file.substr(file.find_last_of("/")+1,length-(file.find_last_of("/")+1)));
+				// If input prefix does match, switch prefixes
+				else suffix = file.substr(file.find_last_of("/")+1+pre_in.length(),length-(file.find_last_of("/")+1+pre_in.length()));
+				// Build output file name
+				hist_out = dir_out+pre_hist+suffix;
+			}
+			
+			cout << "Output tree '" << tree_out << "' chosen" << endl;
+			cout << "Output hist '" << hist_out << "' chosen" << endl << endl;			
+			if(!ppi0->File(file_in.c_str(), tree_out.c_str(), hist_out.c_str())) 
+					cout << "ERROR: PPi0 failed on file " << file_in << "!" << endl;
+			files_found++;
+		}
+	}
+	// Otherwise scan input directory for matching files
+	else
+	{
+		cout << "Searching input directory for files matching input prefix" << endl;
+		cout << "Input prefix '" << pre_in << "' chosen" << endl << endl;
+			
+		// If output directory is not specified, use the input directory
+		if(dir_out.length() == 0) dir_out = dir_in;
+
+		// Create list of files in input directory
+		TSystemFile *sys_file;
+		TSystemDirectory *sys_dir = new TSystemDirectory("files",dir_in.c_str());
+		TList *file_list = sys_dir->GetListOfFiles();
+		file_list->Sort();
+		TIter file_iter(file_list);
+
+		// Iterate over files
+		while((sys_file=(TSystemFile*)file_iter()))
+		{
+			file = sys_file->GetName();
+			length = file.length();
+			// File should at least have '.root' at the end
+			if(length >= 5)
+			{
+				//Check that prefixes and suffixes match
+				prefix = file.substr(0,pre_in.length());
+				suffix = file.substr(length-5,5);
+				if(((strcmp(prefix.c_str(),pre_in.c_str()) == 0)) && (strcmp(suffix.c_str(),".root") == 0))
+				{
+					// Build input file name
+					file_in = dir_in+file;
+					// Build output file name
+					suffix = file.substr(pre_in.length(),length-pre_in.length());
+					tree_out = dir_out+pre_tree+suffix;					
+					hist_out = dir_out+pre_hist+suffix;
+					
+					files_found++;
+					// Run PPi0
+					
+					cout << "Output tree '" << tree_out << "' chosen" << endl;
+					cout << "Output hist '" << hist_out << "' chosen" << endl << endl;						
+					if(!ppi0->File(file_in.c_str(), tree_out.c_str(), hist_out.c_str())) 
+						cout << "ERROR: PPi0 failed on file " << file_in << "!" << endl;
+
+				}
+			}
+		}
+	}
+	if (files_found == 0)
+	{
+		cout << "ERROR: No GoAT files found!" << endl;
+		return 0;
+	}
+
 	end = clock();
 	cout << "Time required for execution: "
 	<< (double)(end-start)/CLOCKS_PER_SEC
@@ -71,7 +280,7 @@ PPi0::~PPi0()
 {
 }
 
-Bool_t	PPi0::Init(Char_t* configfile, Char_t* gfile, Char_t* tfile, Char_t* hfile)
+Bool_t	PPi0::Init(const char* configfile)
 {
 	// Set by user in the future...
 	SetTarget(938);
@@ -96,6 +305,11 @@ Bool_t	PPi0::Init(Char_t* configfile, Char_t* gfile, Char_t* tfile, Char_t* hfil
 	ReconstructPhysicsTree = kTRUE;
 	FillHistograms = kTRUE;
 	
+	return kTRUE;
+}
+
+Bool_t	PPi0::File(const char* gfile, const char* tfile, const char* hfile)
+{
 	if(ReconstructPhysicsTree == kTRUE)
 	{
 		OpenGoATFile(gfile, "READ");
@@ -123,6 +337,7 @@ Bool_t	PPi0::Init(Char_t* configfile, Char_t* gfile, Char_t* tfile, Char_t* hfil
 		InitHistograms();
 	}
 	
+	Analyse();	
 	return kTRUE;
 }
 

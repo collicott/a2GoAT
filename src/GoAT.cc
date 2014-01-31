@@ -18,14 +18,15 @@ int main(int argc, char *argv[])
 	clock_t start, end;
 	start = clock();
 
+	// Initialise strings
 	std::string configfile = "";
 	std::string serverfile = "";
 	std::string dir_in = "";
 	std::string dir_out = "";
 	std::string file_in = "";
 	std::string file_out = "";
-	std::string pre_in = "Acqu";
-	std::string pre_out = "GoAT";
+	std::string pre_in = "";
+	std::string pre_out = "";
 
 	Int_t length;
 	std::string flag;
@@ -87,44 +88,69 @@ int main(int argc, char *argv[])
 	// Create instance of GoAT class
 	GoAT* goat = new GoAT;
 
-	// Scan server or config file for file settings
-	flag = goat->ReadConfig("Input-Directory",0,(Char_t*)serverfile.c_str());	
-	flag.erase(0,flag.find_first_not_of(" "));
-	if(strcmp(flag.c_str(),"nokey") != 0) dir_in = flag;
-
-	flag = goat->ReadConfig("Output-Directory",0,(Char_t*)serverfile.c_str());	
-	flag.erase(0,flag.find_first_not_of(" "));
-	if(strcmp(flag.c_str(),"nokey") != 0) dir_out = flag;
-
-	flag = goat->ReadConfig("Input-File",0,(Char_t*)serverfile.c_str());	
-	flag.erase(0,flag.find_first_not_of(" "));
-	if(strcmp(flag.c_str(),"nokey") != 0) file_in = flag;
-
-	flag = goat->ReadConfig("Output-File",0,(Char_t*)serverfile.c_str());	
-	flag.erase(0,flag.find_first_not_of(" "));
-	if(strcmp(flag.c_str(),"nokey") != 0) file_out = flag;
-
-	flag = goat->ReadConfig("Input-Prefix",0,(Char_t*)serverfile.c_str());	
-	flag.erase(0,flag.find_first_not_of(" "));
-	if(strcmp(flag.c_str(),"nokey") != 0) pre_in = flag;
-
-	flag = goat->ReadConfig("Output-Prefix",0,(Char_t*)serverfile.c_str());	
-	flag.erase(0,flag.find_first_not_of(" "));
-	if(strcmp(flag.c_str(),"nokey") != 0) pre_out = flag;
+	// If unset, scan server or config file for file settings
+	if(dir_in.length() == 0)
+	{
+		flag = goat->ReadConfig("Input-Directory",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) dir_in = flag;
+	}
+	
+	if(dir_out.length() == 0)
+	{	
+		flag = goat->ReadConfig("Output-Directory",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) dir_out = flag;
+	}
+	
+	if(file_in.length() == 0)
+	{	
+		flag = goat->ReadConfig("Input-File",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) file_in = flag;
+	}
+	
+	if(file_out.length() == 0)
+	{	
+		flag = goat->ReadConfig("Output-File",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) file_out = flag;
+	}
+	
+	if(pre_in.length() == 0)
+	{	
+		flag = goat->ReadConfig("Input-Prefix",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) pre_in = flag;
+	}
+	
+	if(pre_out.length() == 0)
+	{	
+		flag = goat->ReadConfig("Output-Prefix",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) pre_out = flag;
+	}
 	// Finished scanning for file settings
-
+	
 	// Fix directories to include final slash if not there
 	if(dir_in.find_last_of("/") != (dir_in.length()-1)) dir_in += "/";
 	if(dir_out.find_last_of("/") != (dir_out.length()-1)) dir_out += "/";
 
-	cout << "Server file '" << serverfile << "' chosen" << endl;
-	cout << "Input directory '" << dir_in << "' chosen" << endl;
-	cout << "Output directory '" << dir_out << "' chosen" << endl;
-	cout << "Input file '" << file_in << "' chosen" << endl;
-	cout << "Output file '" << file_out << "' chosen" << endl;
-	cout << "Input prefix '" << pre_in << "' chosen" << endl;
-	cout << "Output prefix '" << pre_out << "' chosen" << endl;
-
+	// Output user settings (Set to defaults if still unspecified)
+	cout << endl << "User inputs" << endl;
+	cout << "Config file:      '" << configfile << "' chosen" << endl;
+	if(dir_in.length() != 0)  	cout << "Input directory:  '" << dir_in << "' chosen" << endl;
+	else { dir_in = "./";		cout << "Input directory:  '" << dir_in << "' chosen by default" << endl; }
+	if(dir_out.length() != 0)  	cout << "Output directory: '" << dir_out << "' chosen" << endl;
+	else { dir_out = dir_in; 	cout << "Output directory: '" << dir_out << "' chosen by default" << endl; }
+	if(file_in.length() != 0)  	cout << "Input file:       '" << file_in << "' chosen" << endl;
+	if(file_out.length() != 0) 	cout << "Output file:      '" << file_out << "' chosen" << endl;
+	if(pre_in.length() != 0)  	cout << "Input prefix:     '" << pre_in << "' chosen" << endl;
+	else { pre_in = "Acqu"; 	cout << "Input prefix:     '" << pre_in << "' chosen by default" << endl; }
+	if(pre_out.length() != 0)  	cout << "Output prefix:    '" << pre_out << "' chosen" << endl;	
+	else { pre_out = "GoAT"; 	cout << "Output prefix:    '" << pre_out << "' chosen by default" << endl; }
+	cout << endl;
+	
 	// Perform full initialisation 
 	if(!goat->Init(configfile.c_str()))
 	{
@@ -136,9 +162,11 @@ int main(int argc, char *argv[])
 	std::string prefix;
 	std::string suffix;
 
+	Int_t files_found = 0;
 	// If input file is specified, use it
 	if(file_in.length() > 0)
 	{
+		cout << "Searching for input file(s)" << endl;
 		file = file_in;
 		length = file.length();
 		// File should at least have '.root' at the end
@@ -146,12 +174,10 @@ int main(int argc, char *argv[])
 		{
 			// Add input directory to it
 			file_in = dir_in+file_in;
+			cout << "Input file  '" << file_in << "' chosen" << endl;
+
 			// If output file is specified, use it
-			if(file_out.length() > 0)
-			{
-				file_out = dir_out+file_out;
-				if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
-			}
+			if(file_out.length() > 0) file_out = dir_out+file_out;
 			// If output file is not specified, build it
 			else
 			{
@@ -167,14 +193,20 @@ int main(int argc, char *argv[])
 				else suffix = file.substr(file.find_last_of("/")+1+pre_in.length(),length-(file.find_last_of("/")+1+pre_in.length()));
 				// Build output file name
 				file_out = dir_out+pre_out+suffix;
-				// Run GoAT
-				if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
 			}
+			
+			cout << "Output file '" << file_out << "' chosen" << endl << endl;
+			if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+			files_found++;
 		}
 	}
-	// Otherwise if input directory is specified, scan it
-	else if(dir_in.length() > 0)
+	// Otherwise scan input directory for matching files
+	else
 	{
+		cout << "Searching input directory for files matching input prefix" << endl;
+		cout << "Input prefix  '" << pre_in << "' chosen" << endl;
+		cout << "Output prefix '" << pre_out << "' chosen" << endl;
+		
 		// If output directory is not specified, use the input directory
 		if(dir_out.length() == 0) dir_out = dir_in;
 
@@ -203,13 +235,17 @@ int main(int argc, char *argv[])
 					// Build output file name
 					suffix = file.substr(pre_in.length(),length-pre_in.length());
 					file_out = dir_out+pre_out+suffix;					
+
+					files_found++;
 					// Run GoAT
-					if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+					if(!goat->File(file_in.c_str(), file_out.c_str())) 
+						cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+
 				}
 			}
 		}
 	}
-	else
+	if (files_found == 0)
 	{
 		cout << "ERROR: No AcquRoot files found!" << endl;
 		return 0;
@@ -235,13 +271,33 @@ GoAT::~GoAT()
 
 Bool_t	GoAT::Init(const char* configfile)
 {
-	cout << endl << "Initialising GoAT analysis:" << endl;
-	cout << "==========================================================" << endl;	
+	cout << endl << "Initialising GoAT analysis..." << endl << endl;
 	SetConfigFile((Char_t*)configfile);
 		
 	config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
-		
+
+	config = ReadConfig("CheckCBStability");
+	if( sscanf(config.c_str(),"%d %lf\n", &CheckCBStability, &CBStabilityCutoff) == 2 ) 
+	{	
+		if(CheckCBStability)
+		{
+			cout << "Data Check (CB Stability) turned on" << endl;
+			cout << "Using cutoff ratio of " << CBStabilityCutoff << endl << endl;	
+		}
+	}
+	else if( sscanf(config.c_str(),"%d\n", &CheckCBStability) == 1 ) 
+	{	
+		if(CheckCBStability)
+		{
+			cout << "Data Check (CB Stability) turned on" << endl;
+			cout << "Using cutoff ratio of 0.5 (default)" << endl << endl;	
+		}
+	}
+	else CheckCBStability = kFALSE;
+
+
+	cout << "==========================================================" << endl;	
 	cout << "Setting up sorting criteria:" << endl;	
 	cout << "==========================================================" << endl;	
 	if(!GSort::PostInit()) 
@@ -250,6 +306,7 @@ Bool_t	GoAT::Init(const char* configfile)
 		return kFALSE;
 	}
 	
+	cout << "==========================================================" << endl;		
 	cout << "Setting up analysis classes:" << endl;	
 	cout << "==========================================================" << endl;	
     config = ReadConfig("DO-PARTICLE-RECONSTRUCTION");
@@ -289,6 +346,7 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 	if(!OpenTreeTagger())			return kFALSE;
 	if(!OpenTreeTrigger())			return kFALSE;
 	if(!OpenTreeScaler())			return kFALSE;
+	if(!OpenTreeDetectorHits())		return kFALSE;	
 	cout << endl;
 	
 	cout << "Checking scaler reads for valid events:" << endl;	
@@ -306,9 +364,8 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 void	GoAT::Analyse()
 {
 	cout << "Analysing ..." << endl;
-	TraverseAcquEntries();			
+	TraverseAcquEntriesByScalerRead();			
 	CloseOutputFile();
-//	OutputStatistics();
 	cout << endl << "File complete." << endl;
 	cout << "==========================================================" << endl << endl;	
 }

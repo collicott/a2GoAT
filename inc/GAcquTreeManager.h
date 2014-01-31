@@ -89,6 +89,12 @@ private:
     UInt_t*		Scaler;
     Int_t		NScaler;
 
+	// Data Handling tools
+	Int_t 		CBHitsThresh1;
+	Int_t 		CBHitsThresh2;
+	Int_t 		CBHitsThresh3;
+	Int_t 		CBHitsThresh4;	
+
 	//protected members
     Int_t		firstAcquEvent;
     Int_t		lastAcquEvent;
@@ -97,10 +103,14 @@ private:
 protected:
 	void    CheckRange(Int_t& min, Int_t& max);
     void 	GetAcquEntryFast();                	// without testing index
-    void	TraverseAcquEntries(const Int_t min, const Int_t max);
-    void	TraverseAcquEntries(const Int_t max) 	{TraverseAcquEntries(firstAcquEvent, max);}
-    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
+//    void	TraverseAcquEntries(const Int_t min, const Int_t max);
+//    void	TraverseAcquEntries(const Int_t max) 	{TraverseAcquEntries(firstAcquEvent, max);}
+//    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
 
+	void	TraverseAcquEntriesByScalerRead();
+	void 	DataChecks(const Int_t min, const Int_t max);	
+	Bool_t 	CheckCBHits(const Int_t min, const Int_t max);
+	
     Double_t* 	Mass;
 	
 public:
@@ -140,6 +150,10 @@ public:
     virtual void    Reconstruct() = 0;
     virtual void 	Analyse()=0;
     virtual	void	Print();
+    
+    // Data handling
+    Bool_t 		CheckCBStability;
+    Double_t  	CBStabilityCutoff;
 	
     		Int_t		GetNParticles()             const	{return nParticles;}
     const	Double_t*	GetEk()                      const	{return Ek;}

@@ -80,7 +80,8 @@ public:
     PPi0();
     virtual ~PPi0();
 
-    virtual Bool_t	Init(Char_t* file_config, Char_t* gfile, Char_t* tfile, Char_t* hfile);
+    virtual Bool_t	Init(const char* configfile);
+    virtual Bool_t	File(const char* gfile, const char* tfile, const char* hfile);
     virtual void 	Analyse();
 	virtual void	Reconstruct();
 	void	PostReconstruction();
