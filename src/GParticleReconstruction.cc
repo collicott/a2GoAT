@@ -313,7 +313,7 @@ void	GParticleReconstruction::ChargedReconstruction()
 				Cut_proton_active = 1;
 			}
 			else Cut_proton_active = 0;
-			if(Cut_CB_proton_active)
+			if(Cut_CB_pion_active)
 			{
 				Cut_pion = Cut_CB_pion;
 				Cut_pion_active = 1;
@@ -334,7 +334,7 @@ void	GParticleReconstruction::ChargedReconstruction()
 				Cut_proton_active = 1;
 			}
 			else Cut_proton_active = 0;
-			if(Cut_TAPS_proton_active)
+			if(Cut_TAPS_pion_active)
 			{
 				Cut_pion = Cut_TAPS_pion;
 				Cut_pion_active = 1;
@@ -457,6 +457,9 @@ void	GParticleReconstruction::MesonReconstruction()
 		
 		for (int j = i+1; j < GetNParticles(); j++) 
 		{
+			if (GetTheta(j) < meson_theta_min) continue; // user rejected theta region
+			if (GetTheta(j) > meson_theta_max) continue; // user rejected theta region
+			
 			if (Identified[j] == pdg_proton) 	continue;
 			if (Identified[j] == pdg_neutron) 	continue;
 			
@@ -466,7 +469,7 @@ void	GParticleReconstruction::MesonReconstruction()
 			Double_t diff_eta  = TMath::Abs( p4.M() - m_eta )/width_eta;
 			Double_t diff_etaP = TMath::Abs( p4.M() - m_etaP)/width_etaP;
 			
-			if (diff_pi0 <= 1.0) 
+			if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etaP)) 
 			{
 				diff_meson[k] 	= diff_pi0; 
 				tempID[k] 		= pdg_pi0;
@@ -474,7 +477,7 @@ void	GParticleReconstruction::MesonReconstruction()
 				index2[k]		= j;
 				k++;
 			}
-			if (diff_eta <= 1.0) 
+			if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP)) 
 			{
 				diff_meson[k]	= diff_eta; 
 				tempID[k] 		= pdg_eta;
@@ -482,7 +485,7 @@ void	GParticleReconstruction::MesonReconstruction()
 				index2[k]		= j;				
 				k++;
 			}
-			if (diff_etaP <= 1.0) 
+			if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta)) 
 			{
 				diff_meson[k]	= diff_etaP; 
 				tempID[k] 		= pdg_etaP;
