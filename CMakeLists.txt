@@ -28,6 +28,11 @@ link_directories(${ROOT_LIBRARY_DIR})
 include_directories(inc)
 
 add_executable(goat
+   inc/GoAT.h
+   inc/GSort.h
+   inc/GParticleReconstruction.h
+   inc/GoATTreeManager.h
+   inc/GAcquTreeManager.h
    src/GoAT.cc 
    src/GSort.cc
    src/GParticleReconstruction.cc
@@ -37,6 +42,10 @@ add_executable(goat
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
 add_executable(pi0
+   inc/PPi0.h
+   inc/PPhysics.h
+   inc/GoATTreeManager.h
+   inc/GAcquTreeManager.h
    src/PPi0.cc
    src/PPhysics.cc
    src/GoATTreeManager.cc
@@ -45,6 +54,10 @@ add_executable(pi0
 target_link_libraries(pi0 ${ROOT_LIBRARIES})
 
 add_executable(eta
+   inc/PEta.h
+   inc/PPhysics.h
+   inc/GoATTreeManager.h
+   inc/GAcquTreeManager.h
    src/PEta.cc
    src/PPhysics.cc
    src/GoATTreeManager.cc
