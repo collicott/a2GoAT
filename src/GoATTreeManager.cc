@@ -2,8 +2,19 @@
 #include "GoATTreeManager.h"
 
 GoATTreeManager::GoATTreeManager() :	
-				GoATFile(0),
-				treeParticles(0),
+                photons("TLorentzVector", GoATTREEMANAGER_MAX_PARTICLE),
+                GoATFile(0),
+                treeParticles(0),
+                tree(0),
+                rootino(0),
+                photon(0),
+                elektron(0),
+                piplus(0),
+                proton(0),
+                neutron(0),
+                pi0(0),
+                eta(0),
+                etap(0),
 				nParticles(0),
 				Charge(0),
 				PDG(0),

@@ -27,17 +27,23 @@ link_directories(${ROOT_LIBRARY_DIR})
 
 include_directories(inc)
 
+
 add_executable(goat
-   inc/GoAT.h
-   inc/GSort.h
-   inc/GParticleReconstruction.h
-   inc/GoATTreeManager.h
    inc/GAcquTreeManager.h
+   inc/GTree.h
+   inc/GTreeParticle.h
+   inc/GTreeParticleManager.h
+   inc/GTreeMeson.h
+   inc/GSort.h
+   inc/GoATTreeManager.h
+   src/GAcquTreeManager.cc
+   src/GTree.cc
+   src/GTreeParticle.cc
+   src/GTreeParticleManager.cc
+   src/GTreeMeson.cc
    src/GoAT.cc 
    src/GSort.cc
-   src/GParticleReconstruction.cc
    src/GoATTreeManager.cc
-   src/GAcquTreeManager.cc
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 

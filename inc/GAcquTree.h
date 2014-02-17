@@ -1,8 +1,7 @@
-#ifndef __GAcquTreeManager_h__
-#define __GAcquTreeManager_h__
+#ifndef __GAcquTree_h__
+#define __GAcquTree_h__
 
 
-#include "TFile.h"
 #include "TTree.h"
 #include "TLeaf.h"
 #include "TCanvas.h"
@@ -21,27 +20,29 @@
 #include "TSystemFile.h"
 #include "TCutG.h"
 
-#include<iostream>
-using namespace std;
+#include "GTree.h"
 
-#define GAcquTREEMANAGER_MAX_TAGGER	1024
-#define GAcquTREEMANAGER_MAX_PARTICLE	128
-#define GAcquTREEMANAGER_MAX_HITS		860
+#define GAcquTree_MAX_TAGGER	1024
+#define GAcquTree_MAX_PARTICLE	128
+#define GAcquTree_MAX_HITS		860
 #define EAppCB  1
 #define EAppTAPS 2
 
 
-class   GTreeParticleManager;
-
-
-class	GAcquTreeManager
+class	GAcquTree    : public GTree
 {
 private:
-    TTree*		treeRawEvent;		// Raw particle information (filled each event)
-    TTree*		treeTagger;			// Tagger information (filled each event)
-    TTree* 		treeTrigger;		// Trigger information (filled each event)
-    TTree* 		treeDetectorHits;	// Detector system hit patterns (filled each event)
-    TTree*		treeScaler; 		// Scaler read information (filled each scaler read)
+    /*TTree*		treeRawEvent;		// Raw particle information (filled each event)
+	TTree*		treeTagger;			// Tagger information (filled each event)
+	TTree* 		treeTrigger;		// Trigger information (filled each event)
+	TTree* 		treeDetectorHits;	// Detector system hit patterns (filled each event)
+	TTree*		treeScaler; 		// Scaler read information (filled each scaler read)
+
+    TTree*	treeRawEvent_clone;		// Raw particle information (filled when required)
+    TTree*	treeTagger_clone;		// Tagger information (filled when required)
+    TTree* 	treeTrigger_clone;		// Trigger information (filled when required)
+    TTree* 	treeDetectorHits_clone;	// Detector system hit patterns (filled when required)
+    TTree*	treeScaler_clone; 		// Scaler read information (filled when required)*/
 
 
     //Particles    
@@ -93,57 +94,42 @@ private:
     UInt_t*		Scaler;
     Int_t		NScaler;
 
-	//protected members
-    Int_t		firstAcquEvent;
-    Int_t		lastAcquEvent;
-    Int_t		AcquEvent;
-    
-protected:
-	void    CheckRange(Int_t& min, Int_t& max);
-    void 	GetAcquEntryFast();                	// without testing index
-    void	TraverseAcquEntries(const Int_t min, const Int_t max);
-    void	TraverseAcquEntries(const Int_t max) 	{TraverseAcquEntries(firstAcquEvent, max);}
-    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
+    void 	GetEntryFast();                	// without testing index
 
     Double_t* 	Mass;
+
+protected:
 	
 public:
-	TFile*		AcquFile;			// AcquFile
+    GAcquTree();
+    virtual ~GAcquTree();
 
-    GAcquTreeManager();
-    virtual ~GAcquTreeManager();
-
-	TTree*	treeRawEvent_clone;		// Raw particle information (filled when required)
-	TTree*	treeTagger_clone;		// Tagger information (filled when required)
-	TTree* 	treeTrigger_clone;		// Trigger information (filled when required)
-	TTree* 	treeDetectorHits_clone;	// Detector system hit patterns (filled when required)
-	TTree*	treeScaler_clone; 		// Scaler read information (filled when required)
-
-    Bool_t	OpenAcquFile(const char* treefile);
+    virtual void        CloseAllTrees()                     {}
+    virtual Bool_t      InitNewTree()                       {}
+    virtual void        WriteNewTree(const char* treefile)  {}
     
-	Bool_t	OpenTreeRawEvent(TFile* TreeFile);
-	Bool_t	OpenTreeRawEvent() {return OpenTreeRawEvent(AcquFile);}
-	
-	Bool_t	OpenTreeTagger(TFile* TreeFile);
-	Bool_t	OpenTreeTagger() {return OpenTreeTagger(AcquFile);}
-		
-	Bool_t	OpenTreeTrigger(TFile* TreeFile);
-	Bool_t	OpenTreeTrigger() {return OpenTreeTrigger(AcquFile);}
+    /*Bool_t	OpenTreeRawEvent();
+    Bool_t	OpenTreeTagger();		
+    Bool_t	OpenTreeTrigger();
+    Bool_t	OpenTreeDetectorHits();
+    Bool_t	OpenTreeScaler();
+    Bool_t	CloseTreeRawEvent();
+    Bool_t	CloseTreeTagger();
+    Bool_t	CloseTreeTrigger();
+    Bool_t	CloseTreeDetectorHits();
+    Bool_t	CloseTreeScaler();
 
-	Bool_t	OpenTreeDetectorHits(TFile* TreeFile);
-	Bool_t	OpenTreeDetectorHits() {return OpenTreeDetectorHits(AcquFile);}
+    Bool_t	FindValidEvents();
+		
+    virtual Bool_t	GetEntry();
+    virtual Bool_t	GetEntry(const Int_t index);
 
-	Bool_t	OpenTreeScaler(TFile* TreeFile);
-	Bool_t	OpenTreeScaler() {return OpenTreeScaler(AcquFile);}
-		
-    Bool_t	FindValidAcquEvents();
-		
-	Bool_t	GetAcquEntry();
-	Bool_t	GetAcquEntry(const Int_t index);
     virtual void	Reset();
-    virtual void    Reconstruct() = 0;
-    virtual void 	Analyse()=0;
-    virtual	void	Print();
+    virtual Bool_t 	FillEvent();
+    virtual Bool_t	WriteTrees();
+    virtual	void	Print();*/
+
+    virtual Int_t   GetMultiplicity()   const               {return nParticles;}
 	
     		Int_t		GetNParticles()             const	{return nParticles;}
     const	Double_t*	GetEk()                      const	{return Ek;}
@@ -162,9 +148,9 @@ public:
     		
     		UChar_t 	GetClusterSize(const Int_t index) const 	{return clusterSize[index];}
     
-            Int_t		GetNTagged()                    const	{return nTagged;}
+    		Int_t		GetNTagged()                    const	{return nTagged;}
     const	Int_t*		GetTagged_ch()               	const	{return tagged_ch;}
-            Int_t		GetTagged_ch(const Int_t index)	const	{return tagged_ch[index];}
+    		Int_t		GetTagged_ch(const Int_t index)	const	{return tagged_ch[index];}
     const	Double_t*	GetTagged_t()                   const	{return tagged_t;}
     		Double_t	GetTagged_t(const Int_t index)	const	{return tagged_t[index];}
     const	Double_t*	GetPhotonBeam_E()                   const	{return photonbeam_E;}
@@ -214,52 +200,51 @@ public:
 
 			Int_t		GetNVeto_Hits()                 const	{return nVeto_Hits;}
     const	Int_t*		GetVeto_Hits()                  const	{return Veto_Hits;}
-    		Int_t		GetVeto_Hits(const Int_t index)	const	{return Veto_Hits[index];}
-    		
-			Int_t		GetActualEvent()	const	{return AcquEvent;}
+            Int_t		GetVeto_Hits(const Int_t index)	const	{return Veto_Hits[index];}
 
 	void 	SetInputMass(Int_t index, Double_t value)	{Mass[index] 	= value;}
 			Double_t 	GetInputMass(Int_t index) 	const    {return Mass[index];}
 	
 
-   TLorentzVector	GetVector(const Int_t index) const	
-					{
-
-						Double_t T 	= Ek[index];
-						Double_t M  = Mass[index];
-						Double_t th = Theta[index] * TMath::DegToRad();
-						Double_t ph = Phi[index]   * TMath::DegToRad();
-												
-						Double_t E 	= T + M;
-						Double_t P 	= TMath::Sqrt(E*E - M*M);
-						Double_t Px = P* sin(th)*cos(ph);
-						Double_t Py = P* sin(th)*sin(ph);						
-						Double_t Pz = P* cos(th);
-						
-						return TLorentzVector(Px, Py, Pz, E);
-					}			
-					
-    		Int_t		GetNCB()	const 
-						{
-							Int_t NCB = 0;
-							for(Int_t i = 0; i < nParticles; i++) 
-							{
-								if (Apparatus[i] == EAppCB) NCB++;
-							}
-							return NCB;
-						}
-    		Int_t		GetNTAPS()	const 
-						{
-							Int_t NTAPS = 0;
-							for(Int_t i = 0; i < nParticles; i++) 
-							{
-								if (Apparatus[i] == EAppTAPS) NTAPS++;
-							}
-							return NTAPS;
-                        }
-
-    friend class GTreeParticleManager;
+    inline  TLorentzVector	GetVector(const Int_t index) const;
+    inline  Int_t		GetNCB()	const;
+    inline  Int_t		GetNTAPS()	const;
 };
+
+TLorentzVector	GAcquTree::GetVector(const Int_t index) const
+{
+    Double_t th = Theta[index] * TMath::DegToRad();
+    Double_t ph = Phi[index]   * TMath::DegToRad();
+
+    Double_t E 	= Ek[index] + Mass[index];
+    Double_t P 	= TMath::Sqrt(E*E - Mass[index]*Mass[index]);
+    Double_t Px = P* sin(th)*cos(ph);
+    Double_t Py = P* sin(th)*sin(ph);
+    Double_t Pz = P* cos(th);
+
+    return TLorentzVector(Px, Py, Pz, E);
+}
+
+Int_t           GAcquTree::GetNCB()	const
+{
+    Int_t NCB = 0;
+    for(Int_t i = 0; i < nParticles; i++)
+    {
+        if (Apparatus[i] == EAppCB)
+            NCB++;
+    }
+    return NCB;
+}
+Int_t           GAcquTree::GetNTAPS()	const
+{
+    Int_t NTAPS = 0;
+    for(Int_t i = 0; i < nParticles; i++)
+    {
+        if (Apparatus[i] == EAppTAPS)
+            NTAPS++;
+    }
+    return NTAPS;
+}
 
 
 #endif
