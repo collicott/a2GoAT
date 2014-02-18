@@ -30,45 +30,25 @@ include_directories(inc)
 
 add_executable(goat
    inc/GAcquTreeManager.h
-   inc/GTree.h
-   inc/GTreeParticle.h
    inc/GTreeParticleManager.h
-   inc/GTreeMeson.h
    inc/GSort.h
-   inc/GoATTreeManager.h
    src/GAcquTreeManager.cc
-   src/GTree.cc
-   src/GTreeParticle.cc
    src/GTreeParticleManager.cc
-   src/GTreeMeson.cc
-   src/GoAT.cc 
    src/GSort.cc
-   src/GoATTreeManager.cc
+   src/GoAT.cc
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
-add_executable(pi0
-   inc/PPi0.h
-   inc/PPhysics.h
-   inc/GoATTreeManager.h
-   inc/GAcquTreeManager.h
-   src/PPi0.cc
-   src/PPhysics.cc
-   src/GoATTreeManager.cc
-   src/GAcquTreeManager.cc
+add_executable(meson
+   inc/GTree.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   src/GTree.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/meson.cc
    )
-target_link_libraries(pi0 ${ROOT_LIBRARIES})
+target_link_libraries(meson ${ROOT_LIBRARIES})
 
-add_executable(eta
-   inc/PEta.h
-   inc/PPhysics.h
-   inc/GoATTreeManager.h
-   inc/GAcquTreeManager.h
-   src/PEta.cc
-   src/PPhysics.cc
-   src/GoATTreeManager.cc
-   src/GAcquTreeManager.cc
-   )
-target_link_libraries(eta ${ROOT_LIBRARIES})
 
 

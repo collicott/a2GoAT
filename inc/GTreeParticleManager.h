@@ -12,12 +12,8 @@ class  GTreeParticleManager : public GAcquTreeManager
 private:
     TTree  tree;
 
-    TClonesArray	rootino;    // reconstructed
-    TClonesArray	photon;		// reconstructed
-    TClonesArray	elektron;	// reconstructed
-    TClonesArray	piplus;		// reconstructed
-    TClonesArray	proton;		// reconstructed
-    TClonesArray	neutron;	// reconstructed
+    TClonesArray	photons;		// reconstructed
+    TClonesArray	protons;		// reconstructed
 
 protected:
 

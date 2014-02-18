@@ -3,21 +3,13 @@
 
 GTreeParticleManager::GTreeParticleManager(TFile &TreeFile)    :
     tree("GoAT", "GoAT_tree"),
-    rootino("TLorentzVector", 64),
-    photon("TLorentzVector", 64),
-    elektron("TLorentzVector", 64),
-    piplus("TLorentzVector", 64),
-    proton("TLorentzVector", 64),
-    neutron("TLorentzVector", 64)
+    photons("TLorentzVector", 64),
+    protons("TLorentzVector", 64)
 {
     TreeFile.cd();
     tree.SetDirectory(dynamic_cast<TDirectory*>(&TreeFile));
-    tree.Branch("rootino.", &rootino, sizeof(TLorentzVector)*32, 0);
-    tree.Branch("photon.", &photon, sizeof(TLorentzVector)*32, 0);
-    tree.Branch("elektron.", &elektron, sizeof(TLorentzVector)*32, 0);
-    tree.Branch("piplus.", &piplus, sizeof(TLorentzVector)*32, 0);
-    tree.Branch("proton.", &proton, sizeof(TLorentzVector)*32, 0);
-    tree.Branch("neutron.", &neutron, sizeof(TLorentzVector)*32, 0);
+    tree.Branch("photons.", &photons, sizeof(TLorentzVector)*32, 0);
+    tree.Branch("protons.", &protons, sizeof(TLorentzVector)*32, 0);
 
     tree.Branch("nTagged", &nTagged, "nTagged/i");
     tree.Branch("tagged_ch", tagged_ch, "tagged_ch[nTagged]/i");
@@ -35,16 +27,11 @@ GTreeParticleManager::~GTreeParticleManager()
 
 void    GTreeParticleManager::Reconstruct()
 {
-    rootino.Clear();
-    photon.Clear();
-    elektron.Clear();
-    piplus.Clear();
-    proton.Clear();
-    neutron.Clear();
+    photons.Clear();
 
     for(int i=0; i<GetNParticles(); i++)
     {
-        new(rootino[i]) TLorentzVector(GetVector(i));
+        new(photons[i]) TLorentzVector(GetVector(i));
         //cout << "count" << rootino.GetEntriesFast() << endl;
     }
 

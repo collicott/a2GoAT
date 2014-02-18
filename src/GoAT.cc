@@ -1,11 +1,12 @@
 #ifndef __CINT__
 
-#include "GoAT.h"
 #include <time.h>
-#include <TInterpreter.h>
+#include <iostream>
+#include <fstream>
 
 #include "GSort.h"
-#include "GTreeParticle.h"
+
+using namespace std;
 
 /**
  * @brief the main routine
@@ -59,19 +60,8 @@ int main(int argc, char *argv[])
     test.OpenAcquFile(file_in);
     test.Analyse();
 
-    //test.Add(1,2,3,4);
-    //test.Add(2,2,3,4);
-    //test.Add(3,2,3,4);
-
-    //test.Fill();
-
     test.Write(*f);
     delete f;
-
-    //GTreeParticle   tree;
-
-    //tree.Init(file_in, file_out);
-
 
 	end = clock();
 	cout << "Time required for execution: "

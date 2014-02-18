@@ -5,25 +5,11 @@ using namespace std;
 
 
 GTreeParticle::GTreeParticle()    :
-    rootino(new TClonesArray("TLorentzVector", 64)),
-    photon(new TClonesArray("TLorentzVector", 64)),
-    elektron(new TClonesArray("TLorentzVector", 64)),
-    piplus(new TClonesArray("TLorentzVector", 64)),
-    proton(new TClonesArray("TLorentzVector", 64)),
-    neutron(new TClonesArray("TLorentzVector", 64)),
+    photons(new TClonesArray("TLorentzVector", 64)),
+    protons(new TClonesArray("TLorentzVector", 64)),
     nTagged(0)
 {
-    /*file    = TFile::Open(filename);
 
-   TreeFile.cd();
-        tree.SetDirectory(dynamic_cast<TDirectory*>(&TreeFile));
-        tree.Branch("rootino.", &rootino, sizeof(TLorentzVector)*32, 0);
-        tree.Branch("photon.", &photon, sizeof(TLorentzVector)*32, 0);
-        tree.Branch("elektron.", &elektron, sizeof(TLorentzVector)*32, 0);
-        tree.Branch("piplus.", &piplus, sizeof(TLorentzVector)*32, 0);
-        tree.Branch("proton.", &proton, sizeof(TLorentzVector)*32, 0);
-        tree.Branch("neutron.", &neutron, sizeof(TLorentzVector)*32, 0);
-    }*/
 }
 
 GTreeParticle::~GTreeParticle()
@@ -32,12 +18,8 @@ GTreeParticle::~GTreeParticle()
 
 void    GTreeParticle::SetBranchAdresses()
 {
-    tree_in->SetBranchAddress("rootino.", &rootino);
-    tree_in->SetBranchAddress("photon.", &photon);
-    tree_in->SetBranchAddress("elektron.", &elektron);
-    tree_in->SetBranchAddress("piplus.", &piplus);
-    tree_in->SetBranchAddress("proton.", &proton);
-    tree_in->SetBranchAddress("neutron.", &neutron);
+    tree_in->SetBranchAddress("photons.", &photons);
+    tree_in->SetBranchAddress("protons.", &protons);
 
     tree_in->SetBranchAddress("nTagged", &nTagged);
     tree_in->SetBranchAddress("tagged_ch", tagged_ch);
@@ -47,12 +29,8 @@ void    GTreeParticle::SetBranchAdresses()
 
 void    GTreeParticle::Clear()
 {
-    rootino->Clear();
-    photon->Clear();
-    elektron->Clear();
-    piplus->Clear();
-    proton->Clear();
-    neutron->Clear();
+    photons->Clear();
+    protons->Clear();
 
     nTagged = 0;
 }
