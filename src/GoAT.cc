@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "GSort.h"
+#include "GCorrectScalers.h"
 
 using namespace std;
 
@@ -46,22 +46,13 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	
-    //gInterpreter->GenerateDictionary("GParticle","inc/GParticle.h");
-	// Create instance of GoAT class
-    TFile*  f = TFile::Open(file_out, "RECREATE");
-    GSort   test(*f);
-
-    test.MultiplicityList.push_back(2);
-    test.MultiplicityList.push_back(3);
-    test.MultiplicityList.push_back(6);
-    test.MultiplicityList.push_back(7);
-    test.MultiplicityList.push_back(10);
-    test.MultiplicityList.push_back(11);
-    test.OpenAcquFile(file_in);
-    test.Analyse();
-
-    test.Write(*f);
-    delete f;
+    GCorrectScalers trees;
+    trees.Process(file_in, file_out);
+    TFile* file = TFile::Open(file_in);
+    GTreeRawEvent   test;
+    test.OpenForInput(*file);
+    test.GetEntry(0);
+    test.Print();
 
 	end = clock();
 	cout << "Time required for execution: "

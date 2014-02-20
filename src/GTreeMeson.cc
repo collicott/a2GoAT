@@ -3,13 +3,8 @@
 using namespace std;
 
 
-GTreeMeson::GTreeMeson()    :
-    pi0Width(20),
-    etaWidth(44),
-    etapWidth(60),
-    pi0(new TClonesArray("TLorentzVector", 32)),
-    eta(new TClonesArray("TLorentzVector", 32)),
-    etap(new TClonesArray("TLorentzVector", 32))
+GTreeMeson::GTreeMeson(const TString& _Name)    :
+    GTreeParticle(_Name)
 {
 
 }
@@ -18,7 +13,7 @@ GTreeMeson::~GTreeMeson()
 {
 
 }
-
+/*
 void    GTreeMeson::Reconstruct2g()
 {
     TLorentzVector  meson(*(TLorentzVector*)photons->At(0) + *(TLorentzVector*)photons->At(1));
@@ -162,22 +157,29 @@ void    GTreeMeson::Reconstruct11g()
 
 }
 
-
-void    GTreeMeson::Clear()
-{
-
-}
+*/
 
 void    GTreeMeson::SetBranchAdresses()
 {
-    GTreeParticle::SetBranchAdresses();
-
-    tree_in->SetBranchAddress("pi0.", &pi0);
-    tree_in->SetBranchAddress("eta.", &eta);
-    tree_in->SetBranchAddress("etap.", &etap);
+    tree_in->SetBranchAddress("EventNumber",&EventNumber);
+    tree_in->SetBranchAddress("nParticles",&nParticles);
+    tree_in->SetBranchAddress("particles.", &particles);
+    tree_in->SetBranchAddress("nDaughters",daughters);
+    tree_in->SetBranchAddress("nDaughterPDG",daughterPDG);
+    tree_in->SetBranchAddress("nDaughterIndices",daughterIndices);
 }
 
-Bool_t  GTreeMeson::Init(const char* filename_input, const char* filename_output, const Bool_t override)
+void    GTreeMeson::SetBranches()
+{
+    tree_out->Branch("EventNumber",&EventNumber,"EventNumber/i");
+    tree_out->Branch("nParticles",&nParticles,"nParticles/i");
+    tree_out->Branch("particles.", &particles, 32000, 0);
+    tree_out->Branch("nDaughters",daughters,"nDaughters[nParticles]/I");
+    tree_out->Branch("nDaughterPDG",daughterPDG,"nDaughterPDG[nParticles][nDaughters]/I");
+    tree_out->Branch("nDaughterIndices",daughterIndices,"nDaughterIndices[nParticles][nDaughters]/I");
+}
+
+/*Bool_t  GTreeMeson::Init(const char* filename_input, const char* filename_output, const Bool_t override)
 {
     if(!GTree::Init(filename_input, filename_output, override))
         return kFALSE;
@@ -204,4 +206,33 @@ Bool_t  GTreeMeson::Init(const char* filename_input, const char* filename_output
     }
 
     Write();
-}
+}*/
+
+
+
+
+
+
+
+int		GTreeMeson::perm6g[15][6]=
+{
+    {0,1,2,3,4,5},
+    {0,1,2,4,3,5},
+    {0,1,2,5,4,3},
+
+    {0,2,1,3,4,5},
+    {0,2,1,4,3,5},
+    {0,2,1,5,4,3},
+
+    {0,3,2,1,4,5},
+    {0,3,2,4,1,5},
+    {0,3,2,5,4,1},
+
+    {0,4,2,3,1,5},
+    {0,4,2,1,3,5},
+    {0,4,2,5,1,3},
+
+    {0,5,2,3,4,1},
+    {0,5,2,4,3,1},
+    {0,5,2,1,4,3}
+};

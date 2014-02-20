@@ -4,44 +4,64 @@
 using namespace std;
 
 
-GTree::GTree()    :
+GTree::GTree(const TString& _Name)    :
+    name(_Name),
+    status(FLAG_CLOSED),
     file_in(0),
     file_out(0),
     tree_in(0),
-    tree_out(0),
-    actualEntry(0)
+    tree_out(0)
 {
-
 }
 
 GTree::~GTree()
 {
-    Reset();
-}
-
-void    GTree::Reset()
-{
-    if(tree_in)    delete tree_in;
-    if(tree_out)   delete tree_out;
-    if(file_in)    delete file_in;
-    if(file_out)   delete file_out;
-}
-
-void    GTree::Clear()
-{
 
 }
 
-void    GTree::Fill()
+void    GTree::Clone(TFile& outputFile)
 {
-    tree_out->Fill();
+    file_out = &outputFile;
+    outputFile.cd();
+    tree_out = tree_in->CloneTree();
 }
 
-Bool_t  GTree::Init(const char* filename_input, const char* filename_output, const Bool_t override)
+Bool_t  GTree::OpenForInput(TFile& inputFile)
 {
-    Reset();
+    file_in = &inputFile;
 
-    file_in    = TFile::Open(filename_input);
+    inputFile.GetObject(name.Data(),tree_in);
+    if(tree_in)
+    {
+        SetBranchAdresses();
+        status  = status | FLAG_OPENFORINPUT;
+        GetEntry(0);
+        return kTRUE;
+    }
+
+    cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): could not find a tree called " << name.Data() << " in input file " << inputFile.GetName() << "!" << endl;
+    status = status & (~FLAG_OPENFORINPUT);
+    return kFALSE;
+}
+
+Bool_t  GTree::OpenForOutput(TFile& outputFile)
+{
+    file_out = &outputFile;
+
+    outputFile.cd();
+    tree_out    = new TTree(name.Data(), name.Data());
+    if(tree_out)
+    {
+        SetBranches();
+        status  = status | FLAG_OPENFOROUTPUT;
+        return kTRUE;
+    }
+
+    cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): can not create output tree " << name.Data() << " in output file " << outputFile.GetName() << "!" << endl;
+    status = status & (~FLAG_OPENFOROUTPUT);
+    return kFALSE;
+
+    /*
     if(!file_in)
     {
         cout << "#ERROR# GTree::Init(const char* filename_input, const char* filename_output): input file " << filename_input << " is not existing!" << endl;
@@ -82,23 +102,20 @@ Bool_t  GTree::Init(const char* filename_input, const char* filename_output, con
         return kFALSE;
     }
     cout << "created new output tree in file " << filename_output << "." << endl;
-
+*/
     return kTRUE;
 }
 
-Bool_t  GTree::GetEntry(const UInt_t index)
+void    GTree::Print(const Bool_t All) const
 {
-    if(index > tree_in->GetEntries())
-        return kFALSE;
-    tree_in->GetEntry(index);
-}
-
-Bool_t  GTree::GetEntry()
-{
-    if(actualEntry > tree_in->GetEntries())
-        return kFALSE;
-    tree_in->GetEntry(actualEntry);
-    actualEntry++;
+    std::cout << "GTree: Name->" << name.Data() << " Status->";
+    if(!status)
+        std::cout << "Closed";
+    if(status & FLAG_OPENFORINPUT)
+        std::cout << "Input ";
+    if(status & FLAG_OPENFOROUTPUT)
+        std::cout << "Output";
+    std::cout << std::endl;
 }
 
 Bool_t	GTree::Write()

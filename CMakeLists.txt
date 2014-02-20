@@ -29,12 +29,24 @@ include_directories(inc)
 
 
 add_executable(goat
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
    inc/GAcquTreeManager.h
-   inc/GTreeParticleManager.h
-   inc/GSort.h
+   inc/GTreeManager.h
+   inc/GCorrectScalers.h
+   #inc/GSort.h
    src/GAcquTreeManager.cc
-   src/GTreeParticleManager.cc
-   src/GSort.cc
+   src/GTreeManager.cc
+   #src/GSort.cc
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GCorrectScalers.cc
    src/GoAT.cc
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})

@@ -10,15 +10,25 @@
 #define MASS_ETAP   958
 #define MASS_PROTON 928
 
+
 class  GTreeMeson   : public GTreeParticle
 {
+public:
+    enum    GMesonDecay
+    {
+        Decay_pi0_2g                = 0,
+        Decay_eta_2g                = 1,
+        Decay_etap_2g               = 2,
+        Decay_eta_3pi0_6g           = 5,
+        Decay_etap_2pi0eta_6g       = 6,
+        Decay_etap_2pi0eta_5pi0_10g = 14
+    };
+
 private:
-    Double_t        pi0Width;
-    Double_t        etaWidth;
-    Double_t        etapWidth;
-    TClonesArray*	pi0;		// reconstructed
-    TClonesArray*	eta;		// reconstructed
-    TClonesArray*	etap;		// reconstructed
+    Int_t           daughterPDG[512][3];
+    Int_t           daughterIndices[512][3];
+
+    static  int		perm6g[15][6];
 
     void    Reconstruct2g();
     void    Reconstruct3g();
@@ -28,16 +38,25 @@ private:
     void    Reconstruct11g();
 protected:
     virtual void    SetBranchAdresses();
+    virtual void    SetBranches();
 
 public:
-    GTreeMeson();
+    GTreeMeson(const TString& _Name);
     ~GTreeMeson();
 
-    virtual void    Clear();
-
-    virtual Bool_t  Init(const char* filename_input, const char* filename_output, const Bool_t override = kFALSE);
-
+    inline  void            AddParticle(const TLorentzVector& vec, const Int_t nDaughters = 0, const Int_t* PDGList = 0, const Int_t* Indices = 0);
 };
 
+void    GTreeMeson::AddParticle(const TLorentzVector& vec, const Int_t nDaughters , const Int_t* PDGList, const Int_t* Indices)
+{
+    daughters[nParticles] = nDaughters;
+    new(particles[nParticles]) TLorentzVector(vec);
+    for(int i=0; i<nDaughters; i++)
+    {
+        daughterPDG[nParticles][i]      = PDGList[i];
+        daughterIndices[nParticles][i]  = Indices[i];
+    }
+    nParticles++;
+}
 
 #endif

@@ -48,9 +48,6 @@ int main(int argc, char *argv[])
 
     //gInterpreter->GenerateDictionary("GParticle","inc/GParticle.h");
     // Create instance of GoAT class
-    GTreeMeson  meson;
-
-    meson.Init(file_in, file_out, kTRUE);
 
 
     end = clock();

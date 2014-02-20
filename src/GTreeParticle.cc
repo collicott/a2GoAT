@@ -4,12 +4,11 @@
 using namespace std;
 
 
-GTreeParticle::GTreeParticle()    :
-    photons(new TClonesArray("TLorentzVector", 64)),
-    protons(new TClonesArray("TLorentzVector", 64)),
-    nTagged(0)
+GTreeParticle::GTreeParticle(const TString& _Name)    :
+    GTree(_Name),
+    particles("TLorentzVector", 64),
+    nParticles(0)
 {
-
 }
 
 GTreeParticle::~GTreeParticle()
@@ -18,26 +17,18 @@ GTreeParticle::~GTreeParticle()
 
 void    GTreeParticle::SetBranchAdresses()
 {
-    tree_in->SetBranchAddress("photons.", &photons);
-    tree_in->SetBranchAddress("protons.", &protons);
-
-    tree_in->SetBranchAddress("nTagged", &nTagged);
-    tree_in->SetBranchAddress("tagged_ch", tagged_ch);
-    tree_in->SetBranchAddress("tagged_t", tagged_t);
-    tree_in->SetBranchAddress("photonbeam_E", photonbeam_E);
+    tree_in->SetBranchAddress("EventNumber",&EventNumber);
+    tree_in->SetBranchAddress("nParticles",&nParticles);
+    tree_in->SetBranchAddress("particles.", &particles);
+    tree_in->SetBranchAddress("rawIndex",daughters);
 }
 
-void    GTreeParticle::Clear()
+void    GTreeParticle::SetBranches()
 {
-    photons->Clear();
-    protons->Clear();
-
-    nTagged = 0;
+    tree_out->Branch("EventNumber",&EventNumber,"EventNumber/i");
+    tree_out->Branch("nParticles",&nParticles,"nParticles/i");
+    tree_out->Branch("particles.", &particles, 32000, 0);
+    tree_out->Branch("rawIndex",daughters,"rawIndex[nParticles]/I");
 }
 
-
-Bool_t  GTreeParticle::Init(const char* filename_input, const char* filename_output, const Bool_t override)
-{
-    return  GTree::Init(filename_input, filename_output, override);
-}
 
