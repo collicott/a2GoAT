@@ -17,7 +17,8 @@ GTreeManager::GTreeManager()    :
     protons(0),
     pi0(0),
     eta(0),
-    etap(0)
+    etap(0),
+    hist(0)
 {
 }
 
@@ -130,6 +131,7 @@ Bool_t   GTreeManager::Open(const char* filename)
     file_in = TFile::Open(filename);
     if(!file_in)
         return kFALSE;
+    if(!hist)   hist = new GHistFile(TString(filename).Prepend("hist_"));
     return kTRUE;
 }
 
@@ -220,11 +222,4 @@ Bool_t  GTreeManager::Write()
     if(scalers)     scalers->Write();
 
     return kTRUE;
-}
-
-Bool_t  GTreeManager::Write(TH1 *histogram)
-{
-    if(!file_out)   return kFALSE;
-    file_out->cd();
-    histogram->Write();
 }

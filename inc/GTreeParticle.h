@@ -31,6 +31,8 @@ public:
             UInt_t          GetNParticles()    const       {return nParticles;}
             TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
     const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
+            void            RemoveParticle(const Int_t index)   {particles->RemoveAt(index); particles->Compress();}
+
 
     friend  class GTreeMeson;
 };

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "GPlotTagger.h"
+#include "GPlotProton.h"
 
 using namespace std;
 
@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    GPlotTagger trees;
+
+    GPlotProton trees;
     trees.Process(file_in, 0);
 
     end = clock();

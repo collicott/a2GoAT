@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "GPlotTagger.h"
+#include "GProtonReconstruction.h"
 
 using namespace std;
 
@@ -37,8 +37,17 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    GPlotTagger trees;
-    trees.Process(file_in, 0);
+    // Associate 3rd terminal input with the output file ---------------
+    Char_t* file_out;
+    if(argv[2]) file_out = argv[2];
+    else
+    {
+        cout << "Please provide an output file" << endl;
+        return 0;
+    }
+
+    GProtonReconstruction trees;
+    trees.Process(file_in, file_out);
 
     end = clock();
     cout << "Time required for execution: "

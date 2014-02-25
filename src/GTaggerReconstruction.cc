@@ -31,6 +31,10 @@ void  GTaggerReconstruction::ProcessEvent()
             tagged_ch[nTagged]      = tagger->GetTagged_ch(i);
             tagged_t[nTagged]       = tagger->GetTagged_t(i);
             photonbeam_E[nTagged]   = tagger->GetPhotonBeam_E(i);
+            missingVector[nTagged].SetPxPyPzE(0,0,photonbeam_E[nTagged],photonbeam_E[nTagged] + MASS_PROTON);
+            for(int p=0; p<photons->GetNParticles(); p++)
+               missingVector[nTagged]   -= photons->Particle(p);
+
             tagger->SetRand(nTagged);
             nTagged++;
         }
@@ -39,11 +43,14 @@ void  GTaggerReconstruction::ProcessEvent()
             tagged_ch[nTagged]      = tagger->GetTagged_ch(i);
             tagged_t[nTagged]       = tagger->GetTagged_t(i);
             photonbeam_E[nTagged]   = tagger->GetPhotonBeam_E(i);
+            missingVector[nTagged].SetPxPyPzE(0,0,photonbeam_E[nTagged],photonbeam_E[nTagged] + MASS_PROTON);
+            for(int p=0; p<photons->GetNParticles(); p++)
+               missingVector[nTagged]   -= photons->Particle(p);
             tagger->SetPrompt(nTagged);
             nTagged++;
         }
     }
-    tagger->SetTagger(nTagged, tagged_ch, tagged_t, photonbeam_E);
+    tagger->SetTagger(nTagged, tagged_ch, tagged_t, photonbeam_E, missingVector);
     //std::cout << tagger->GetNTagged() << "   " << tagger->GetNPrompt() << "   " << tagger->GetNRand() << std::endl;
     tagger->Fill();
 }
