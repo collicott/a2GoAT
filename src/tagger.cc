@@ -3,8 +3,9 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <TSystem.h>
 
-#include "GMesonReconstruction.h"
+#include "GTaggerReconstruction.h"
 
 using namespace std;
 
@@ -46,7 +47,8 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    GMesonReconstruction trees;
+    gSystem->Load("libPhysics.so");
+    GTaggerReconstruction trees;
     trees.Process(file_in, file_out);
 
     end = clock();

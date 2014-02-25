@@ -48,11 +48,6 @@ int main(int argc, char *argv[])
 	
     GCorrectScalers trees;
     trees.Process(file_in, file_out);
-    TFile* file = TFile::Open(file_in);
-    GTreeRawEvent   test;
-    test.OpenForInput(*file);
-    test.GetEntry(0);
-    test.Print();
 
 	end = clock();
 	cout << "Time required for execution: "

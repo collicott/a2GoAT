@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "GMesonReconstruction.h"
+#include "GPlotTagger.h"
 
 using namespace std;
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    GMesonReconstruction trees;
+    GPlotTagger trees;
     trees.Process(file_in, file_out);
 
     end = clock();

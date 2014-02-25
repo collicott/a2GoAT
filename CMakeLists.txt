@@ -31,21 +31,21 @@ include_directories(inc)
 add_executable(goat
    inc/GTree.h
    inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
    inc/GTreeTagger.h
    inc/GTreeScaler.h
    inc/GTreeParticle.h
-   inc/GAcquTreeManager.h
+   inc/GTreeMeson.h
    inc/GTreeManager.h
    inc/GCorrectScalers.h
-   #inc/GSort.h
-   src/GAcquTreeManager.cc
-   src/GTreeManager.cc
-   #src/GSort.cc
    src/GTree.cc
    src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
    src/GTreeTagger.cc
    src/GTreeScaler.cc
    src/GTreeParticle.cc
+   src/GTreeManager.cc
+   src/GTreeMeson.cc
    src/GCorrectScalers.cc
    src/GoAT.cc
    )
@@ -53,14 +53,71 @@ target_link_libraries(goat ${ROOT_LIBRARIES})
 
 add_executable(meson
    inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
    inc/GTreeParticle.h
    inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GMesonReconstruction.h
    src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
    src/GTreeParticle.cc
+   src/GTreeManager.cc
    src/GTreeMeson.cc
+   src/GMesonReconstruction.cc
    src/meson.cc
    )
 target_link_libraries(meson ${ROOT_LIBRARIES})
 
+add_executable(plotTagger
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GPlotTagger.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeManager.cc
+   src/GTreeMeson.cc
+   src/GPlotTagger.cc
+   src/plotTagger.cc
+   )
+target_link_libraries(plotTagger ${ROOT_LIBRARIES})
+
+add_executable(tagger
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GTaggerReconstruction.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeManager.cc
+   src/GTreeMeson.cc
+   src/GTaggerReconstruction.cc
+   src/tagger.cc
+   )
+target_link_libraries(tagger ${ROOT_LIBRARIES})
 
 

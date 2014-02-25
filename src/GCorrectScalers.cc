@@ -19,7 +19,7 @@ void  GCorrectScalers::ProcessEvent()
         return;
     photons->Clear();
     protons->Clear();
-    photons->SetEventNumber(actualEvent);
+    eventFlags->SetEventNumber(actualEvent);
     for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
     {
         if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
@@ -27,6 +27,7 @@ void  GCorrectScalers::ProcessEvent()
         if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
             protons->AddParticle(rawEvent->GetVector(i, 938.272046), i);
     }
+    eventFlags->Fill();
     tagger->Fill();
     photons->Fill();
     protons->Fill();
@@ -39,6 +40,7 @@ Bool_t  GCorrectScalers::Process(const char* input_filename, const char* output_
     if(!OpenRawEvent())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
     if(!OpenScalers())    return kFALSE;
+    //if(!OpenEventFlags())    return kFALSE;
 
     if(scalers->GetNEntries()<2)    return kFALSE;
     scalers->GetEntry(0);
@@ -50,6 +52,7 @@ Bool_t  GCorrectScalers::Process(const char* input_filename, const char* output_
     if(!CreatePhotons())    return kFALSE;
     if(!CreateProtons())    return kFALSE;
     if(!CreateTagger())    return kFALSE;
+    if(!CreateEventFlags())    return kFALSE;
     scalers->Clone(*file_out);
 
     actualEvent = EventAfterFirstScalerRead;

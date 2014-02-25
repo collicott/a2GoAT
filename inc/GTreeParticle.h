@@ -13,9 +13,8 @@ class   GTreeMeson;
 class  GTreeParticle    : public GTree
 {
 private:
-    UInt_t          EventNumber;
     UInt_t          nParticles;
-    TClonesArray	particles;		// reconstructed
+    TClonesArray*	particles;		// reconstructed
     Int_t           daughters[512];  // nDaughters in GTreeMeson
 
 
@@ -25,14 +24,13 @@ protected:
 
 public:
     GTreeParticle(const TString& _Name);
-    ~GTreeParticle();
+    virtual ~GTreeParticle();
 
     inline  void            AddParticle(const TLorentzVector& vec, const Int_t _RawIndex = -1);
-    virtual void            Clear()     {nParticles = 0; particles.Clear();}
-            Int_t           GetEventNumber()    const       {return EventNumber;}
-            TLorentzVector& Particle(const Int_t particle) {return *(TLorentzVector*)particles[particle];}
-    const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles[particle]);}
-            void            SetEventNumber(const Int_t num) {EventNumber = num;}
+    virtual void            Clear()     {nParticles = 0; particles->Clear();}
+            UInt_t          GetNParticles()    const       {return nParticles;}
+            TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
+    const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
 
     friend  class GTreeMeson;
 };
@@ -40,7 +38,7 @@ public:
 void    GTreeParticle::AddParticle(const TLorentzVector& vec, const Int_t _RawIndex)
 {
     daughters[nParticles] = _RawIndex;
-    new(particles[nParticles]) TLorentzVector(vec);
+    new((*particles)[nParticles]) TLorentzVector(vec);
     nParticles++;
 }
 
