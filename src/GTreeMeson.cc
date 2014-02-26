@@ -17,8 +17,12 @@ void    GTreeMeson::SetBranchAdresses()
     tree_in->SetBranchAddress("nParticles",&nParticles);
     tree_in->SetBranchAddress("particles.", &particles);
     tree_in->SetBranchAddress("nDaughters",daughters);
-    tree_in->SetBranchAddress("nDaughterPDG",daughterPDG);
-    tree_in->SetBranchAddress("nDaughterIndices",daughterIndices);
+    tree_in->SetBranchAddress("Daughter0PDG",daughter0PDG);
+    tree_in->SetBranchAddress("Daughter0Indices",daughter0Indices);
+    tree_in->SetBranchAddress("Daughter1PDG",daughter1PDG);
+    tree_in->SetBranchAddress("Daughter1Indices",daughter1Indices);
+    tree_in->SetBranchAddress("Daughter2PDG",daughter2PDG);
+    tree_in->SetBranchAddress("Daughter2Indices",daughter2Indices);
 }
 
 void    GTreeMeson::SetBranches()
@@ -26,8 +30,12 @@ void    GTreeMeson::SetBranches()
     tree_out->Branch("nParticles",&nParticles,"nParticles/i");
     tree_out->Branch("particles.", particles, 32000, 0);
     tree_out->Branch("nDaughters",daughters,"nDaughters[nParticles]/I");
-    tree_out->Branch("nDaughterPDG",daughterPDG,"nDaughterPDG[nParticles][nDaughters]/I");
-    tree_out->Branch("nDaughterIndices",daughterIndices,"nDaughterIndices[nParticles][nDaughters]/I");
+    tree_out->Branch("Daughter0PDG",daughter0PDG,"Daughter0PDG[nParticles]/b");
+    tree_out->Branch("Daughter0Indices",daughter0Indices,"Daughter0Indices[nParticles]/b");
+    tree_out->Branch("Daughter1PDG",daughter1PDG,"Daughter1PDG[nParticles]/b");
+    tree_out->Branch("Daughter1Indices",daughter1Indices,"Daughter1Indices[nParticles]/b");
+    tree_out->Branch("Daughter2PDG",daughter2PDG,"Daughter2PDG[nParticles]/b");
+    tree_out->Branch("Daughter2Indices",daughter2Indices,"Daughter2Indices[nParticles]/b");
 }
 
 /*Bool_t  GTreeMeson::Init(const char* filename_input, const char* filename_output, const Bool_t override)

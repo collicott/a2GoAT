@@ -44,8 +44,8 @@ add_executable(goat
    src/GTreeTagger.cc
    src/GTreeScaler.cc
    src/GTreeParticle.cc
-   src/GTreeManager.cc
    src/GTreeMeson.cc
+   src/GTreeManager.cc
    src/GCorrectScalers.cc
    src/GoAT.cc
    )
@@ -67,35 +67,12 @@ add_executable(meson
    src/GTreeTagger.cc
    src/GTreeScaler.cc
    src/GTreeParticle.cc
-   src/GTreeManager.cc
    src/GTreeMeson.cc
+   src/GTreeManager.cc
    src/GMesonReconstruction.cc
    src/meson.cc
    )
 target_link_libraries(meson ${ROOT_LIBRARIES})
-
-add_executable(plotTagger
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GPlotTagger.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeManager.cc
-   src/GTreeMeson.cc
-   src/GPlotTagger.cc
-   src/plotTagger.cc
-   )
-target_link_libraries(plotTagger ${ROOT_LIBRARIES})
 
 add_executable(tagger
    inc/GTree.h
@@ -113,11 +90,62 @@ add_executable(tagger
    src/GTreeTagger.cc
    src/GTreeScaler.cc
    src/GTreeParticle.cc
-   src/GTreeManager.cc
    src/GTreeMeson.cc
+   src/GTreeManager.cc
    src/GTaggerReconstruction.cc
    src/tagger.cc
    )
 target_link_libraries(tagger ${ROOT_LIBRARIES})
 
+add_executable(proton
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GProtonReconstruction.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeManager.cc
+   src/GTreeMeson.cc
+   src/GProtonReconstruction.cc
+   src/proton.cc
+   )
+target_link_libraries(proton ${ROOT_LIBRARIES})
 
+
+add_executable(plot
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GHistParticle.h
+   inc/GHistTaggedParticle.h
+   inc/GHistTaggedMeson.h
+   inc/GPlot.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/GTreeManager.cc
+   src/GHistParticle.cc
+   src/GHistTaggedParticle.cc
+   src/GHistTaggedMeson.cc
+   src/GPlot.cc
+   src/plot.cc
+   )
+target_link_libraries(plot ${ROOT_LIBRARIES})

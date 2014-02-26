@@ -8,9 +8,12 @@
 class  GCorrectScalers  : public GTreeManager
 {
 private:
-    UInt_t  EventAfterFirstScalerRead;
+    UInt_t  EventAtFirstScalerRead;
     UInt_t  EventAtLastScalerRead;
     UInt_t  actualEvent;
+
+    TH1D*           taggerTime;
+    TH1I*           accepted;
 
 protected:
 
@@ -21,7 +24,7 @@ public:
     virtual ~GCorrectScalers();
 
     virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
-            UInt_t  GetEventAfterFirstScalerRead()  const {return EventAfterFirstScalerRead;}
+            UInt_t  GetEventAtFirstScalerRead()     const {return EventAtFirstScalerRead;}
             UInt_t  GetEventAtLastScalerRead()      const {return EventAtLastScalerRead;}
 };
 

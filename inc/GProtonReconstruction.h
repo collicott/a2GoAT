@@ -11,7 +11,7 @@ private:
     Double_t        angleDiff;
     Double_t        angleDiffCut;
 
-    TLorentzVector  foundProton;
+    //TLorentzVector  foundProton;
 
 protected:
 

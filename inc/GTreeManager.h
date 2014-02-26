@@ -38,7 +38,6 @@ protected:
     GTreeMeson*     pi0;
     GTreeMeson*     eta;
     GTreeMeson*     etap;
-    GHistFile*      hist;
 
             Bool_t  Create(const char* filename);
             Bool_t  CreateEtap()    {return CreateMeson(etap, TString("Etap"));}
@@ -65,6 +64,7 @@ protected:
             //void    SetNEntries(const UInt_t num)   {nEntries = num;}
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
             Bool_t  Write();
+            Bool_t  Write(const TNamed* object);
 
 public:
     GTreeManager();

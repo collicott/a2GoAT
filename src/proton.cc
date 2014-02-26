@@ -3,6 +3,7 @@
 #include <time.h>
 #include <iostream>
 #include <fstream>
+#include <TSystem.h>
 
 #include "GProtonReconstruction.h"
 
@@ -46,6 +47,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    gSystem->Load("libHist.so");
     GProtonReconstruction trees;
     trees.Process(file_in, file_out);
 

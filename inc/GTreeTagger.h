@@ -48,6 +48,8 @@ public:
     const	Double_t*       GetTagged_t()                       const	{return tagged_t;}
             Double_t        GetTagged_t(const Int_t index)      const	{return tagged_t[index];}
     TLorentzVector          GetVector(const Int_t index)        const   {return TLorentzVector(0, 0, photonbeam_E[index], photonbeam_E[index]);}
+            void            RemovePrompt(const Int_t index);
+            void            RemoveRand(const Int_t index);
             void            SetTagger(const Int_t _NTagged, const Int_t* _Tagged_ch, const Double_t *_Tagged_t, const Double_t* _Photonbeam_E, const TLorentzVector *missingVector);
             void            SetPrompt(const Int_t index)   {promptIndex[nPrompt] = index; nPrompt++;}
             void            SetRand(const Int_t index)   {randIndex[nRand] = index; nRand++;}

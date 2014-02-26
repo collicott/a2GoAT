@@ -4,7 +4,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "GPlotProton.h"
+#include <TFile.h>
+#include "GPlot.h"
 
 using namespace std;
 
@@ -37,8 +38,24 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    Char_t* cut;
+    if(argv[1]) cut = argv[1];
+    else
+    {
+        cout << "Please provide an config file" << endl;
+        return 0;
+    }
 
-    GPlotProton trees;
+    /*TFile*  file = TFile::Open("test.root", "RECREATE");
+    GHistParticle   p0(file);
+    file->cd();
+    gDirectory->mkdir("blabla");
+    cout << gDirectory->GetName() << endl;
+    gDirectory->GetDirectory("blabla")->cd();
+    GHistParticle   p1(gDirectory);
+    p0.Write();
+    p1.Write();*/
+    GPlot trees("test.root");
     trees.Process(file_in, 0);
 
     end = clock();

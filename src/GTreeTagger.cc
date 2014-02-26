@@ -54,3 +54,21 @@ void    GTreeTagger::SetTagger(const Int_t _NTagged, const Int_t* _Tagged_ch, co
         nTagged++;
     }
 }
+
+void    GTreeTagger::RemovePrompt(const Int_t index)
+{
+    for(int i=index+1; i<nPrompt; i++)
+    {
+        promptIndex[i-1]    = promptIndex[i];
+    }
+    nPrompt--;
+}
+
+void    GTreeTagger::RemoveRand(const Int_t index)
+{
+    for(int i=index+1; i<nRand; i++)
+    {
+        randIndex[i-1]    = randIndex[i];
+    }
+    nRand--;
+}

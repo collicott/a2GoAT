@@ -17,8 +17,7 @@ GTreeManager::GTreeManager()    :
     protons(0),
     pi0(0),
     eta(0),
-    etap(0),
-    hist(0)
+    etap(0)
 {
 }
 
@@ -30,7 +29,7 @@ GTreeManager::~GTreeManager()
 
 Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
 {
-    for(int i=min; i<max; i++)
+    for(int i=min; i<=max; i++)
     {
         if(etap)
         {
@@ -131,7 +130,6 @@ Bool_t   GTreeManager::Open(const char* filename)
     file_in = TFile::Open(filename);
     if(!file_in)
         return kFALSE;
-    if(!hist)   hist = new GHistFile(TString(filename).Prepend("hist_"));
     return kTRUE;
 }
 
@@ -223,3 +221,12 @@ Bool_t  GTreeManager::Write()
 
     return kTRUE;
 }
+
+Bool_t  GTreeManager::Write(const TNamed* object)
+{
+    if(!file_out)   return kFALSE;
+    file_out->cd();
+    object->Write();
+    return kTRUE;
+}
+

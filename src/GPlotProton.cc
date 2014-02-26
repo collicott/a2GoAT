@@ -18,20 +18,7 @@ GPlotProton::~GPlotProton()
 
 void  GPlotProton::ProcessEvent()
 {
-    Double_t    angleDiff;
-    for(int p=0; p<protons->GetNParticles(); p++)
-    {
-        for(int i=0; i<tagger->GetNPrompt(); i++)
-        {
-            angleDiff = protons->Particle(p).Angle(tagger->GetMissingVector(tagger->GetPromptIndex(i)).Vect());
-            protonAngleDiffPrompt.Fill(angleDiff*TMath::RadToDeg());
-        }
-        for(int i=0; i<tagger->GetNRand(); i++)
-        {
-            angleDiff = protons->Particle(p).Angle(tagger->GetMissingVector(tagger->GetRandIndex(i)).Vect());
-            protonAngleDiffRand.Fill(angleDiff*TMath::RadToDeg());
-        }
-    }
+
 }
 
 Bool_t  GPlotProton::Process(const char* input_filename, const char* output_filename)

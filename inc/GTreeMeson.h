@@ -25,8 +25,12 @@ public:
     };
 
 private:
-    Int_t           daughterPDG[512][3];
-    Int_t           daughterIndices[512][3];
+    UChar_t        daughter0PDG[16];
+    UChar_t        daughter1PDG[16];
+    UChar_t        daughter2PDG[16];
+    UChar_t        daughter0Indices[16];
+    UChar_t        daughter1Indices[16];
+    UChar_t        daughter2Indices[16];
 
 protected:
     virtual void    SetBranchAdresses();
@@ -37,16 +41,27 @@ public:
     virtual ~GTreeMeson();
 
     inline  void            AddParticle(const TLorentzVector& vec, const Int_t nDaughters = 0, const Int_t* PDGList = 0, const Int_t* Indices = 0);
+            UChar_t         GetDaughterIndex(const Int_t index, const Int_t part)    const       {if(part==0) return daughter0Indices[index]; if(part==1) return daughter1Indices[index]; return daughter2Indices[index];}
 };
 
 void    GTreeMeson::AddParticle(const TLorentzVector& vec, const Int_t nDaughters , const Int_t* PDGList, const Int_t* Indices)
 {
     daughters[nParticles] = nDaughters;
     new((*particles)[nParticles]) TLorentzVector(vec);
-    for(int i=0; i<nDaughters; i++)
+    if(nDaughters>0)
     {
-        daughterPDG[nParticles][i]      = PDGList[i];
-        daughterIndices[nParticles][i]  = Indices[i];
+        daughter0PDG[nParticles]      = PDGList[0];
+        daughter0Indices[nParticles]  = Indices[0];
+    }
+    if(nDaughters>1)
+    {
+        daughter1PDG[nParticles]      = PDGList[1];
+        daughter1Indices[nParticles]  = Indices[1];
+    }
+    if(nDaughters>2)
+    {
+        daughter2PDG[nParticles]      = PDGList[2];
+        daughter2Indices[nParticles]  = Indices[2];
     }
     nParticles++;
 }

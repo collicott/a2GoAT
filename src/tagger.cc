@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
     }
 
     gSystem->Load("libPhysics.so");
+    gSystem->Load("libHist.so");
     GTaggerReconstruction trees;
     trees.Process(file_in, file_out);
 

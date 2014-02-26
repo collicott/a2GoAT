@@ -27,18 +27,74 @@ void  GProtonReconstruction::ProcessEvent()
         tagger->Fill();
         eventFlags->Fill();
     }
+    else if(protons->GetNParticles() == 1)
+    {
+        Bool_t  found   = kFALSE;
+        for(int i=0; i<tagger->GetNPrompt(); i++)
+        {
+            angleDiff = protons->Particle(0).Angle(tagger->GetMissingVector(tagger->GetPromptIndex(i)).Vect());
+            if(angleDiff < angleDiffCut)
+            {
+                found   = kTRUE;
+            }
+            else
+            {
+                tagger->RemovePrompt(i);
+            }
+        }
+        for(int i=0; i<tagger->GetNRand(); i++)
+        {
+            angleDiff = protons->Particle(0).Angle(tagger->GetMissingVector(tagger->GetRandIndex(i)).Vect());
+            if(angleDiff < angleDiffCut)
+            {
+                found   = kTRUE;
+            }
+            else
+            {
+                tagger->RemoveRand(i);
+            }
+        }
+
+        if(found)
+        {
+            eventFlags->Fill();
+            tagger->Fill();
+            photons->Fill();
+            protons->Fill();
+            pi0->Fill();
+            eta->Fill();
+            etap->Fill();
+        }
+    }
     else
     {
-        for(int i=0; i<tagger->GetNPrompt(); i++)
+        etap->Fill();
+        eta->Fill();
+        pi0->Fill();
+        photons->Fill();
+        protons->Fill();
+        tagger->Fill();
+        eventFlags->Fill();
+    }
+
+        /*for(int i=0; i<tagger->GetNPrompt(); i++)
         {
             for(int p=0; p<protons->GetNParticles(); p++)
             {
                 angleDiff = protons->Particle(p).Angle(tagger->GetMissingVector(tagger->GetPromptIndex(i)).Vect());
-                if(angleDiff < angleDiffCut)
+                if(angleDiff >= angleDiffCut)
                 {
-
+                    protons->RemoveParticle(p);
+                    p--;
                 }
-                else
+            }
+        }
+        for(int i=0; i<tagger->GetNRand(); i++)
+        {
+            for(int p=0; p<protons->GetNParticles(); p++)
+            {
+                angleDiff = protons->Particle(p).Angle(tagger->GetMissingVector(tagger->GetRandIndex(i)).Vect());
+                if(angleDiff >= angleDiffCut)
                 {
                     protons->RemoveParticle(p);
                     p--;
@@ -50,7 +106,7 @@ void  GProtonReconstruction::ProcessEvent()
 
             }
 
-    }
+    }*/
 }
 
 Bool_t  GProtonReconstruction::Process(const char* input_filename, const char* output_filename)
