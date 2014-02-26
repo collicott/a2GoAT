@@ -28,6 +28,10 @@ public:
     virtual ~GMesonReconstruction();
 
     virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
+
+    void    SetPi0Width(const Double_t width)   {pi0Width = width;}
+    void    SetEtaWidth(const Double_t width)   {etaWidth = width;}
+    void    SetEtapWidth(const Double_t width)  {etapWidth = width;}
 };
 
 

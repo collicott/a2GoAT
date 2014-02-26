@@ -46,13 +46,12 @@ void    GHistTaggedParticleWindow::FillTagger(const TLorentzVector& mis, const D
 
 
 
-
-
 class  GHistTaggedParticle
 {
 private:
     TDirectory*     dir;
 
+    GHistTaggedParticleWindow*  diff;
     GHistTaggedParticleWindow*  prompt;
     GHistTaggedParticleWindow*  rand;
 
@@ -62,6 +61,7 @@ public:
     GHistTaggedParticle(TDirectory* _Dir);
     virtual ~GHistTaggedParticle();
 
+            void    Add(const GHistTaggedParticle *hist, const Double_t scale);
     inline  void    FillPromptTagger(const TLorentzVector& mis, const Double_t _TaggerTime, const Double_t _TaggerEnergy, const Int_t _TaggerChannel)   {prompt->FillTagger(mis, _TaggerTime, _TaggerEnergy, _TaggerChannel);}
     inline  void    FillRandTagger(const TLorentzVector& mis, const Double_t _TaggerTime, const Double_t _TaggerEnergy, const Int_t _TaggerChannel)     {rand->FillTagger(mis, _TaggerTime, _TaggerEnergy, _TaggerChannel);}
     inline  void    FillPromptParticle(const TLorentzVector& vec)   {prompt->FillParticle(vec);}

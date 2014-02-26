@@ -39,6 +39,7 @@ protected:
     GTreeMeson*     eta;
     GTreeMeson*     etap;
 
+            void    CloseFiles();
             Bool_t  Create(const char* filename);
             Bool_t  CreateEtap()    {return CreateMeson(etap, TString("Etap"));}
             Bool_t  CreateEta()     {return CreateMeson(eta, TString("Eta"));}
@@ -71,6 +72,7 @@ public:
     virtual ~GTreeManager();
 
     virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0) = 0;
+            Bool_t  ProcessFolder(const char* input_foldername, const char* output_foldername, const char* filePrefix, const char* fileSuffix, const char* outfilePrefix);
 };
 
 #endif

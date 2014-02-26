@@ -6,7 +6,8 @@
 
 
 
-
+class  GHistTaggedEta;
+class  GHistTaggedEtap;
 
 class  GHistTaggedMeson
 {
@@ -37,6 +38,9 @@ public:
     inline  void    FillPromptPhoton(const TLorentzVector& vec0, const TLorentzVector& vec1);
     inline  void    FillRandPhoton(const TLorentzVector& vec0, const TLorentzVector& vec1);
     virtual void    Write();
+
+    friend  class   GHistTaggedEta;
+    friend  class   GHistTaggedEtap;
 };
 
 void    GHistTaggedMeson::FillPromptTagger(const TLorentzVector& mis, const Double_t _TaggerTime, const Double_t _TaggerEnergy, const Int_t _TaggerChannel)
@@ -120,6 +124,9 @@ public:
     inline  void    FillRandDaughterPhotons(const Int_t daughterMeson, const TLorentzVector& vec0, const TLorentzVector& vec1)  {daughter[daughterMeson]->FillRandPhoton(vec0, vec1);}
 
     virtual void    Write();
+
+    friend  class   GHistTaggedEta;
+    friend  class   GHistTaggedEtap;
 };
 
 void    GHistTagged3Meson::FillPromptTagger(const TLorentzVector& mis, const Double_t _TaggerTime, const Double_t _TaggerEnergy, const Int_t _TaggerChannel)

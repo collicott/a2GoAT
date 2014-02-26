@@ -1,5 +1,8 @@
 #include "GTreeManager.h"
 
+#include <TROOT.h>
+#include <TSystemFile.h>
+#include <TSystemDirectory.h>
 
 using namespace std;
 
@@ -22,6 +25,11 @@ GTreeManager::GTreeManager()    :
 }
 
 GTreeManager::~GTreeManager()
+{
+    CloseFiles();
+}
+
+void    GTreeManager::CloseFiles()
 {
     if(file_in)     delete file_in;
     if(file_out)    delete file_out;
@@ -204,6 +212,47 @@ Bool_t   GTreeManager::OpenScalers()
     if(!scalers)   scalers = new GTreeScaler();
     return scalers->OpenForInput(*file_in);
 }
+
+
+Bool_t  GTreeManager::ProcessFolder(const char* input_foldername, const char* output_foldername, const char* filePrefix, const char* fileSuffix, const char* outfilePrefix)
+{
+    //open folders
+    TSystemDirectory    folder_in("input_folder", input_foldername);
+    if(!folder_in.IsFolder())   return kFALSE;
+    TSystemDirectory    folder_out("output_folder", output_foldername);
+    if(!folder_out.IsFolder())  return kFALSE;
+
+    //run over folder
+    TList*  files   = folder_in.GetListOfFiles();
+    if (files)
+    {
+        TSystemFile *file;
+        TString fname_in;
+        TString fname_out;
+        TString number;
+        TString prefix(filePrefix);
+        TString suffix(fileSuffix);
+        if(!suffix.EndsWith(".root"))
+            suffix.Append(".root");
+        TIter next(files);
+        while ((file=(TSystemFile*)next()))
+        {
+            fname_in    = file->GetName();
+            if (!file->IsDirectory() && fname_in.EndsWith(TString(fileSuffix)) && fname_in.BeginsWith(filePrefix))
+            {
+                number  = fname_in(prefix.Length(),fname_in.Length()-prefix.Length());
+                number  = number(0,number.Length()-prefix.Length()+2);
+                fname_out = outfilePrefix;
+                fname_out.Append(number).Append(suffix);
+                std::cout << "Analysing file " << fname_in << ". Output to file " << fname_out << std::endl;
+                Process(fname_in.Data(), fname_out.Data());
+            }
+        }
+        return kTRUE;
+    }
+    return kFALSE;
+}
+
 
 Bool_t  GTreeManager::Write()
 {

@@ -32,8 +32,10 @@ public:
     GTreeTagger();
     virtual ~GTreeTagger();
 
-    virtual void    Clear()     {nTagged = 0; ClearPromptRand();}
-            void    ClearPromptRand()     {nPrompt = 0; nRand = 0;}
+    virtual void    Clear()             {nTagged = 0; ClearPromptRand();}
+            void    ClearPrompt()       {nPrompt = 0;}
+            void    ClearRand()         {nRand = 0;}
+            void    ClearPromptRand()   {nPrompt = 0; nRand = 0;}
 
     const   TLorentzVector& GetMissingVector(const Int_t index) const   {return *((TLorentzVector*)missing->At(index));}
             Int_t           GetNPrompt()                        const   {return nPrompt;}

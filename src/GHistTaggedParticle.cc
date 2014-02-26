@@ -61,6 +61,7 @@ GHistTaggedParticle::GHistTaggedParticle(TDirectory *_Dir):
     dir->cd();
     dir->mkdir("rand");
     dir->cd();
+    diff      = new GHistTaggedParticleWindow(gDirectory);
     prompt    = new GHistTaggedParticleWindow(gDirectory->GetDirectory("prompt"));
     dir->cd();
     rand    = new GHistTaggedParticleWindow(gDirectory->GetDirectory("rand"));
@@ -69,8 +70,16 @@ GHistTaggedParticle::GHistTaggedParticle(TDirectory *_Dir):
 
 GHistTaggedParticle::~GHistTaggedParticle()
 {
+    if(diff)    delete  diff;
     if(prompt)  delete  prompt;
-    if(rand)  delete  rand;
+    if(rand)    delete  rand;
+}
+
+void    GHistTaggedParticle::Add(const GHistTaggedParticle* hist, const Double_t scale)
+{
+    prompt->Add(hist->prompt, scale);
+    rand->Add(hist->rand, scale);
+    diff->Add(hist->diff, scale);
 }
 
 void    GHistTaggedParticle::Write()
@@ -78,8 +87,8 @@ void    GHistTaggedParticle::Write()
     prompt->Write();
     rand->Write();
     dir->cd();
-    GHistTaggedParticleWindow   diffHist(gDirectory);
-    diffHist.Add(prompt, 1);
-    diffHist.Add(rand, -0.5);
-    diffHist.Write();
+    diff->Add(prompt, 1);
+    diff->Add(rand, -0.5);
+    diff->Write();
+    dir->cd();
 }

@@ -4,9 +4,14 @@
 #include <iostream>
 #include <fstream>
 
+#include <TSystem.h>
+
 #include "GCorrectScalers.h"
 
 using namespace std;
+
+
+
 
 /**
  * @brief the main routine
@@ -46,8 +51,12 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	
-    GCorrectScalers trees;
-    trees.Process(file_in, file_out);
+    //GCorrectScalers tree;
+    //tree.Process(file_in, file_out);
+
+
+    GCorrectScalers tree;
+    tree.ProcessFolder(TString(gSystem->WorkingDirectory()).Append("/").Append(file_in).Data(), TString(gSystem->WorkingDirectory()).Append("/").Append(file_in).Data(), "Raw_CB_", "", "Out_");
 
 	end = clock();
 	cout << "Time required for execution: "

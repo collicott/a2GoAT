@@ -149,3 +149,32 @@ add_executable(plot
    src/plot.cc
    )
 target_link_libraries(plot ${ROOT_LIBRARIES})
+
+add_executable(cut
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GHistParticle.h
+   inc/GHistTaggedParticle.h
+   inc/GHistTaggedMeson.h
+   inc/GCut.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/GTreeManager.cc
+   src/GHistParticle.cc
+   src/GHistTaggedParticle.cc
+   src/GHistTaggedMeson.cc
+   src/GCut.cc
+   src/cut.cc
+   )
+target_link_libraries(cut ${ROOT_LIBRARIES})

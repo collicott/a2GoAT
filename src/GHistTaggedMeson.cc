@@ -150,9 +150,12 @@ GHistTaggedEta::~GHistTaggedEta()
 
 void    GHistTaggedEta::Write()
 {
-    eta->Write();
     eta2g->Write();
     eta6g->Write();
+    dir->cd();
+    eta->Add(eta2g->meson, 1);
+    eta->Add(eta6g->meson, 1);
+    eta->Write();
     dir->cd();
 }
 
@@ -189,8 +192,11 @@ GHistTaggedEtap::~GHistTaggedEtap()
 
 void    GHistTaggedEtap::Write()
 {
-    etap->Write();
     etap2g->Write();
     etap6g->Write();
+    dir->cd();
+    etap->Add(etap2g->meson, 1);
+    etap->Add(etap6g->meson, 1);
+    etap->Write();
     dir->cd();
 }

@@ -4,22 +4,9 @@
 using namespace std;
 
 
-GPlot::GPlot(const TString& _Name)    :
-    file(TFile::Open(_Name.Data(), "RECREATE"))
+GPlot::GPlot()
 {
-    file->cd();
-    gDirectory->mkdir("pi0");
-    file->cd();
-    gDirectory->mkdir("eta");
-    file->cd();
-    gDirectory->mkdir("etap");
 
-    file->cd();
-    pi0Hist = new GHistTaggedPi0(gDirectory->GetDirectory("pi0"));
-    file->cd();
-    etaHist = new GHistTaggedEta(gDirectory->GetDirectory("eta"));
-    file->cd();
-    etapHist = new GHistTaggedEtap(gDirectory->GetDirectory("etap"));
 }
 
 GPlot::~GPlot()
@@ -154,6 +141,22 @@ Bool_t  GPlot::Process(const char* input_filename, const char* output_filename)
     if(!OpenEta())    return kFALSE;
     if(!OpenPi0())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
+
+    if(!Create(output_filename))    return kFALSE;
+
+    file_out->cd();
+    gDirectory->mkdir("pi0");
+    file_out->cd();
+    gDirectory->mkdir("eta");
+    file_out->cd();
+    gDirectory->mkdir("etap");
+
+    file_out->cd();
+    pi0Hist = new GHistTaggedPi0(gDirectory->GetDirectory("pi0"));
+    file_out->cd();
+    etaHist = new GHistTaggedEta(gDirectory->GetDirectory("eta"));
+    file_out->cd();
+    etapHist = new GHistTaggedEtap(gDirectory->GetDirectory("etap"));
 
     TraverseEntries(0, pi0->GetNEntries()+1);
 

@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include <TFile.h>
-#include "GPlot.h"
+#include "GCut.h"
 
 using namespace std;
 
@@ -55,8 +55,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-
-    GPlot tree;
+    GCut tree;
     tree.Process(file_in, file_out);
 
     end = clock();

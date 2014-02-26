@@ -24,7 +24,7 @@ protected:
     virtual void    ProcessEvent();
 
 public:
-    GPlot(const TString& _Name);
+    GPlot();
     virtual ~GPlot();
 
     virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
