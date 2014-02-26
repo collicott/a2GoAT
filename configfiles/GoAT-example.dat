@@ -14,11 +14,11 @@ Period-Macro:	100000
 Do-Particle-Reconstruction: 1
 
 Do-Charged-Particle-Reconstruction: 1
-#Cut-dE-E-CB-Proton: 	cuts/CB_DeltaE-E_Proton.root Proton
-#Cut-dE-E-CB-Pion: 		cuts/CB_DeltaE-E_Pion.root Pion
-Cut-dE-E-TAPS-Pion: 	cuts/TAPS_DeltaE-E.root	CutPiplus
-Cut-dE-E-TAPS-Proton: 	cuts/TAPS_DeltaE-E.root CutProton
-Cut-dE-E-TAPS-Electron: cuts/TAPS_DeltaE-E.root CutElectron
+#Cut-dE-E-CB-Proton: 	configfiles/cuts/CB_DeltaE-E_Proton.root Proton
+#Cut-dE-E-CB-Pion: 		configfiles/cuts/CB_DeltaE-E_Pion.root Pion
+Cut-dE-E-TAPS-Pion: 	configfiles/cuts/TAPS_DeltaE-E.root	CutPiplus
+Cut-dE-E-TAPS-Proton: 	configfiles/cuts/TAPS_DeltaE-E.root CutProton
+Cut-dE-E-TAPS-Electron: configfiles/cuts/TAPS_DeltaE-E.root CutElectron
 
 Do-Meson-Reconstruction: 1
 Cut-IM-Width-Pi0: 20
