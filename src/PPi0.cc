@@ -116,9 +116,7 @@ int main(int argc, char *argv[])
 	cout << endl << "User inputs" << endl;
 	cout << "Config file:      '" << configfile << "' chosen" << endl;
 	if(dir_in.length() != 0)  	cout << "Input directory:  '" << dir_in << "' chosen" << endl;
-	else { dir_in = "./";		cout << "Input directory:  '" << dir_in << "' chosen by default" << endl; }
 	if(dir_out.length() != 0)  	cout << "Output directory: '" << dir_out << "' chosen" << endl;
-	else { dir_out = dir_in; 	cout << "Output directory: '" << dir_out << "' chosen by default" << endl; }
 	if(file_in.length() != 0)  	cout << "Input file:       '" << file_in << "' chosen" << endl;
 	if(pre_in.length() != 0)  	cout << "Input prefix:     '" << pre_in << "' chosen" << endl;
 	else { pre_in = "GoAT"; 	cout << "Input prefix:     '" << pre_in << "' chosen by default" << endl; }
@@ -201,6 +199,7 @@ int main(int argc, char *argv[])
 		cout << "Input prefix '" << pre_in << "' chosen" << endl << endl;
 			
 		// If output directory is not specified, use the input directory
+		if(dir_in.length()  == 0) dir_in  = "./"; // Search in current directory
 		if(dir_out.length() == 0) dir_out = dir_in;
 
 		// Create list of files in input directory
