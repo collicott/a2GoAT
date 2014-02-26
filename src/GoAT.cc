@@ -140,9 +140,7 @@ int main(int argc, char *argv[])
 	cout << endl << "User inputs" << endl;
 	cout << "Config file:      '" << configfile << "' chosen" << endl;
 	if(dir_in.length() != 0)  	cout << "Input directory:  '" << dir_in << "' chosen" << endl;
-	else { dir_in = "./";		cout << "Input directory:  '" << dir_in << "' chosen by default" << endl; }
 	if(dir_out.length() != 0)  	cout << "Output directory: '" << dir_out << "' chosen" << endl;
-	else { dir_out = dir_in; 	cout << "Output directory: '" << dir_out << "' chosen by default" << endl; }
 	if(file_in.length() != 0)  	cout << "Input file:       '" << file_in << "' chosen" << endl;
 	if(file_out.length() != 0) 	cout << "Output file:      '" << file_out << "' chosen" << endl;
 	if(pre_in.length() != 0)  	cout << "Input prefix:     '" << pre_in << "' chosen" << endl;
@@ -208,6 +206,7 @@ int main(int argc, char *argv[])
 		cout << "Output prefix '" << pre_out << "' chosen" << endl;
 		
 		// If output directory is not specified, use the input directory
+		if(dir_in.length()  == 0) dir_in = "./";
 		if(dir_out.length() == 0) dir_out = dir_in;
 
 		// Create list of files in input directory
@@ -345,8 +344,8 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 	if(!OpenTreeRawEvent())			return kFALSE;
 	if(!OpenTreeTagger())			return kFALSE;
 	if(!OpenTreeTrigger())			return kFALSE;
-	if(!OpenTreeScaler())			return kFALSE;
 	if(!OpenTreeDetectorHits())		return kFALSE;	
+	OpenTreeScaler();
 	cout << endl;
 	
 	cout << "Checking scaler reads for valid events:" << endl;	
@@ -364,7 +363,7 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 void	GoAT::Analyse()
 {
 	cout << "Analysing ..." << endl;
-	TraverseAcquEntriesByScalerRead();			
+	TraverseAcquEntries();			
 	CloseOutputFile();
 	cout << endl << "File complete." << endl;
 	cout << "==========================================================" << endl << endl;	

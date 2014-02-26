@@ -103,11 +103,9 @@ private:
 protected:
 	void    CheckRange(Int_t& min, Int_t& max);
     void 	GetAcquEntryFast();                	// without testing index
-//    void	TraverseAcquEntries(const Int_t min, const Int_t max);
-//    void	TraverseAcquEntries(const Int_t max) 	{TraverseAcquEntries(firstAcquEvent, max);}
-//    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
-
-	void	TraverseAcquEntriesByScalerRead();
+    void	TraverseAcquEntries(const Int_t min, const Int_t max);
+    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
+    
 	void 	DataChecks(const Int_t min, const Int_t max);	
 	Bool_t 	CheckCBHits(const Int_t min, const Int_t max);
 	

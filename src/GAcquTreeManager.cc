@@ -307,7 +307,7 @@ Bool_t	GAcquTreeManager::GetAcquEntry(const Int_t index)
 }
 
 
-void	GAcquTreeManager::TraverseAcquEntriesByScalerRead()
+void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 {
 	if(treeScaler)
 	{
@@ -328,6 +328,7 @@ void	GAcquTreeManager::TraverseAcquEntriesByScalerRead()
 			
 			if(analyze)
 			{
+				treeScaler->GetEntry(i);
 				treeScaler_clone->Fill();
 				
 				for(AcquEvent = min; AcquEvent<=max; AcquEvent++)
@@ -336,11 +337,17 @@ void	GAcquTreeManager::TraverseAcquEntriesByScalerRead()
 					Reconstruct();
 				}
 			}
-
 		}
 	}
-	else cout << "Scaler tree could not be found" << endl;
-			
+	else 
+	{ 
+		AcquEvent = min-1;
+		for(int i=min; i<=max; i++)
+		{
+			GetAcquEntryFast();
+			Reconstruct();
+		}
+	}	
 }
 
 void 	GAcquTreeManager::DataChecks(const Int_t min, const Int_t max)
