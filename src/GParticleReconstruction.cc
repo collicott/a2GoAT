@@ -423,16 +423,24 @@ void	GParticleReconstruction::MesonReconstruction()
 	// n  -> pi0 (pi+  pi-  g)  - omega meson intermediate state
 	// n  -> pi+  pi-  g		- direct n decay 
 	// 							    (or rho_0 intermediate state)
-	
+
+	Double_t diff_pi0  = TMath::Abs( reaction_p4.M() - m_pi0 )/width_pi0;	
 	Double_t diff_eta  = TMath::Abs( reaction_p4.M() - m_eta )/width_eta;
 	Double_t diff_etaP = TMath::Abs( reaction_p4.M() - m_etaP)/width_etaP;
+
+	if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_eta < diff_etaP))
+	{
+		AddParticle(pdg_pi0,ndaughter,daughter_list);
+		return;		
+	}
 			
-	if ((diff_eta <= 1.0) && (diff_eta < diff_etaP))
+	if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP))
 	{
 		AddParticle(pdg_eta,ndaughter,daughter_list);
 		return;		
 	}
-	if ((diff_etaP <= 1.0) && (diff_etaP < diff_eta))
+	
+	if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta))
 	{
 		AddParticle(pdg_etaP,ndaughter,daughter_list);
 		return;
