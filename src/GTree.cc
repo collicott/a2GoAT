@@ -60,50 +60,6 @@ Bool_t  GTree::OpenForOutput(TFile& outputFile)
     cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): can not create output tree " << name.Data() << " in output file " << outputFile.GetName() << "!" << endl;
     status = status & (~FLAG_OPENFOROUTPUT);
     return kFALSE;
-
-    /*
-    if(!file_in)
-    {
-        cout << "#ERROR# GTree::Init(const char* filename_input, const char* filename_output): input file " << filename_input << " is not existing!" << endl;
-        return kFALSE;
-    }
-    file_in->GetObject("GoAT", tree_in);
-    if(!tree_in)
-    {
-        cout << "#ERROR# GTree::Init(const char* filename_input, const char* filename_output): could not find a tree called GoAT in input file " << filename_input << "!" << endl;
-        return kFALSE;
-    }
-    cout << "opened input tree in file " << filename_input << "." << endl;
-
-    SetBranchAdresses();
-
-    if(override)
-    {
-        file_out    = TFile::Open(filename_output, "RECREATE");
-        if(!file_out)
-        {
-            cout << "#ERROR# GTree::Init(const char* filename_input, const char* filename_output): can not create output file " << filename_output << "!" << endl;
-            return kFALSE;
-        }
-    }
-    else
-    {
-        file_out    = TFile::Open(filename_output, "NEW");
-        if(!file_out)
-        {
-            cout << "#ERROR# GTree::Init(const char* filename_input, const char* filename_output): output file " << filename_output << " already exist! Use override Flag" << endl;
-            return kFALSE;
-        }
-    }
-    tree_out    = tree_in->CloneTree(0);
-    if(!tree_out)
-    {
-        cout << "#ERROR# GTree::OpenNewTree(const char* filename): can not create output tree!" << endl;
-        return kFALSE;
-    }
-    cout << "created new output tree in file " << filename_output << "." << endl;
-*/
-    return kTRUE;
 }
 
 void    GTree::Print(const Bool_t All) const

@@ -85,7 +85,10 @@ Bool_t   GTreeManager::Create(const char* filename)
     if(file_out) delete file_out;
     file_out = TFile::Open(filename, "RECREATE");
     if(!file_out)
+    {
+        cout << "#ERROR: Can not create output file " << filename << "!" << endl;
         return kFALSE;
+    }
     return kTRUE;
 }
 
@@ -137,7 +140,10 @@ Bool_t   GTreeManager::Open(const char* filename)
     if(file_in) delete file_in;
     file_in = TFile::Open(filename);
     if(!file_in)
+    {
+        cout << "#ERROR: Can not open input file " << filename << "!" << endl;
         return kFALSE;
+    }
     return kTRUE;
 }
 
@@ -219,8 +225,12 @@ Bool_t  GTreeManager::ProcessFolder(const char* input_foldername, const char* ou
     //open folders
     TSystemDirectory    folder_in("input_folder", input_foldername);
     if(!folder_in.IsFolder())   return kFALSE;
+    std::cout << "Input folder: " << folder_in.GetTitle() <<  std::endl;
+    std::cout << "File input patter: " << TString(filePrefix).Append("<RunNumber>").Append(fileSuffix) <<  std::endl;
     TSystemDirectory    folder_out("output_folder", output_foldername);
     if(!folder_out.IsFolder())  return kFALSE;
+    std::cout << "Output folder: " << folder_out.GetName() <<  std::endl;
+    std::cout << "File output patter: " << TString(outfilePrefix).Append("<RunNumber>").Append(fileSuffix) <<  std::endl;
 
     //run over folder
     TList*  files   = folder_in.GetListOfFiles();
