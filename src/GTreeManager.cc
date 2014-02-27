@@ -89,6 +89,7 @@ Bool_t   GTreeManager::Create(const char* filename)
         cout << "#ERROR: Can not create output file " << filename << "!" << endl;
         return kFALSE;
     }
+    cout << "Created output file " << file_out->GetName() << "!" << file_out->GetTitle() << endl;
     return kTRUE;
 }
 
@@ -144,28 +145,9 @@ Bool_t   GTreeManager::Open(const char* filename)
         cout << "#ERROR: Can not open input file " << filename << "!" << endl;
         return kFALSE;
     }
+    cout << "Opened input file " << file_in->GetName() << "!" << file_in->GetTitle() << endl;
     return kTRUE;
 }
-
-/*Bool_t  GTreeManager::EntryChecking(const GTree* tree)
-{
-    Int_t   oldNEntries = nEntries;
-    nEntries = tree->GetNEntries();
-    if(nEntries < oldNEntries)
-    {
-        std::cout << "#ERROR# treeRawEvent has different Entries (" << nEntries << ") others " << oldNEntries << std::endl;
-        return kFALSE;
-    }
-    if(oldNEntries == 0)
-        return kTRUE;
-    if(nEntries > oldNEntries)
-    {
-        std::cout << "#ERROR# treeRawEvent has different Entries (" << nEntries << ") others " << oldNEntries << std::endl;
-        nEntries = oldNEntries;
-        return kFALSE;
-    }
-    return kTRUE;
-}*/
 
 Bool_t   GTreeManager::OpenMeson(GTreeMeson*& mesonTree, const TString& _Name)
 {
@@ -255,7 +237,11 @@ Bool_t  GTreeManager::ProcessFolder(const char* input_foldername, const char* ou
                 fname_out = outfilePrefix;
                 fname_out.Append(number).Append(suffix);
                 std::cout << "Analysing file " << fname_in << ". Output to file " << fname_out << std::endl;
-                Process(fname_in.Data(), fname_out.Data());
+                if(!Process(fname_in.Data(), fname_out.Data()))
+                {
+                    CloseFiles();
+                    return kFALSE;
+                }
             }
         }
         return kTRUE;

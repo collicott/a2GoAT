@@ -16,7 +16,8 @@ GTree::GTree(const TString& _Name)    :
 
 GTree::~GTree()
 {
-
+    if(tree_in) delete tree_in;
+    if(tree_out) delete tree_out;
 }
 
 void    GTree::Clone(TFile& outputFile)

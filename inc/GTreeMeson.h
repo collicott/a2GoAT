@@ -5,10 +5,11 @@
 #include "GTreeParticle.h"
 
 
-#define MASS_PI0    135
-#define MASS_ETA    453
-#define MASS_ETAP   958
-#define MASS_PROTON 928
+#define MASS_PI0    134.9766
+#define MASS_ETA    547.853
+#define MASS_ETAP   957.78
+#define MASS_PROTON 938.272046
+
 
 
 class  GTreeMeson   : public GTreeParticle
