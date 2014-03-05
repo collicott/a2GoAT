@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     gSystem->Load("libHist.so");
     GCut    tree;
 
-    if(argc == 3)
+    if(argc == 4)
     {
         // Associate 1nd terminal input with the input file ----------------
         Char_t* file_in;
@@ -45,6 +45,60 @@ int main(int argc, char *argv[])
         // Associate 2rd terminal input with the output file ---------------
         Char_t* file_out;
         if(argv[2]) file_out = argv[2];
+        else
+        {
+            cout << "Please provide an output file" << endl;
+            return 0;
+        }
+
+        // Associate 2rd terminal input with the output file ---------------
+        if(argv[3])
+        {
+            if(strcmp(argv[3], "pi0")==0)
+            {
+                tree.SetNPi0(1);
+                tree.SetNEta(0);
+                tree.SetNEtap(0);
+            }
+            else if(strcmp(argv[3], "eta2g")==0)
+            {
+                tree.SetNPi0(0);
+                tree.SetNEta(1);
+                tree.SetNEtap(0);
+            }
+            else if(strcmp(argv[3], "eta6g")==0)
+            {
+                tree.SetNPi0(3);
+                tree.SetNEta(1);
+                tree.SetNEtap(0);
+            }
+            else if(strcmp(argv[3], "etap2g")==0)
+            {
+                tree.SetNPi0(0);
+                tree.SetNEta(0);
+                tree.SetNEtap(1);
+            }
+            else if(strcmp(argv[3], "etap6g")==0)
+            {
+                tree.SetNPi0(2);
+                tree.SetNEta(1);
+                tree.SetNEtap(1);
+            }
+            else if(strcmp(argv[3], "proton")==0)
+            {
+                tree.SetNProton(1);
+            }
+            else if(strcmp(argv[3], "invMass")==0)
+            {
+                tree.SetPi0InvMassCut(115, 155);
+                tree.SetEtaInvMassCut(500, 590);
+                tree.SetEtapInvMassCut(900, 1010);
+            }
+            else if(strcmp(argv[3], "misMass")==0)
+            {
+                tree.SetMisMassCut(900, 980);
+            }
+        }
         else
         {
             cout << "Please provide an output file" << endl;
