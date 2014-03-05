@@ -65,20 +65,25 @@ Bool_t PPhysics::FillMissingMassPair(Int_t particle_index, Int_t tagger_index, T
 
 Double_t PPhysics::CalcMissingMass(Int_t particle_index, Int_t tagger_index)
 {
-	particle	= GetGoATVector(particle_index);			
-	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
-	missingp4 	= beam + target - particle;						
+	missingp4 	= CalcMissingP4(particle_index, tagger_index);			
 
 	return missingp4.M();
 }
 
 Double_t PPhysics::CalcMissingEnergy(Int_t particle_index, Int_t tagger_index)
 {
+	missingp4 	= CalcMissingP4(particle_index, tagger_index);						
+
+	return missingp4.T();
+}
+
+TLorentzVector PPhysics::CalcMissingP4(Int_t particle_index, Int_t tagger_index)
+{
 	particle	= GetGoATVector(particle_index);			
 	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
 	missingp4 	= beam + target - particle;						
 
-	return missingp4.T();
+	return missingp4;
 }
 
 void PPhysics::FillTimePDG(Int_t pdg, TH1* Htime)

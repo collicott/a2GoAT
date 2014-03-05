@@ -49,7 +49,8 @@ public:
 	Bool_t 	FillMissingMassPair(Int_t particle_index, Int_t tagger_index, TH1* Hprompt, TH1* Hrandom);
 	Double_t CalcMissingMass(Int_t particle_index, Int_t tagger_index);
 	Double_t CalcMissingEnergy(Int_t particle_index, Int_t tagger_index);
-		
+    TLorentzVector CalcMissingP4(Int_t particle_index, Int_t tagger_index);
+			
 	void 	FillTimePDG(Int_t pdg, TH1* Htime);	
 	void	ShowTimeCuts(TH1* timeH, TH1* cutsH, Double_t t1, Double_t t2, Double_t t3, Double_t t4, Double_t t5, Double_t t6);
 	void	ShowTimeCuts(TH1* timeH, TH1* cutsH) {ShowTimeCuts(timeH, cutsH, Random_low1, Random_high1, Prompt_low, Prompt_high, Random_low2, Random_high2);}
