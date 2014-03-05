@@ -121,6 +121,7 @@ void  GCut::ProcessEvent()
 
     eventFlags->Fill();
     tagger->Fill();
+    trigger->Fill();
     photons->Fill();
     protons->Fill();
     pi0->Fill();
@@ -138,6 +139,7 @@ Bool_t  GCut::Process(const char* input_filename, const char* output_filename)
     if(!OpenProtons())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
     if(!OpenScalers())    return kFALSE;
+    if(!OpenTrigger())    return kFALSE;
     if(!OpenEventFlags())    return kFALSE;
 
 
@@ -148,6 +150,7 @@ Bool_t  GCut::Process(const char* input_filename, const char* output_filename)
     if(!CreatePhotons())    return kFALSE;
     if(!CreateProtons())    return kFALSE;
     if(!CreateTagger())    return kFALSE;
+    if(!CreateTrigger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
     scalers->Clone(*file_out);
 

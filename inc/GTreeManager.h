@@ -4,7 +4,6 @@
 
 #include <TLorentzVector.h>
 #include <TH1.h>
-
 #include "GTreeRawEvent.h"
 #include "GTreeTagger.h"
 #include "GTreeScaler.h"
@@ -12,6 +11,7 @@
 #include "GTreeParticle.h"
 #include "GTreeMeson.h"
 #include "GHistFile.h"
+#include "GTreeTrigger.h" //Added by James
 
 
 
@@ -31,6 +31,7 @@ protected:
 
     GTreeRawEvent*  rawEvent;
     GTreeTagger*    tagger;
+    GTreeTrigger*   trigger; //Added by James
     GTreeScaler*    scalers;
     GTreeEvent*     eventFlags;
     GTreeParticle*  photons;
@@ -49,6 +50,7 @@ protected:
             Bool_t  CreateEventFlags();
             Bool_t  CreateRawEvent();
             Bool_t  CreateTagger();
+            Bool_t  CreateTrigger(); //Added by James
             Bool_t  CreateScalers();
             Bool_t  Open(const char* filename);
             Bool_t  OpenEtap()      {return OpenMeson(etap, TString("Etap"));}
@@ -59,6 +61,7 @@ protected:
             Bool_t  OpenEventFlags();
             Bool_t  OpenRawEvent();
             Bool_t  OpenTagger();
+            Bool_t  OpenTrigger(); //Added by James
             Bool_t  OpenScalers();
     virtual void    ProcessEvent() = 0;
             //void    SetMinEntry(const UInt_t num)   {minEntry = num;}

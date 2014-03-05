@@ -34,6 +34,7 @@ Bool_t  GCorrectScalers::Process(const char* input_filename, const char* output_
     if(!OpenRawEvent())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
     if(!OpenScalers())    return kFALSE;
+    if(!OpenTrigger())    return kFALSE;
 
     if(scalers->GetNEntries()<2)    return kFALSE;
     scalers->GetEntry(0);
@@ -47,6 +48,7 @@ Bool_t  GCorrectScalers::Process(const char* input_filename, const char* output_
     }
     if(!CreateTagger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
+    if(!CreateTrigger())    return kFALSE;
     scalers->Clone(*file_out);
 
     file_out->cd();

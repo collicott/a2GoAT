@@ -26,6 +26,17 @@ GHistParticle::~GHistParticle()
     if(Phi)  delete  Phi;
 }
 
+void    GHistParticle::Divide(const GHistParticle *hist)
+{
+    Px->Divide(hist->Px);
+    Py->Divide(hist->Py);
+    Pz->Divide(hist->Pz);
+    E->Divide(hist->E);
+    M->Divide(hist->M);
+    Theta->Divide(hist->Theta);
+    Phi->Divide(hist->Phi);
+}
+
 void    GHistParticle::Add(const GHistParticle* hist, const Double_t scale)
 {
     Px->Add(hist->Px, scale);

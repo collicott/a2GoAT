@@ -14,6 +14,7 @@ GTreeManager::GTreeManager()    :
     //nEntries(0),
     rawEvent(0),
     tagger(0),
+    trigger(0), //Added by James
     scalers(0),
     eventFlags(0),
     photons(0),
@@ -81,6 +82,11 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
             if(eventFlags->IsOpenForInput())
                 eventFlags->GetEntryFast(i);
         }
+        if(trigger)
+        {
+            if(trigger->IsOpenForInput())
+                trigger->GetEntryFast(i); 
+        }
         ProcessEvent();
     }
 }
@@ -132,6 +138,14 @@ Bool_t   GTreeManager::CreateTagger()
     if(!tagger)   tagger = new GTreeTagger();
     return tagger->OpenForOutput(*file_out);
 }
+
+Bool_t   GTreeManager::CreateTrigger()
+{
+    if(!file_out)return kFALSE;
+    if(!trigger)  trigger = new GTreeTrigger(); //Added by James
+    return trigger->OpenForOutput(*file_out);
+}
+
 
 Bool_t   GTreeManager::CreateScalers()
 {
@@ -196,6 +210,14 @@ Bool_t   GTreeManager::OpenTagger()
     if(!tagger)   tagger = new GTreeTagger();
     if(!tagger->OpenForInput(*file_in))   return kFALSE;
     //return EntryChecking(tagger);
+    return kTRUE;
+}
+
+Bool_t   GTreeManager::OpenTrigger()
+{
+    if(!file_in)return kFALSE;
+    if(!trigger)  trigger = new GTreeTrigger();          //Added by James
+    if(!trigger->OpenForInput(*file_in)) return kFALSE;
     return kTRUE;
 }
 
@@ -267,6 +289,7 @@ Bool_t  GTreeManager::Write()
     if(eventFlags)  eventFlags->Write();
     if(rawEvent)    rawEvent->Write();
     if(tagger)      tagger->Write();
+    if(trigger)     trigger->Write(); //Added by James
     if(scalers)     scalers->Write();
 
     return kTRUE;

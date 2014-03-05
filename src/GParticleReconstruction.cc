@@ -102,9 +102,11 @@ Bool_t  GParticleReconstruction::Process(const char* input_filename, const char*
     if(!OpenRawEvent())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
     if(!OpenScalers())    return kFALSE;
+    if(!OpenTrigger())    return kFALSE;
 
     if(!CreateTagger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
+    if(!CreateTrigger())    return kFALSE;
     scalers->Clone(*file_out);
 
     file_out->cd();

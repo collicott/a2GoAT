@@ -27,6 +27,15 @@ GHistTaggedParticleWindow::~GHistTaggedParticleWindow()
     if(missing)  delete  missing;
 }
 
+void    GHistTaggedParticleWindow::Divide(const GHistTaggedParticleWindow *hist)
+{
+    taggerTime->Divide(hist->taggerTime);
+    taggerE->Divide(hist->taggerE);
+    taggerCh->Divide(hist->taggerCh);
+    particle->Divide(hist->particle);
+    missing->Divide(hist->missing);
+}
+
 void    GHistTaggedParticleWindow::Add(const GHistTaggedParticleWindow* hist, const Double_t scale)
 {
     taggerTime->Add(hist->taggerTime, scale);
@@ -73,6 +82,13 @@ GHistTaggedParticle::~GHistTaggedParticle()
     if(diff)    delete  diff;
     if(prompt)  delete  prompt;
     if(rand)    delete  rand;
+}
+
+void    GHistTaggedParticle::Divide(const GHistTaggedParticle *hist)
+{
+    prompt->Divide(hist->prompt);
+    rand->Divide(hist->rand);
+    diff->Divide(hist->diff);
 }
 
 void    GHistTaggedParticle::Add(const GHistTaggedParticle* hist, const Double_t scale)

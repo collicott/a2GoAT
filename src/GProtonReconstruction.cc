@@ -28,6 +28,7 @@ void  GProtonReconstruction::ProcessEvent()
         pi0->Fill();
         photons->Fill();
         protons->Fill();
+        trigger->Fill();
         tagger->Fill();
         eventFlags->Fill();
     }
@@ -83,6 +84,7 @@ void  GProtonReconstruction::ProcessEvent()
 
             eventFlags->Fill();
             tagger->Fill();
+            trigger->Fill();
             photons->Fill();
             protons->Fill();
             pi0->Fill();
@@ -97,6 +99,7 @@ void  GProtonReconstruction::ProcessEvent()
         pi0->Fill();
         photons->Fill();
         protons->Fill();
+        trigger->Fill();
         tagger->Fill();
         eventFlags->Fill();
     }*/
@@ -143,6 +146,7 @@ Bool_t  GProtonReconstruction::Process(const char* input_filename, const char* o
     if(!OpenProtons())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
     if(!OpenScalers())    return kFALSE;
+    if(!OpenTrigger())    return kFALSE;
     if(!OpenEventFlags())    return kFALSE;
 
 
@@ -153,6 +157,7 @@ Bool_t  GProtonReconstruction::Process(const char* input_filename, const char* o
     if(!CreatePhotons())    return kFALSE;
     if(!CreateProtons())    return kFALSE;
     if(!CreateTagger())    return kFALSE;
+    if(!CreateTrigger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
     scalers->Clone(*file_out);
 

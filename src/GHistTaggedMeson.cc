@@ -19,7 +19,6 @@ GHistTaggedMeson::GHistTaggedMeson(TDirectory* _Dir, const Int_t type):
     dir->cd();
     gDirectory->mkdir("photon1");
     dir->cd();
-
     if(type == FLAG_ETAP)
         meson    = new GHistTaggedParticle(gDirectory->GetDirectory("etap"));
     else if(type == FLAG_ETA)
@@ -50,9 +49,19 @@ void    GHistTaggedMeson::Write()
 
 }
 
+void    GHistTaggedMeson::Add(const GHistTaggedMeson *hist, const Double_t scale)
+{
+    meson->Add(hist->meson, scale);
+    photon[0]->Add(hist->photon[0], scale);
+    photon[1]->Add(hist->photon[1], scale);
+}
 
-
-
+void    GHistTaggedMeson::Divide(const GHistTaggedMeson *hist)
+{
+    meson->Divide(hist->meson);
+    photon[0]->Divide(hist->photon[0]);
+    photon[1]->Divide(hist->photon[1]);
+}
 
 
 

@@ -7,6 +7,7 @@
 
 #include "GTreeManager.h"
 #include "GHistTaggedMeson.h"
+#include "GHistHelTaggedMeson.h"
 
 
 class  GPlot    : public GTreeManager
