@@ -215,7 +215,7 @@ Bool_t	GAcquTreeManager::FindValidAcquEvents()
 	if(treeScaler)
 	{
 		treeScaler->GetEntry(0);
-		firstAcquEvent	= EventNumber;
+		firstAcquEvent	= EventNumber+1;
 		treeScaler->GetEntry(treeScaler->GetEntries()-1);
 		lastAcquEvent	= EventNumber-1;
 		cout << "Valid events determined from scaler tree" << endl;
@@ -314,8 +314,8 @@ void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 		for (int i = 0; i < (treeScaler->GetEntries() - 1); i++)
 		{
 			// Get current analysis range
-			treeScaler->GetEntry(i); 	int min	= EventNumber;
-			treeScaler->GetEntry(i+1); 	int max	= EventNumber -1;
+			treeScaler->GetEntry(i); 	int min	= EventNumber + 1; 
+			treeScaler->GetEntry(i+1); 	int max	= EventNumber;
 			
 			// Check Common data issues
 			bool analyze = kTRUE;
@@ -328,7 +328,7 @@ void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 			
 			if(analyze)
 			{
-				treeScaler->GetEntry(i);
+				treeScaler->GetEntry(i+1);
 				treeScaler_clone->Fill();
 				
 				for(AcquEvent = min; AcquEvent<=max; AcquEvent++)
