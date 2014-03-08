@@ -124,7 +124,8 @@ public:
 	TTree*	treeScaler_clone; 		// Scaler read information (filled when required)
 
     Bool_t	OpenAcquFile(const char* treefile);
-    
+	Bool_t 	CloseAcquFile();    
+	
 	Bool_t	OpenTreeRawEvent(TFile* TreeFile);
 	Bool_t	OpenTreeRawEvent() {return OpenTreeRawEvent(AcquFile);}
 	

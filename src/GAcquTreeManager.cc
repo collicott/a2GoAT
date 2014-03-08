@@ -105,6 +105,14 @@ Bool_t	  GAcquTreeManager::OpenAcquFile(const char* treefile)
 	return kTRUE;
 }
 
+Bool_t 	GAcquTreeManager::CloseAcquFile()
+{
+	if(!AcquFile) return kFALSE;
+	AcquFile->Close();
+	
+	return kTRUE;
+}
+
 Bool_t    GAcquTreeManager::OpenTreeRawEvent(TFile* TreeFile)
 {
 	if(!TreeFile) return kFALSE; 

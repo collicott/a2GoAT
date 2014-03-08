@@ -84,6 +84,13 @@ Bool_t	  GoATTreeManager::OpenGoATFile(const char* treefile, Option_t* option)
 	return kTRUE;
 }
 
+Bool_t 	GoATTreeManager::CloseGoATFile()
+{
+	if(!GoATFile) return kFALSE;
+	GoATFile->Close();
+	
+	return kTRUE;
+}
 
 Bool_t	  GoATTreeManager::CloseOutputFile(TFile* TreeFile)
 {

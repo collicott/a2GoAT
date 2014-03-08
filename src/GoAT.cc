@@ -357,6 +357,10 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 	cout << endl;
 	
 	Analyse();
+	
+	// Close the Acqu file before leaving.
+	CloseAcquFile();
+	
 	return kTRUE;
 }
 

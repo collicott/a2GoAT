@@ -77,6 +77,7 @@ public:
     virtual Bool_t 	FillEvent();
     Bool_t	WriteTrees(TFile* TreeFile);
 	Bool_t	WriteTrees() {return WriteTrees(GoATFile);}    
+	Bool_t 	CloseGoATFile();
     Bool_t	CloseOutputFile(TFile* TreeFile); 
 	Bool_t	CloseOutputFile() {return CloseOutputFile(GoATFile);}    
     
