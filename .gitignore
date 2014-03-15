@@ -15,4 +15,6 @@
 # some files usually ignored
 /CMakeLists.txt.user
 /doc/
+*.root
+*.sh
 
