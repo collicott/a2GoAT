@@ -5,7 +5,7 @@ GHistTaggedParticleWindow::GHistTaggedParticleWindow(TDirectory* _Dir) :
     dir(_Dir)
 {
     dir->cd();
-    taggerTime  = new TH1D("TaggerTimeOR", "TaggerTimeOR", 200, -50, 50);
+    taggerTime  = new TH1D("TaggerTimeOR", "TaggerTimeOR", 2000, -550, 550);
     taggerE     = new TH1D("TaggerEnergy", "TaggerEnergy", 300, 1350, 1650);
     taggerCh    = new TH1I("TaggerChannel", "TaggerChannel", 48, 0, 48);
     dir->mkdir("particle");
@@ -88,7 +88,7 @@ void    GHistTaggedParticle::Write()
     rand->Write();
     dir->cd();
     diff->Add(prompt, 1);
-    diff->Add(rand, -0.5);
+    diff->Add(rand, -0.01);
     diff->Write();
     dir->cd();
 }

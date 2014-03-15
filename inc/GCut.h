@@ -5,15 +5,13 @@
 #include <vector>
 #include <fstream>
 
-#include "GTreeManager.h"
+#include "GRawCut.h"
 
 
-class  GCut  : public GTreeManager
+class  GCut  : public GRawCut
 {
 private:
     Bool_t  doMultiplicity;
-    Int_t   nPhoton;
-    Int_t   nProton;
     Int_t   nPi0;
     Int_t   nEta;
     Int_t   nEtap;

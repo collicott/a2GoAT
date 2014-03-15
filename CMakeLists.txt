@@ -74,6 +74,29 @@ add_executable(meson
    )
 target_link_libraries(meson ${ROOT_LIBRARIES})
 
+add_executable(setMesonMass
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GSetMesonMass.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/GTreeManager.cc
+   src/GSetMesonMass.cc
+   src/setMesonMass.cc
+   )
+target_link_libraries(setMesonMass ${ROOT_LIBRARIES})
+
 add_executable(tagger
    inc/GTree.h
    inc/GTreeRawEvent.h
@@ -162,6 +185,7 @@ add_executable(cut
    inc/GHistParticle.h
    inc/GHistTaggedParticle.h
    inc/GHistTaggedMeson.h
+   inc/GRawCut.h
    inc/GCut.h
    src/GTree.cc
    src/GTreeRawEvent.cc
@@ -174,7 +198,38 @@ add_executable(cut
    src/GHistParticle.cc
    src/GHistTaggedParticle.cc
    src/GHistTaggedMeson.cc
+   src/GRawCut.cc
    src/GCut.cc
    src/cut.cc
    )
 target_link_libraries(cut ${ROOT_LIBRARIES})
+
+
+add_executable(rawCut
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GHistParticle.h
+   inc/GHistTaggedParticle.h
+   inc/GHistTaggedMeson.h
+   inc/GRawCut.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/GTreeManager.cc
+   src/GHistParticle.cc
+   src/GHistTaggedParticle.cc
+   src/GHistTaggedMeson.cc
+   src/GRawCut.cc
+   src/rawCut.cc
+   )
+target_link_libraries(rawCut ${ROOT_LIBRARIES})

@@ -155,11 +155,6 @@ Bool_t  GCut::Process(const char* input_filename, const char* output_filename)
 
     if(!Write())    return kFALSE;
     return kTRUE;
-
-    //if (configfile.is_open())
-        //+	{
-        //+		while ( getline (configfile,str) )
-        //+		{
 }
 
 void    GCut::SetNPhoton(const Int_t Multiplicity)

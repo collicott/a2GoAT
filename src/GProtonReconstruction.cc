@@ -5,9 +5,13 @@ using namespace std;
 
 
 GProtonReconstruction::GProtonReconstruction()  :
-    angleDiffCut(4)
+    angleDiffCut(4),
+    PhiDiffEtap(new TH1D("PhiDiffEtap", "Difference in Phi for proton and etap", 360, 0, 360)),
+    PhiDiffEta(new TH1D("PhiDiffEta", "Difference in Phi for proton and eta", 360, 0, 360)),
+    PhiDiffPi0(new TH1D("PhiDiffPi0", "Difference in Phi for proton and pi0", 360, 0, 360))
 {
-
+    phiDiffCut[0]   = 160;
+    phiDiffCut[1]   = 200;
 }
 
 GProtonReconstruction::~GProtonReconstruction()
@@ -57,6 +61,26 @@ void  GProtonReconstruction::ProcessEvent()
 
         if(found)
         {
+            Double_t    phiDiff = 0;
+            if(etap->GetNParticles() == 1)
+            {
+                phiDiff = TMath::RadToDeg()*TMath::Abs(protons->Particle(0).Phi() - etap->Particle(0).Phi());
+                PhiDiffEtap->Fill(phiDiff);
+            }
+            else if(eta->GetNParticles() == 1)
+            {
+                phiDiff = TMath::RadToDeg()*TMath::Abs(protons->Particle(0).Phi() - eta->Particle(0).Phi());
+                PhiDiffEta->Fill(phiDiff);
+            }
+            else if(pi0->GetNParticles() == 1)
+            {
+                phiDiff = TMath::RadToDeg()*TMath::Abs(protons->Particle(0).Phi() - pi0->Particle(0).Phi());
+                PhiDiffPi0->Fill(phiDiff);
+            }
+
+            if(phiDiff<phiDiffCut[0] || phiDiff>phiDiffCut[1])
+                return;
+
             eventFlags->Fill();
             tagger->Fill();
             photons->Fill();
@@ -66,7 +90,7 @@ void  GProtonReconstruction::ProcessEvent()
             etap->Fill();
         }
     }
-    else
+    /*else
     {
         etap->Fill();
         eta->Fill();
@@ -75,7 +99,7 @@ void  GProtonReconstruction::ProcessEvent()
         protons->Fill();
         tagger->Fill();
         eventFlags->Fill();
-    }
+    }*/
 
         /*for(int i=0; i<tagger->GetNPrompt(); i++)
         {
@@ -135,6 +159,15 @@ Bool_t  GProtonReconstruction::Process(const char* input_filename, const char* o
     TraverseEntries(0, photons->GetNEntries()+1);
 
     if(!Write())    return kFALSE;
+
+    Write(PhiDiffEtap);
+    Write(PhiDiffEta);
+    Write(PhiDiffPi0);
+    TH1D    PhiDiff("PhiDiff", "Difference in Phi for proton and all mesons", 360, 0, 360);
+    PhiDiff.Add(PhiDiffEtap);
+    PhiDiff.Add(PhiDiffEta);
+    PhiDiff.Add(PhiDiffPi0);
+    Write(&PhiDiff);
     return kTRUE;
 }
 
