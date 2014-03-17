@@ -17,7 +17,7 @@ GParticleReconstruction::~GParticleReconstruction()
 }
 
 Bool_t	GParticleReconstruction::PostInit()
-{
+{		
 	cout << endl << "Particle Reconstruction turned ON" << endl;
 
 	config = ReadConfig("Do-Charged-Particle-Reconstruction");	
@@ -229,9 +229,12 @@ void	GParticleReconstruction::Reconstruct()
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
 		// Finally add particles which were temporarily identified
-		if (Identified[i] == pdg_chpion) 	AddParticle(pdg_chpion,i);
-		if (Identified[i] == pdg_electron) 	AddParticle(pdg_electron,i);
-		if (Identified[i] == pdg_photon) 	AddParticle(pdg_photon,i);
+		if (Identified[i] == pdgDB->GetParticle("pi+")->PdgCode())
+				 AddParticle(pdgDB->GetParticle("pi+")->PdgCode(),i);
+		if (Identified[i] == pdgDB->GetParticle("e-")->PdgCode())
+				 AddParticle(pdgDB->GetParticle("e-")->PdgCode(),i);
+		if (Identified[i] == pdgDB->GetParticle("gamma")->PdgCode())
+				 AddParticle(pdgDB->GetParticle("gamma")->PdgCode(),i);
 		if (Identified[i] == pdg_rootino) 	AddParticle(pdg_rootino,i);
 
 	}
@@ -254,7 +257,7 @@ void 	GParticleReconstruction::CheckNeutrality()
 {
 
 	// Rough start, this will soon be user controlled
-	Bool_t considerPID 	= kFALSE;
+	Bool_t considerPID 	= kTRUE;
 	Bool_t considerMWPC = kTRUE;
 	Bool_t considerVETO = kTRUE;
 
@@ -292,7 +295,7 @@ void	GParticleReconstruction::PhotonReconstruction()
 	{
 		if ((Identified[i] == pdg_rootino) && (Charge[i] == 0))
 		{			
-			Identified[i] = pdg_photon;
+			Identified[i] = pdgDB->GetParticle("gamma")->PdgCode();
 		}
 	}
 }
@@ -352,9 +355,11 @@ void	GParticleReconstruction::ChargedReconstruction()
 		{
 			if(Cut_proton->IsInside(GetEk(i),Get_dE(i)))
 			{
-				SetInputMass(i,m_proton);	
-				AddParticle(pdg_proton,i);
-
+				SetInputMass(i, pdgDB->GetParticle("proton")->Mass()*1000);
+				Identified[i] = pdgDB->GetParticle("proton")->PdgCode();
+				
+				// Add to Particle list
+				AddParticle(pdgDB->GetParticle("proton")->PdgCode(),i);
 			}
 		}
 		
@@ -362,8 +367,8 @@ void	GParticleReconstruction::ChargedReconstruction()
 		{		
 			if(Cut_pion->IsInside(GetEk(i),Get_dE(i)))
 			{
-				SetInputMass(i,m_chpion);			
-				Identified[i] = pdg_chpion; 
+				SetInputMass(i, pdgDB->GetParticle("pi+")->Mass()*1000);
+				Identified[i] = pdgDB->GetParticle("pi+")->PdgCode(); 
 			}
 		}
 		
@@ -371,11 +376,10 @@ void	GParticleReconstruction::ChargedReconstruction()
 		{		
 			if(Cut_electron->IsInside(GetEk(i),Get_dE(i)))
 			{
-				SetInputMass(i,m_electron);			
-				Identified[i] = pdg_electron;
+				SetInputMass(i, pdgDB->GetParticle("e-")->Mass()*1000);
+				Identified[i] = pdgDB->GetParticle("e-")->PdgCode();
 			}
-		}	
-				
+		}				
 	}			
 				
 }
@@ -392,25 +396,25 @@ void	GParticleReconstruction::MesonReconstruction()
 	Int_t 		ndaughter = 0;
 	Int_t		daughter_list[GetNParticles()];
 
-	TLorentzVector	initialParticle[GetNParticles()];
+//	TLorentzVector	initialParticle[GetNParticles()];
 	TLorentzVector	reaction_p4;	
 		
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
 		if (GetTheta(i) < meson_theta_min) continue; // user rejected theta region
 		if (GetTheta(i) > meson_theta_max) continue; // user rejected theta region
+
+		// Construct reaction four-vector ignoring protons and neutrons
+		if (Identified[i] == pdgDB->GetParticle("proton" )->PdgCode() ) continue;
+		if (Identified[i] == pdgDB->GetParticle("neutron")->PdgCode() ) continue;	
 		
-		initialParticle[i] = GetVector(i);
+//		initialParticle[i] = GetVector(i);
 
 		is_meson[i] = kFALSE;
 		
-		// Construct reaction four-vector ignoring protons and neutrons
-		if ((Identified[i] != pdg_proton) &&  (Identified[i] != pdg_neutron))
-		{
-			reaction_p4 += initialParticle[i];
-			daughter_list[ndaughter] = i;
-			ndaughter++;
-		}
+		reaction_p4 += GetVector(i);
+		daughter_list[ndaughter] = i;
+		ndaughter++;
 	}
 	 
 	// LEVEL 1:   
@@ -424,25 +428,25 @@ void	GParticleReconstruction::MesonReconstruction()
 	// n  -> pi+  pi-  g		- direct n decay 
 	// 							    (or rho_0 intermediate state)
 
-	Double_t diff_pi0  = TMath::Abs( reaction_p4.M() - m_pi0 )/width_pi0;	
-	Double_t diff_eta  = TMath::Abs( reaction_p4.M() - m_eta )/width_eta;
-	Double_t diff_etaP = TMath::Abs( reaction_p4.M() - m_etaP)/width_etaP;
+	Double_t diff_pi0  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("pi0" )->Mass()*1000)  )/width_pi0;	
+	Double_t diff_eta  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta" )->Mass()*1000)  )/width_eta;
+	Double_t diff_etaP = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etaP;
 
 	if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_eta < diff_etaP))
 	{
-		AddParticle(pdg_pi0,ndaughter,daughter_list);
-		return;		
+		AddParticle(pdgDB->GetParticle("pi0")->PdgCode(),ndaughter,daughter_list);
+		return;	
 	}
 			
 	if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP))
 	{
-		AddParticle(pdg_eta,ndaughter,daughter_list);
-		return;		
+		AddParticle(pdgDB->GetParticle("eta")->PdgCode(),ndaughter,daughter_list);
+		return;	
 	}
 	
 	if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta))
 	{
-		AddParticle(pdg_etaP,ndaughter,daughter_list);
+		AddParticle(pdgDB->GetParticle("eta'")->PdgCode(),ndaughter,daughter_list);
 		return;
 	}				
 	
@@ -460,27 +464,27 @@ void	GParticleReconstruction::MesonReconstruction()
 		if (GetTheta(i) < meson_theta_min) continue; // user rejected theta region
 		if (GetTheta(i) > meson_theta_max) continue; // user rejected theta region
 		
-		if (Identified[i] == pdg_proton) 	continue;
-		if (Identified[i] == pdg_neutron) 	continue;
+		if (Identified[i] == pdgDB->GetParticle("proton")->PdgCode()) continue;
+		if (Identified[i] == pdgDB->GetParticle("neutron")->PdgCode()) continue;
 		
 		for (int j = i+1; j < GetNParticles(); j++) 
 		{
 			if (GetTheta(j) < meson_theta_min) continue; // user rejected theta region
 			if (GetTheta(j) > meson_theta_max) continue; // user rejected theta region
 			
-			if (Identified[j] == pdg_proton) 	continue;
-			if (Identified[j] == pdg_neutron) 	continue;
+			if (Identified[i] == pdgDB->GetParticle("proton")->PdgCode()) continue;
+			if (Identified[i] == pdgDB->GetParticle("neutron")->PdgCode()) continue;
 			
-			TLorentzVector p4 = initialParticle[i] + initialParticle[j];
+			TLorentzVector p4 = GetVector(i) + GetVector(j);
 			
-			Double_t diff_pi0  = TMath::Abs( p4.M() - m_pi0 )/width_pi0;
-			Double_t diff_eta  = TMath::Abs( p4.M() - m_eta )/width_eta;
-			Double_t diff_etaP = TMath::Abs( p4.M() - m_etaP)/width_etaP;
+			Double_t diff_pi0  = TMath::Abs( p4.M() - (pdgDB->GetParticle("pi0" )->Mass()*1000) )/width_pi0;
+			Double_t diff_eta  = TMath::Abs( p4.M() - (pdgDB->GetParticle("eta" )->Mass()*1000) )/width_eta;
+			Double_t diff_etaP = TMath::Abs( p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etaP;
 			
 			if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etaP)) 
 			{
 				diff_meson[k] 	= diff_pi0; 
-				tempID[k] 		= pdg_pi0;
+				tempID[k] 		= pdgDB->GetParticle("pi0")->PdgCode();
 				index1[k]		= i;
 				index2[k]		= j;
 				k++;
@@ -488,7 +492,7 @@ void	GParticleReconstruction::MesonReconstruction()
 			if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP)) 
 			{
 				diff_meson[k]	= diff_eta; 
-				tempID[k] 		= pdg_eta;
+				tempID[k] 		= pdgDB->GetParticle("eta")->PdgCode();
 				index1[k]		= i;
 				index2[k]		= j;				
 				k++;
@@ -496,7 +500,7 @@ void	GParticleReconstruction::MesonReconstruction()
 			if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta)) 
 			{
 				diff_meson[k]	= diff_etaP; 
-				tempID[k] 		= pdg_etaP;
+				tempID[k] 		= pdgDB->GetParticle("eta'")->PdgCode();
 				index1[k]		= i;
 				index2[k]		= j;				
 				k++;
@@ -516,28 +520,11 @@ void	GParticleReconstruction::MesonReconstruction()
 		is_meson[index1[i]] = kTRUE;
 		is_meson[index2[i]] = kTRUE;
 		
-		if( tempID[i] == pdg_pi0) 
-		{
-			ndaughter = 2;
-			daughter_list[0] = index1[i];
-			daughter_list[1] = index2[i];
-			AddParticle(pdg_pi0,ndaughter,daughter_list);
-		}			
-		if( tempID[i] == pdg_eta) 	
-		{
-			ndaughter = 2;
-			daughter_list[0] = index1[i];
-			daughter_list[1] = index2[i];
-			AddParticle(pdg_eta,ndaughter,daughter_list);
-		}
-		if( tempID[i] == pdg_etaP) 			
-		{
-			ndaughter = 2;
-			daughter_list[0] = index1[i];
-			daughter_list[1] = index2[i];
-			AddParticle(pdg_etaP,ndaughter,daughter_list);
-		}
+		// Add to particle list
+		daughter_list[0] = index1[i];
+		daughter_list[1] = index2[i];
 		
+		AddParticle(tempID[i],2,daughter_list);		
 	}
 		
 }
@@ -603,10 +590,10 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 			
 			// store in daughter list for meson analysis
 			SetDaughter_index(nDaughterList,nParticles);
-			SetDaughter_E(nDaughterList,	 GetEk(index_list[i]));
+			SetDaughter_E(nDaughterList,GetEk(index_list[i]));
 			SetDaughter_Theta(nDaughterList,GetTheta(index_list[i]));
-			SetDaughter_Phi(nDaughterList,	 GetPhi(index_list[i]));
-			SetDaughter_PDG(nDaughterList,  Identified[index_list[i]]);
+			SetDaughter_Phi(nDaughterList,GetPhi(index_list[i]));
+			SetDaughter_PDG(nDaughterList,Identified[index_list[i]]);
 
 			ndaughters++; 
 			nDaughterList++;			

@@ -34,7 +34,7 @@ add_executable(goat
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(goat ${ROOT_LIBRARIES})
+target_link_libraries(goat ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
 
 add_executable(pi0
    src/PPi0.cc
@@ -42,7 +42,7 @@ add_executable(pi0
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(pi0 ${ROOT_LIBRARIES})
+target_link_libraries(pi0 ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
 
 add_executable(eta
    src/PEta.cc
@@ -50,4 +50,4 @@ add_executable(eta
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(eta ${ROOT_LIBRARIES})
+target_link_libraries(eta ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)

@@ -20,6 +20,8 @@
 #include "TSystemDirectory.h"
 #include "TSystemFile.h"
 #include "TCutG.h"
+#include "TDatabasePDG.h"
+#include "TParticlePDG.h"
 
 #include<iostream>
 using namespace std;
@@ -29,7 +31,6 @@ using namespace std;
 #define GAcquTREEMANAGER_MAX_HITS		860
 #define EAppCB  1
 #define EAppTAPS 2
-
 
 class	GAcquTreeManager
 {
@@ -265,7 +266,10 @@ public:
 								if (Apparatus[i] == EAppTAPS) NTAPS++;
 							}
 							return NTAPS;
-						}								
+						}	
+						
+	TDatabasePDG *pdgDB;
+
 };
 
 

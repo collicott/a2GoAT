@@ -118,7 +118,7 @@ Bool_t	GSort::PostInit()
 		config = ReadConfig("Sort-Particle",instance);
 		if( sscanf( config.c_str(), "%s %d %s %lf %lf\n", 
 			pdg, &num, cond, &th_min, &th_max) == 5 )
-		{
+		{			
 			CheckConfigCondition(cond, &condition, string_out1);
 			if(strcmp(pdg,"charged") == 0)
 			{
@@ -146,7 +146,7 @@ Bool_t	GSort::PostInit()
 					 << S_Neutral_theta_min << "," 
 					 << S_Neutral_theta_max << "]" << endl;	
 			}						
-			else if((strcmp(pdg,"proton") == 0) || (atoi(pdg) == pdg_proton))
+			else if((strcmp(pdg,"proton") == 0) || (atoi(pdg) == pdgDB->GetParticle("proton")->PdgCode()))
 			{
 				SortProton 			= 1;
 				S_nProton			= num;
@@ -161,7 +161,7 @@ Bool_t	GSort::PostInit()
 				
 			}
 
-			else if((strcmp(pdg,"chpion") == 0) || (atoi(pdg) == pdg_chpion))
+			else if((strcmp(pdg,"pi+") == 0) || (atoi(pdg) == pdgDB->GetParticle("pi+")->PdgCode()))
 			{
 				SortChPion 			= 1;
 				S_nChPion			= num;
@@ -175,7 +175,7 @@ Bool_t	GSort::PostInit()
 					 << S_ChPion_theta_max << "]" << endl;	
 			}
 			
-			else if((strcmp(pdg,"pi0") == 0) || (atoi(pdg) == pdg_pi0))
+			else if((strcmp(pdg,"pi0") == 0) || (atoi(pdg) == pdgDB->GetParticle("pi0")->PdgCode()))
 			{
 				SortPi0 			= 1;
 				S_nPi0				= num;
@@ -189,7 +189,7 @@ Bool_t	GSort::PostInit()
 					 << S_Pi0_theta_max << "]" << endl;	
 			}			
 
-			else if((strcmp(pdg,"eta") == 0) || (atoi(pdg) == pdg_eta))
+			else if((strcmp(pdg,"eta") == 0) || (atoi(pdg) == pdgDB->GetParticle("eta")->PdgCode()))
 			{
 				SortEta 			= 1;
 				S_nEta				= num;
@@ -202,8 +202,7 @@ Bool_t	GSort::PostInit()
 					 << S_Eta_theta_min << "," 
 					 << S_Eta_theta_max << "]" << endl;	
 			}
-			else if((strcmp(pdg,"eta'") == 0) || (atoi(pdg) == pdg_etaP)
-				 || (strcmp(pdg,"etaprime") == 0) )
+			else if((strcmp(pdg,"eta'") == 0) || (strcmp(pdg,"etaprime") == 0) || (atoi(pdg) == pdgDB->GetParticle("eta'")->PdgCode()))
 			{
 				SortEtaP 			= 1;
 				S_nEtaP				= num;
@@ -216,7 +215,7 @@ Bool_t	GSort::PostInit()
 					 << S_EtaP_theta_min << "," 
 					 << S_EtaP_theta_max << "]" << endl;	
 			}			
-			else if((strcmp(pdg,"electron") == 0) || (atoi(pdg) == pdg_electron))
+			else if((strcmp(pdg,"e-") == 0) || (strcmp(pdg,"electron")) || (atoi(pdg) == pdgDB->GetParticle("e-")->PdgCode()))
 			{
 				SortElectron 			= 1;
 				S_nElectron				= num;
@@ -357,7 +356,7 @@ Bool_t GSort::SortFillEvent()
 			
 	if(SortProton == 1)
 	{
-		if(!SortOnParticle(pdg_proton,
+		if(!SortOnParticle( pdgDB->GetParticle("proton")->PdgCode(),
 							S_nProton,
 							S_nProton_condition,
 							S_Proton_theta_min,
@@ -366,7 +365,7 @@ Bool_t GSort::SortFillEvent()
 
 	if(SortChPion == 1)
 	{
-		if(!SortOnParticle(pdg_chpion,
+		if(!SortOnParticle( pdgDB->GetParticle("pi+")->PdgCode(),
 							S_nChPion,
 							S_nChPion_condition,
 							S_ChPion_theta_min,
@@ -375,7 +374,7 @@ Bool_t GSort::SortFillEvent()
 		
 	if(SortPi0 == 1)
 	{
-		if(!SortOnParticle(pdg_pi0,
+		if(!SortOnParticle( pdgDB->GetParticle("pi0")->PdgCode(),
 							S_nPi0,
 							S_nPi0_condition,
 							S_Pi0_theta_min,
@@ -384,7 +383,7 @@ Bool_t GSort::SortFillEvent()
 
 	if(SortEta == 1)
 	{
-		if(!SortOnParticle(pdg_eta,
+		if(!SortOnParticle( pdgDB->GetParticle("eta")->PdgCode(),
 							S_nEta,
 							S_nEta_condition,
 							S_Eta_theta_min,
@@ -393,7 +392,7 @@ Bool_t GSort::SortFillEvent()
 	
 	if(SortEtaP == 1)
 	{
-		if(!SortOnParticle(pdg_etaP,
+		if(!SortOnParticle( pdgDB->GetParticle("eta'")->PdgCode(),
 							S_nEtaP,
 							S_nEtaP_condition,
 							S_EtaP_theta_min,
@@ -402,7 +401,7 @@ Bool_t GSort::SortFillEvent()
 
 	if(SortElectron == 1)
 	{
-		if(!SortOnParticle(pdg_electron,
+		if(!SortOnParticle( pdgDB->GetParticle("e-")->PdgCode(),
 							S_nElectron,
 							S_nElectron_condition,
 							S_Electron_theta_min,

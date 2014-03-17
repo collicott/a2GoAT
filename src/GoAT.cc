@@ -270,6 +270,9 @@ GoAT::~GoAT()
 
 Bool_t	GoAT::Init(const char* configfile)
 {
+	// Initialise shared pdg database
+	pdgDB = TDatabasePDG::Instance();	
+	
 	cout << endl << "Initialising GoAT analysis..." << endl << endl;
 	SetConfigFile((Char_t*)configfile);
 		
