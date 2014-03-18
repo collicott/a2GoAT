@@ -19,6 +19,7 @@ private:
 	
 	Bool_t 	UseParticleReconstruction;
 
+	Int_t 	nEvents_written;
 protected:
 
 

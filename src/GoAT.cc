@@ -370,9 +370,10 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 void	GoAT::Analyse()
 {
 	cout << "Analysing ..." << endl;
-	TraverseAcquEntries();			
+	TraverseAcquEntries();	
+	
 	CloseOutputFile();
-	cout << endl << "File complete." << endl;
+	cout << endl << "File complete. " << "Total Events Accepted: " << nEvents_written << endl;
 	cout << "==========================================================" << endl << endl;	
 }
 
@@ -381,14 +382,14 @@ void	GoAT::Reconstruct()
 	if(UsePeriodMacro == 1)
 	{
 		if(GetActualEvent() % period == 0) 
-						printf("Event: %d\n",GetActualEvent());
+			cout << "Event: " << GetActualEvent() << "  Events Accepted: " << nEvents_written << endl;
 	}
 
 	if(SortAnalyseEvent())
 	{
 		if(UseParticleReconstruction) GParticleReconstruction::Reconstruct();
 		
-		if(SortFillEvent()) FillEvent();
+		if(SortFillEvent()) {FillEvent(); nEvents_written++;}
 	}
 }
 
