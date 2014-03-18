@@ -370,9 +370,10 @@ Bool_t	GoAT::File(const char* file_in, const char* file_out)
 void	GoAT::Analyse()
 {
 	cout << "Analysing ..." << endl;
-	TraverseAcquEntries();			
+	TraverseAcquEntries();	
+	
 	CloseOutputFile();
-	cout << endl << "File complete." << endl;
+	cout << endl << "File complete. " << "Events Accepted: " << nEvents_written << endl;
 	cout << "==========================================================" << endl << endl;	
 }
 
@@ -388,7 +389,7 @@ void	GoAT::Reconstruct()
 	{
 		if(UseParticleReconstruction) GParticleReconstruction::Reconstruct();
 		
-		if(SortFillEvent()) FillEvent();
+		if(SortFillEvent()) {FillEvent(); nEvents_written++;}
 	}
 }
 
