@@ -2,9 +2,29 @@
 #include "GSort.h"
 
 
-GSort::GSort()
+GSort::GSort() :
+     SP_n(0),
+     SP_type(0),
+     SP_condition(0),
+     SP_theta_min(0),
+     SP_theta_max(0),
+     SN_n(0),
+     SN_type(0),
+     SN_condition(0),
+     SN_theta_min(0),
+     SN_theta_max(0)     
 {
+	SP_n 		= new Int_t[50];
+	SP_type		= new Int_t[50];
+	SP_condition= new Int_t[50];
+	SP_theta_min= new Double_t[50];
+	SP_theta_max= new Double_t[50];
 
+	SN_n 		= new Int_t[50];
+	SN_type		= new Int_t[50];
+	SN_condition= new Int_t[50];
+	SN_theta_min= new Double_t[50];
+	SN_theta_max= new Double_t[50];
 }
 
 GSort::~GSort()
@@ -102,13 +122,10 @@ Bool_t	GSort::PostInit()
 		SortNParticles = 0;
 	}	
 	
-	SortProton 	= 0;
-	SortChPion	= 0;
-	SortPi0		= 0;
-	SortEta		= 0;
-	
 	// Cut on individual particle properties
 	Int_t instance = 0;
+	n_cut_SP = 0;
+	n_cut_SN = 0;
 	do
 	{
 		char pdg[256], cond[256];	
@@ -116,117 +133,32 @@ Bool_t	GSort::PostInit()
 		Double_t th_min, th_max;
 
 		config = ReadConfig("Sort-Particle",instance);
-		if( sscanf( config.c_str(), "%s %d %s %lf %lf\n", 
-			pdg, &num, cond, &th_min, &th_max) == 5 )
+		if( sscanf( config.c_str(), "%s %d %s %lf %lf\n", pdg, &num, cond, &th_min, &th_max) == 5 )
 		{			
 			CheckConfigCondition(cond, &condition, string_out1);
-			if(strcmp(pdg,"charged") == 0)
-			{
-				SortCharged 			= 1;
-				S_nCharged				= num;
-				S_nCharged_condition 	= condition;
-				S_Charged_theta_min		= th_min;
-				S_Charged_theta_max		= th_max;	
-				
-				cout << "Sort: Require " << S_nCharged << " charged particle(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_Charged_theta_min << "," 
-					 << S_Charged_theta_max << "]" << endl;	
-			}
-			else if(strcmp(pdg,"neutral") == 0)
-			{
-				SortNeutral				= 1;
-				S_nNeutral				= num;
-				S_nNeutral_condition 	= condition;
-				S_Neutral_theta_min		= th_min;
-				S_Neutral_theta_max		= th_max;	
-				
-				cout << "Sort: Require " << S_nNeutral << " neutral particle(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_Neutral_theta_min << "," 
-					 << S_Neutral_theta_max << "]" << endl;	
-			}						
-			else if((strcmp(pdg,"proton") == 0) || (atoi(pdg) == pdgDB->GetParticle("proton")->PdgCode()))
-			{
-				SortProton 			= 1;
-				S_nProton			= num;
-				S_nProton_condition = condition;
-				S_Proton_theta_min	= th_min;
-				S_Proton_theta_max	= th_max;	
-				
-				cout << "Sort: Require " << S_nProton << " proton(s) " 
-					 << string_out1  << "within theta = [" 
-					 << S_Proton_theta_min << "," 
-					 << S_Proton_theta_max << "]" << endl;	
-				
-			}
-
-			else if((strcmp(pdg,"pi+") == 0) || (atoi(pdg) == pdgDB->GetParticle("pi+")->PdgCode()))
-			{
-				SortChPion 			= 1;
-				S_nChPion			= num;
-				S_nChPion_condition = condition;
-				S_ChPion_theta_min	= th_min;
-				S_ChPion_theta_max	= th_max;	
-				
-				cout << "Sort: Require " << S_nChPion << " charged pion(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_ChPion_theta_min << "," 
-					 << S_ChPion_theta_max << "]" << endl;	
-			}
 			
-			else if((strcmp(pdg,"pi0") == 0) || (atoi(pdg) == pdgDB->GetParticle("pi0")->PdgCode()))
+			if((strcmp(pdg,"charged") == 0) || (strcmp(pdg,"neutral") == 0))
 			{
-				SortPi0 			= 1;
-				S_nPi0				= num;
-				S_nPi0_condition 	= condition;
-				S_Pi0_theta_min		= th_min;
-				S_Pi0_theta_max		= th_max;	
+				SN_n[n_cut_SN] = num;
+				if (strcmp(pdg,"charged") == 0) SN_type[n_cut_SN] = 1;
+				else SN_type[n_cut_SN] = 0;
+				SN_condition[n_cut_SN] = condition;
+				SN_theta_min[n_cut_SN] = th_min;
+				SN_theta_max[n_cut_SN] = th_max;
+				n_cut_SN++;
 				
-				cout << "Sort: Require " << S_nPi0 << " neutral pion(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_Pi0_theta_min << "," 
-					 << S_Pi0_theta_max << "]" << endl;	
-			}			
-
-			else if((strcmp(pdg,"eta") == 0) || (atoi(pdg) == pdgDB->GetParticle("eta")->PdgCode()))
+				cout << "Sort: " << pdg << " (" << num << cond <<","<<th_min<<"," << th_max<<")" << endl;
+			}	
+			else if(pdgDB->GetParticle(pdg) != 0x0) // Check for particle in pdg database
 			{
-				SortEta 			= 1;
-				S_nEta				= num;
-				S_nEta_condition 	= condition;
-				S_Eta_theta_min		= th_min;
-				S_Eta_theta_max		= th_max;	
+				SP_n[n_cut_SP] 		   = num;
+				SP_type[n_cut_SP] 	   = pdgDB->GetParticle(pdg)->PdgCode();
+				SP_condition[n_cut_SP] = condition;
+				SP_theta_min[n_cut_SP] = th_min;
+				SP_theta_max[n_cut_SP] = th_max;
+				n_cut_SP++;
 				
-				cout << "Sort: Require " << S_nEta << " eta(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_Eta_theta_min << "," 
-					 << S_Eta_theta_max << "]" << endl;	
-			}
-			else if((strcmp(pdg,"eta'") == 0) || (strcmp(pdg,"etaprime") == 0) || (atoi(pdg) == pdgDB->GetParticle("eta'")->PdgCode()))
-			{
-				SortEtaP 			= 1;
-				S_nEtaP				= num;
-				S_nEtaP_condition 	= condition;
-				S_EtaP_theta_min	= th_min;
-				S_EtaP_theta_max	= th_max;	
-				
-				cout << "Sort: Require " << S_nEtaP << " eta(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_EtaP_theta_min << "," 
-					 << S_EtaP_theta_max << "]" << endl;	
-			}			
-			else if((strcmp(pdg,"e-") == 0) || (strcmp(pdg,"electron")) || (atoi(pdg) == pdgDB->GetParticle("e-")->PdgCode()))
-			{
-				SortElectron 			= 1;
-				S_nElectron				= num;
-				S_nElectron_condition 	= condition;
-				S_Electron_theta_min	= th_min;
-				S_Electron_theta_max	= th_max;	
-				
-				cout << "Sort: Require " << S_nElectron << " electron(s) " 
-					 << string_out1 << "within theta = [" 
-					 << S_Electron_theta_min << "," 
-					 << S_Electron_theta_max << "]" << endl;	
+				cout << "Sort: " << pdg << " (" << num << cond <<","<<th_min<<"," << th_max<<")" << endl;
 			}
 			else{
 				cout << endl << "ERROR unknown particle type ("  << pdg 
@@ -242,8 +174,6 @@ Bool_t	GSort::PostInit()
 		instance++;
 	} while (strcmp(config.c_str(), "nokey") != 0);
 
-	
-
 	cout << endl;
 	return kTRUE;
 }
@@ -254,6 +184,7 @@ void	GSort::Reconstruct()
 
 Bool_t GSort::SortAnalyseEvent()
 {
+
 	// Sort on raw variables before analysis (increases speed)
 	if(SortRawNParticles == 1)
 	{
@@ -319,7 +250,6 @@ Bool_t GSort::SortAnalyseEvent()
 
 Bool_t GSort::SortFillEvent()
 {
-
 	if(SortNParticles == 1)
 	{
 		switch (S_nParticles_condition) // Number of reconstructed part
@@ -336,77 +266,25 @@ Bool_t GSort::SortFillEvent()
 		}
 	}
 
-	if(SortCharged == 1)
+	for(Int_t i = 0; i < n_cut_SN; i++)
 	{
-		if(!SortOnNeutrality(1,
-							S_nCharged,
-							S_nCharged_condition,
-							S_Charged_theta_min,
-							S_Charged_theta_max)) 	return kFALSE;
-	}
-	
-	if(SortNeutral == 1)
+		if(!SortOnNeutrality(SN_type[i],	
+							SN_n[i], 
+							SN_condition[i], 
+							SN_theta_min[i], 
+							SN_theta_max[i]))		return kFALSE;
+	}			
+
+	for(Int_t i = 0; i < n_cut_SP; i++)
 	{
-		if(!SortOnNeutrality(0,
-							S_nNeutral,
-							S_nNeutral_condition,
-							S_Neutral_theta_min,
-							S_Neutral_theta_max)) 	return kFALSE;
-	}
+		if(!SortOnParticle( SP_type[i],	
+							SP_n[i], 
+							SP_condition[i], 
+							SP_theta_min[i], 
+							SP_theta_max[i]))		return kFALSE;
+	}		
 			
-	if(SortProton == 1)
-	{
-		if(!SortOnParticle( pdgDB->GetParticle("proton")->PdgCode(),
-							S_nProton,
-							S_nProton_condition,
-							S_Proton_theta_min,
-							S_Proton_theta_max)) 	return kFALSE;
-	}
-
-	if(SortChPion == 1)
-	{
-		if(!SortOnParticle( pdgDB->GetParticle("pi+")->PdgCode(),
-							S_nChPion,
-							S_nChPion_condition,
-							S_ChPion_theta_min,
-							S_ChPion_theta_max)) 	return kFALSE;
-	}
-		
-	if(SortPi0 == 1)
-	{
-		if(!SortOnParticle( pdgDB->GetParticle("pi0")->PdgCode(),
-							S_nPi0,
-							S_nPi0_condition,
-							S_Pi0_theta_min,
-							S_Pi0_theta_max)) 		return kFALSE;
-	}
-
-	if(SortEta == 1)
-	{
-		if(!SortOnParticle( pdgDB->GetParticle("eta")->PdgCode(),
-							S_nEta,
-							S_nEta_condition,
-							S_Eta_theta_min,
-							S_Eta_theta_max)) 		return kFALSE;
-	}
-	
-	if(SortEtaP == 1)
-	{
-		if(!SortOnParticle( pdgDB->GetParticle("eta'")->PdgCode(),
-							S_nEtaP,
-							S_nEtaP_condition,
-							S_EtaP_theta_min,
-							S_EtaP_theta_max)) 		return kFALSE;
-	}	
-
-	if(SortElectron == 1)
-	{
-		if(!SortOnParticle( pdgDB->GetParticle("e-")->PdgCode(),
-							S_nElectron,
-							S_nElectron_condition,
-							S_Electron_theta_min,
-							S_Electron_theta_max)) 	return kFALSE;
-	}	
+	// No cut failed, so return TRUE
 	return kTRUE;
 
 }
@@ -453,7 +331,7 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 		case 0: // Neutral sort
 			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 			{
-				if (GoATTree_GetCharge(i) > 0)
+				if (GoATTree_GetCharge(i) == 0) // neutral!
 				{
 					//Check theta limits
 					if ((GoATTree_GetTheta(i) <= ThetaMin) || 
@@ -467,7 +345,7 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 		case 1: // Charged sort
 			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 			{
-				if (GoATTree_GetCharge(i) != 0)
+				if (GoATTree_GetCharge(i) != 0) // charged!
 				{
 					//Check theta limits
 					if ((GoATTree_GetTheta(i) <= ThetaMin) || 

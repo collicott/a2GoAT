@@ -24,59 +24,25 @@ private:
  	Int_t 		SortRawCBESum;	 				// Sort on-off
 	Double_t  	SR_CBESum;
 	Int_t  		SR_CBESum_condition;
-    
+ 
     Int_t 		SortNParticles;					// Sort on-off
     Int_t 		S_nParticles;
     Int_t		S_nParticles_condition;
 
-    Int_t 		SortCharged;					// Sort on-off
-    Int_t 		S_nCharged;
-    Int_t 		S_nCharged_condition;
-    Double_t 	S_Charged_theta_min;
-    Double_t	S_Charged_theta_max;
+	Int_t		n_cut_SP;				// Sort on Particles
+	Int_t*		SP_n;
+	Int_t*		SP_type;
+	Int_t*		SP_condition;
+	Double_t* 	SP_theta_min;
+	Double_t* 	SP_theta_max;
 
-    Int_t 		SortNeutral;					// Sort on-off
-    Int_t 		S_nNeutral;
-    Int_t 		S_nNeutral_condition;
-    Double_t 	S_Neutral_theta_min;
-    Double_t	S_Neutral_theta_max;
-        
-    Int_t 		SortProton;						// Sort on-off
-    Int_t 		S_nProton;
-    Int_t 		S_nProton_condition;
-    Double_t 	S_Proton_theta_min;
-    Double_t	S_Proton_theta_max;
-
-    Int_t 		SortChPion;						// Sort on-off
-    Int_t 		S_nChPion;
-    Int_t 		S_nChPion_condition;
-    Double_t 	S_ChPion_theta_min;
-    Double_t	S_ChPion_theta_max;
-
-    Int_t 		SortPi0;						// Sort on-off
-    Int_t 		S_nPi0;
-    Int_t 		S_nPi0_condition;
-    Double_t 	S_Pi0_theta_min;
-    Double_t	S_Pi0_theta_max;
-
-    Int_t 		SortEta;						// Sort on-off
-    Int_t 		S_nEta;
-    Int_t 		S_nEta_condition;
-    Double_t 	S_Eta_theta_min;
-    Double_t	S_Eta_theta_max;
-
-    Int_t 		SortEtaP;						// Sort on-off
-    Int_t 		S_nEtaP;
-    Int_t 		S_nEtaP_condition;
-    Double_t 	S_EtaP_theta_min;
-    Double_t	S_EtaP_theta_max;
-    
-    Int_t 		SortElectron;					// Sort on-off
-    Int_t 		S_nElectron;
-    Int_t 		S_nElectron_condition;
-    Double_t 	S_Electron_theta_min;
-    Double_t	S_Electron_theta_max;    
-    
+	Int_t		n_cut_SN;				// Sort on Neutrality
+	Int_t*		SN_n;
+	Int_t*		SN_type;
+	Int_t*		SN_condition;
+	Double_t* 	SN_theta_min;
+	Double_t* 	SN_theta_max;
+ 
 	char string_in1[256], string_in2[256], string_in3[256];
 	std::string string_out1, string_out2, string_out3;
 			    
