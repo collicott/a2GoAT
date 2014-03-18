@@ -61,6 +61,8 @@ public:
 	Bool_t 	IsRandom(Double_t time) {return IsRandom(time, Random_low1, Random_high1, Random_low2, Random_high2);}
 	
 	void	SetTarget(Double_t mass) {target = TLorentzVector(0.,0.,0.,mass);}
+	TLorentzVector GetTarget() {return target;}
+	
 	void	SetPromptWindow( Double_t t1, Double_t t2) {Prompt_low  = t1; Prompt_high  = t2;}
 	void	SetRandomWindow1(Double_t t1, Double_t t2) {Random_low1 = t1; Random_high1 = t2;}
 	void	SetRandomWindow2(Double_t t1, Double_t t2) {Random_low2 = t1; Random_high2 = t2;}

@@ -261,6 +261,7 @@ PPi0::PPi0() :
 			E(0),
 			time(0),
 			theta(0),
+			thetaCM(0),
 			phi(0),
 			MissMass(0),
 			MissE(0)
@@ -270,6 +271,7 @@ PPi0::PPi0() :
 	E		= new Double_t[maxentries];
 	time	= new Double_t[maxentries];
 	theta	= new Double_t[maxentries];
+	thetaCM = new Double_t[maxentries];
 	phi		= new Double_t[maxentries];
 	MissMass= new Double_t[maxentries];
 	MissE	= new Double_t[maxentries];
@@ -330,6 +332,8 @@ Bool_t	PPi0::File(const char* gfile, const char* tfile, const char* hfile)
 		if(ReconstructPhysicsTree == kFALSE)
 		{
 			if(!OpenPhysTreeFile(tfile, "READ")) return kFALSE;
+			if(!OpenPhysicsTree(PhysTreeFile)) 	return kFALSE;
+			
 		}
 		
 		OpenHistFile(hfile,"RECREATE");
@@ -337,6 +341,10 @@ Bool_t	PPi0::File(const char* gfile, const char* tfile, const char* hfile)
 	}
 	
 	Analyse();	
+	
+	// Close the GoAT file before leaving.
+	CloseGoATFile();
+	
 	return kTRUE;
 }
 
@@ -373,15 +381,28 @@ void	PPi0::Reconstruct()
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
 		if (GoATTree_GetPDG(i) != 1) continue;
-		if (GoATTree_GetCharge(i) != 0) continue;
-		if (GoATTree_GetNDaughters(i) != 2) continue;
+	//	if (GoATTree_GetCharge(i) != 0) continue;
+	//	if (GoATTree_GetNDaughters(i) != 2) continue;
+	//	if (GoATTree_GetApparatus(i) != 1) continue;
 
 		for (Int_t j = 0; j < GetNTagged(); j++)
 		{
 			TC[nentries] 		= GetTagged_ch(j);
 			E[nentries] 		= GetPhotonBeam_E(j);
 			time[nentries]		= GetTagged_t(j) - GoATTree_GetTime(i);
+			
+			//Calculate boost vector
+			TVector3 CMBoost;
+			TLorentzVector beam;
+			beam = TLorentzVector(0.,0.,GetPhotonBeam_E(j),GetPhotonBeam_E(j));
+			CMBoost = -1.0 * (GetTarget() + beam).BoostVector();
+
+			//L-boost from Lab to CM frame
+			TLorentzVector p4 = GetGoATVector(i);
+			p4.Boost(CMBoost);			
+			
 			theta[nentries]		= GoATTree_GetTheta(i);
+			thetaCM[nentries]   = p4.Theta() * TMath::RadToDeg();
 			phi[nentries]		= GoATTree_GetPhi(i);
 			MissMass[nentries] 	= CalcMissingMass(i,j);
 			MissE[nentries]	 	= CalcMissingEnergy(i,j);
@@ -408,13 +429,36 @@ void  PPi0::PostReconstruction()
 			Random = IsRandom(time[j]);
 			
 			if ((!Prompt) && (!Random)) continue;
+			
+			//if(E[j] < 270.0) continue;
+			//if(E[j] > 280.0) continue;			
+			
 			if (Prompt) 
 			{
 				// Fill 1D histograms
 				TC_prompt->Fill(TC[j]);
 				E_prompt->Fill(E[j]);
-				theta_prompt->Fill(theta[j]);
+				theta_prompt->Fill(thetaCM[j]);
 				phi_prompt->Fill(phi[j]);
+				if((thetaCM[j] >=   0) && (thetaCM[j] <  10)) phi_prompt_0_10->Fill(phi[j]);
+				if((thetaCM[j] >=  10) && (thetaCM[j] <  20)) phi_prompt_10_20->Fill(phi[j]);		
+				if((thetaCM[j] >=  20) && (thetaCM[j] <  30)) phi_prompt_20_30->Fill(phi[j]);
+				if((thetaCM[j] >=  30) && (thetaCM[j] <  40)) phi_prompt_30_40->Fill(phi[j]);				
+				if((thetaCM[j] >=  40) && (thetaCM[j] <  50)) phi_prompt_40_50->Fill(phi[j]);
+				if((thetaCM[j] >=  50) && (thetaCM[j] <  60)) phi_prompt_50_60->Fill(phi[j]);				
+				if((thetaCM[j] >=  60) && (thetaCM[j] <  70)) phi_prompt_60_70->Fill(phi[j]);				
+				if((thetaCM[j] >=  70) && (thetaCM[j] <  80)) phi_prompt_70_80->Fill(phi[j]);				
+				if((thetaCM[j] >=  80) && (thetaCM[j] <  90)) phi_prompt_80_90->Fill(phi[j]);				
+				if((thetaCM[j] >=  90) && (thetaCM[j] < 100)) phi_prompt_90_100->Fill(phi[j]);				
+				if((thetaCM[j] >= 100) && (thetaCM[j] < 110)) phi_prompt_100_110->Fill(phi[j]);						
+				if((thetaCM[j] >= 110) && (thetaCM[j] < 120)) phi_prompt_110_120->Fill(phi[j]);						
+				if((thetaCM[j] >= 120) && (thetaCM[j] < 130)) phi_prompt_120_130->Fill(phi[j]);						
+				if((thetaCM[j] >= 130) && (thetaCM[j] < 140)) phi_prompt_130_140->Fill(phi[j]);						
+				if((thetaCM[j] >= 140) && (thetaCM[j] < 150)) phi_prompt_140_150->Fill(phi[j]);						
+				if((thetaCM[j] >= 150) && (thetaCM[j] < 160)) phi_prompt_150_160->Fill(phi[j]);						
+				if((thetaCM[j] >= 160) && (thetaCM[j] < 170)) phi_prompt_160_170->Fill(phi[j]);						
+				if((thetaCM[j] >= 170) && (thetaCM[j] < 180)) phi_prompt_170_180->Fill(phi[j]);						
+																				
 				MM_prompt_pi0->Fill(MissMass[j]);
 				ME_prompt_pi0->Fill(MissE[j]);	
 				
@@ -430,8 +474,27 @@ void  PPi0::PostReconstruction()
 				// Fill 1D histograms
 				TC_random->Fill(TC[j]);
 				E_random->Fill(E[j]);
-				theta_random->Fill(theta[j]);
+				theta_random->Fill(thetaCM[j]);
 				phi_random->Fill(phi[j]);
+				if((thetaCM[j] >=   0) && (thetaCM[j] <  10)) phi_random_0_10->Fill(phi[j]);
+				if((thetaCM[j] >=  10) && (thetaCM[j] <  20)) phi_random_10_20->Fill(phi[j]);		
+				if((thetaCM[j] >=  20) && (thetaCM[j] <  30)) phi_random_20_30->Fill(phi[j]);
+				if((thetaCM[j] >=  30) && (thetaCM[j] <  40)) phi_random_30_40->Fill(phi[j]);				
+				if((thetaCM[j] >=  40) && (thetaCM[j] <  50)) phi_random_40_50->Fill(phi[j]);
+				if((thetaCM[j] >=  50) && (thetaCM[j] <  60)) phi_random_50_60->Fill(phi[j]);				
+				if((thetaCM[j] >=  60) && (thetaCM[j] <  70)) phi_random_60_70->Fill(phi[j]);				
+				if((thetaCM[j] >=  70) && (thetaCM[j] <  80)) phi_random_70_80->Fill(phi[j]);				
+				if((thetaCM[j] >=  80) && (thetaCM[j] <  90)) phi_random_80_90->Fill(phi[j]);				
+				if((thetaCM[j] >=  90) && (thetaCM[j] < 100)) phi_random_90_100->Fill(phi[j]);				
+				if((thetaCM[j] >= 100) && (thetaCM[j] < 110)) phi_random_100_110->Fill(phi[j]);						
+				if((thetaCM[j] >= 110) && (thetaCM[j] < 120)) phi_random_110_120->Fill(phi[j]);						
+				if((thetaCM[j] >= 120) && (thetaCM[j] < 130)) phi_random_120_130->Fill(phi[j]);						
+				if((thetaCM[j] >= 130) && (thetaCM[j] < 140)) phi_random_130_140->Fill(phi[j]);						
+				if((thetaCM[j] >= 140) && (thetaCM[j] < 150)) phi_random_140_150->Fill(phi[j]);						
+				if((thetaCM[j] >= 150) && (thetaCM[j] < 160)) phi_random_150_160->Fill(phi[j]);						
+				if((thetaCM[j] >= 160) && (thetaCM[j] < 170)) phi_random_160_170->Fill(phi[j]);						
+				if((thetaCM[j] >= 170) && (thetaCM[j] < 180)) phi_random_170_180->Fill(phi[j]);						
+				
 				MM_random_pi0->Fill(MissMass[j]);
 				ME_random_pi0->Fill(MissE[j]);	
 				
@@ -447,7 +510,29 @@ void  PPi0::PostReconstruction()
 	RandomSubtraction(TC_prompt,TC_random, TC_sub);		
 	RandomSubtraction(E_prompt,E_random, E_sub);		
 	RandomSubtraction(theta_prompt,theta_random, theta_sub);		
-	RandomSubtraction(phi_prompt,phi_random, phi_sub);		
+
+	RandomSubtraction(phi_prompt,phi_random, phi_sub);
+	RandomSubtraction(phi_prompt_0_10,		phi_random_0_10, 	phi_sub_0_10);	
+	RandomSubtraction(phi_prompt_10_20,		phi_random_10_20, 	phi_sub_10_20);			
+	RandomSubtraction(phi_prompt_20_30,		phi_random_20_30, 	phi_sub_20_30);	
+	RandomSubtraction(phi_prompt_30_40,		phi_random_30_40, 	phi_sub_30_40);	
+	RandomSubtraction(phi_prompt_40_50,		phi_random_40_50, 	phi_sub_40_50);	
+	RandomSubtraction(phi_prompt_50_60,		phi_random_50_60, 	phi_sub_50_60);
+	RandomSubtraction(phi_prompt_60_70,		phi_random_60_70, 	phi_sub_60_70);	
+	RandomSubtraction(phi_prompt_70_80,		phi_random_70_80, 	phi_sub_70_80);	
+	RandomSubtraction(phi_prompt_80_90,		phi_random_80_90, 	phi_sub_80_90);	
+	RandomSubtraction(phi_prompt_90_100,	phi_random_90_100, 	phi_sub_90_100);	
+	RandomSubtraction(phi_prompt_100_110,	phi_random_100_110, 	phi_sub_100_110);	
+	RandomSubtraction(phi_prompt_110_120,	phi_random_110_120, 	phi_sub_110_120);	
+	RandomSubtraction(phi_prompt_120_130,	phi_random_120_130, 	phi_sub_120_130);	
+	RandomSubtraction(phi_prompt_130_140,	phi_random_130_140, 	phi_sub_130_140);	
+	RandomSubtraction(phi_prompt_140_150,	phi_random_140_150, 	phi_sub_140_150);	
+	RandomSubtraction(phi_prompt_150_160,	phi_random_150_160, 	phi_sub_150_160);	
+	RandomSubtraction(phi_prompt_160_170,	phi_random_160_170, 	phi_sub_160_170);	
+	RandomSubtraction(phi_prompt_170_180,	phi_random_170_180, 	phi_sub_170_180);		
+	
+	
+	
 	RandomSubtraction(MM_prompt_pi0,MM_random_pi0, MM_sub_pi0);		
 	RandomSubtraction(ME_prompt_pi0,ME_random_pi0, ME_sub_pi0);		
 
@@ -465,10 +550,11 @@ Bool_t  PPi0::InitPhysicsTree(TFile* F)
 	cout << "treePhysics created." << endl;
 	
 	treePhysics->Branch("nentries",	&nentries,	"nentries/I");
-	treePhysics->Branch("TC",		TC,			"TC[nentries]/I");
+	treePhysics->Branch("TC",		TC,			"TC[nentries]/I"); 
 	treePhysics->Branch("E",		E,			"E[nentries]/D");	
 	treePhysics->Branch("time",		time,		"time[nentries]/D");	
 	treePhysics->Branch("theta",	theta,		"theta[nentries]/D");
+	treePhysics->Branch("thetaCM",	thetaCM,	"thetaCM[nentries]/D");
 	treePhysics->Branch("phi",		phi,		"phi[nentries]/D");
 	treePhysics->Branch("MissMass",	MissMass,	"MissMass[nentries]/D");
 	treePhysics->Branch("MissE",	MissE,		"MissE[nentries]/D");
@@ -489,6 +575,7 @@ Bool_t  PPi0::OpenPhysicsTree(TFile* F)
 	treePhysics->SetBranchAddress("E",			E);	
 	treePhysics->SetBranchAddress("time",		time);	
 	treePhysics->SetBranchAddress("theta",		theta);
+	treePhysics->SetBranchAddress("thetaCM",	thetaCM);
 	treePhysics->SetBranchAddress("phi",		phi);
 	treePhysics->SetBranchAddress("MissMass",	MissMass);
 	treePhysics->SetBranchAddress("MissE",		MissE);
@@ -508,7 +595,8 @@ Bool_t  PPi0::WriteTrees(TFile* F)
 
 void	PPi0::InitHistograms()
 {
-
+	gROOT->cd();
+			
 	// 1-D histograms
 
 	time_pi0		= new TH1D("time_pi0",		"time_pi0",		1200,-600,600);
@@ -538,13 +626,165 @@ void	PPi0::InitHistograms()
 	theta_random->Sumw2();
 	theta_sub->Sumw2();	
 	
-	phi_prompt 		= new TH1D("phi_prompt",		"phi_prompt",		360,-180,180);
-	phi_random 		= new TH1D("phi_random",		"phi_random",		360,-180,180);
-	phi_sub				= new TH1D("phi_subtracted","phi_subtracted",	360,-180,180);	
+	phi_prompt 		= new TH1D("phi_prompt",		"phi_prompt",		36,-180,180);
+	phi_random 		= new TH1D("phi_random",		"phi_random",		36,-180,180);
+	phi_sub				= new TH1D("phi_subtracted","phi_subtracted",	36,-180,180);	
 
 	phi_prompt->Sumw2(); 
 	phi_random->Sumw2();
 	phi_sub->Sumw2();	
+
+	phi_prompt_0_10	= new TH1D("phi_prompt_0_10",		"phi_prompt_0_10",		36,-180,180);
+	phi_random_0_10	= new TH1D("phi_random_0_10",		"phi_random_0_10",		36,-180,180);
+	phi_sub_0_10	= new TH1D("phi_subtracted_0_10",	"phi_subtracted_0_10",	36,-180,180);	
+
+	phi_prompt_0_10->Sumw2(); 
+	phi_random_0_10->Sumw2();
+	phi_sub_0_10->Sumw2();
+	
+	phi_prompt_10_20	= new TH1D("phi_prompt_10_20",		"phi_prompt_10_20",		36,-180,180);
+	phi_random_10_20	= new TH1D("phi_random_10_20",		"phi_random_10_20",		36,-180,180);
+	phi_sub_10_20	= new TH1D("phi_subtracted_10_20",	"phi_subtracted_10_20",	36,-180,180);	
+
+	phi_prompt_10_20->Sumw2(); 
+	phi_random_10_20->Sumw2();
+	phi_sub_10_20->Sumw2();		
+
+	phi_prompt_20_30	= new TH1D("phi_prompt_20_30",		"phi_prompt_20_30",		36,-180,180);
+	phi_random_20_30	= new TH1D("phi_random_20_30",		"phi_random_20_30",		36,-180,180);
+	phi_sub_20_30	= new TH1D("phi_subtracted_20_30",	"phi_subtracted_20_30",	36,-180,180);	
+
+	phi_prompt_20_30->Sumw2(); 
+	phi_random_20_30->Sumw2();
+	phi_sub_20_30->Sumw2();		
+
+	phi_prompt_30_40	= new TH1D("phi_prompt_30_40",		"phi_prompt_30_40",		36,-180,180);
+	phi_random_30_40	= new TH1D("phi_random_30_40",		"phi_random_30_40",		36,-180,180);
+	phi_sub_30_40	= new TH1D("phi_subtracted_30_40",	"phi_subtracted_30_40",	36,-180,180);	
+
+	phi_prompt_30_40->Sumw2(); 
+	phi_random_30_40->Sumw2();
+	phi_sub_30_40->Sumw2();	
+	
+	phi_prompt_40_50	= new TH1D("phi_prompt_40_50",		"phi_prompt_40_50",		36,-180,180);
+	phi_random_40_50	= new TH1D("phi_random_40_50",		"phi_random_40_50",		36,-180,180);
+	phi_sub_40_50	= new TH1D("phi_subtracted_40_50",	"phi_subtracted_40_50",	36,-180,180);	
+
+	phi_prompt_40_50->Sumw2(); 
+	phi_random_40_50->Sumw2();
+	phi_sub_40_50->Sumw2();	
+	
+	phi_prompt_50_60	= new TH1D("phi_prompt_50_60",		"phi_prompt_50_60",		36,-180,180);
+	phi_random_50_60	= new TH1D("phi_random_50_60",		"phi_random_50_60",		36,-180,180);
+	phi_sub_50_60	= new TH1D("phi_subtracted_50_60",	"phi_subtracted_50_60",	36,-180,180);	
+
+	phi_prompt_50_60->Sumw2(); 
+	phi_random_50_60->Sumw2();
+	phi_sub_50_60->Sumw2();		
+
+	phi_prompt_60_70	= new TH1D("phi_prompt_60_70",		"phi_prompt_60_70",		36,-180,180);
+	phi_random_60_70	= new TH1D("phi_random_60_70",		"phi_random_60_70",		36,-180,180);
+	phi_sub_60_70	= new TH1D("phi_subtracted_60_70",	"phi_subtracted_60_70",	36,-180,180);	
+
+	phi_prompt_60_70->Sumw2(); 
+	phi_random_60_70->Sumw2();
+	phi_sub_60_70->Sumw2();	
+
+
+	phi_prompt_70_80	= new TH1D("phi_prompt_70_80",		"phi_prompt_70_80",		36,-180,180);
+	phi_random_70_80	= new TH1D("phi_random_70_80",		"phi_random_70_80",		36,-180,180);
+	phi_sub_70_80	= new TH1D("phi_subtracted_70_80",	"phi_subtracted_70_80",	36,-180,180);	
+
+	phi_prompt_70_80->Sumw2(); 
+	phi_random_70_80->Sumw2();
+	phi_sub_70_80->Sumw2();	
+
+
+	phi_prompt_80_90	= new TH1D("phi_prompt_80_90",		"phi_prompt_80_90",		36,-180,180);
+	phi_random_80_90	= new TH1D("phi_random_80_90",		"phi_random_80_90",		36,-180,180);
+	phi_sub_80_90	= new TH1D("phi_subtracted_80_90",	"phi_subtracted_80_90",	36,-180,180);	
+
+	phi_prompt_80_90->Sumw2(); 
+	phi_random_80_90->Sumw2();
+	phi_sub_80_90->Sumw2();	
+
+
+	phi_prompt_90_100	= new TH1D("phi_prompt_90_100",		"phi_prompt_90_100",		36,-180,180);
+	phi_random_90_100	= new TH1D("phi_random_90_100",		"phi_random_90_100",		36,-180,180);
+	phi_sub_90_100	= new TH1D("phi_subtracted_90_100",	"phi_subtracted_90_100",	36,-180,180);	
+
+	phi_prompt_90_100->Sumw2(); 
+	phi_random_90_100->Sumw2();
+	phi_sub_90_100->Sumw2();	
+
+
+	phi_prompt_100_110	= new TH1D("phi_prompt_100_110",		"phi_prompt_100_110",		36,-180,180);
+	phi_random_100_110	= new TH1D("phi_random_100_110",		"phi_random_100_110",		36,-180,180);
+	phi_sub_100_110	= new TH1D("phi_subtracted_100_110",	"phi_subtracted_100_110",	36,-180,180);	
+
+	phi_prompt_100_110->Sumw2(); 
+	phi_random_100_110->Sumw2();
+	phi_sub_100_110->Sumw2();	
+
+
+	phi_prompt_110_120	= new TH1D("phi_prompt_110_120",		"phi_prompt_110_120",		36,-180,180);
+	phi_random_110_120	= new TH1D("phi_random_110_120",		"phi_random_110_120",		36,-180,180);
+	phi_sub_110_120	= new TH1D("phi_subtracted_110_120",	"phi_subtracted_110_120",	36,-180,180);	
+
+	phi_prompt_110_120->Sumw2(); 
+	phi_random_110_120->Sumw2();
+	phi_sub_110_120->Sumw2();	
+
+
+	phi_prompt_120_130	= new TH1D("phi_prompt_120_130",		"phi_prompt_120_130",		36,-180,180);
+	phi_random_120_130	= new TH1D("phi_random_120_130",		"phi_random_120_130",		36,-180,180);
+	phi_sub_120_130	= new TH1D("phi_subtracted_120_130",	"phi_subtracted_120_130",	36,-180,180);	
+
+	phi_prompt_120_130->Sumw2(); 
+	phi_random_120_130->Sumw2();
+	phi_sub_120_130->Sumw2();	
+
+	phi_prompt_130_140	= new TH1D("phi_prompt_130_140",		"phi_prompt_130_140",		36,-180,180);
+	phi_random_130_140	= new TH1D("phi_random_130_140",		"phi_random_130_140",		36,-180,180);
+	phi_sub_130_140	= new TH1D("phi_subtracted_130_140",	"phi_subtracted_130_140",	36,-180,180);	
+
+	phi_prompt_130_140->Sumw2(); 
+	phi_random_130_140->Sumw2();
+	phi_sub_130_140->Sumw2();	
+
+	phi_prompt_140_150	= new TH1D("phi_prompt_140_150",		"phi_prompt_140_150",		36,-180,180);
+	phi_random_140_150	= new TH1D("phi_random_140_150",		"phi_random_140_150",		36,-180,180);
+	phi_sub_140_150	= new TH1D("phi_subtracted_140_150",	"phi_subtracted_140_150",	36,-180,180);	
+
+	phi_prompt_140_150->Sumw2(); 
+	phi_random_140_150->Sumw2();
+	phi_sub_140_150->Sumw2();	
+	
+	phi_prompt_150_160	= new TH1D("phi_prompt_150_160",		"phi_prompt_150_160",		36,-180,180);
+	phi_random_150_160	= new TH1D("phi_random_150_160",		"phi_random_150_160",		36,-180,180);
+	phi_sub_150_160	= new TH1D("phi_subtracted_150_160",	"phi_subtracted_150_160",	36,-180,180);	
+
+	phi_prompt_150_160->Sumw2(); 
+	phi_random_150_160->Sumw2();
+	phi_sub_150_160->Sumw2();	
+
+
+	phi_prompt_160_170	= new TH1D("phi_prompt_160_170",		"phi_prompt_160_170",		36,-180,180);
+	phi_random_160_170	= new TH1D("phi_random_160_170",		"phi_random_160_170",		36,-180,180);
+	phi_sub_160_170	= new TH1D("phi_subtracted_160_170",	"phi_subtracted_160_170",	36,-180,180);	
+
+	phi_prompt_160_170->Sumw2(); 
+	phi_random_160_170->Sumw2();
+	phi_sub_160_170->Sumw2();	
+
+
+	phi_prompt_170_180	= new TH1D("phi_prompt_170_180",		"phi_prompt_170_180",		36,-180,180);
+	phi_random_170_180	= new TH1D("phi_random_170_180",		"phi_random_170_180",		36,-180,180);
+	phi_sub_170_180	= new TH1D("phi_subtracted_170_180",	"phi_subtracted_170_180",	36,-180,180);	
+
+	phi_prompt_170_180->Sumw2(); 
+	phi_random_170_180->Sumw2();
+	phi_sub_170_180->Sumw2();	
 
 	MM_prompt_pi0 	= new TH1D("MM_prompt_pi0",		"MM_prompt_pi0",	1500,0,1500); 
 	MM_random_pi0 	= new TH1D("MM_random_pi0",		"MM_random_pi0",	1500,0,1500); 
@@ -588,36 +828,8 @@ Bool_t 	PPi0::WriteHistograms(TFile* hfile)
 {
 	if(!hfile) return kFALSE;
 	hfile->cd();
-
-	time_pi0->Write();
-	time_pi0_cuts->Write();	
-
-	TC_prompt->Write(); 
-	TC_random->Write();
-	TC_sub->Write();
-
-	E_prompt->Write(); 
-	E_random->Write();
-	E_sub->Write();
-	
-	theta_prompt->Write(); 
-	theta_random->Write();
-	theta_sub->Write();		
-	
-	phi_prompt->Write(); 
-	phi_random->Write();
-	phi_sub->Write();	
-	
-	MM_prompt_pi0->Write();
-	MM_random_pi0->Write();
-	MM_sub_pi0->Write(); 
-	
-	ME_prompt_pi0->Write(); 
-	ME_random_pi0->Write();
-	ME_sub_pi0->Write();
-
-	TC_theta_phi_prompt->Write(); 
-	TC_theta_phi_random->Write();  
+	gROOT->GetList()->Write();
+	gROOT->GetList()->Delete();
 		
 	return kTRUE;
 }
