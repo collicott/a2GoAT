@@ -240,6 +240,7 @@ int main(int argc, char *argv[])
 
         //TList*   files  = dir_in.GetListOfFiles();
         TIter   next(dir_in.GetListOfFiles());
+        int     counter = 0;
         while(file_in = (TSystemFile*)next())
         {
             currentInput = file_in->GetName();
@@ -250,6 +251,9 @@ int main(int argc, char *argv[])
             currentOutput   = currentInput(prefix_in.Length(), currentInput.Length() - prefix_in.Length() - suffix.Length());
             currentOutput.Prepend(prefix_out);
             currentOutput.Append(suffix);
+
+            printf("process file %d\n", counter);
+            counter++;
 
             pthread_t thread;
             Arguments   arguments;
