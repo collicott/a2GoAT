@@ -1,6 +1,5 @@
 #ifndef __CINT__
 
-
 #include <time.h>
 #include <iostream>
 #include <fstream>
@@ -12,10 +11,9 @@
 #include <TSystemDirectory.h>
 
 #include "GParticleReconstruction.h"
-#include "GMesonReconstruction.h"
+#include "GPlotTime.h"
 
 using namespace std;
-
 
 
 
@@ -52,41 +50,17 @@ void    PrintHelp()
 
 
 void* start(void* arguments)
-{	
+{
     Arguments*   arg    = 0;
     arg = (Arguments*) arguments;
 
-	clock_t start, end;
-	start = clock();
+    clock_t start, end;
+    start = clock();
 
     GTreeManager* tree;
 
-    if(strcmp(arg->type, "particle") == 0 || strcmp(arg->type, "Particle") == 0 || strcmp(arg->type, "PARTICLE") == 0)
-    {
-
-        GParticleReconstruction*   help    = new GParticleReconstruction();
-
-        if(arg->nValues>2)
-        {
-            cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;
-            help->SetCBTimeCut(arg->time.CBTimeCut[0], arg->time.CBTimeCut[1]);
-        }
-        else if(arg->nValues>4)
-        {
-            cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;
-            help->SetCBTimeCut(arg->time.CBTimeCut[0], arg->time.CBTimeCut[1]);
-            cout << "Set TAPSTimeWindow from " << arg->time.TAPSTimeCut[0] << " to " << arg->time.TAPSTimeCut[1] << "." << endl;
-            help->SetTAPSTimeCut(arg->time.TAPSTimeCut[0], arg->time.TAPSTimeCut[1]);
-        }
-
-        tree    = help;
-    }
-    else if(strcmp(arg->type, "meson") == 0 || strcmp(arg->type, "Meson") == 0 || strcmp(arg->type, "MESON") == 0)
-    {
-        cout << "Meson reconstruction started." << endl;
-        tree    = new GMesonReconstruction();
-
-    }
+    if(strcmp(arg->type, "particle") == 0 || strcmp(arg->type, "Particle") == 0 || strcmp(arg->type, "PARTICLE") == 0 || strcmp(arg->type, "time") == 0 || strcmp(arg->type, "Time") == 0 || strcmp(arg->type, "TIME") == 0)
+        tree    = new GPlotTime();
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;
@@ -101,10 +75,10 @@ void* start(void* arguments)
 
     delete  tree;
 
-	end = clock();
-	cout << "Time required for execution: "
-	<< (double)(end-start)/CLOCKS_PER_SEC
-	<< " seconds." << "\n\n";
+    end = clock();
+    cout << "Time required for execution: "
+    << (double)(end-start)/CLOCKS_PER_SEC
+    << " seconds." << "\n\n";
 
     pthread_exit(0);
 }

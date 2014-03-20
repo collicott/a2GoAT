@@ -12,7 +12,8 @@ GCorrectScalers::GCorrectScalers()  :
 
 GCorrectScalers::~GCorrectScalers()
 {
-
+    if(taggerTime)  delete  taggerTime;
+    if(accepted)    delete  accepted;
 }
 
 

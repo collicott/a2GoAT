@@ -18,7 +18,10 @@ GParticleReconstruction::GParticleReconstruction()  :
 
 GParticleReconstruction::~GParticleReconstruction()
 {
-
+    if(CBTime)              delete  CBTime;
+    if(TAPSTime)            delete  TAPSTime;
+    if(CBTimeAfterCut)      delete  CBTimeAfterCut;
+    if(TAPSTimeAfterCut)    delete  TAPSTimeAfterCut;
 }
 
 void  GParticleReconstruction::ProcessEvent()

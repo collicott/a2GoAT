@@ -28,7 +28,7 @@ link_directories(${ROOT_LIBRARY_DIR})
 include_directories(inc)
 
 
-add_executable(goat
+add_executable(MyGoAT
    inc/GTree.h
    inc/GTreeRawEvent.h
    inc/GTreeEvent.h
@@ -38,28 +38,7 @@ add_executable(goat
    inc/GTreeMeson.h
    inc/GTreeManager.h
    inc/GCorrectScalers.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeManager.cc
-   src/GCorrectScalers.cc
-   src/GoAT.cc
-   )
-target_link_libraries(goat ${ROOT_LIBRARIES})
-
-add_executable(meson
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
+   inc/GParticleReconstruction.h
    inc/GMesonReconstruction.h
    src/GTree.cc
    src/GTreeRawEvent.cc
@@ -69,12 +48,14 @@ add_executable(meson
    src/GTreeParticle.cc
    src/GTreeMeson.cc
    src/GTreeManager.cc
+   src/GCorrectScalers.cc
+   src/GParticleReconstruction.cc
    src/GMesonReconstruction.cc
-   src/meson.cc
+   src/MyGoAT.cc
    )
-target_link_libraries(meson ${ROOT_LIBRARIES})
+target_link_libraries(MyGoAT ${ROOT_LIBRARIES})
 
-add_executable(setMesonMass
+add_executable(MyGoATPlot
    inc/GTree.h
    inc/GTreeRawEvent.h
    inc/GTreeEvent.h
@@ -83,7 +64,7 @@ add_executable(setMesonMass
    inc/GTreeParticle.h
    inc/GTreeMeson.h
    inc/GTreeManager.h
-   inc/GSetMesonMass.h
+   inc/GPlotTime.h
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeEvent.cc
@@ -92,177 +73,7 @@ add_executable(setMesonMass
    src/GTreeParticle.cc
    src/GTreeMeson.cc
    src/GTreeManager.cc
-   src/GSetMesonMass.cc
-   src/setMesonMass.cc
+   src/GPlotTime.cc
+   src/MyGoATPlot.cc
    )
-target_link_libraries(setMesonMass ${ROOT_LIBRARIES})
-
-add_executable(tagger
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GTaggerReconstruction.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeManager.cc
-   src/GTaggerReconstruction.cc
-   src/tagger.cc
-   )
-target_link_libraries(tagger ${ROOT_LIBRARIES})
-
-add_executable(proton
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GProtonReconstruction.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeManager.cc
-   src/GTreeMeson.cc
-   src/GProtonReconstruction.cc
-   src/proton.cc
-   )
-target_link_libraries(proton ${ROOT_LIBRARIES})
-
-
-add_executable(plot
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GHistParticle.h
-   inc/GHistTaggedParticle.h
-   inc/GHistTaggedMeson.h
-   inc/GPlot.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeManager.cc
-   src/GHistParticle.cc
-   src/GHistTaggedParticle.cc
-   src/GHistTaggedMeson.cc
-   src/GPlot.cc
-   src/plot.cc
-   )
-target_link_libraries(plot ${ROOT_LIBRARIES})
-
-add_executable(plotCut
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GHistParticle.h
-   inc/GHistTaggedParticle.h
-   inc/GHistTaggedMeson.h
-   inc/GHist.h
-   inc/GHistCut.h
-   inc/GPlotCut.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeManager.cc
-   src/GHistParticle.cc
-   src/GHistTaggedParticle.cc
-   src/GHistTaggedMeson.cc
-   src/GHist.cc
-   src/GHistCut.cc
-   src/GPlotCut.cc
-   src/plotCut.cc
-   )
-target_link_libraries(plotCut ${ROOT_LIBRARIES})
-
-add_executable(cut
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GHistParticle.h
-   inc/GHistTaggedParticle.h
-   inc/GHistTaggedMeson.h
-   inc/GRawCut.h
-   inc/GCut.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeManager.cc
-   src/GHistParticle.cc
-   src/GHistTaggedParticle.cc
-   src/GHistTaggedMeson.cc
-   src/GRawCut.cc
-   src/GCut.cc
-   src/cut.cc
-   )
-target_link_libraries(cut ${ROOT_LIBRARIES})
-
-
-add_executable(rawCut
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeEvent.h
-   inc/GTreeTagger.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeManager.h
-   inc/GHistParticle.h
-   inc/GHistTaggedParticle.h
-   inc/GHistTaggedMeson.h
-   inc/GRawCut.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeEvent.cc
-   src/GTreeTagger.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeManager.cc
-   src/GHistParticle.cc
-   src/GHistTaggedParticle.cc
-   src/GHistTaggedMeson.cc
-   src/GRawCut.cc
-   src/rawCut.cc
-   )
-target_link_libraries(rawCut ${ROOT_LIBRARIES})
+target_link_libraries(MyGoATPlot ${ROOT_LIBRARIES})
