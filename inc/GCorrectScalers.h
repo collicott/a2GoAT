@@ -19,6 +19,8 @@ protected:
 
     virtual void    ProcessEvent();
 
+
+
 public:
     GCorrectScalers();
     virtual ~GCorrectScalers();

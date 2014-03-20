@@ -4,6 +4,7 @@
 using namespace std;
 
 GHistCut::GHistCut(TDirectory *_Dir, const FLAG_MESON _MesonType, FLAG_DECAY _DecayType)  :
+    dir(_Dir),
     mesonType(_MesonType),
     decayType(_DecayType)
 {

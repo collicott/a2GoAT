@@ -4,11 +4,73 @@
 using namespace std;
 
 
-GPlotCut::GPlotCut()    :
+GPlotCut::GPlotCut()
 {
-    file
-    hProton.h2gPi0      = new GHistCutProton();
-    hProton.h2gEta      = 0;
+    hNoProton.h2g.hPi0  = 0;
+    hNoProton.h2g.hEta  = 0;
+    hNoProton.h2g.hEtap = 0;
+    hNoProton.h6g.hPi0  = 0;
+    hNoProton.h6g.hEta  = 0;
+    hNoProton.h6g.hEtap = 0;
+
+    hProton.h2g.hPi0  = 0;
+    hProton.h2g.hEta  = 0;
+    hProton.h2g.hEtap = 0;
+    hProton.h6g.hPi0  = 0;
+    hProton.h6g.hEta  = 0;
+    hProton.h6g.hEtap = 0;
+}
+
+GPlotCut::~GPlotCut()
+{
+}
+
+void    GPlotCut::Init()
+{
+    file_out->cd();
+    gDirectory->mkdir("2g");
+    file_out->cd();
+    gDirectory->GetDirectory("2g")->cd();
+    gDirectory->mkdir("pi0");
+    file_out->cd();
+    gDirectory->GetDirectory("2g")->cd();
+    gDirectory->mkdir("eta");
+    file_out->cd();
+    gDirectory->GetDirectory("2g")->cd();
+    gDirectory->mkdir("etap");
+    file_out->cd();
+    gDirectory->GetDirectory("2g")->cd();
+    hNoProton.h2g.hPi0  = new GHistCut(gDirectory->GetDirectory("pi0"), GHistCut::FLAG_PI0, GHistCut::FLAG_2GAMMA);
+    file_out->cd();
+    gDirectory->GetDirectory("2g")->cd();
+    hNoProton.h2g.hEta  = new GHistCut(gDirectory->GetDirectory("eta"), GHistCut::FLAG_ETA, GHistCut::FLAG_2GAMMA);
+    file_out->cd();
+    gDirectory->GetDirectory("2g")->cd();
+    hNoProton.h2g.hEtap = new GHistCut(gDirectory->GetDirectory("etap"), GHistCut::FLAG_ETAP, GHistCut::FLAG_2GAMMA);
+
+    file_out->cd();
+    gDirectory->mkdir("6g");
+    file_out->cd();
+    gDirectory->GetDirectory("6g")->cd();
+    gDirectory->mkdir("pi0");
+    file_out->cd();
+    gDirectory->GetDirectory("6g")->cd();
+    gDirectory->mkdir("eta");
+    file_out->cd();
+    gDirectory->GetDirectory("6g")->cd();
+    gDirectory->mkdir("etap");
+    file_out->cd();
+    gDirectory->GetDirectory("6g")->cd();
+    hNoProton.h6g.hPi0  = new GHistCut(gDirectory->GetDirectory("pi0"), GHistCut::FLAG_PI0, GHistCut::FLAG_6GAMMA);
+    file_out->cd();
+    gDirectory->GetDirectory("6g")->cd();
+    hNoProton.h6g.hEta  = new GHistCut(gDirectory->GetDirectory("eta"), GHistCut::FLAG_ETA, GHistCut::FLAG_6GAMMA);
+    file_out->cd();
+    gDirectory->GetDirectory("6g")->cd();
+    hNoProton.h6g.hEtap = new GHistCut(gDirectory->GetDirectory("etap"), GHistCut::FLAG_ETAP, GHistCut::FLAG_6GAMMA);
+
+
+    /*hProton.h2gEta      = 0;
     hProton.h2gEtap     = 0;
     hProton.h6gPi0      = 0;
     hProton.h6gEta      = 0;
@@ -19,16 +81,13 @@ GPlotCut::GPlotCut()    :
     hNoProton.h2gEtap     = 0;
     hNoProton.h6gPi0      = 0;
     hNoProton.h6gEta      = 0;
-    hNoProton.h6gEtap     = 0;
+    hNoProton.h6gEtap     = 0;*/
 }
 
-GPlotCut::~GPlotCut()
-{
-}
 
 void  GPlotCut::ProcessEvent()
 {
-    if(proton)
+    if(protons)
     {
     }
     else
@@ -37,47 +96,38 @@ void  GPlotCut::ProcessEvent()
         {
             if(pi0->GetNParticles() == 1)
             {
-                if(tagger->GetNPrompt() == 1)
+                for(int i=0; i<tagger->GetNPrompt(); i++)
+                    hNoProton.h2g.hPi0->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                for(int i=0; i<tagger->GetNRand(); i++)
                 {
-                    //pi0Hist->FillPromptTagger(tagger->GetMissingVector(tagger->GetPromptIndex(0)),tagger->GetTagged_t(tagger->GetPromptIndex(0)),tagger->GetPhotonBeam_E(tagger->GetPromptIndex(0)),tagger->GetTagged_ch(tagger->GetPromptIndex(0)));
-                    //pi0Hist->FillPromptMeson(pi0->Particle(0));
-                    //pi0Hist->FillPromptPhoton(photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                }
-                if(tagger->GetNRand() == 1)
-                {
-                    //pi0Hist->FillRandTagger(tagger->GetMissingVector(tagger->GetRandIndex(0)),tagger->GetTagged_t(tagger->GetRandIndex(0)),tagger->GetPhotonBeam_E(tagger->GetRandIndex(0)),tagger->GetTagged_ch(tagger->GetRandIndex(0)));
-                    //pi0Hist->FillRandMeson(pi0->Particle(0));
-                    //pi0Hist->FillRandPhoton(photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
+                    if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
+                        hNoProton.h2g.hPi0->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    else
+                        hNoProton.h2g.hPi0->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
                 }
             }
             else if(eta->GetNParticles() == 1)
             {
-                if(tagger->GetNPrompt() == 1)
+                for(int i=0; i<tagger->GetNPrompt(); i++)
+                    hNoProton.h2g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                for(int i=0; i<tagger->GetNRand(); i++)
                 {
-                    //etaHist->FillPromptTagger(tagger->GetMissingVector(tagger->GetPromptIndex(0)),tagger->GetTagged_t(tagger->GetPromptIndex(0)),tagger->GetPhotonBeam_E(tagger->GetPromptIndex(0)),tagger->GetTagged_ch(tagger->GetPromptIndex(0)));
-                    //etaHist->FillPromptDaughterMeson(eta->Particle(0));
-                    //etaHist->FillPromptDaughterPhoton(photons->Particle(eta->GetDaughterIndex(0,0)), photons->Particle(eta->GetDaughterIndex(0,1)));
-                }
-                if(tagger->GetNRand() == 1)
-                {
-                    //etaHist->FillRandTagger(tagger->GetMissingVector(tagger->GetRandIndex(0)),tagger->GetTagged_t(tagger->GetRandIndex(0)),tagger->GetPhotonBeam_E(tagger->GetRandIndex(0)),tagger->GetTagged_ch(tagger->GetRandIndex(0)));
-                    //etaHist->FillRandDaughterMeson(eta->Particle(0));
-                    //etaHist->FillRandDaughterPhoton(photons->Particle(eta->GetDaughterIndex(0,0)), photons->Particle(eta->GetDaughterIndex(0,1)));
+                    if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
+                        hNoProton.h2g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    else
+                        hNoProton.h2g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
                 }
             }
             else if(etap->GetNParticles() == 1)
             {
-                if(tagger->GetNPrompt() == 1)
+                for(int i=0; i<tagger->GetNPrompt(); i++)
+                    hNoProton.h2g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                for(int i=0; i<tagger->GetNRand(); i++)
                 {
-                    //etapHist->FillPromptTagger(tagger->GetMissingVector(tagger->GetPromptIndex(0)),tagger->GetTagged_t(tagger->GetPromptIndex(0)),tagger->GetPhotonBeam_E(tagger->GetPromptIndex(0)),tagger->GetTagged_ch(tagger->GetPromptIndex(0)));
-                    //etapHist->FillPromptDaughterMeson(etap->Particle(0));
-                    //etapHist->FillPromptDaughterPhoton(photons->Particle(etap->GetDaughterIndex(0,0)), photons->Particle(etap->GetDaughterIndex(0,1)));
-                }
-                if(tagger->GetNRand() == 1)
-                {
-                    //etapHist->FillRandTagger(tagger->GetMissingVector(tagger->GetRandIndex(0)),tagger->GetTagged_t(tagger->GetRandIndex(0)),tagger->GetPhotonBeam_E(tagger->GetRandIndex(0)),tagger->GetTagged_ch(tagger->GetRandIndex(0)));
-                    //etapHist->FillRandDaughterMeson(etap->Particle(0));
-                    //etapHist->FillRandDaughterPhoton(photons->Particle(etap->GetDaughterIndex(0,0)), photons->Particle(etap->GetDaughterIndex(0,1)));
+                    if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
+                        hNoProton.h2g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    else
+                        hNoProton.h2g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
                 }
             }
         }
@@ -86,70 +136,30 @@ void  GPlotCut::ProcessEvent()
         {
             if(etap->GetNParticles() == 1)
             {
-                if(tagger->GetNPrompt() == 1)
+                for(int i=0; i<tagger->GetNPrompt(); i++)
+                    hNoProton.h6g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M(), pi0->Particle(1).M(), eta->Particle(0).M(), etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                for(int i=0; i<tagger->GetNRand(); i++)
                 {
-                    //etapHist->FillPromptTagger(tagger->GetMissingVector(tagger->GetPromptIndex(0)),tagger->GetTagged_t(tagger->GetPromptIndex(0)),tagger->GetPhotonBeam_E(tagger->GetPromptIndex(0)),tagger->GetTagged_ch(tagger->GetPromptIndex(0)));
-                    //etapHist->FillPromptMeson(etap->Particle(0));
-                    //etapHist->FillPromptDaughterMesons(pi0->Particle(0), pi0->Particle(1), eta->Particle(0));
-                    //etapHist->FillPromptDaughterPhotons(0, photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                    //etapHist->FillPromptDaughterPhotons(1, photons->Particle(pi0->GetDaughterIndex(1,0)), photons->Particle(pi0->GetDaughterIndex(1,1)));
-                    //etapHist->FillPromptDaughterPhotons(2, photons->Particle(eta->GetDaughterIndex(0,0)), photons->Particle(eta->GetDaughterIndex(0,1)));
-                }
-                if(tagger->GetNRand() == 1)
-                {
-                    //etapHist->FillRandTagger(tagger->GetMissingVector(tagger->GetRandIndex(0)),tagger->GetTagged_t(tagger->GetRandIndex(0)),tagger->GetPhotonBeam_E(tagger->GetRandIndex(0)),tagger->GetTagged_ch(tagger->GetRandIndex(0)));
-                    //etapHist->FillRandMeson(etap->Particle(0));
-                    //etapHist->FillRandDaughterMesons(pi0->Particle(0), pi0->Particle(1), eta->Particle(0));
-                    //etapHist->FillRandDaughterPhotons(0, photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                    //etapHist->FillRandDaughterPhotons(1, photons->Particle(pi0->GetDaughterIndex(1,0)), photons->Particle(pi0->GetDaughterIndex(1,1)));
-                    //etapHist->FillRandDaughterPhotons(2, photons->Particle(eta->GetDaughterIndex(0,0)), photons->Particle(eta->GetDaughterIndex(0,1)));
+                    if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
+                        hNoProton.h6g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M(), pi0->Particle(1).M(), eta->Particle(0).M(), etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    else
+                        hNoProton.h6g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M(), pi0->Particle(1).M(), eta->Particle(0).M(), etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
                 }
             }
             else if(eta->GetNParticles() == 1)
             {
-                if(tagger->GetNPrompt() == 1)
+                for(int i=0; i<tagger->GetNPrompt(); i++)
+                    hNoProton.h6g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M(), pi0->Particle(1).M(), pi0->Particle(2).M(), eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                for(int i=0; i<tagger->GetNRand(); i++)
                 {
-                    //etaHist->FillPromptTagger(tagger->GetMissingVector(tagger->GetPromptIndex(0)),tagger->GetTagged_t(tagger->GetPromptIndex(0)),tagger->GetPhotonBeam_E(tagger->GetPromptIndex(0)),tagger->GetTagged_ch(tagger->GetPromptIndex(0)));
-                    //etaHist->FillPromptMeson(eta->Particle(0));
-                    //etaHist->FillPromptDaughterMesons(pi0->Particle(0), pi0->Particle(1), pi0->Particle(2));
-                    //etaHist->FillPromptDaughterPhotons(0, photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                    //etaHist->FillPromptDaughterPhotons(1, photons->Particle(pi0->GetDaughterIndex(1,0)), photons->Particle(pi0->GetDaughterIndex(1,1)));
-                    //etaHist->FillPromptDaughterPhotons(2, photons->Particle(pi0->GetDaughterIndex(2,0)), photons->Particle(pi0->GetDaughterIndex(2,1)));
-                }
-                if(tagger->GetNRand() == 1)
-                {
-                    //etaHist->FillRandTagger(tagger->GetMissingVector(tagger->GetRandIndex(0)),tagger->GetTagged_t(tagger->GetRandIndex(0)),tagger->GetPhotonBeam_E(tagger->GetRandIndex(0)),tagger->GetTagged_ch(tagger->GetRandIndex(0)));
-                    //etaHist->FillRandMeson(eta->Particle(0));
-                    //etaHist->FillRandDaughterMesons(pi0->Particle(0), pi0->Particle(1), pi0->Particle(2));
-                    //etaHist->FillRandDaughterPhotons(0, photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                    //etaHist->FillRandDaughterPhotons(1, photons->Particle(pi0->GetDaughterIndex(1,0)), photons->Particle(pi0->GetDaughterIndex(1,1)));
-                    //etaHist->FillRandDaughterPhotons(2, photons->Particle(pi0->GetDaughterIndex(2,0)), photons->Particle(pi0->GetDaughterIndex(2,1)));
-                }
-            }
-            else    //3pi0
-            {
-                if(tagger->GetNPrompt() == 1)
-                {
-                    //_3pi0Hist->FillPromptTagger(tagger->GetMissingVector(tagger->GetPromptIndex(0)),tagger->GetTagged_t(tagger->GetPromptIndex(0)),tagger->GetPhotonBeam_E(tagger->GetPromptIndex(0)),tagger->GetTagged_ch(tagger->GetPromptIndex(0)));
-                    //_3pi0Hist->FillPromptMeson(pi0->Particle(0) + pi0->Particle(1) + pi0->Particle(2));
-                    //_3pi0Hist->FillPromptDaughterMesons(pi0->Particle(0), pi0->Particle(1), pi0->Particle(2));
-                    //_3pi0Hist->FillPromptDaughterPhotons(0, photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                    //_3pi0Hist->FillPromptDaughterPhotons(1, photons->Particle(pi0->GetDaughterIndex(1,0)), photons->Particle(pi0->GetDaughterIndex(1,1)));
-                    //_3pi0Hist->FillPromptDaughterPhotons(2, photons->Particle(pi0->GetDaughterIndex(2,0)), photons->Particle(pi0->GetDaughterIndex(2,1)));
-                }
-                if(tagger->GetNRand() == 1)
-                {
-                    //_3pi0Hist->FillRandTagger(tagger->GetMissingVector(tagger->GetRandIndex(0)),tagger->GetTagged_t(tagger->GetRandIndex(0)),tagger->GetPhotonBeam_E(tagger->GetRandIndex(0)),tagger->GetTagged_ch(tagger->GetRandIndex(0)));
-                    //_3pi0Hist->FillRandMeson(pi0->Particle(0) + pi0->Particle(1) + pi0->Particle(2));
-                    //_3pi0Hist->FillRandDaughterMesons(pi0->Particle(0), pi0->Particle(1), pi0->Particle(2));
-                    //_3pi0Hist->FillRandDaughterPhotons(0, photons->Particle(pi0->GetDaughterIndex(0,0)), photons->Particle(pi0->GetDaughterIndex(0,1)));
-                    //_3pi0Hist->FillRandDaughterPhotons(1, photons->Particle(pi0->GetDaughterIndex(1,0)), photons->Particle(pi0->GetDaughterIndex(1,1)));
-                    //_3pi0Hist->FillRandDaughterPhotons(2, photons->Particle(pi0->GetDaughterIndex(2,0)), photons->Particle(pi0->GetDaughterIndex(2,1)));
+                    if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
+                        hNoProton.h6g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M(), pi0->Particle(1).M(), pi0->Particle(2).M(), eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    else
+                        hNoProton.h6g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M(), pi0->Particle(1).M(), pi0->Particle(2).M(), eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
                 }
             }
         }
     }
-    else
 }
 
 Bool_t  GPlotCut::Process(const char* input_filename, const char* output_filename)
@@ -163,19 +173,7 @@ Bool_t  GPlotCut::Process(const char* input_filename, const char* output_filenam
 
     if(!Create(output_filename))    return kFALSE;
 
-    file_out->cd();
-    gDirectory->mkdir("pi0");
-    file_out->cd();
-    gDirectory->mkdir("eta");
-    file_out->cd();
-    gDirectory->mkdir("etap");
-
-    file_out->cd();
-    //pi0Hist = new GHistTaggedPi0(gDirectory->GetDirectory("pi0"));
-    file_out->cd();
-    //etaHist = new GHistTaggedEta(gDirectory->GetDirectory("eta"));
-    file_out->cd();
-    //etapHist = new GHistTaggedEtap(gDirectory->GetDirectory("etap"));
+    Init();
 
     TraverseEntries(0, pi0->GetNEntries()+1);
 

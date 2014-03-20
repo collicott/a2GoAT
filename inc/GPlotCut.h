@@ -7,6 +7,19 @@
 #include "GHistCut.h"
 
 
+struct  GHistCutStruct
+{
+    GHistCut* hPi0;
+    GHistCut* hEta;
+    GHistCut* hEtap;
+};
+struct  GHistCutProtonStruct
+{
+    GHistCutProton* hPi0;
+    GHistCutProton* hEta;
+    GHistCutProton* hEtap;
+};
+
 
 
 class  GPlotCut    : public GTreeManager
@@ -14,22 +27,16 @@ class  GPlotCut    : public GTreeManager
 private:
     struct
     {
-        GHistCutProton* h2gPi0;
-        GHistCutProton* h2gEta;
-        GHistCutProton* h2gEtap;
-        GHistCutProton* h6gPi0;
-        GHistCutProton* h6gEta;
-        GHistCutProton* h6gEtap;
-    } hProton;
+        GHistCutStruct    h2g;
+        GHistCutStruct    h6g;
+    }   hNoProton;
     struct
     {
-        GHistCut* h2gPi0;
-        GHistCut* h2gEta;
-        GHistCut* h2gEtap;
-        GHistCut* h6gPi0;
-        GHistCut* h6gEta;
-        GHistCut* h6gEtap;
-    } hNoProton;
+        GHistCutProtonStruct    h2g;
+        GHistCutProtonStruct    h6g;
+    }   hProton;
+
+    void    Init();
 
 protected:
     virtual void    ProcessEvent();

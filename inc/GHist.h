@@ -28,8 +28,6 @@ public:
     virtual ~GHist()    = 0;
 
             void    Add(const GHist *hist, const Double_t scale);
-    inline  void    Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Double_t value);
-    inline  void    Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Int_t value);
             void    Write();
 };
 
@@ -47,6 +45,8 @@ protected:
 public:
     GHistD(TDirectory* _Dir, const TString& name, const TString& title, const Int_t nBins, const Double_t min, const Double_t max);
     virtual ~GHistD();
+
+    inline  void    Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Double_t value);
 };
 
 
@@ -63,6 +63,8 @@ protected:
 public:
     GHistI(TDirectory* _Dir, const TString& name, const TString& title, const Int_t nBins, const Int_t min, const Int_t max);
     virtual ~GHistI();
+
+    inline  void    Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Int_t value);
 };
 
 
@@ -70,7 +72,7 @@ public:
 
 
 
-void    GHist::Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Double_t value)
+void    GHistD::Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Double_t value)
 {
     switch(taggerWindow)
     {
@@ -78,7 +80,7 @@ void    GHist::Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Double_t value)
         prompt->Fill(value);
         break;
     case FLAG_TAGGER_WINDOW_RAND1:
-        rand[0]->Fill(value);
+        GHist::rand[0]->Fill(value);
         break;
     case FLAG_TAGGER_WINDOW_RAND2:
         rand[1]->Fill(value);
@@ -86,7 +88,7 @@ void    GHist::Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Double_t value)
     }
 }
 
-void    GHist::Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Int_t value)
+void    GHistI::Fill(const FLAG_TAGGER_WINDOW taggerWindow, const Int_t value)
 {
     switch(taggerWindow)
     {
