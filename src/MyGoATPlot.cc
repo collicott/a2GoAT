@@ -1,38 +1,12 @@
 #ifndef __CINT__
 
-#include <time.h>
-#include <iostream>
-#include <fstream>
-#include <pthread.h>
 
-#include <TROOT.h>
-#include <TSystem.h>
-#include <TSystemFile.h>
-#include <TSystemDirectory.h>
-
+#include "MyGoAT.h"
 #include "GParticleReconstruction.h"
 #include "GPlotTime.h"
 
 using namespace std;
 
-
-
-struct  Arguments
-{
-    char        type[32];
-    char        fileName_in[1024];
-    char        fileName_out[1024];
-    int         nValues;
-    union
-    {
-        Double_t        value[32];
-        struct
-        {
-            Double_t    CBTimeCut[2];
-            Double_t    TAPSTimeCut[2];
-        } time;
-    };
-};
 
 
 

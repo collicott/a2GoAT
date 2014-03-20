@@ -1,40 +1,12 @@
 #ifndef __CINT__
 
 
-#include <time.h>
-#include <iostream>
-#include <fstream>
-#include <pthread.h>
-
-#include <TROOT.h>
-#include <TSystem.h>
-#include <TSystemFile.h>
-#include <TSystemDirectory.h>
-
+#include "MyGoAT.h"
 #include "GParticleReconstruction.h"
 #include "GMesonReconstruction.h"
 
 using namespace std;
 
-
-
-
-struct  Arguments
-{
-    char        type[32];
-    char        fileName_in[1024];
-    char        fileName_out[1024];
-    int         nValues;
-    union
-    {
-        Double_t        value[32];
-        struct
-        {
-            Double_t    CBTimeCut[2];
-            Double_t    TAPSTimeCut[2];
-        } time;
-    };
-};
 
 
 
@@ -66,12 +38,12 @@ void* start(void* arguments)
 
         GParticleReconstruction*   help    = new GParticleReconstruction();
 
-        if(arg->nValues>2)
+        if(arg->nValues==2)
         {
             cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;
             help->SetCBTimeCut(arg->time.CBTimeCut[0], arg->time.CBTimeCut[1]);
         }
-        else if(arg->nValues>4)
+        else if(arg->nValues==4)
         {
             cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;
             help->SetCBTimeCut(arg->time.CBTimeCut[0], arg->time.CBTimeCut[1]);

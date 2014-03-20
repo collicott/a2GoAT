@@ -40,6 +40,7 @@ add_executable(MyGoAT
    inc/GCorrectScalers.h
    inc/GParticleReconstruction.h
    inc/GMesonReconstruction.h
+   inc/MyGoAT.h
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeEvent.cc
@@ -65,6 +66,7 @@ add_executable(MyGoATPlot
    inc/GTreeMeson.h
    inc/GTreeManager.h
    inc/GPlotTime.h
+   inc/MyGoAT.h
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeEvent.cc

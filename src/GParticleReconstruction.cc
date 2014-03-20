@@ -28,6 +28,8 @@ void  GParticleReconstruction::ProcessEvent()
 {
     if(rawEvent->GetNCB() != 2 && rawEvent->GetNCB() != 6 && rawEvent->GetNCB() != 10)
         return;
+    if(rawEvent->GetNTAPS()>1)
+        return;
 
     for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
     {
