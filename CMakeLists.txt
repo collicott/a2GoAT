@@ -40,6 +40,8 @@ add_executable(MyGoAT
    inc/GCorrectScalers.h
    inc/GParticleReconstruction.h
    inc/GMesonReconstruction.h
+   inc/GTaggerReconstruction.h
+   inc/GProtonReconstruction.h
    inc/MyGoAT.h
    src/GTree.cc
    src/GTreeRawEvent.cc
@@ -52,6 +54,8 @@ add_executable(MyGoAT
    src/GCorrectScalers.cc
    src/GParticleReconstruction.cc
    src/GMesonReconstruction.cc
+   src/GTaggerReconstruction.cc
+   src/GProtonReconstruction.cc
    src/MyGoAT.cc
    )
 target_link_libraries(MyGoAT ${ROOT_LIBRARIES})
@@ -79,3 +83,29 @@ add_executable(MyGoATPlot
    src/MyGoATPlot.cc
    )
 target_link_libraries(MyGoATPlot ${ROOT_LIBRARIES})
+
+add_executable(MyGoATCut
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeManager.h
+   inc/GRawCut.h
+   inc/GCut.h
+   inc/MyGoAT.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/GTreeManager.cc
+   src/GRawCut.cc
+   src/GCut.cc
+   src/MyGoATCut.cc
+   )
+target_link_libraries(MyGoATCut ${ROOT_LIBRARIES})
