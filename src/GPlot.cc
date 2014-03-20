@@ -11,7 +11,6 @@ GPlot::GPlot()
 
 GPlot::~GPlot()
 {
-    if(file)    delete file;
 }
 
 void  GPlot::ProcessEvent()
