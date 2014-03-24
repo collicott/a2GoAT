@@ -17,6 +17,8 @@ private:
     Double_t        photonbeam_E[GTreeTagger_MAX];
     TLorentzVector  missingVector[GTreeTagger_MAX];
 
+
+
 protected:
 
     virtual void    ProcessEvent();

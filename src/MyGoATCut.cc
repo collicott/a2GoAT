@@ -71,6 +71,25 @@ void* start(void* arguments)
 
         tree    = help;
     }
+    else if(strcmp(arg->type, "invMass") == 0 || strcmp(arg->type, "InvMass") == 0 || strcmp(arg->type, "IM") == 0 || strcmp(arg->type, "im") == 0 || strcmp(arg->type, "invariantmass") == 0 || strcmp(arg->type, "invariantMass") == 0)
+    {
+        GCut*   help    = new GCut();
+
+        if(arg->nValues!=6)
+        {
+            cout << "To many or few Arguments given." << endl;
+            PrintHelp();
+            return 0;
+        }
+        cout << "Set Pi0 invariant mass cut from " << arg->value[0] << " to " << arg->value[1] << "." << endl;
+        cout << "Set Eta invariant mass cut from " << arg->value[2] << " to " << arg->value[3] << "." << endl;
+        cout << "Set Etap invariant mass cut from " << arg->value[4] << " to " << arg->value[5] << "." << endl;
+        help->SetPi0InvMassCut(arg->value[0],arg->value[1]);
+        help->SetEtaInvMassCut(arg->value[2],arg->value[3]);
+        help->SetEtapInvMassCut(arg->value[4],arg->value[5]);
+
+        tree    = help;
+    }
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;

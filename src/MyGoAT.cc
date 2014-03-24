@@ -4,6 +4,7 @@
 #include "MyGoAT.h"
 #include "GParticleReconstruction.h"
 #include "GMesonReconstruction.h"
+#include "GTaggerReconstruction.h"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ void* start(void* arguments)
 
 	clock_t start, end;
 	start = clock();
+
 
     GTreeManager* tree;
 
@@ -59,6 +61,8 @@ void* start(void* arguments)
         tree    = new GMesonReconstruction();
 
     }
+    else if(strcmp(arg->type, "tagger") == 0 || strcmp(arg->type, "Tagger") == 0 || strcmp(arg->type, "TAGGER") == 0)
+        tree    = new GTaggerReconstruction();
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;

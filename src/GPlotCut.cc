@@ -6,82 +6,102 @@ using namespace std;
 
 GPlotCut::GPlotCut()
 {
-    hNoProton.h2g.hPi0  = 0;
-    hNoProton.h2g.hEta  = 0;
-    hNoProton.h2g.hEtap = 0;
-    hNoProton.h6g.hPi0  = 0;
-    hNoProton.h6g.hEta  = 0;
-    hNoProton.h6g.hEtap = 0;
+    hNoProton.pi0.invMass   = 0;
+    hNoProton.pi0.misMass   = 0;
+    hNoProton.eta.invMass   = 0;
+    hNoProton.eta.misMass   = 0;
+    hNoProton.etap.invMass   = 0;
+    hNoProton.etap.misMass   = 0;
 
-    hProton.h2g.hPi0  = 0;
-    hProton.h2g.hEta  = 0;
-    hProton.h2g.hEtap = 0;
-    hProton.h6g.hPi0  = 0;
-    hProton.h6g.hEta  = 0;
-    hProton.h6g.hEtap = 0;
+    hNoProton.eta.h2g.invMass   = 0;
+    hNoProton.eta.h2g.misMass   = 0;
+    hNoProton.etap.h2g.invMass   = 0;
+    hNoProton.etap.h2g.misMass   = 0;
+
+    hNoProton.eta.h6g.invMassEta    = 0;
+    hNoProton.eta.h6g.invMassPi0[0] = 0;
+    hNoProton.eta.h6g.invMassPi0[1] = 0;
+    hNoProton.eta.h6g.invMassPi0[2] = 0;
+    hNoProton.eta.h6g.misMass       = 0;
+    hNoProton.etap.h6g.invMassEtap   = 0;
+    hNoProton.etap.h6g.invMassPi0[0] = 0;
+    hNoProton.etap.h6g.invMassPi0[1] = 0;
+    hNoProton.etap.h6g.invMassEta    = 0;
+    hNoProton.etap.h6g.misMass       = 0;
 }
 
 GPlotCut::~GPlotCut()
 {
+    if(hNoProton.pi0.invMass)   delete  hNoProton.pi0.invMass;
+    if(hNoProton.pi0.misMass)   delete  hNoProton.pi0.misMass;
+    if(hNoProton.eta.invMass)   delete  hNoProton.eta.invMass;
+    if(hNoProton.eta.misMass)   delete  hNoProton.eta.misMass;
+    if(hNoProton.etap.invMass)   delete  hNoProton.etap.invMass;
+    if(hNoProton.etap.misMass)   delete  hNoProton.etap.misMass;
+
+    if(hNoProton.eta.h2g.invMass)   delete  hNoProton.eta.h2g.invMass;
+    if(hNoProton.eta.h2g.misMass)   delete  hNoProton.eta.h2g.misMass;
+    if(hNoProton.etap.h2g.invMass)   delete  hNoProton.etap.h2g.invMass;
+    if(hNoProton.etap.h2g.misMass)   delete  hNoProton.etap.h2g.misMass;
+
+    if(hNoProton.eta.h6g.invMassEta)   delete  hNoProton.eta.h6g.invMassEta;
+    if(hNoProton.eta.h6g.invMassPi0[0])   delete  hNoProton.eta.h6g.invMassPi0[0];
+    if(hNoProton.eta.h6g.invMassPi0[1])   delete  hNoProton.eta.h6g.invMassPi0[1];
+    if(hNoProton.eta.h6g.invMassPi0[2])   delete  hNoProton.eta.h6g.invMassPi0[2];
+    if(hNoProton.eta.h6g.misMass)   delete  hNoProton.eta.h6g.misMass;
+    if(hNoProton.etap.h6g.invMassEtap)   delete  hNoProton.etap.h6g.invMassEtap;
+    if(hNoProton.etap.h6g.invMassPi0[0])   delete  hNoProton.etap.h6g.invMassPi0[0];
+    if(hNoProton.etap.h6g.invMassPi0[1])   delete  hNoProton.etap.h6g.invMassPi0[1];
+    if(hNoProton.etap.h6g.invMassEta)   delete  hNoProton.etap.h6g.invMassEta;
+    if(hNoProton.etap.h6g.misMass)   delete  hNoProton.etap.h6g.misMass;
 }
 
 void    GPlotCut::Init()
 {
     file_out->cd();
-    gDirectory->mkdir("2g");
-    file_out->cd();
-    gDirectory->GetDirectory("2g")->cd();
+    gDirectory->mkdir("NoProton");
+
+    file_out->GetDirectory("NoProton")->cd();
     gDirectory->mkdir("pi0");
-    file_out->cd();
-    gDirectory->GetDirectory("2g")->cd();
+
+    file_out->GetDirectory("NoProton")->cd();
     gDirectory->mkdir("eta");
-    file_out->cd();
-    gDirectory->GetDirectory("2g")->cd();
+    file_out->GetDirectory("NoProton")->GetDirectory("eta")->cd();
+    gDirectory->mkdir("h2g");
+    file_out->GetDirectory("NoProton")->GetDirectory("eta")->cd();
+    gDirectory->mkdir("h6g");
+
+    file_out->GetDirectory("NoProton")->cd();
     gDirectory->mkdir("etap");
-    file_out->cd();
-    gDirectory->GetDirectory("2g")->cd();
-    hNoProton.h2g.hPi0  = new GHistCut(gDirectory->GetDirectory("pi0"), GHistCut::FLAG_PI0, GHistCut::FLAG_2GAMMA);
-    file_out->cd();
-    gDirectory->GetDirectory("2g")->cd();
-    hNoProton.h2g.hEta  = new GHistCut(gDirectory->GetDirectory("eta"), GHistCut::FLAG_ETA, GHistCut::FLAG_2GAMMA);
-    file_out->cd();
-    gDirectory->GetDirectory("2g")->cd();
-    hNoProton.h2g.hEtap = new GHistCut(gDirectory->GetDirectory("etap"), GHistCut::FLAG_ETAP, GHistCut::FLAG_2GAMMA);
+    file_out->GetDirectory("NoProton")->GetDirectory("etap")->cd();
+    gDirectory->mkdir("h2g");
+    file_out->GetDirectory("NoProton")->GetDirectory("etap")->cd();
+    gDirectory->mkdir("h6g");
+
+    hNoProton.pi0.invMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("pi0"), TString("pi0_invMass"), TString("pi0_invMass"), 2000, 0, 2000);
+    hNoProton.pi0.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("pi0"), TString("pi0_misMass"), TString("pi0_misMass"), 2000, 0, 2000);
+
+    hNoProton.eta.invMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta"), TString("eta_invMass"), TString("eta_invMass"), 2000, 0, 2000);
+    hNoProton.eta.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta"), TString("eta_misMass"), TString("eta_misMass"), 2000, 0, 2000);
+    hNoProton.eta.h2g.invMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h2g"), TString("eta_2g_invMass"), TString("eta_2g_invMass"), 2000, 0, 2000);
+    hNoProton.eta.h2g.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h2g"), TString("eta_2g_misMass"), TString("eta_2g_misMass"), 2000, 0, 2000);
+    hNoProton.eta.h6g.invMassEta   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h6g"), TString("eta_6g_invMass"), TString("eta_6g_invMass"), 2000, 0, 2000);
+    hNoProton.eta.h6g.invMassPi0[0]= new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h6g"), TString("eta_6g_pi0a_invMass"), TString("eta_6g_pi0a_invMass"), 2000, 0, 2000);
+    hNoProton.eta.h6g.invMassPi0[1]= new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h6g"), TString("eta_6g_pi0b_invMass"), TString("eta_6g_pi0b_invMass"), 2000, 0, 2000);
+    hNoProton.eta.h6g.invMassPi0[2]= new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h6g"), TString("eta_6g_pi0c_invMass"), TString("eta_6g_pi0c_invMass"), 2000, 0, 2000);
+    hNoProton.eta.h6g.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("eta")->GetDirectory("h6g"), TString("eta_6g_misMass"), TString("eta_6g_misMass"), 2000, 0, 2000);
+
+    hNoProton.etap.invMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap"), TString("etap_invMass"), TString("etap_invMass"), 2000, 0, 2000);
+    hNoProton.etap.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap"), TString("etap_misMass"), TString("etap_misMass"), 2000, 0, 2000);
+    hNoProton.etap.h2g.invMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h2g"), TString("etap_2g_invMass"), TString("etap_2g_invMass"), 2000, 0, 2000);
+    hNoProton.etap.h2g.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h2g"), TString("etap_2g_misMass"), TString("etap_2g_misMass"), 2000, 0, 2000);
+    hNoProton.etap.h6g.invMassEtap = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h6g"), TString("etap_6g_invMass"), TString("etap_6g_invMass"), 2000, 0, 2000);
+    hNoProton.etap.h6g.invMassPi0[0]= new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h6g"), TString("etap_6g_pi0a_invMass"), TString("etap_6g_pi0a_invMass"), 2000, 0, 2000);
+    hNoProton.etap.h6g.invMassPi0[1]= new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h6g"), TString("etap_6g_pi0b_invMass"), TString("etap_6g_pi0b_invMass"), 2000, 0, 2000);
+    hNoProton.etap.h6g.invMassEta   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h6g"), TString("etap_6g_eta_invMass"), TString("etap_6g_eta_invMass"), 2000, 0, 2000);
+    hNoProton.etap.h6g.misMass   = new GHistD(file_out->GetDirectory("NoProton")->GetDirectory("etap")->GetDirectory("h6g"), TString("etap_6g_misMass"), TString("etap_6g_misMass"), 2000, 0, 2000);
 
     file_out->cd();
-    gDirectory->mkdir("6g");
-    file_out->cd();
-    gDirectory->GetDirectory("6g")->cd();
-    gDirectory->mkdir("pi0");
-    file_out->cd();
-    gDirectory->GetDirectory("6g")->cd();
-    gDirectory->mkdir("eta");
-    file_out->cd();
-    gDirectory->GetDirectory("6g")->cd();
-    gDirectory->mkdir("etap");
-    file_out->cd();
-    gDirectory->GetDirectory("6g")->cd();
-    hNoProton.h6g.hPi0  = new GHistCut(gDirectory->GetDirectory("pi0"), GHistCut::FLAG_PI0, GHistCut::FLAG_6GAMMA);
-    file_out->cd();
-    gDirectory->GetDirectory("6g")->cd();
-    hNoProton.h6g.hEta  = new GHistCut(gDirectory->GetDirectory("eta"), GHistCut::FLAG_ETA, GHistCut::FLAG_6GAMMA);
-    file_out->cd();
-    gDirectory->GetDirectory("6g")->cd();
-    hNoProton.h6g.hEtap = new GHistCut(gDirectory->GetDirectory("etap"), GHistCut::FLAG_ETAP, GHistCut::FLAG_6GAMMA);
-
-
-    /*hProton.h2gEta      = 0;
-    hProton.h2gEtap     = 0;
-    hProton.h6gPi0      = 0;
-    hProton.h6gEta      = 0;
-    hProton.h6gEtap     = 0;
-
-    hNoProton.h2gPi0      = 0;
-    hNoProton.h2gEta      = 0;
-    hNoProton.h2gEtap     = 0;
-    hNoProton.h6gPi0      = 0;
-    hNoProton.h6gEta      = 0;
-    hNoProton.h6gEtap     = 0;*/
 }
 
 
@@ -97,37 +117,64 @@ void  GPlotCut::ProcessEvent()
             if(pi0->GetNParticles() == 1)
             {
                 for(int i=0; i<tagger->GetNPrompt(); i++)
-                    hNoProton.h2g.hPi0->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                {
+                    hNoProton.pi0.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M());
+                    hNoProton.pi0.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                }
                 for(int i=0; i<tagger->GetNRand(); i++)
                 {
                     if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
-                        hNoProton.h2g.hPi0->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.pi0.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M());
+                        hNoProton.pi0.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                     else
-                        hNoProton.h2g.hPi0->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.pi0.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M());
+                        hNoProton.pi0.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                 }
             }
             else if(eta->GetNParticles() == 1)
             {
                 for(int i=0; i<tagger->GetNPrompt(); i++)
-                    hNoProton.h2g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                {
+                    hNoProton.eta.h2g.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, eta->Particle(0).M());
+                    hNoProton.eta.h2g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                }
                 for(int i=0; i<tagger->GetNRand(); i++)
                 {
                     if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
-                        hNoProton.h2g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.eta.h2g.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, eta->Particle(0).M());
+                        hNoProton.eta.h2g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                     else
-                        hNoProton.h2g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.eta.h2g.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, eta->Particle(0).M());
+                        hNoProton.eta.h2g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                 }
             }
             else if(etap->GetNParticles() == 1)
             {
                 for(int i=0; i<tagger->GetNPrompt(); i++)
-                    hNoProton.h2g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                {
+                    hNoProton.etap.h2g.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, etap->Particle(0).M());
+                    hNoProton.etap.h2g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                }
                 for(int i=0; i<tagger->GetNRand(); i++)
                 {
                     if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
-                        hNoProton.h2g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.etap.h2g.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, etap->Particle(0).M());
+                        hNoProton.etap.h2g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                     else
-                        hNoProton.h2g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.etap.h2g.invMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, etap->Particle(0).M());
+                        hNoProton.etap.h2g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                 }
             }
         }
@@ -137,25 +184,61 @@ void  GPlotCut::ProcessEvent()
             if(etap->GetNParticles() == 1)
             {
                 for(int i=0; i<tagger->GetNPrompt(); i++)
-                    hNoProton.h6g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M(), pi0->Particle(1).M(), eta->Particle(0).M(), etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                {
+                    hNoProton.etap.h6g.invMassEtap->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, etap->Particle(0).M());
+                    hNoProton.etap.h6g.invMassPi0[0]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M());
+                    hNoProton.etap.h6g.invMassPi0[1]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(1).M());
+                    hNoProton.etap.h6g.invMassEta->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, eta->Particle(0).M());
+                    hNoProton.etap.h6g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                }
                 for(int i=0; i<tagger->GetNRand(); i++)
                 {
                     if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
-                        hNoProton.h6g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M(), pi0->Particle(1).M(), eta->Particle(0).M(), etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.etap.h6g.invMassEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, etap->Particle(0).M());
+                        hNoProton.etap.h6g.invMassPi0[0]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M());
+                        hNoProton.etap.h6g.invMassPi0[1]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(1).M());
+                        hNoProton.etap.h6g.invMassEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, eta->Particle(0).M());
+                        hNoProton.etap.h6g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                     else
-                        hNoProton.h6g.hEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M(), pi0->Particle(1).M(), eta->Particle(0).M(), etap->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.etap.h6g.invMassEtap->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, etap->Particle(0).M());
+                        hNoProton.etap.h6g.invMassPi0[0]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M());
+                        hNoProton.etap.h6g.invMassPi0[1]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(1).M());
+                        hNoProton.etap.h6g.invMassEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, eta->Particle(0).M());
+                        hNoProton.etap.h6g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                 }
             }
             else if(eta->GetNParticles() == 1)
             {
                 for(int i=0; i<tagger->GetNPrompt(); i++)
-                    hNoProton.h6g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M(), pi0->Particle(1).M(), pi0->Particle(2).M(), eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                {
+                    hNoProton.eta.h6g.invMassEta->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, eta->Particle(0).M());
+                    hNoProton.eta.h6g.invMassPi0[0]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(0).M());
+                    hNoProton.eta.h6g.invMassPi0[1]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(1).M());
+                    hNoProton.eta.h6g.invMassPi0[2]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, pi0->Particle(2).M());
+                    hNoProton.eta.h6g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, tagger->GetMissingVector(tagger->GetPromptIndex(i)).M());
+                }
                 for(int i=0; i<tagger->GetNRand(); i++)
                 {
                     if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
-                        hNoProton.h6g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M(), pi0->Particle(1).M(), pi0->Particle(2).M(), eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.eta.h6g.invMassEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, eta->Particle(0).M());
+                        hNoProton.eta.h6g.invMassPi0[0]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(0).M());
+                        hNoProton.eta.h6g.invMassPi0[1]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(1).M());
+                        hNoProton.eta.h6g.invMassPi0[2]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, pi0->Particle(2).M());
+                        hNoProton.eta.h6g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                     else
-                        hNoProton.h6g.hEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M(), pi0->Particle(1).M(), pi0->Particle(2).M(), eta->Particle(0).M(), tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    {
+                        hNoProton.eta.h6g.invMassEta->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, eta->Particle(0).M());
+                        hNoProton.eta.h6g.invMassPi0[0]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(0).M());
+                        hNoProton.eta.h6g.invMassPi0[1]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(1).M());
+                        hNoProton.eta.h6g.invMassPi0[2]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, pi0->Particle(2).M());
+                        hNoProton.eta.h6g.misMass->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, tagger->GetMissingVector(tagger->GetRandIndex(i)).M());
+                    }
                 }
             }
         }
@@ -177,20 +260,35 @@ Bool_t  GPlotCut::Process(const char* input_filename, const char* output_filenam
 
     TraverseEntries(0, pi0->GetNEntries()+1);
 
-    //pi0Hist->Write();
-    //etaHist->Write();
-    //etapHist->Write();
-    /*hist->Write(&taggerTime);
-    TH1D    diff(protonAngleDiffPrompt);
-    diff.SetNameTitle("protonAngleDiffPromptRandSubst", "Proton Angle Difference Prompt/Rand Substracted");
-    diff.Add(&protonAngleDiffRand,-1);
-    TH1D    diffNormed(protonAngleDiffPrompt);
-    diffNormed.SetNameTitle("protonAngleDiffPromptRandSubstNorm", "Proton Angle Difference Prompt/Rand Substracted Normalised");
-    diffNormed.Add(&protonAngleDiffRand,-protonAngleDiffPrompt.GetMaximum()/protonAngleDiffRand.GetMaximum());
-    hist->Write(&protonAngleDiffPrompt);
-    hist->Write(&protonAngleDiffRand);
-    hist->Write(&diff);
-    hist->Write(&diffNormed);*/
+    hNoProton.pi0.invMass->Write(0.01);
+    hNoProton.pi0.misMass->Write(0.01);
+    hNoProton.eta.h2g.invMass->Write(0.01);
+    hNoProton.eta.h2g.misMass->Write(0.01);
+    hNoProton.eta.invMass->Add(hNoProton.eta.h2g.invMass, 1);
+    hNoProton.eta.misMass->Add(hNoProton.eta.h2g.misMass, 1);
+    hNoProton.etap.h2g.invMass->Write(0.01);
+    hNoProton.etap.h2g.misMass->Write(0.01);
+    hNoProton.etap.invMass->Add(hNoProton.etap.h2g.invMass, 1);
+    hNoProton.etap.misMass->Add(hNoProton.etap.h2g.misMass, 1);
+
+    hNoProton.eta.h6g.invMassEta->Write(0.01);
+    hNoProton.eta.h6g.invMassPi0[0]->Write(0.01);
+    hNoProton.eta.h6g.invMassPi0[1]->Write(0.01);
+    hNoProton.eta.h6g.invMassPi0[2]->Write(0.01);
+    hNoProton.eta.h6g.misMass->Write(0.01);
+    hNoProton.eta.invMass->Add(hNoProton.eta.h6g.invMassEta, 1);
+    hNoProton.eta.misMass->Add(hNoProton.eta.h6g.misMass, 1);
+    hNoProton.eta.invMass->Write(0.01);
+    hNoProton.eta.misMass->Write(0.01);
+    hNoProton.etap.h6g.invMassEtap->Write(0.01);
+    hNoProton.etap.h6g.invMassPi0[0]->Write(0.01);
+    hNoProton.etap.h6g.invMassPi0[1]->Write(0.01);
+    hNoProton.etap.h6g.invMassEta->Write(0.01);
+    hNoProton.etap.h6g.misMass->Write(0.01);
+    hNoProton.etap.invMass->Add(hNoProton.etap.h6g.invMassEtap, 1);
+    hNoProton.etap.misMass->Add(hNoProton.etap.h6g.misMass, 1);
+    hNoProton.etap.invMass->Write(0.01);
+    hNoProton.etap.misMass->Write(0.01);
 
     return kTRUE;
 }

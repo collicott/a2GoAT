@@ -22,13 +22,15 @@ protected:
 
     TH1*   prompt;
     TH1*   rand[2];
+    TH1*   randAll;
+    TH1*   result;
 
 public:
     GHist(TDirectory* _Dir);
     virtual ~GHist()    = 0;
 
             void    Add(const GHist *hist, const Double_t scale);
-            void    Write();
+            void    Write(const Double_t RandPromptFactor = 1);
 };
 
 
