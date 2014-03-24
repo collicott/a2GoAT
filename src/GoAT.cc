@@ -279,25 +279,14 @@ Bool_t	GoAT::Init(const char* configfile)
 	config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
 
-	config = ReadConfig("CheckCBStability");
-	if( sscanf(config.c_str(),"%d %lf\n", &CheckCBStability, &CBStabilityCutoff) == 2 ) 
-	{	
-		if(CheckCBStability)
-		{
-			cout << "Data Check (CB Stability) turned on" << endl;
-			cout << "Using cutoff ratio of " << CBStabilityCutoff << endl << endl;	
-		}
+	cout << "==========================================================" << endl;	
+	cout << "Setting up Data Checks:" << endl;	
+	cout << "==========================================================" << endl;	
+	if(!GDataChecks::PostInit()) 
+	{
+		cout << "GDataChecks Init failed!" << endl; 
+		return kFALSE;
 	}
-	else if( sscanf(config.c_str(),"%d\n", &CheckCBStability) == 1 ) 
-	{	
-		if(CheckCBStability)
-		{
-			cout << "Data Check (CB Stability) turned on" << endl;
-			cout << "Using cutoff ratio of 0.5 (default)" << endl << endl;	
-		}
-	}
-	else CheckCBStability = kFALSE;
-
 
 	cout << "==========================================================" << endl;	
 	cout << "Setting up sorting criteria:" << endl;	

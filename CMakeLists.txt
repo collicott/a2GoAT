@@ -31,6 +31,7 @@ add_executable(goat
    src/GoAT.cc 
    src/GSort.cc
    src/GParticleReconstruction.cc
+   src/GDataChecks.cc
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )

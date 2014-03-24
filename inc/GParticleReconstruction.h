@@ -2,7 +2,7 @@
 #ifndef __GParticleReconstruction_h__
 #define __GParticleReconstruction_h__
 
-#include "GoATTreeManager.h"
+#include "GDataChecks.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
@@ -10,7 +10,7 @@
 
 #define	pdg_rootino 0
 
-class	GParticleReconstruction : public GoATTreeManager
+class	GParticleReconstruction : public GDataChecks
 {
 private:
 

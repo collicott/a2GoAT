@@ -90,12 +90,6 @@ private:
     UInt_t*		Scaler;
     Int_t		NScaler;
 
-	// Data Handling tools
-	Int_t 		CBHitsThresh1;
-	Int_t 		CBHitsThresh2;
-	Int_t 		CBHitsThresh3;
-	Int_t 		CBHitsThresh4;	
-
 	//protected members
     Int_t		firstAcquEvent;
     Int_t		lastAcquEvent;
@@ -105,10 +99,7 @@ protected:
 	void    CheckRange(Int_t& min, Int_t& max);
     void 	GetAcquEntryFast();                	// without testing index
     void	TraverseAcquEntries(const Int_t min, const Int_t max);
-    void	TraverseAcquEntries()		 			{TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
-    
-	void 	DataChecks(const Int_t min, const Int_t max);	
-	Bool_t 	CheckCBHits(const Int_t min, const Int_t max);
+    void	TraverseAcquEntries() {TraverseAcquEntries(firstAcquEvent, lastAcquEvent);}
 	
     Double_t* 	Mass;
 	
@@ -129,18 +120,23 @@ public:
 	
 	Bool_t	OpenTreeRawEvent(TFile* TreeFile);
 	Bool_t	OpenTreeRawEvent() {return OpenTreeRawEvent(AcquFile);}
-	
+	Bool_t  GetTreeRawEventEntry(const Int_t index); 
+		
 	Bool_t	OpenTreeTagger(TFile* TreeFile);
 	Bool_t	OpenTreeTagger() {return OpenTreeTagger(AcquFile);}
-		
+	Bool_t  GetTreeTaggerEntry(const Int_t index); 
+			
 	Bool_t	OpenTreeTrigger(TFile* TreeFile);
 	Bool_t	OpenTreeTrigger() {return OpenTreeTrigger(AcquFile);}
-
+	Bool_t  GetTreeTriggerEntry(const Int_t index);
+	
 	Bool_t	OpenTreeDetectorHits(TFile* TreeFile);
 	Bool_t	OpenTreeDetectorHits() {return OpenTreeDetectorHits(AcquFile);}
-
+	Bool_t  GetTreeScalerEntry(const Int_t index); 
+	
 	Bool_t	OpenTreeScaler(TFile* TreeFile);
 	Bool_t	OpenTreeScaler() {return OpenTreeScaler(AcquFile);}
+	Bool_t  GetTreeDetectorHitsEntry(const Int_t index); 
 		
     Bool_t	FindValidAcquEvents();
 		
@@ -150,10 +146,8 @@ public:
     virtual void    Reconstruct() = 0;
     virtual void 	Analyse()=0;
     virtual	void	Print();
-    
-    // Data handling
-    Bool_t 		CheckCBStability;
-    Double_t  	CBStabilityCutoff;
+	virtual void 	ScalerByScalerChecks(const Int_t min, const Int_t max) {;}
+	virtual void 	EventByEventChecks(const Int_t i) {;}	    
 	
     		Int_t		GetNParticles()             const	{return nParticles;}
     const	Double_t*	GetEk()                      const	{return Ek;}

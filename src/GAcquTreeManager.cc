@@ -42,11 +42,6 @@ GAcquTreeManager::GAcquTreeManager() :
 				EventID(0),
 				Scaler(0),
 				NScaler(0),
-				CheckCBStability(0),
-				CBHitsThresh1(0),
-				CBHitsThresh2(0),
-				CBHitsThresh3(0),
-				CBHitsThresh4(0),
 				firstAcquEvent(0),
 				lastAcquEvent(0),
 				AcquEvent(-1)
@@ -140,6 +135,14 @@ Bool_t    GAcquTreeManager::OpenTreeRawEvent(TFile* TreeFile)
 	return kTRUE;
 }
 
+Bool_t GAcquTreeManager::GetTreeRawEventEntry(const Int_t index)
+{
+	if (treeRawEvent)	treeRawEvent->GetEntry(index);
+	else return kFALSE;
+	
+	return kTRUE;
+}
+
 Bool_t    GAcquTreeManager::OpenTreeTagger(TFile* TreeFile)
 {
 	if(!TreeFile) return kFALSE; 
@@ -158,6 +161,14 @@ Bool_t    GAcquTreeManager::OpenTreeTagger(TFile* TreeFile)
 	return kTRUE;	
 }
 
+Bool_t GAcquTreeManager::GetTreeTaggerEntry(const Int_t index)
+{
+	if (treeTagger)	treeTagger->GetEntry(index);
+	else return kFALSE;
+	
+	return kTRUE;
+}
+
 Bool_t    GAcquTreeManager::OpenTreeTrigger(TFile* TreeFile)
 {
 	if(!TreeFile) return kFALSE; 
@@ -170,6 +181,14 @@ Bool_t    GAcquTreeManager::OpenTreeTrigger(TFile* TreeFile)
 	treeTrigger->SetBranchAddress("Mult", &Mult);
 
 	treeTrigger_clone = treeTrigger->CloneTree(0);
+	
+	return kTRUE;
+}
+
+Bool_t GAcquTreeManager::GetTreeTriggerEntry(const Int_t index)
+{
+	if (treeTrigger)	treeTrigger->GetEntry(index);
+	else return kFALSE;
 	
 	return kTRUE;
 }
@@ -196,6 +215,14 @@ Bool_t    GAcquTreeManager::OpenTreeDetectorHits(TFile* TreeFile)
 	treeDetectorHits_clone = treeDetectorHits->CloneTree(0);	
 	
 	return kTRUE;	
+}
+
+Bool_t GAcquTreeManager::GetTreeDetectorHitsEntry(const Int_t index)
+{
+	if (treeDetectorHits)	treeDetectorHits->GetEntry(index);
+	else return kFALSE;
+	
+	return kTRUE;
 }
 
 Bool_t    GAcquTreeManager::OpenTreeScaler(TFile* TreeFile)
@@ -314,7 +341,6 @@ Bool_t	GAcquTreeManager::GetAcquEntry(const Int_t index)
 	return kTRUE;
 }
 
-
 void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 {
 	if(treeScaler)
@@ -325,25 +351,35 @@ void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 			treeScaler->GetEntry(i); 	int min	= EventNumber + 1; 
 			treeScaler->GetEntry(i+1); 	int max	= EventNumber;
 			
-			// Check Common data issues
-			bool analyze = kTRUE;
+			// Check Common data issues by scaler read
+			bool analyze_scaler = kTRUE;
             try {
-                DataChecks(min,max);
+                ScalerByScalerChecks(min,max);
             } catch (...) {
                 cout << "Entries " << min << " to " << max << "rejected (failed data checks)" << endl;
-                analyze = kFALSE;
+                analyze_scaler = kFALSE;
 			}
 			
-			if(analyze)
+			if (!analyze_scaler) continue; // Entire scaler read, continue to next scaler
+			
+			treeScaler->GetEntry(i+1);
+			treeScaler_clone->Fill();
+			
+			for(AcquEvent = min; AcquEvent<=max; AcquEvent++)
 			{
-				treeScaler->GetEntry(i+1);
-				treeScaler_clone->Fill();
-				
-				for(AcquEvent = min; AcquEvent<=max; AcquEvent++)
-				{
-					GetAcquEntry(AcquEvent);
-					Reconstruct();
+				// Check Common data issues by event
+				bool analyze_event = kTRUE;
+				try {
+					EventByEventChecks(AcquEvent);
+				} catch (...) {
+					cout << "Entry " << AcquEvent << "rejected (failed data checks)" << endl;
+					analyze_event = kFALSE;
 				}
+				
+				if(!analyze_event) // Event rejected, continue to next event
+
+				GetAcquEntry(AcquEvent);
+				Reconstruct();
 			}
 		}
 	}
@@ -356,53 +392,6 @@ void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 			Reconstruct();
 		}
 	}	
-}
-
-void 	GAcquTreeManager::DataChecks(const Int_t min, const Int_t max)
-{
-	if (CheckCBStability)
-	{
-		if(!CheckCBHits(min,max)) throw 1; 
-	}
-	
-}
-
-Bool_t 	GAcquTreeManager::CheckCBHits(const Int_t min, const Int_t max)
-{
-	// Check CB hits between scaler reads to eliminate data with CB hole problem 
-	Int_t SumQ1 = 0;
-	Int_t SumQ2 = 0;
-	Int_t SumQ3 = 0;
-	Int_t SumQ4 = 0;
-	
-    for(int i=min; i<=max; i++)
-    {	
-		if (treeDetectorHits) 	treeDetectorHits->GetEntry(i);
-		
-		for (int j=0; j<=nNaI_Hits; j++)
-		{
-			if  (NaI_Hits[j] <  180) SumQ1++;
-			if ((NaI_Hits[j] >= 180) && (NaI_Hits[j] < 360)) SumQ2++;
-			if ((NaI_Hits[j] >= 360) && (NaI_Hits[j] < 540)) SumQ3++;
-			if ((NaI_Hits[j] >= 540) && (NaI_Hits[j] < 720)) SumQ4++;
-		}
-	}
-		
-	// Check if sum is above some threshold
-	if (SumQ1 < CBHitsThresh1) return kFALSE;
-	if (SumQ2 < CBHitsThresh2) return kFALSE;
-	if (SumQ3 < CBHitsThresh3) return kFALSE;
-	if (SumQ4 < CBHitsThresh4) return kFALSE;
-	
-	// Set new baseline
-	CBHitsThresh1 = int(CBStabilityCutoff*SumQ1);
-	CBHitsThresh2 = int(CBStabilityCutoff*SumQ2);
-	CBHitsThresh3 = int(CBStabilityCutoff*SumQ3);
-	CBHitsThresh4 = int(CBStabilityCutoff*SumQ4);
-	
-	//cout << min << " " << max << endl;
-	return kTRUE;
-	
 }
 
 void	GAcquTreeManager::Print()
