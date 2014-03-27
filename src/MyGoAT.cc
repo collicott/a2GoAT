@@ -60,6 +60,7 @@ void* start(void* arguments)
 
         GParticleReconstruction*   help    = new GParticleReconstruction();
         help->SetScalerCorrection(kFALSE);
+        help->SetTrigger(300, 2);
         if(arg->nValues==2)
         {
             cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;

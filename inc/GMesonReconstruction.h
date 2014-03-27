@@ -15,6 +15,30 @@ private:
     static  Int_t   perm6g[15][6];
     static  Int_t   perm10g[27][10];
 
+    struct
+    {
+        TH1D*   invMassPi0;
+        TH1D*   invMassEta;
+        TH1D*   invMassEtap;
+    }   h2g;
+    struct
+    {
+        struct
+        {
+            TH1D*   invMassPi0a;
+            TH1D*   invMassPi0b;
+            TH1D*   invMassPi0c;
+            TH1D*   invMassEta;
+        }   h3pi0;
+        struct
+        {
+            TH1D*   invMassPi0a;
+            TH1D*   invMassPi0b;
+            TH1D*   invMassEta;
+            TH1D*   invMassEtap;
+        }   hetap;
+    }   h6g;
+
     void    Reconstruct2g();
     void    Reconstruct6g();
     void    Reconstruct10g();

@@ -25,6 +25,7 @@ void  GCorrectScalers::ProcessEvent()
 
     eventFlags->Fill();
     tagger->Fill();
+    trigger->Fill();
     actualEvent++;
 }
 

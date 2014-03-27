@@ -86,9 +86,35 @@ Bool_t  GMesonReconstruction::Process(const char* input_filename, const char* ou
     if(!CreateTrigger())    return kFALSE;
     scalers->Clone(*file_out);
 
+    h2g.invMassPi0  = new TH1D("h2g_invMassPi0", "h2g_invMassPi0", 500, 0, 500);
+    h2g.invMassEta  = new TH1D("h2g_invMassEta", "h2g_invMassEta", 700, 200, 900);
+    h2g.invMassEtap = new TH1D("h2g_invMassEtap", "h2g_invMassEtap", 600, 750, 1350);
+
+    h6g.h3pi0.invMassPi0a = new TH1D("h6g_3pi0_invMassPi0a", "h6g_3pi0_invMassPi0a", 500, 0, 500);
+    h6g.h3pi0.invMassPi0b = new TH1D("h6g_3pi0_invMassPi0b", "h6g_3pi0_invMassPi0b", 500, 0, 500);
+    h6g.h3pi0.invMassPi0c = new TH1D("h6g_3pi0_invMassPi0c", "h6g_3pi0_invMassPi0c", 500, 0, 500);
+    h6g.h3pi0.invMassEta  = new TH1D("h6g_3pi0_invMassEta", "h6g_3pi0_invMassEta", 700, 200, 900);
+
+    h6g.hetap.invMassPi0a = new TH1D("h6g_etap_invMassPi0a", "h6g_etap_invMassPi0a", 500, 0, 500);
+    h6g.hetap.invMassPi0b = new TH1D("h6g_etap_invMassPi0b", "h6g_etap_invMassPi0b", 500, 0, 500);
+    h6g.hetap.invMassEta  = new TH1D("h6g_etap_invMassEta", "h6g_etap_invMassEta", 700, 200, 900);
+    h6g.hetap.invMassEtap = new TH1D("h6g_etap_invMassEtap", "h6g_etap_invMassEtap", 600, 750, 1350);
+
+
     TraverseEntries(0, photons->GetNEntries()+1);
 
     if(!Write())    return kFALSE;
+    if(!Write(h2g.invMassPi0))    return kFALSE;
+    if(!Write(h2g.invMassEta))    return kFALSE;
+    if(!Write(h2g.invMassEtap))    return kFALSE;
+    if(!Write(h6g.h3pi0.invMassPi0a))    return kFALSE;
+    if(!Write(h6g.h3pi0.invMassPi0b))    return kFALSE;
+    if(!Write(h6g.h3pi0.invMassPi0c))    return kFALSE;
+    if(!Write(h6g.h3pi0.invMassEta))    return kFALSE;
+    if(!Write(h6g.hetap.invMassPi0a))    return kFALSE;
+    if(!Write(h6g.hetap.invMassPi0b))    return kFALSE;
+    if(!Write(h6g.hetap.invMassEta))    return kFALSE;
+    if(!Write(h6g.hetap.invMassEtap))    return kFALSE;
     return kTRUE;
 }
 
@@ -125,12 +151,15 @@ void    GMesonReconstruction::Reconstruct2g()
     {
     case 0:
         pi0->AddParticle(meson,2,daughter_pdg,daughter_index);
+        h2g.invMassPi0->Fill(meson.M());
         break;
     case 1:
         eta->AddParticle(meson,2,daughter_pdg,daughter_index);
+        h2g.invMassEta->Fill(meson.M());
         break;
     case 2:
         etap->AddParticle(meson,2,daughter_pdg,daughter_index);
+        h2g.invMassEtap->Fill(meson.M());
         break;
     }
 }
@@ -185,12 +214,15 @@ void    GMesonReconstruction::Reconstruct6g()
         daughter_index[0] = perm6g[minIndex][0];
         daughter_index[1] = perm6g[minIndex][1];
         pi0->AddParticle(meson[minIndex][0], 2, daughter_pdg, daughter_index);
+        h6g.h3pi0.invMassPi0a->Fill(meson[minIndex][0].M());
         daughter_index[0] = perm6g[minIndex][2];
         daughter_index[1] = perm6g[minIndex][3];
         pi0->AddParticle(meson[minIndex][1], 2, daughter_pdg, daughter_index);
+        h6g.h3pi0.invMassPi0b->Fill(meson[minIndex][1].M());
         daughter_index[0] = perm6g[minIndex][4];
         daughter_index[1] = perm6g[minIndex][5];
         pi0->AddParticle(meson[minIndex][2], 2, daughter_pdg, daughter_index);
+        h6g.h3pi0.invMassPi0c->Fill(meson[minIndex][2].M());
 
         TLorentzVector  reconstructedEta(meson[minIndex][0] + meson[minIndex][1] + meson[minIndex][2]);
         daughter_pdg[0] = 111;
@@ -200,6 +232,7 @@ void    GMesonReconstruction::Reconstruct6g()
         daughter_index[1] = 1;
         daughter_index[2] = 2;
         eta->AddParticle(reconstructedEta, 3, daughter_pdg, daughter_index);
+        h6g.h3pi0.invMassEta->Fill(reconstructedEta.M());
         return;
     }
 
@@ -212,12 +245,15 @@ void    GMesonReconstruction::Reconstruct6g()
         daughter_index[0] = perm6g[minIndex][0];
         daughter_index[1] = perm6g[minIndex][1];
         eta->AddParticle(meson[minIndex][0], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassEta->Fill(meson[minIndex][0].M());
         daughter_index[0] = perm6g[minIndex][2];
         daughter_index[1] = perm6g[minIndex][3];
         pi0->AddParticle(meson[minIndex][1], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassPi0a->Fill(meson[minIndex][1].M());
         daughter_index[0] = perm6g[minIndex][4];
         daughter_index[1] = perm6g[minIndex][5];
         pi0->AddParticle(meson[minIndex][2], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassPi0b->Fill(meson[minIndex][2].M());
     }
     else if(minDecayIndex == 1)  //Eta is meson[i][1]
     {
@@ -226,12 +262,15 @@ void    GMesonReconstruction::Reconstruct6g()
         daughter_index[0] = perm6g[minIndex][0];
         daughter_index[1] = perm6g[minIndex][1];
         pi0->AddParticle(meson[minIndex][0], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassPi0a->Fill(meson[minIndex][0].M());
         daughter_index[0] = perm6g[minIndex][2];
         daughter_index[1] = perm6g[minIndex][3];
         eta->AddParticle(meson[minIndex][1], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassEta->Fill(meson[minIndex][1].M());
         daughter_index[0] = perm6g[minIndex][4];
         daughter_index[1] = perm6g[minIndex][5];
         pi0->AddParticle(meson[minIndex][2], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassPi0b->Fill(meson[minIndex][2].M());
     }
     else if(minDecayIndex == 2)  //Eta is meson[i][2]
     {
@@ -240,12 +279,15 @@ void    GMesonReconstruction::Reconstruct6g()
         daughter_index[0] = perm6g[minIndex][0];
         daughter_index[1] = perm6g[minIndex][1];
         pi0->AddParticle(meson[minIndex][0], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassPi0a->Fill(meson[minIndex][0].M());
         daughter_index[0] = perm6g[minIndex][2];
         daughter_index[1] = perm6g[minIndex][3];
         pi0->AddParticle(meson[minIndex][1], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassPi0b->Fill(meson[minIndex][1].M());
         daughter_index[0] = perm6g[minIndex][4];
         daughter_index[1] = perm6g[minIndex][5];
         eta->AddParticle(meson[minIndex][2], 2, daughter_pdg, daughter_index);
+        h6g.hetap.invMassEta->Fill(meson[minIndex][2].M());
     }
 
     TLorentzVector  reconstructedEtap(meson[minIndex][0] + meson[minIndex][1] + meson[minIndex][2]);
@@ -256,6 +298,7 @@ void    GMesonReconstruction::Reconstruct6g()
     daughter_index[1] = 0;
     daughter_index[2] = 1;
     etap->AddParticle(reconstructedEtap, 3, daughter_pdg, daughter_index);
+    h6g.hetap.invMassEtap->Fill(reconstructedEtap.M());
 }
 
 

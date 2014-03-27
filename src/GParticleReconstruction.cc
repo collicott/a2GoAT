@@ -5,11 +5,14 @@ using namespace std;
 
 
 GParticleReconstruction::GParticleReconstruction()  :
-    DoScalerCorrection(kFALSE),
     CBTime(0),
     TAPSTime(0),
     CBTimeAfterCut(0),
-    TAPSTimeAfterCut(0)
+    TAPSTimeAfterCut(0),
+    DoScalerCorrection(kFALSE),
+    DoTrigger(kFALSE),
+    E_Sum(50),
+    multiplicity(1)
 {
     CBTimeCut[0]    = -1000000.0;
     CBTimeCut[1]    = 1000000.0;
@@ -25,8 +28,22 @@ GParticleReconstruction::~GParticleReconstruction()
     if(TAPSTimeAfterCut)    delete  TAPSTimeAfterCut;
 }
 
+Bool_t  GParticleReconstruction::Trigger()
+{
+    if(trigger->GetESum() < E_Sum)
+        return kFALSE;
+    if(trigger->GetMult() < multiplicity)
+        return kFALSE;
+    return kTRUE;
+}
+
 void  GParticleReconstruction::ProcessEvent()
 {
+    if(DoTrigger)
+    {
+        if(!Trigger())
+            return;
+    }
     if(rawEvent->GetNCB() != 2 && rawEvent->GetNCB() != 6 && rawEvent->GetNCB() != 10)
         return;
     if(rawEvent->GetNTAPS()>1)
