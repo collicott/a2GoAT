@@ -11,12 +11,12 @@ private:
     Double_t 	ESum;
     Int_t 		Mult;
     Int_t 		nTriggerPattern;
-    Int_t 		TriggerPattern[32];
+    Int_t 		TriggerPattern[128];
     UChar_t     helicityBit;
     Int_t 		nError;
-    Int_t 		ErrModID[32];
-    Int_t 		ErrModIndex[32];
-    Int_t 		ErrCode[32];
+    Int_t 		ErrModID[128];
+    Int_t 		ErrModIndex[128];
+    Int_t 		ErrCode[128];
 
    protected:
     virtual void    SetBranchAdresses();

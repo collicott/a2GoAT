@@ -18,12 +18,12 @@ void    GTreeTrigger::SetBranchAdresses()
     tree_in->SetBranchAddress("ESum", 	&ESum);
     tree_in->SetBranchAddress("Mult", 	&Mult);
     tree_in->SetBranchAddress("nTriggerPattern", &nTriggerPattern);
-    tree_in->SetBranchAddress("TriggerPattern", &TriggerPattern);
+    tree_in->SetBranchAddress("TriggerPattern", TriggerPattern);
     tree_in->SetBranchAddress("HelicityBit", 	&helicityBit);
     tree_in->SetBranchAddress("nError", 	&nError);
     tree_in->SetBranchAddress("ErrModID", ErrModID);
-    tree_in->SetBranchAddress("ErrModIndex.", &ErrModIndex);
-    tree_in->SetBranchAddress("ErrCode.", &ErrCode);
+    tree_in->SetBranchAddress("ErrModIndex.", ErrModIndex);
+    tree_in->SetBranchAddress("ErrCode.", ErrCode);
 
 }
 
