@@ -5,6 +5,7 @@ using namespace std;
 
 
 GParticleReconstruction::GParticleReconstruction()  :
+    DoScalerCorrection(kFALSE),
     CBTime(0),
     TAPSTime(0),
     CBTimeAfterCut(0),
@@ -86,8 +87,38 @@ Bool_t  GParticleReconstruction::Process(const char* input_filename, const char*
     CBTimeAfterCut      = new TH1D("CBTimeOR_Cut", "CBTimeOR_Cut", 10000, -1000, 1000);
     TAPSTimeAfterCut    = new TH1D("TAPSTimeOR_Cut", "TAPSTimeOR_Cut", 10000, -1000, 1000);
 
-    if(!GCorrectScalers::Process(input_filename, output_filename))  return kFALSE;
+    if(DoScalerCorrection)
+    {
+        if(!GCorrectScalers::Process(input_filename, output_filename))  return kFALSE;
 
+        if(!Write(CBTime))  return kFALSE;
+        if(!Write(TAPSTime))  return kFALSE;
+        if(!Write(CBTimeAfterCut))  return kFALSE;
+        if(!Write(TAPSTimeAfterCut))  return kFALSE;
+        return kTRUE;
+    }
+
+    if(!Open(input_filename))    return kFALSE;
+    if(!OpenRawEvent())    return kFALSE;
+    if(!OpenTagger())    return kFALSE;
+    if(!OpenScalers())    return kFALSE;
+
+    if(!CreateTagger())    return kFALSE;
+    if(!CreateEventFlags())    return kFALSE;
+    scalers->Clone(*file_out);
+
+    file_out->cd();
+    taggerTime  = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);
+    accepted    = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
+    accepted->SetBinContent(1, rawEvent->GetNEntries());
+    accepted->SetBinContent(2, rawEvent->GetNEntries());
+    accepted->SetBinContent(3, 0);
+
+    TraverseEntries(0, rawEvent->GetNEntries()+1);
+
+    if(!Write())    return kFALSE;
+    if(!Write(taggerTime))  return kFALSE;
+    if(!Write(accepted))  return kFALSE;
     if(!Write(CBTime))  return kFALSE;
     if(!Write(TAPSTime))  return kFALSE;
     if(!Write(CBTimeAfterCut))  return kFALSE;

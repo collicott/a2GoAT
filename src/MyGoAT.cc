@@ -39,7 +39,27 @@ void* start(void* arguments)
     {
 
         GParticleReconstruction*   help    = new GParticleReconstruction();
+        help->SetScalerCorrection(kTRUE);
+        if(arg->nValues==2)
+        {
+            cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;
+            help->SetCBTimeCut(arg->time.CBTimeCut[0], arg->time.CBTimeCut[1]);
+        }
+        else if(arg->nValues==4)
+        {
+            cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;
+            help->SetCBTimeCut(arg->time.CBTimeCut[0], arg->time.CBTimeCut[1]);
+            cout << "Set TAPSTimeWindow from " << arg->time.TAPSTimeCut[0] << " to " << arg->time.TAPSTimeCut[1] << "." << endl;
+            help->SetTAPSTimeCut(arg->time.TAPSTimeCut[0], arg->time.TAPSTimeCut[1]);
+        }
 
+        tree    = help;
+    }
+    else if(strcmp(arg->type, "mcparticle") == 0 || strcmp(arg->type, "MCParticle") == 0 || strcmp(arg->type, "MCparticle") == 0)
+    {
+
+        GParticleReconstruction*   help    = new GParticleReconstruction();
+        help->SetScalerCorrection(kFALSE);
         if(arg->nValues==2)
         {
             cout << "Set CBTimeWindow from " << arg->time.CBTimeCut[0] << " to " << arg->time.CBTimeCut[1] << "." << endl;

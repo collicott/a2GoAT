@@ -8,6 +8,7 @@
 class  GParticleReconstruction  : public GCorrectScalers
 {
 private:
+    Bool_t          DoScalerCorrection;
     TH1D*           CBTime;
     TH1D*           TAPSTime;
     TH1D*           CBTimeAfterCut;
@@ -28,6 +29,7 @@ public:
 
     void    SetCBTimeCut(const Double_t min, const Double_t max)    {CBTimeCut[0]=min; CBTimeCut[1]=max;}
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}
+    void    SetScalerCorrection(const Bool_t value) {DoScalerCorrection = value;}
 };
 
 #endif

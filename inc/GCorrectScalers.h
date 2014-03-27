@@ -12,10 +12,9 @@ private:
     UInt_t  EventAtLastScalerRead;
     UInt_t  actualEvent;
 
+protected:
     TH1D*           taggerTime;
     TH1I*           accepted;
-
-protected:
 
     virtual void    ProcessEvent();
 
