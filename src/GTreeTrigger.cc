@@ -3,7 +3,12 @@
 
 
 GTreeTrigger::GTreeTrigger()    :
-    GTree(TString("treeTrigger"))
+    GTree(TString("treeTrigger")),
+    ESum(0),
+    Mult(0),
+    nTriggerPattern(0),
+    helicityBit(0),
+    nError(0)
 {
 
 }
