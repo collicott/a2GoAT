@@ -78,26 +78,47 @@ Bool_t      GCut::DoInvMass()
 
 Bool_t      GCut::DoMisMass()
 {
-    if(tagger->GetNPrompt()>1 || tagger->GetNRand()>1)
-        return kFALSE;
-
-    Double_t help;
-    if(tagger->GetNPrompt()==1)
+			Int_t           nPrompt		= tagger->GetNPrompt();
+    const	Char_t*         promptIndex	= tagger->GetPromptIndex();
+			Int_t           nRand		= tagger->GetNRand();
+    const	Char_t*         randIndex	= tagger->GetRandIndex();
+    
+	tagger->ClearPromptRand();
+    nTagged = 0;
+    for(int i=0; i<nPrompt; i++)
     {
-        help    = tagger->GetMissingVector(tagger->GetPromptIndex(0)).M();
-        if(help<MisMass[0] || help>MisMass[1])
-            tagger->ClearPrompt();
+		Double_t	mm	= tagger->GetMissingVector(tagger->GetPromptIndex(i)).M();
+        if(mm > MisMass[0] && mm < MisMass[1])
+        {
+            tagged_ch[nTagged]      = tagger->GetTagged_ch(tagger->GetPromptIndex(i));
+            tagged_t[nTagged]       = tagger->GetTagged_t(tagger->GetPromptIndex(i));
+            photonbeam_E[nTagged]   = tagger->GetPhotonBeam_E(tagger->GetPromptIndex(i));
+            missingVector[nTagged]	= tagger->GetMissingVector(tagger->GetPromptIndex(i));
+
+            tagger->SetPrompt(nTagged);
+            nTagged++;
+        }
     }
-    if(tagger->GetNRand()==1)
+    for(int i=0; i<nRand; i++)
     {
-        help    = tagger->GetMissingVector(tagger->GetRandIndex(0)).M();
-        if(help<MisMass[0] || help>MisMass[1])
-            tagger->ClearRand();
+		Double_t	mm	= tagger->GetMissingVector(tagger->GetRandIndex(i)).M();
+        if(mm > MisMass[0] && mm < MisMass[1])
+        {
+            tagged_ch[nTagged]      = tagger->GetTagged_ch(tagger->GetRandIndex(i));
+            tagged_t[nTagged]       = tagger->GetTagged_t(tagger->GetRandIndex(i));
+            photonbeam_E[nTagged]   = tagger->GetPhotonBeam_E(tagger->GetRandIndex(i));
+            missingVector[nTagged]	= tagger->GetMissingVector(tagger->GetRandIndex(i));
+
+            tagger->SetRand(nTagged);
+            nTagged++;
+        }
     }
-
-    if(tagger->GetNPrompt()==0 && tagger->GetNRand()==0)
-        return kFALSE;
-
+    if(nTagged == 0)
+		return kFALSE;
+		
+    tagger->SetTagger(nTagged, tagged_ch, tagged_t, photonbeam_E, missingVector);
+    //std::cout << tagger->GetNTagged() << "   " << tagger->GetNPrompt() << "   " << tagger->GetNRand() << std::endl;
+    tagger->Fill();
     return kTRUE;
 }
 

@@ -5,6 +5,7 @@
 #include "GParticleReconstruction.h"
 #include "GMesonReconstruction.h"
 #include "GTaggerReconstruction.h"
+#include "GProtonReconstruction.h"
 
 using namespace std;
 
@@ -83,7 +84,35 @@ void* start(void* arguments)
 
     }
     else if(strcmp(arg->type, "tagger") == 0 || strcmp(arg->type, "Tagger") == 0 || strcmp(arg->type, "TAGGER") == 0)
-        tree    = new GTaggerReconstruction();
+    {
+		if(!(arg->nValues==6))
+        {
+			cout << "No Tagger Windows specified. Check arguments." << endl;
+			return 0;
+		}
+		GTaggerReconstruction*   help    = new GTaggerReconstruction();
+		help->SetTaggerTimePrompt(arg->value[0], arg->value[1]);
+		cout << "Set TaggerPromptWindow from " << arg->value[0] << " to " << arg->value[1] << "." << endl;
+		help->SetTaggerTimeRand0(arg->value[2], arg->value[3]);
+		cout << "Set TaggerRand0Window from " << arg->value[2] << " to " << arg->value[3] << "." << endl;
+		help->SetTaggerTimeRand1(arg->value[4], arg->value[5]);
+		cout << "Set TaggerRand1Window from " << arg->value[4] << " to " << arg->value[5] << "." << endl;
+        tree    = help;
+	}
+	else if(strcmp(arg->type, "proton") == 0 || strcmp(arg->type, "Proton") == 0 || strcmp(arg->type, "PROTON") == 0)
+    {
+		if(!(arg->nValues==3))
+        {
+			cout << "No Values specified. Check arguments." << endl;
+			return 0;
+		}
+		GProtonReconstruction*   help    = new GProtonReconstruction();
+		help->SetProtonAngleDiffCut(arg->value[0]);
+		cout << "Set ProtonAngleDiffCut to " << arg->value[0] << "." << endl;
+		help->SetPhiDiffCut(arg->value[1], arg->value[2]);
+		cout << "Set PhiDiffCut from " << arg->value[1] << " to " << arg->value[2] << "." << endl;
+        tree    = help;
+	}
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;

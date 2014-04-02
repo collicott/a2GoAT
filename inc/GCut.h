@@ -27,6 +27,12 @@ private:
     Bool_t      DoMultiplicity();
     Bool_t      DoInvMass();
     Bool_t      DoMisMass();
+    
+    Int_t           nTagged;
+    Int_t           tagged_ch[GTreeTagger_MAX];
+    Double_t        tagged_t[GTreeTagger_MAX];
+    Double_t        photonbeam_E[GTreeTagger_MAX];
+    TLorentzVector  missingVector[GTreeTagger_MAX];
 
 protected:
 

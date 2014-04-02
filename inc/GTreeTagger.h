@@ -44,7 +44,9 @@ public:
     const	Double_t*       GetPhotonBeam_E()                   const	{return photonbeam_E;}
             Double_t        GetPhotonBeam_E(const Int_t index)	const	{return photonbeam_E[index];}
             Int_t           GetPromptIndex(const Int_t index)   const   {return promptIndex[index];}
+    const	Char_t*         GetPromptIndex()   					const   {return promptIndex;}
             Int_t           GetRandIndex(const Int_t index)     const   {return randIndex[index];}
+    const   Char_t*         GetRandIndex()     					const   {return randIndex;}
     const	Int_t*          GetTagged_ch()                      const	{return tagged_ch;}
             Int_t           GetTagged_ch(const Int_t index)     const	{return tagged_ch[index];}
     const	Double_t*       GetTagged_t()                       const	{return tagged_t;}

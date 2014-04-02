@@ -90,6 +90,21 @@ void* start(void* arguments)
 
         tree    = help;
     }
+    else if(strcmp(arg->type, "misMass") == 0 || strcmp(arg->type, "MisMass") == 0 || strcmp(arg->type, "MM") == 0 || strcmp(arg->type, "mm") == 0 || strcmp(arg->type, "missingmass") == 0 || strcmp(arg->type, "missingMass") == 0)
+    {
+        GCut*   help    = new GCut();
+
+        if(arg->nValues!=2)
+        {
+            cout << "To many or few Arguments given." << endl;
+            PrintHelp();
+            return 0;
+        }
+        cout << "Set missing mass cut from " << arg->value[0] << " to " << arg->value[1] << "." << endl;
+        help->SetMisMassCut(arg->value[0],arg->value[1]);
+
+        tree    = help;
+    }
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;

@@ -20,7 +20,7 @@ GTaggerReconstruction::~GTaggerReconstruction()
 }
 
 void  GTaggerReconstruction::ProcessEvent()
-{
+{	
     tagger->ClearPromptRand();
     nTagged = 0;
     for(int i=0; i<tagger->GetNTagged(); i++)

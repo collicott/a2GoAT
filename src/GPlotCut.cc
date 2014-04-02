@@ -198,7 +198,7 @@ void    GPlotCut::Init()
 
 void  GPlotCut::ProcessEvent()
 {
-    if(protons)
+    if(protons->GetNParticles()>0)
     {
         if(photons->GetNParticles() == 2)
         {
@@ -470,6 +470,7 @@ Bool_t  GPlotCut::Process(const char* input_filename, const char* output_filenam
 {
     if(!Open(input_filename))    return kFALSE;
     if(!OpenPhotons())    return kFALSE;
+    if(!OpenProtons())    return kFALSE;
     if(!OpenEtap())    return kFALSE;
     if(!OpenEta())    return kFALSE;
     if(!OpenPi0())    return kFALSE;

@@ -10,8 +10,9 @@
 class  GPlotProton  : public GTreeManager
 {
 private:
-    TH1D    protonAngleDiffPrompt;
-    TH1D    protonAngleDiffRand;
+    TH1D*    protonAngleDiffPrompt;
+    TH1D*    protonAngleDiffRand;
+    TH1D*    phiDiff;
 
 protected:
 
