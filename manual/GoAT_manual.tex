@@ -1,0 +1,101 @@
+\documentclass[12pt]{article}
+
+\oddsidemargin=0.0in
+\evensidemargin=0.0in
+\topmargin=0.0in
+\headheight=0.0in
+\headsep=0.0in
+
+\textwidth=6.5in
+\textheight=9.0in
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{wasysym}
+\usepackage{epstopdf}
+\usepackage{mathtools}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\begin{document}
+
+\title{Shit just GoAT serious...}
+\author{Cristina Collicott}
+\date{March 2014}
+\pagestyle{empty}
+\pagenumbering{roman}
+
+\maketitle
+
+\vspace{1cm}
+The following manual describes analysis using the GoAT (Generation of Analysis Trees) framework. This software was designed to provide a fast, tree-based analysis framework for the A2-Collaboration. The code uses AcquRoot to produce generic analysis trees (using a physics class named TA2GoAT). These generic trees are then processed using GoAT software where particle reconstruction, data checks, and data sorting is completed. 
+
+\section{Where can I get the software?}
+The most up-to-date software is available via the A2-Collabotation-dev github repository. \\
+
+\noindent \textbf{Additions to Acqu:} https://github.com/A2-Collaboration-dev/acqu \\
+\noindent Branch name: A2GoAT \\
+
+\noindent \textbf{GoAT software:} https://github.com/A2-Collaboration-dev/a2GoAT \\
+\noindent Branch name: development \\
+
+\noindent As a disclaimer, the code is in development stage. If you find errors (or improvements), please share this with others (pull request via git). 
+
+\section{Analysis Procedures}
+
+\subsection{AcquRoot - generate raw data trees}
+Run AcquRoot using TA2GoAT as the physics class. By default, a generic tree file will be produced with the name "Acqu$\_$rawfilename.dat". As an example, a raw file named CB$\_$100.dat will produce a tree file named "Acqu$\_$CB$\_$100.root". \\
+
+\noindent The physics class TA2GoAT inherits from an SQL access class (designed to link to CaLib database). If you need to specify different apparatus classes or detector classes, you change change them inside this class. However, the code is currently designed to take advantage of the best available apparatus classes (so I would recommend using the defaults).
+
+\subsection{GoAT - generate analysis trees}
+GoAT provides the framework to analyse these generic raw data trees from AcquRoot. A set of tree managers allows the user to sidestep most of the difficulties of working with trees. A single global config-file is used to setup all the reconstruction and sorting choices of the user. Specification of input and output files is best done via command line flags. \\
+
+\noindent \textbf{Running from the command line}\\
+A set of command line flags is available
+\begin{itemize}
+\item \textbf{-f} \hspace{3mm}Input file name
+\item \textbf{-d} \hspace{3mm}Input directory (runs all files within a directory - default name is "Acqu$\_$XXX.root")
+\item \textbf{-p} \hspace{2mm}Change default input prefix (-d flag will search for files "prefix$\_$XXX.root")
+\item \textbf{-F} \hspace{3mm}Output file name (if unspecified, default name is "GoAT$\_$XXX.root")
+\item \textbf{-d} \hspace{3mm}Output directory for GoAT trees 
+\item \textbf{-p} \hspace{2mm}Change default output prefix (default output name will be "prefix$\_$XXX.root")
+\end{itemize}
+\vspace{2mm}
+\noindent When a flag is given on command line, the next input is associated with this flag (ex. -f inputfile.root). The config-file should be given on the command line too. No flag needs to be used, just specify it at some point in the command line. \\
+\vspace{0.5cm}
+
+\noindent \textbf{Example command:} \\
+./build/bin/goat -d \$acqu/output/ -D /home/cristina/GoATTrees configfiles/GoAT-example.dat \\
+
+\noindent This command would run \textit{goat} on all root files within the directory \$acqu/output/ which match "Acqu$\_$XXX.root". The analysed files will be output to the folder /home/cristina/GoATTrees and will be named "GoAT$\_$XXX.root". The sorting conditions and particle reconstruction choices will be taken from the config-file "configfiles/GoAT-example.dat". \\
+\vspace{10mm}
+
+\noindent \textbf{Another Example command:} \\
+./build/bin/goat -d \$acqu/output/ -p RawTrees -P GoATTrees configfiles/GoAT-example.dat \\
+
+\noindent This command would run \textit{goat} on all root files within the directory \$acqu/output/ which match "RawTrees$\_$XXX.root". The analysed files will be output to the folder \$acqu/output/ (same as input) and will be named "GoATTrees$\_$XXX.root". The sorting conditions and particle reconstruction choices will be taken from the config-file "configfiles/GoAT-example.dat".
+
+\newpage
+\noindent \textbf{Controlling the global config-file}\\
+The analysis using GoAT can be controlled using a config-file.
+\begin{itemize}
+\item \textbf{Period-Macro} \\Update to terminal after N events analysed
+\item \textbf{CheckCBStability} \\Turn on/off data checks for missing CB sections in data
+\item \textbf{Do-Particle-Reconstruction} \\Turn on particle reconstruction? If turned off, raw particle tree is saved.
+\item \textbf{Do-Charged-Particle-Reconstruction}\\Turn on charged particle reconstruction?
+\item \textbf{Cut-dE-E-CB-Proton}\\Provide cutfile and cutname (similar cut available for $\pi^{+}$ and e$^{-}$, TAPS)
+\item \textbf{Do-Meson-Reconstruction}\\Turn on meson reconstruction?
+\item \textbf{Cut-IM-Width-Pi0:}\\ Set an IM width (acts as weighting factor and IM cut) for $\pi^{0}$ \\ Similar cut available for $\eta$ and $\eta$'.
+\item \textbf{SortRaw-NParticles} \\ Sort on raw \# of particles (total, CB, and TAPS).\\Use the flags +, -, and = to specify "or more", "or less", or "exactly".
+\item \textbf{SortRaw-CBEnergySum} \\ Sort on CB energy sum, use +,-,= flag
+\item \textbf{Sort-NParticles} \\ Sort on reconstruction \# of particles (total), use +,-,= flag
+\item \textbf{Sort-Particle} \\ Turn on this sort multiple times. Specify a particle (by name or PDG code, or charged/neutral), the number of particles (use +,-,= flag) and within which $\theta$ region.\\ \\ ex. Sort-Particle: pi0 1=	20 180 (require exactly 1 $\pi^{0}$ within $\theta$ = (20$^{\circ}$,180$^{\circ}$)
+\\ ex. Sort-Particle: 2212 1+ 0 180 (require 1 or more proton within $\theta$ = (0$^{\circ}$,180$^{\circ}$)
+\\ ex. Sort-Particle: neutral 3- 0 90 (require 3 or less neutral particles within $\theta$ = (0$^{\circ}$,90$^{\circ}$)
+\end{itemize}
+
+
+\end{document} 
+
+
