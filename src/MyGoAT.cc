@@ -4,8 +4,10 @@
 #include "MyGoAT.h"
 #include "GParticleReconstruction.h"
 #include "GMesonReconstruction.h"
+#include "GSetMesonMass.h"
 #include "GTaggerReconstruction.h"
 #include "GProtonReconstruction.h"
+#include "GFitEtap6g.h"
 
 using namespace std;
 
@@ -83,6 +85,12 @@ void* start(void* arguments)
         tree    = new GMesonReconstruction();
 
     }
+    else if(strcmp(arg->type, "setmeson") == 0 || strcmp(arg->type, "setMeson") == 0 || strcmp(arg->type, "SetMeson") == 0)
+    {
+        cout << "Set exact Meson mass started." << endl;
+        tree    = new GSetMesonMass();
+
+    }
     else if(strcmp(arg->type, "tagger") == 0 || strcmp(arg->type, "Tagger") == 0 || strcmp(arg->type, "TAGGER") == 0)
     {
 		if(!(arg->nValues==6))
@@ -113,6 +121,11 @@ void* start(void* arguments)
 		cout << "Set PhiDiffCut from " << arg->value[1] << " to " << arg->value[2] << "." << endl;
         tree    = help;
 	}
+	else if(strcmp(arg->type, "fit") == 0 || strcmp(arg->type, "Fit") == 0 || strcmp(arg->type, "FIT") == 0)
+    {
+        cout << "Kinematic Fitting of Etap to 6 gamma started." << endl;
+        tree    = new GFitEtap6g();
+    }
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;

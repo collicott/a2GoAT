@@ -12,6 +12,7 @@
 #include "GTreeMeson.h"
 #include "GHistFile.h"
 #include "GTreeTrigger.h" //Added by James
+#include "GTreeFit.h"
 
 
 
@@ -39,6 +40,7 @@ protected:
     GTreeMeson*     pi0;
     GTreeMeson*     eta;
     GTreeMeson*     etap;
+    GTreeFit*		fitData;
 
             void    CloseFiles();
             Bool_t  Create(const char* filename);
@@ -52,6 +54,7 @@ protected:
             Bool_t  CreateTagger();
             Bool_t  CreateTrigger(); //Added by James
             Bool_t  CreateScalers();
+            Bool_t  CreateFitData();
             Bool_t  Open(const char* filename);
             Bool_t  OpenEtap()      {return OpenMeson(etap, TString("Etap"));}
             Bool_t  OpenEta()       {return OpenMeson(eta, TString("Eta"));}
@@ -63,6 +66,7 @@ protected:
             Bool_t  OpenTagger();
             Bool_t  OpenTrigger(); //Added by James
             Bool_t  OpenScalers();
+            Bool_t  OpenFitData();
     virtual void    ProcessEvent() = 0;
             //void    SetMinEntry(const UInt_t num)   {minEntry = num;}
             //void    SetNEntries(const UInt_t num)   {nEntries = num;}

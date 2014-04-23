@@ -21,7 +21,8 @@ GTreeManager::GTreeManager()    :
     protons(0),
     pi0(0),
     eta(0),
-    etap(0)
+    etap(0),
+    fitData(0)
 {
 }
 
@@ -83,6 +84,11 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
                 eventFlags->GetEntryFast(i);
         }
         if(trigger)
+        {
+            if(trigger->IsOpenForInput())
+                trigger->GetEntryFast(i); 
+        }
+        if(fitData)
         {
             if(trigger->IsOpenForInput())
                 trigger->GetEntryFast(i); 
@@ -152,6 +158,13 @@ Bool_t   GTreeManager::CreateScalers()
     if(!file_out) return kFALSE;
     if(!scalers)   scalers = new GTreeScaler();
     return scalers->OpenForOutput(*file_out);
+}
+
+Bool_t   GTreeManager::CreateFitData()
+{
+    if(!file_out) return kFALSE;
+    if(!fitData)   fitData = new GTreeFit();
+    return fitData->OpenForOutput(*file_out);
 }
 
 
@@ -226,6 +239,13 @@ Bool_t   GTreeManager::OpenScalers()
     if(!file_in) return kFALSE;
     if(!scalers)   scalers = new GTreeScaler();
     return scalers->OpenForInput(*file_in);
+}
+
+Bool_t   GTreeManager::OpenFitData()
+{
+    if(!file_in) return kFALSE;
+    if(!fitData)   fitData = new GTreeFit();
+    return fitData->OpenForInput(*file_in);
 }
 
 

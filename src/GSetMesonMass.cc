@@ -41,6 +41,7 @@ void  GSetMesonMass::ProcessEvent()
             eta->Particle(0) = pi0->Particle(0) + pi0->Particle(1) + pi0->Particle(2);
         }
         eventFlags->Fill();
+        trigger->Fill();
         tagger->Fill();
         photons->Fill();
         protons->Fill();
@@ -59,6 +60,7 @@ Bool_t  GSetMesonMass::Process(const char* input_filename, const char* output_fi
     if(!OpenPhotons())    return kFALSE;
     if(!OpenProtons())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
+    if(!OpenTrigger())    return kFALSE;
     if(!OpenScalers())    return kFALSE;
     if(!OpenEventFlags())    return kFALSE;
 
@@ -70,6 +72,7 @@ Bool_t  GSetMesonMass::Process(const char* input_filename, const char* output_fi
     if(!CreatePhotons())    return kFALSE;
     if(!CreateProtons())    return kFALSE;
     if(!CreateTagger())    return kFALSE;
+    if(!CreateTrigger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
     scalers->Clone(*file_out);
 
