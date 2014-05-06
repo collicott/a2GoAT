@@ -7,7 +7,7 @@ using namespace std;
 GFitEtap6g::GFitEtap6g()	:
 	ConfidenceLevel(0),
     ChiSq(0),
-    fit(6, 4, 0)
+    fit(6, 3, 0)
 {
 	for(int i=0; i<24; i++)
 		Pull[i]	= 0;
@@ -47,7 +47,7 @@ void  GFitEtap6g::ProcessEvent()
 	sub[0]	= eta->GetDaughterIndex(0, 0);
 	sub[1]	= eta->GetDaughterIndex(0, 1);
 	fit.AddSubInvMassConstraint(2, sub, MASS_ETA);
-	fit.AddInvMassConstraint(MASS_ETAP);
+	//fit.AddInvMassConstraint(MASS_ETAP);
 	
 	if(fit.Solve()<0)
 		return;
@@ -62,6 +62,7 @@ void  GFitEtap6g::ProcessEvent()
 		Pull[i]->Fill(fit.Pull(i));
 		fitData->SetPull(i, fit.Pull(i));
 	}
+	fitData->AddParticle(fit.GetTotalFitParticle().Get4Vector());
 	
 	/*for(int i=0; i<6; i++)
 		sub[i]	= photons->GetDaughterIndex(i);

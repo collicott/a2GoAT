@@ -90,8 +90,8 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
         }
         if(fitData)
         {
-            if(trigger->IsOpenForInput())
-                trigger->GetEntryFast(i); 
+            if(fitData->IsOpenForInput())
+                fitData->GetEntryFast(i);
         }
         ProcessEvent();
     }
@@ -311,6 +311,7 @@ Bool_t  GTreeManager::Write()
     if(tagger)      tagger->Write();
     if(trigger)     trigger->Write(); //Added by James
     if(scalers)     scalers->Write();
+    if(fitData)     fitData->Write();
 
     return kTRUE;
 }

@@ -48,6 +48,12 @@ void* start(void* arguments)
         tree    = new GPlotProton();
     else if(strcmp(arg->type, "bins") == 0 || strcmp(arg->type, "Bins") == 0 || strcmp(arg->type, "BINS") == 0)
         tree    = new GPlotEnergyBins();
+    else if(strcmp(arg->type, "binsfit") == 0 || strcmp(arg->type, "BinsFit") == 0 || strcmp(arg->type, "binsFit") == 0)
+    {
+        GPlotEnergyBins* help    = new GPlotEnergyBins();
+        help->WorkWithFit();
+        tree    = help;
+    }
     else if(strcmp(arg->type, "invmass") == 0 || strcmp(arg->type, "invMass") == 0 || strcmp(arg->type, "im") == 0)
         tree    = new GPlotInvMass();
     else if(strcmp(arg->type, "scaler") == 0 || strcmp(arg->type, "Scaler") == 0 || strcmp(arg->type, "scalers") == 0)

@@ -4,7 +4,8 @@
 using namespace std;
 
 
-GPlotEnergyBins::GPlotEnergyBins()
+GPlotEnergyBins::GPlotEnergyBins()  :
+    withFit(false)
 {
 
 }
@@ -24,8 +25,14 @@ void  GPlotEnergyBins::ProcessEvent()
 		for(int l=0; l<18; l++)
 		{
 			if(tagger->GetPhotonBeam_E(tagger->GetPromptIndex(i))<((10*l)+1430))
-			{
-				invMassEtap10[l]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, etap->Particle(0).M());
+            {
+                if(withFit)
+                {
+                    //printf("fit\n");
+                    invMassEtap10[l]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, fitData->GetParticle().M());
+                }
+                else
+                    invMassEtap10[l]->Fill(GHist::FLAG_TAGGER_WINDOW_PROMPT, etap->Particle(0).M());
 				break;
 			}
 		}
@@ -36,8 +43,11 @@ void  GPlotEnergyBins::ProcessEvent()
 		{
 			if(tagger->GetPhotonBeam_E(tagger->GetRandIndex(i))<((10*l)+1430))
 			{
-				if(tagger->GetTagged_t(tagger->GetRandIndex(i))<0)
-					invMassEtap10[l]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, etap->Particle(0).M());
+                if(withFit)
+                {
+                    //printf("fit\n");
+                    invMassEtap10[l]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND1, fitData->GetParticle().M());
+                }
 				else
 					invMassEtap10[l]->Fill(GHist::FLAG_TAGGER_WINDOW_RAND2, etap->Particle(0).M());
 				break;
@@ -52,6 +62,10 @@ Bool_t  GPlotEnergyBins::Process(const char* input_filename, const char* output_
 
     if(!OpenEtap())    return kFALSE;
     if(!OpenTagger())    return kFALSE;
+    if(withFit)
+    {
+        if(!OpenFitData())    return kFALSE;
+    }
 
 	if(!Create(output_filename))    return kFALSE;
 	
