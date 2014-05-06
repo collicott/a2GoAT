@@ -376,7 +376,7 @@ void	GAcquTreeManager::TraverseAcquEntries(const Int_t min, const Int_t max)
 					analyze_event = kFALSE;
 				}
 				
-				if(!analyze_event) // Event rejected, continue to next event
+				if(!analyze_event) continue; // Event rejected, continue to next event
 
 				GetAcquEntry(AcquEvent);
 				Reconstruct();
