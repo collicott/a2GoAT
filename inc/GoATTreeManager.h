@@ -33,6 +33,8 @@ private:
     Double_t*	Phi; 
    	Double_t*	time;
     UChar_t*    clusterSize;
+    Int_t*      centralIndex;
+    Int_t*      vetoIndex;
     UChar_t*	Apparatus;
     Double_t*	d_E;
     Double_t*	WC0_E;
@@ -108,6 +110,8 @@ public:
 	void	SetTime(Int_t index, Double_t value)	{time[index] = value;}
 
 	void	SetClusterSize(Int_t index, Int_t value)	{clusterSize[index] = value;}
+	void	SetCentralIndex(Int_t index, Int_t value)	{centralIndex[index] = value;}
+	void	SetVetoIndex(Int_t index, Int_t value)	        {vetoIndex[index] = value;}
 	void	SetApparatus(Int_t index, UChar_t value)	{Apparatus[index] = value;}
 	
 	void	Set_dE(Int_t index, Double_t value)		{d_E[index] = value;}
@@ -149,6 +153,8 @@ public:
 	Double_t	GoATTree_GetPhiRad(const Int_t index)	const	{return Theta[index] * TMath::DegToRad();}
 		
 	UChar_t 	GoATTree_GetClusterSize(const Int_t index) 	const 	{return clusterSize[index];}
+	Int_t   	GoATTree_GetCentralIndex(const Int_t index) 	const 	{return centralIndex[index];}
+	Int_t   	GoATTree_GetVetoIndex(const Int_t index) 	const 	{return vetoIndex[index];}
 	UChar_t		GoATTree_GetApparatus(const Int_t index)	const	{return Apparatus[index];}
 	Double_t	GoATTree_Get_dE(const Int_t index)			const	{return d_E[index];}
 	Double_t	GoATTree_GetWC0_E(const Int_t index)		const	{return WC0_E[index];}

@@ -17,6 +17,8 @@ GoATTreeManager::GoATTreeManager() :
 				Mass(0),		
 				time(0),
 				clusterSize(0),
+				centralIndex(0),
+				vetoIndex(0),
 				Apparatus(0),
 				d_E(0),
 				WC0_E(0),
@@ -43,6 +45,8 @@ GoATTreeManager::GoATTreeManager() :
     Mass			= new Double_t[GAcquTREEMANAGER_MAX_PARTICLE];      
     time			= new Double_t[GAcquTREEMANAGER_MAX_PARTICLE];
     clusterSize		= new UChar_t[GAcquTREEMANAGER_MAX_PARTICLE];
+    centralIndex	= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
+    vetoIndex   	= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
     
     Apparatus		= new UChar_t[GAcquTREEMANAGER_MAX_PARTICLE];
     d_E				= new Double_t[GAcquTREEMANAGER_MAX_PARTICLE];
@@ -131,6 +135,8 @@ Bool_t  GoATTreeManager::InitTreeParticles(TFile* TreeFile)
 	treeParticles->Branch("Phi",  Phi,"Phi[nParticles]/D");
 	treeParticles->Branch("time", time,"time[nParticles]/D");
 	treeParticles->Branch("clusterSize", clusterSize,"clusterSize[nParticles]/b");
+	treeParticles->Branch("centralIndex", centralIndex,"centralIndex[nParticles]/I");
+	treeParticles->Branch("vetoIndex", vetoIndex,"vetoIndex[nParticles]/I");
 	treeParticles->Branch("Apparatus", Apparatus,"Apparatus[nParticles]/b");
 	treeParticles->Branch("d_E", d_E, "d_E[nParticles]/D");
 	treeParticles->Branch("WC0_E", WC0_E, "WC0_E[nParticles]/D");
@@ -167,6 +173,8 @@ Bool_t    GoATTreeManager::OpenTreeParticles(TFile* TreeFile)
 	treeParticles->SetBranchAddress("Phi",  Phi);
 	treeParticles->SetBranchAddress("time", time);
 	treeParticles->SetBranchAddress("clusterSize", clusterSize);
+	treeParticles->SetBranchAddress("centralIndex", centralIndex);
+	treeParticles->SetBranchAddress("vetoIndex", vetoIndex);
 	treeParticles->SetBranchAddress("Apparatus", Apparatus);
 	treeParticles->SetBranchAddress("d_E", d_E);
 	treeParticles->SetBranchAddress("WC0_E", WC0_E);

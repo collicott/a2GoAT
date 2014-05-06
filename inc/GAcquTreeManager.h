@@ -48,6 +48,8 @@ private:
     Double_t* 	Phi;
    	Double_t*	time;
     UChar_t*    clusterSize;
+    Int_t*      centralIndex;
+    Int_t*      vetoIndex;
     
     //Tagger
     Int_t		nTagged;
@@ -165,6 +167,8 @@ public:
     		Double_t	GetTime(const Int_t index)	const	{return time[index];}
     		
     		UChar_t 	GetClusterSize(const Int_t index) const 	{return clusterSize[index];}
+    		Int_t 	        GetCentralIndex(const Int_t index) const 	{return centralIndex[index];}
+    		Int_t 	        GetVetoIndex(const Int_t index) const   	{return vetoIndex[index];}
     
     		Int_t		GetNTagged()                    const	{return nTagged;}
     const	Int_t*		GetTagged_ch()               	const	{return tagged_ch;}

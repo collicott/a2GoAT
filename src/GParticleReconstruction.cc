@@ -545,6 +545,8 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	Double_t WC_Vertex_Z = GetWC_Vertex_Z(index_list[0]);
 	
 	Int_t 	 clusterSize = GetClusterSize(index_list[0]);
+	Int_t 	 centralIndex = GetCentralIndex(index_list[0]);
+	Int_t 	 vetoIndex   = GetVetoIndex(index_list[0]);
 	UChar_t  Apparatus   = GetApparatus(index_list[0]);
 	Int_t  	 SumCharge   = Charge[index_list[0]];
 	
@@ -631,6 +633,8 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 	SetEk(nParticles,Ek);
 	SetTime(nParticles,time);
 	SetClusterSize(nParticles,clusterSize);
+	SetCentralIndex(nParticles,centralIndex);
+	SetVetoIndex(nParticles,vetoIndex);
 	SetApparatus(nParticles,Apparatus);
 	Set_dE(nParticles,dE);
 	SetWC0_E(nParticles,WCO_E);

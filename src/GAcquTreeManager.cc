@@ -15,6 +15,8 @@ GAcquTreeManager::GAcquTreeManager() :
 				Phi(0),
 				time(0),
 				clusterSize(0),
+				centralIndex(0),
+				vetoIndex(0),
 				Apparatus(0),
 				d_E(0),
 				WC0_E(0),
@@ -51,6 +53,8 @@ GAcquTreeManager::GAcquTreeManager() :
         Phi				= new Double_t[GAcquTREEMANAGER_MAX_PARTICLE];        
         time			= new Double_t[GAcquTREEMANAGER_MAX_PARTICLE];
         clusterSize		= new UChar_t[GAcquTREEMANAGER_MAX_PARTICLE];
+        centralIndex		= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
+        vetoIndex		= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
 		Mass			= new Double_t[GAcquTREEMANAGER_MAX_PARTICLE];      
 		
         tagged_ch		= new Int_t[GAcquTREEMANAGER_MAX_TAGGER];
@@ -122,6 +126,8 @@ Bool_t    GAcquTreeManager::OpenTreeRawEvent(TFile* TreeFile)
 	treeRawEvent->SetBranchAddress("Phi",  Phi);		
 	treeRawEvent->SetBranchAddress("time", time);
 	treeRawEvent->SetBranchAddress("clusterSize", clusterSize);
+	treeRawEvent->SetBranchAddress("centralIndex", centralIndex);
+	treeRawEvent->SetBranchAddress("vetoIndex", vetoIndex);
 	treeRawEvent->SetBranchAddress("Apparatus", Apparatus);
 	treeRawEvent->SetBranchAddress("d_E", d_E);	
 	treeRawEvent->SetBranchAddress("WC0_E", WC0_E);	
