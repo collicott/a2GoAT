@@ -39,60 +39,66 @@ void    GTreeManager::CloseFiles()
 
 Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
 {
+    TObjArray   readList;
+
+    if(etap)
+    {
+        if(etap->IsOpenForInput())
+            readList.Add(etap);
+    }
+    if(eta)
+    {
+        if(eta->IsOpenForInput())
+            readList.Add(eta);
+    }
+    if(pi0)
+    {
+        if(pi0->IsOpenForInput())
+            readList.Add(pi0);
+    }
+
+    if(photons)
+    {
+        if(photons->IsOpenForInput())
+            readList.Add(photons);
+    }
+    if(protons)
+    {
+        if(protons->IsOpenForInput())
+            readList.Add(protons);
+    }
+
+    if(rawEvent)
+    {
+        if(rawEvent->IsOpenForInput())
+            readList.Add(rawEvent);
+    }
+    if(tagger)
+    {
+        if(tagger->IsOpenForInput())
+            readList.Add(tagger);
+    }
+    if(eventFlags)
+    {
+        if(eventFlags->IsOpenForInput())
+            readList.Add(eventFlags);
+    }
+    if(trigger)
+    {
+        if(trigger->IsOpenForInput())
+            readList.Add(trigger);
+    }
+    if(fitData)
+    {
+        if(fitData->IsOpenForInput())
+            readList.Add(fitData);
+    }
+
     for(int i=min; i<=max; i++)
     {
-        if(etap)
-        {
-            if(etap->IsOpenForInput())
-                etap->GetEntryFast(i);
-        }
-        if(eta)
-        {
-            if(eta->IsOpenForInput())
-                eta->GetEntryFast(i);
-        }
-        if(pi0)
-        {
-            if(pi0->IsOpenForInput())
-                pi0->GetEntryFast(i);
-        }
+        for(int l=0; l<readList.GetEntriesFast(); l++)
+            ((GTree*)readList[l])->GetEntryFast(i);
 
-        if(photons)
-        {
-            if(photons->IsOpenForInput())
-                photons->GetEntryFast(i);
-        }
-        if(protons)
-        {
-            if(protons->IsOpenForInput())
-                protons->GetEntryFast(i);
-        }
-
-        if(rawEvent)
-        {
-            if(rawEvent->IsOpenForInput())
-                rawEvent->GetEntryFast(i);
-        }
-        if(tagger)
-        {
-            if(tagger->IsOpenForInput())
-                tagger->GetEntryFast(i);
-        }
-        if(eventFlags)
-        {
-            if(eventFlags->IsOpenForInput())
-                eventFlags->GetEntryFast(i);
-        }
-        if(trigger)
-        {
-            if(trigger->IsOpenForInput())
-                trigger->GetEntryFast(i); 
-        }
-        if(fitData)
-        {
-            if(fitData->IsOpenForInput())
-                fitData->GetEntryFast(i);
-        }
         ProcessEvent();
     }
 }

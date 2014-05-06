@@ -5,6 +5,7 @@
 #include <iostream>
 
 
+#include <TObject.h>
 #include <TFile.h>
 #include <TTree.h>
 
@@ -12,7 +13,7 @@
 
 class   GTreeManager;
 
-class  GTree
+class  GTree    : protected TObject
 {
 public:
     enum
@@ -47,7 +48,7 @@ public:
             void        Clone(TFile& outputFile);
             void        Fill()      {tree_out->Fill();}
     inline  Bool_t      GetEntry(const UInt_t index);
-    const   TString&    GetName() const {return name;}
+    const   char*       GetName() const {return name.Data();}
             UInt_t      GetNEntries()   const {return tree_in->GetEntries();}
             Bool_t      IsClosed()          {return !status;}
             Bool_t      IsOpenForInput()    {return status & FLAG_OPENFORINPUT;}
