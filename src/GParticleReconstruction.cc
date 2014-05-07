@@ -432,19 +432,19 @@ void	GParticleReconstruction::MesonReconstruction()
 	Double_t diff_eta  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta" )->Mass()*1000)  )/width_eta;
 	Double_t diff_etaP = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etaP;
 
-	if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_eta < diff_etaP))
+	if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_eta < diff_etaP) && (ndaughter >= 2))
 	{
 		AddParticle(pdgDB->GetParticle("pi0")->PdgCode(),ndaughter,daughter_list);
 		return;	
 	}
 			
-	if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP))
+	if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP) && (ndaughter >= 2))
 	{
 		AddParticle(pdgDB->GetParticle("eta")->PdgCode(),ndaughter,daughter_list);
 		return;	
 	}
 	
-	if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta))
+	if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta) && (ndaughter >= 2))
 	{
 		AddParticle(pdgDB->GetParticle("eta'")->PdgCode(),ndaughter,daughter_list);
 		return;
