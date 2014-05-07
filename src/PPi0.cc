@@ -372,7 +372,7 @@ void	PPi0::Reconstruct()
 	nentries = 0;
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if (GoATTree_GetPDG(i) != 1) continue;
+		if (GoATTree_GetPDG(i) != 111) continue;
 		if (GoATTree_GetCharge(i) != 0) continue;
 		if (GoATTree_GetNDaughters(i) != 2) continue;
 
