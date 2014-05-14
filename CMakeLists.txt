@@ -26,6 +26,8 @@ include_directories(${ROOT_INCLUDES})
 link_directories(${ROOT_LIBRARY_DIR})
 
 include_directories(inc)
+set(ROOT_LIBRARIES "${ROOT_LIBRARIES} -lEG")
+message(${ROOT_LIBRARIES})
 
 add_executable(goat
    src/GoAT.cc 
@@ -35,7 +37,7 @@ add_executable(goat
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(goat ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
+target_link_libraries(goat ${ROOT_LIBRARIES})
 
 add_executable(pi0
    src/PPi0.cc
@@ -43,7 +45,7 @@ add_executable(pi0
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(pi0 ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
+target_link_libraries(pi0 ${ROOT_LIBRARIES})
 
 add_executable(eta
    src/PEta.cc
@@ -51,4 +53,4 @@ add_executable(eta
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(eta ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
+target_link_libraries(eta ${ROOT_LIBRARIES})
