@@ -7,6 +7,8 @@
 
 #include "GTree.h"
 
+#define GTreeParticle_NDaughterEntries  512
+
 
 class   GTreeMeson;
 
@@ -15,7 +17,7 @@ class  GTreeParticle    : public GTree
 private:
     UInt_t          nParticles;
     TClonesArray*	particles;		// reconstructed
-    Int_t           daughters[512];  // nDaughters in GTreeMeson
+    Int_t           daughters[GTreeParticle_NDaughterEntries];  // nDaughters in GTreeMeson
 
 
 protected:

@@ -6,8 +6,12 @@ using namespace std;
 
 GTreeFit::GTreeFit()    :
     GTree(TString("Fit")),
+    ConfidenceLevel(0),
+    ChiSq(0),
     particle(new TLorentzVector())
 {
+    for(int i=0; i<GTreeFit_NPulls; i++)
+        Pull[i] = 0;
 }
 
 GTreeFit::~GTreeFit()

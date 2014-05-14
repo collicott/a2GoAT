@@ -4,7 +4,23 @@ GTreeRawEvent::GTreeRawEvent()    :
     GTree(TString("treeRawEvent")),
     nParticles(0)
 {
-
+    for(int i=0; i<GTreeRawEvent_MAX; i++)
+    {
+        Ek[i] = 0;
+        Theta[i] = 0;
+        Phi[i] = 0;
+        time[i] = 0;
+        clusterSize[i] = 0;
+        Apparatus[i] = 0;
+        //Charged detector energies
+        d_E[i] = 0;
+        WC0_E[i] = 0;
+        WC1_E[i] = 0;
+        //Wire Chamber vertex reconstruction
+        WC_Vertex_X[i] = 0;
+        WC_Vertex_Y[i] = 0;
+        WC_Vertex_Z[i] = 0;
+    }
 }
 
 GTreeRawEvent::~GTreeRawEvent()

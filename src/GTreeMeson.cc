@@ -4,7 +4,15 @@
 GTreeMeson::GTreeMeson(const TString& _Name)    :
     GTreeParticle(_Name)
 {
-
+    for(int i=0; i<GTreeMeson_NDaughterEntries; i++)
+    {
+        daughter0PDG[i] = 0;
+        daughter1PDG[i] = 0;
+        daughter2PDG[i] = 0;
+        daughter0Indices[i] = 0;
+        daughter1Indices[i] = 0;
+        daughter2Indices[i] = 0;
+    }
 }
 
 GTreeMeson::~GTreeMeson()

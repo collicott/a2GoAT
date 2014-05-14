@@ -10,7 +10,13 @@ GTreeTrigger::GTreeTrigger()    :
     helicityBit(0),
     nError(0)
 {
-
+    for(int i=0; i<GTreeTrigger_MAX; i++)
+    {
+        TriggerPattern[i] = 0;
+        ErrModID[i] = 0;
+        ErrModIndex[i] = 0;
+        ErrCode[i] = 0;
+    }
 }
 
 GTreeTrigger::~GTreeTrigger()

@@ -9,6 +9,8 @@ GTreeParticle::GTreeParticle(const TString& _Name)    :
     particles(new TClonesArray("TLorentzVector", 32000)),
     nParticles(0)
 {
+    for(int i=0; i<GTreeParticle_NDaughterEntries; i++)
+        daughters[i] = 0;
 }
 
 GTreeParticle::~GTreeParticle()

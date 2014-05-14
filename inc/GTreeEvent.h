@@ -18,8 +18,8 @@ public:
     GTreeEvent();
     virtual ~GTreeEvent();
 
-    virtual void            Clear()     {}
-            UInt_t          GetEventNumber()    const      {return EventNumber;}
+    virtual void            Clear()                         {}
+            UInt_t          GetEventNumber()    const       {return EventNumber;}
             void            SetEventNumber(const Int_t num) {EventNumber = num;}
 };
 

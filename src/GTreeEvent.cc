@@ -5,7 +5,8 @@ using namespace std;
 
 
 GTreeEvent::GTreeEvent()    :
-    GTree(TString("EventFlags"))
+    GTree(TString("EventFlags")),
+    EventNumber(0)
 {
 }
 

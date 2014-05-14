@@ -11,6 +11,8 @@
 #define MASS_PROTON 938.272046
 
 
+#define GTreeMeson_NDaughterEntries  16
+
 
 class  GTreeMeson   : public GTreeParticle
 {
@@ -26,12 +28,12 @@ public:
     };
 
 private:
-    UChar_t        daughter0PDG[16];
-    UChar_t        daughter1PDG[16];
-    UChar_t        daughter2PDG[16];
-    UChar_t        daughter0Indices[16];
-    UChar_t        daughter1Indices[16];
-    UChar_t        daughter2Indices[16];
+    UChar_t        daughter0PDG[GTreeMeson_NDaughterEntries];
+    UChar_t        daughter1PDG[GTreeMeson_NDaughterEntries];
+    UChar_t        daughter2PDG[GTreeMeson_NDaughterEntries];
+    UChar_t        daughter0Indices[GTreeMeson_NDaughterEntries];
+    UChar_t        daughter1Indices[GTreeMeson_NDaughterEntries];
+    UChar_t        daughter2Indices[GTreeMeson_NDaughterEntries];
 
 protected:
     virtual void    SetBranchAdresses();

@@ -9,7 +9,8 @@ GTreeScaler::GTreeScaler()    :
     EventID(0),
     NScaler(0)
 {
-
+    for(int i=0; i<GTreeScaler_MAX; i++)
+        Scaler[i] = 0;
 }
 
 GTreeScaler::~GTreeScaler()

@@ -4,6 +4,8 @@
 
 #include "GTree.h"
 
+#define GTreeTrigger_MAX 128
+
 
 class  GTreeTrigger : public GTree
 {
@@ -11,12 +13,12 @@ private:
     Double_t 	ESum;
     Int_t 		Mult;
     Int_t 		nTriggerPattern;
-    Int_t 		TriggerPattern[128];
+    Int_t 		TriggerPattern[GTreeTrigger_MAX];
     UChar_t     helicityBit;
     Int_t 		nError;
-    Int_t 		ErrModID[128];
-    Int_t 		ErrModIndex[128];
-    Int_t 		ErrCode[128];
+    Int_t 		ErrModID[GTreeTrigger_MAX];
+    Int_t 		ErrModIndex[GTreeTrigger_MAX];
+    Int_t 		ErrCode[GTreeTrigger_MAX];
 
    protected:
     virtual void    SetBranchAdresses();
@@ -27,7 +29,7 @@ public:
     virtual ~GTreeTrigger();
 
 
-    virtual void        Clear()     {}
+    virtual void        Clear()                         {nTriggerPattern = 0; nError = 0;}
             Int_t 		GetMult()        		const	{return Mult;}
             Double_t	GetESum()           	const	{return ESum;}
             UChar_t 	GetHelicityBit()    	const	{return helicityBit;}

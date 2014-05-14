@@ -7,7 +7,14 @@ GTreeTagger::GTreeTagger()    :
     nRand(0),
     missing(new TClonesArray("TLorentzVector", 32000))
 {
-
+    for(int i=0; i<GTreeTagger_MAX; i++)
+    {
+        tagged_ch[i] = 0;
+        tagged_t[i] = 0;
+        photonbeam_E[i] = 0;
+        promptIndex[i] = 0;
+        randIndex[i] = 0;
+    }
 }
 
 GTreeTagger::~GTreeTagger()
