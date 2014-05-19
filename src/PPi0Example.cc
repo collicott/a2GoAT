@@ -281,6 +281,8 @@ PPi0Example::~PPi0Example()
 
 Bool_t	PPi0Example::Init(const char* configfile)
 {
+	// Initialise shared pdg database
+	pdgDB = TDatabasePDG::Instance();	
 
 	// Set by user in the future...
 	SetTarget(938);
@@ -373,7 +375,7 @@ void	PPi0Example::Reconstruct()
 	nentries = 0;
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if (GoATTree_GetPDG(i) != 111) continue;
+		if (GoATTree_GetPDG(i) != pdgDB->GetParticle("pi0")->PdgCode()) continue;
 		if (GoATTree_GetCharge(i) != 0) continue;
 		if (GoATTree_GetNDaughters(i) != 2) continue;
 

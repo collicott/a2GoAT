@@ -54,7 +54,9 @@ PEtaExample::~PEtaExample()
 
 Bool_t	PEtaExample::Init(Char_t* configfile)
 {
-
+	// Initialise shared pdg database
+	pdgDB = TDatabasePDG::Instance();
+	
 	OpenGoATFile("AnalysisFiles/Open_GoAT_Compton_354.root", "READ");
 	OpenHistFile("AnalysisFiles/Eta_Hist.root");
 	DefineHistograms();
@@ -138,7 +140,7 @@ void	PEtaExample::Reconstruct()
 	// Some neutral decays
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if(GoATTree_GetPDG(i) != 2) 	continue; // not eta -> ignore
+		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore
 		if(GoATTree_GetCharge(i) != 0) 	continue; // charged -> ignore
 
 		FillMissingMass(i, MM_prompt_eta_n, MM_random_eta_n);
@@ -152,7 +154,7 @@ void	PEtaExample::Reconstruct()
 	// Some charged decays
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if(GoATTree_GetPDG(i) != 2) 	continue; // not eta -> ignore	
+		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore	
 		if(GoATTree_GetCharge(i) == 0) 	continue; // neutral -> ignore
 
 		FillMissingMass(i, MM_prompt_eta_c, MM_random_eta_c);
@@ -183,7 +185,7 @@ void	PEtaExample::Reconstruct()
 	// Some charged decays
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if(GoATTree_GetPDG(i) != 2) 	continue; // not eta -> ignore	
+		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore	
 
 		Int_t nchpi = 0; 
 		Int_t ngamm = 0;
