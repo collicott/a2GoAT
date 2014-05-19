@@ -8,7 +8,7 @@
 
 Period-Macro:	100000
 
-#CheckCBStability: 1 
+CheckCBStability: 1 0.7
 
 #-----------------------------------------------------------------------
 # Particle Reconstruction
@@ -17,8 +17,8 @@ Do-Particle-Reconstruction: 1
 
 Do-Charged-Particle-Reconstruction: 0
 Cut-dE-E-CB-Proton: 	configfiles/cuts/CB_DeltaE-E_Proton.root Proton
-Cut-dE-E-CB-Pion: 		configfiles/cuts/CB_DeltaE-E_Pion.root Pion
-Cut-dE-E-TAPS-Pion: 	configfiles/cuts/TAPS_DeltaE-E.root	CutPiplus
+Cut-dE-E-CB-Pion: 	configfiles/cuts/CB_DeltaE-E_Pion.root Pion
+Cut-dE-E-TAPS-Pion: 	configfiles/cuts/TAPS_DeltaE-E.root CutPiplus
 Cut-dE-E-TAPS-Proton: 	configfiles/cuts/TAPS_DeltaE-E.root CutProton
 Cut-dE-E-TAPS-Electron: configfiles/cuts/TAPS_DeltaE-E.root CutElectron
 
@@ -37,21 +37,21 @@ Cut-IM-Width-Eta-Prime: 60
 # Sort on number of raw particle tracks (total, CB, and TAPS)
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #		    Total 	CB	TAPS
-#SortRaw-NParticles: 2=		0+	0+
+SortRaw-NParticles: 7-		6=	1-
 
 
 # Sort on Trigger conditions (Crystal Ball Energy Sum)
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#SortRaw-CBEnergySum:	100+
+SortRaw-CBEnergySum:	400+
 
 
 # Sort on reconstructed particle properties
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#Sort-NParticles: 	2=
+Sort-NParticles: 	2-
 
-#				Type 	Number	Theta-min 	Theta-max
-#Sort-Particle:	neutral	1=		0			180
-#Sort-Particle:	charged	1= 		0			180
+#		Type 	Number	Theta-min 	Theta-max
+Sort-Particle:	eta	1=	20		180
+#Sort-Particle:	charged	1= 	0		180
 
 # Note: (I'll put this here while we don't have a manual)
 # the charged and neutral particle cuts are additional 
@@ -64,6 +64,3 @@ Cut-IM-Width-Eta-Prime: 60
 # makes sense because eta can decay to charged particles (marking the 
 # eta as charged). Something like this should reject eta->6gamma... :)
 #
-#-----------------------------------------------------------------------
-# Activate physics analysis?
-#-----------------------------------------------------------------------
