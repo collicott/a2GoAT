@@ -2,40 +2,250 @@
 
 #include "PEtaExample.h"
 
+/**
+ * @brief the main routine
+ * @param argc number of parameters
+ * @param argv the parameters as strings
+ * @return exit code
+ */
 int main(int argc, char *argv[])
 {
-	
+
 	clock_t start, end;
 	start = clock();
 
-	// Associate 1st terminal input with config file
-	Char_t* configfile;
-	if(argv[1]) configfile = argv[1];
-	else 
+	// Initialise strings
+	std::string configfile = "";
+	std::string serverfile = "";
+	std::string dir_in = "";
+	std::string dir_out = "";
+	std::string file_in = "";
+	std::string file_out = "";
+	std::string pre_in = "";
+	std::string pre_out = "";
+
+	Int_t length;
+	std::string flag;
+
+	if(argc == 1)
 	{
 		cout << "Please provide a config file" << endl;
 		return 0;
 	}
-	
-	// Check that file exists:
-	ifstream ifile(configfile);
-	if(!ifile)
+	else if(argc == 2) configfile = argv[1];
+	else
 	{
-		cout << "Config file " << configfile << " could not be found." << endl;
+		for(int i=1; i<argc; i++)
+		{
+			flag = argv[i];
+			if(flag.find_first_of("-") == 0)
+			{
+				i++;
+				flag.erase(0,1);
+				if(strcmp(flag.c_str(), "s") == 0) serverfile = argv[i];
+				else if(strcmp(flag.c_str(), "d") == 0) dir_in = argv[i];
+				else if(strcmp(flag.c_str(), "D") == 0) dir_out = argv[i];
+				else if(strcmp(flag.c_str(), "f") == 0) file_in = argv[i];
+				else if(strcmp(flag.c_str(), "F") == 0) file_out = argv[i];
+				else if(strcmp(flag.c_str(), "p") == 0) pre_in = argv[i];
+				else if(strcmp(flag.c_str(), "P") == 0) pre_out = argv[i];
+				else
+				{
+					cout << "Unknown flag " << flag << endl;
+					return 0;
+				}
+			}
+			else configfile = argv[i];
+		}
+	}
+
+	// Check that config file exists:
+	ifstream cfile(configfile.c_str());
+	if(!cfile)
+	{
+		cout << "Config file '" << configfile << "' could not be found." << endl;
 		return 0;
-	}	
-	
+	}
+
+	// If server file is specified, check that it exists
+	if(serverfile.length() > 0)
+	{
+		// Check that file exists:
+		ifstream sfile(serverfile.c_str());
+		if(!sfile)
+		{
+			cout << "Server file '" << serverfile << "' could not be found" << endl;
+			return 0;
+		}
+	}
+	// If no server file is specified, allow for checking in the config file
+	else serverfile = configfile;
+
 	// Create instance of PEtaExample class
 	PEtaExample* peta = new PEtaExample;
 
-	// Perform full initialisation 
-	if(!peta->Init(configfile)){
-		cout << "ERROR: GoAT Init failed!" << endl;
-		return 0;
+	// If unset, scan server or config file for file settings
+	if(dir_in.length() == 0)
+	{
+		flag = peta->ReadConfig("Input-Directory",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) dir_in = flag;
 	}
 	
-	peta->Analyse();
+	if(dir_out.length() == 0)
+	{	
+		flag = peta->ReadConfig("Output-Directory",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) dir_out = flag;
+	}
 	
+	if(file_in.length() == 0)
+	{	
+		flag = peta->ReadConfig("Input-File",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) file_in = flag;
+	}
+	
+	if(file_out.length() == 0)
+	{	
+		flag = peta->ReadConfig("Output-File",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) file_out = flag;
+	}
+	
+	if(pre_in.length() == 0)
+	{	
+		flag = peta->ReadConfig("Input-Prefix",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) pre_in = flag;
+	}
+	
+	if(pre_out.length() == 0)
+	{	
+		flag = peta->ReadConfig("Output-Prefix",0,(Char_t*)serverfile.c_str());	
+		flag.erase(0,flag.find_first_not_of(" "));
+		if(strcmp(flag.c_str(),"nokey") != 0) pre_out = flag;
+	}
+	// Finished scanning for file settings
+	
+	// Fix directories to include final slash if not there
+	if(dir_in.find_last_of("/") != (dir_in.length()-1)) dir_in += "/";
+	if(dir_out.find_last_of("/") != (dir_out.length()-1)) dir_out += "/";
+
+	// Output user settings (Set to defaults if still unspecified)
+	cout << endl << "User inputs" << endl;
+	cout << "Config file:      '" << configfile << "' chosen" << endl;
+	if(dir_in.length() != 0)  	cout << "Input directory:  '" << dir_in << "' chosen" << endl;
+	if(dir_out.length() != 0)  	cout << "Output directory: '" << dir_out << "' chosen" << endl;
+	if(file_in.length() != 0)  	cout << "Input file:       '" << file_in << "' chosen" << endl;
+	if(file_out.length() != 0) 	cout << "Output file:      '" << file_out << "' chosen" << endl;
+	if(pre_in.length() != 0)  	cout << "Input prefix:     '" << pre_in << "' chosen" << endl;
+	else { pre_in = "GoAT"; 	cout << "Input prefix:     '" << pre_in << "' chosen by default" << endl; }
+	if(pre_out.length() != 0)  	cout << "Output prefix:    '" << pre_out << "' chosen" << endl;	
+	else { pre_out = "Eta"; 	cout << "Output prefix:    '" << pre_out << "' chosen by default" << endl; }
+	cout << endl;
+	
+	// Perform full initialisation 
+	if(!peta->Init(configfile.c_str()))
+	{
+		cout << "ERROR: PEtaExample Init failed!" << endl;
+		return 0;
+	}
+
+	std::string file;
+	std::string prefix;
+	std::string suffix;
+
+	Int_t files_found = 0;
+	// If input file is specified, use it
+	if(file_in.length() > 0)
+	{
+		cout << "Searching for input file(s)" << endl;
+		file = file_in;
+		length = file.length();
+		// File should at least have '.root' at the end
+		if(length >= 5)
+		{
+			// Add input directory to it
+			file_in = dir_in+file_in;
+			cout << "Input file  '" << file_in << "' chosen" << endl;
+
+			// If output file is specified, use it
+			if(file_out.length() > 0) file_out = dir_out+file_out;
+			// If output file is not specified, build it
+			else
+			{
+				// If output directory is not specified, build it
+				if(dir_out.length() == 0)
+				{
+					prefix = file.substr(0,file.find_last_of("/")+1);
+					dir_out = dir_in+prefix;
+				}
+				// If input prefix doesn't match, simply prepend output prefix to the file name
+				if(file.find(pre_in)>file.length()) suffix = ("_"+file.substr(file.find_last_of("/")+1,length-(file.find_last_of("/")+1)));
+				// If input prefix does match, switch prefixes
+				else suffix = file.substr(file.find_last_of("/")+1+pre_in.length(),length-(file.find_last_of("/")+1+pre_in.length()));
+				// Build output file name
+				file_out = dir_out+pre_out+suffix;
+			}
+			
+			cout << "Output file '" << file_out << "' chosen" << endl << endl;
+			if(!peta->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: PEtaExample failed on file " << file_in << "!" << endl;
+			files_found++;
+		}
+	}
+	// Otherwise scan input directory for matching files
+	else
+	{
+		cout << "Searching input directory for files matching input prefix" << endl;
+		cout << "Input prefix  '" << pre_in << "' chosen" << endl;
+		cout << "Output prefix '" << pre_out << "' chosen" << endl;
+		
+		// If output directory is not specified, use the input directory
+		if(dir_in.length()  == 0) dir_in = "./";
+		if(dir_out.length() == 0) dir_out = dir_in;
+
+		// Create list of files in input directory
+		TSystemFile *sys_file;
+		TSystemDirectory *sys_dir = new TSystemDirectory("files",dir_in.c_str());
+		TList *file_list = sys_dir->GetListOfFiles();
+		file_list->Sort();
+		TIter file_iter(file_list);
+
+		// Iterate over files
+		while((sys_file=(TSystemFile*)file_iter()))
+		{
+			file = sys_file->GetName();
+			length = file.length();
+			// File should at least have '.root' at the end
+			if(length >= 5)
+			{
+				//Check that prefixes and suffixes match
+				prefix = file.substr(0,pre_in.length());
+				suffix = file.substr(length-5,5);
+				if(((strcmp(prefix.c_str(),pre_in.c_str()) == 0)) && (strcmp(suffix.c_str(),".root") == 0))
+				{
+					// Build input file name
+					file_in = dir_in+file;
+					// Build output file name
+					suffix = file.substr(pre_in.length(),length-pre_in.length());
+					file_out = dir_out+pre_out+suffix;					
+
+					files_found++;
+					// Run PEtaExample
+					if(!peta->File(file_in.c_str(), file_out.c_str())) 
+						cout << "ERROR: PEtaExample failed on file " << file_in << "!" << endl;
+
+				}
+			}
+		}
+	}
+	if (files_found == 0)
+	{
+		cout << "ERROR: No AcquRoot files found!" << endl;
+		return 0;
+	}
+
 	end = clock();
 	cout << "Time required for execution: "
 	<< (double)(end-start)/CLOCKS_PER_SEC
@@ -52,22 +262,10 @@ PEtaExample::~PEtaExample()
 {
 }
 
-Bool_t	PEtaExample::Init(Char_t* configfile)
+Bool_t	PEtaExample::Init(const char* configfile)
 {
 	// Initialise shared pdg database
 	pdgDB = TDatabasePDG::Instance();
-	
-	OpenGoATFile("AnalysisFiles/Open_GoAT_Compton_354.root", "READ");
-	OpenHistFile("AnalysisFiles/Eta_Hist.root");
-	DefineHistograms();
-
-	cout << "Setting up tree files:" << endl;
-	if(!OpenTreeParticles(GoATFile)) 	return kFALSE;
-	if(!OpenTreeTagger(GoATFile))		return kFALSE;
-	cout << endl;
-
-	cout << "Detmining valid for analysis:" << endl;	
-	if(!FindValidGoATEvents())			return kFALSE;	
 
 	// Set by user in the future...
 	SetTarget(938);
@@ -87,67 +285,57 @@ Bool_t	PEtaExample::Init(Char_t* configfile)
 	return kTRUE;
 }
 
+Bool_t	PEtaExample::File(const char* file_in, const char* file_out)
+{
+	OpenGoATFile(file_in, "READ");
+	OpenHistFile(file_out);
+	DefineHistograms();
+
+	cout << "Setting up tree files:" << endl;
+	if(!OpenTreeParticles(GoATFile)) 	return kFALSE;
+	if(!OpenTreeTagger(GoATFile))		return kFALSE;
+	cout << endl;
+
+	cout << "Detmining valid for analysis:" << endl;	
+	if(!FindValidGoATEvents())			return kFALSE;	
+	cout << endl;
+		
+	Analyse();	
+	return kTRUE;
+}
+
 void	PEtaExample::Analyse()
 {
-	N_eta	= 0;
-	N_5omn  = 0;
-	N_3oln	= 0;
-	N_6g 	= 0;
-	N_2g 	= 0;
-	N_2piX = 0;
-	N_other = 0;
-
-	cout << "Analysing ..." << endl;
+	
+	cout << 
 	TraverseGoATEntries();
+	cout << "Total Etas found: " << N_eta << endl << endl;
 	
 	PostReconstruction();		
 	WriteHistograms();
 	CloseHistFile();	
 
-	Double_t BR;
-	
-	cout << "Output branching ratios ---------------- " << endl << endl;
-	cout << "Total Eta found: "<< N_eta << endl;
-
-	Double_t BR_scale = 40.0/((double(N_2g)/double(N_eta))*100);
-
-	BR = (double(N_2g)/double(N_eta))*100;
-
-	cout << "BR (eta -> 2g)         " << BR << "%       " << (BR*BR_scale) << "% " <<endl;
-
-	BR = (double(N_3oln)/double(N_eta))*100;
-	cout << "BR (eta -> 3-g)        " << BR << "%       " << (BR*BR_scale) << "% " <<endl;
-	
-	BR = (double(N_6g)/double(N_eta))*100;
-	cout << "BR (eta -> 6g)         " << BR << "%       " << (BR*BR_scale) << "% " <<endl;
-	
-	BR = (double(N_5omn)/double(N_eta))*100;
-	cout << "BR (eta -> 5+g)        " << BR << "%       " << (BR*BR_scale) << "% " <<endl;
-
-	BR = (double(N_2piX)/double(N_eta))*100;
-	cout << "BR (eta -> pi+pi-X)    " << BR << "%       " << (BR*BR_scale) << "% " <<endl;
-	
-
 }
 
 void	PEtaExample::Reconstruct()
 {
-	if(GetGoATEvent() % 100000 == 0) printf("Event: %d  Total Etas found: %d \n",GetGoATEvent(), N_eta);
+	if(GetGoATEvent() == 0) N_eta = 0;
+	else if(GetGoATEvent() % 100000 == 0) cout << "Event: "<< GetGoATEvent() << " Total Etas found: " << N_eta << endl;
 
-	FillTimePDG(2,time_eta);
-	MissingMassPDG(2, MM_prompt_eta, MM_random_eta);
+	FillTimePDG(pdgDB->GetParticle("eta")->PdgCode(),time_eta);
+	MissingMassPDG(pdgDB->GetParticle("eta")->PdgCode(), MM_prompt_eta, MM_random_eta);
 
 	// Some neutral decays
 	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
+		if(GoATTree_GetPDG(i) == pdgDB->GetParticle("eta")->PdgCode()) 	N_eta++;
+		
 		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore
 		if(GoATTree_GetCharge(i) != 0) 	continue; // charged -> ignore
 
 		FillMissingMass(i, MM_prompt_eta_n, MM_random_eta_n);
 		if (GoATTree_GetNDaughters(i) == 2) FillMissingMass(i, MM_prompt_eta_n_2g, MM_random_eta_n_2g);
 		if (GoATTree_GetNDaughters(i) == 6) FillMissingMass(i, MM_prompt_eta_n_6g, MM_random_eta_n_6g);
-		if (GoATTree_GetNDaughters(i) <= 3) FillMissingMass(i, MM_prompt_eta_n_3ol, MM_random_eta_n_3ol);
-		if (GoATTree_GetNDaughters(i) >= 5) FillMissingMass(i, MM_prompt_eta_n_5om, MM_random_eta_n_5om);
 		
 	}
 
@@ -158,85 +346,24 @@ void	PEtaExample::Reconstruct()
 		if(GoATTree_GetCharge(i) == 0) 	continue; // neutral -> ignore
 
 		FillMissingMass(i, MM_prompt_eta_c, MM_random_eta_c);
+		if (GoATTree_GetNDaughters(i) == 4) FillMissingMass(i, MM_prompt_eta_c_4d, MM_random_eta_c_4d);
 
-		if (GoATTree_GetNDaughters(i) != 4) continue; // only look at 4 daughters
-
-		FillMissingMass(i, MM_prompt_eta_c_4d, MM_random_eta_c_4d);
-		
-		if(GoATTree_GetCharge(i) != 2) 	continue; // neutral -> ignore
-
-		Int_t nchpi = 0; Int_t ngamm = 0;
-		for (Int_t j = 0; j < GoATTree_GetNDaughterList(); j++)
-		{
-
-			if(GoATTree_GetDaughter_Index(j) != i) continue; // not a daughter of this eta
-			
-			if(GoATTree_GetDaughter_PDG(j) == 5) 		nchpi++;
-			else if(GoATTree_GetDaughter_PDG(j) == 7) 	ngamm++;
-		}
-	
-		if ((nchpi == 2) && (ngamm == 2)) 
-		FillMissingMass(i, MM_prompt_eta_c_4d_2pi2g, MM_random_eta_c_4d_2pi2g);
-		
-	}	
-	
-	
-	// Branching ratios?
-	// Some charged decays
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
-	{
-		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore	
-
-		Int_t nchpi = 0; 
-		Int_t ngamm = 0;
-		Int_t nroot = 0;
-		Int_t nelec = 0;
-
-		N_eta++;
-
-		for (Int_t j = 0; j < GoATTree_GetNDaughterList(); j++)
-		{
-			if(GoATTree_GetDaughter_Index(j) != i) continue; // not a daughter of this eta
-
-			if(GoATTree_GetDaughter_PDG(j) == 0) 		nroot++;
-			else if(GoATTree_GetDaughter_PDG(j) == 5) 	nchpi++;
-			else if(GoATTree_GetDaughter_PDG(j) == 6) 	nelec++;
-			else if(GoATTree_GetDaughter_PDG(j) == 7) 	ngamm++;
-			
-			else cout << "wait a minute..." << endl;
-		}
-		
-		if(GoATTree_GetCharge(i) == 0)
-		{
-			if ((GoATTree_GetNDaughters(i) == 6) && (ngamm == 6)) 	N_6g++;
-			if ((GoATTree_GetNDaughters(i) == 2) && (ngamm == 2)) 	N_2g++;
-			if (GoATTree_GetNDaughters(i) <= 3) 					N_3oln++;			
-			if (GoATTree_GetNDaughters(i) >= 5) 					N_5omn++;	
-		}
-		
-		else if(GoATTree_GetCharge(i) == 2)
-		{
-			if ((nchpi == 2)) 	N_2piX++;
-		}		
-			
 	}	
 
 }
 
 void  PEtaExample::PostReconstruction()
 {
+	cout << "Performing post reconstruction." << endl;
+
 	RandomSubtraction(MM_prompt_eta,MM_random_eta, MM_eta);		
 	
 	RandomSubtraction(MM_prompt_eta_n,MM_random_eta_n, MM_eta_n);	
 	RandomSubtraction(MM_prompt_eta_n_2g,MM_random_eta_n_2g, MM_eta_n_2g);	
 	RandomSubtraction(MM_prompt_eta_n_6g,MM_random_eta_n_6g, MM_eta_n_6g);
 
-	RandomSubtraction(MM_prompt_eta_n_3ol,MM_random_eta_n_3ol, MM_eta_n_3ol);
-	RandomSubtraction(MM_prompt_eta_n_5om,MM_random_eta_n_5om, MM_eta_n_5om);
-
 	RandomSubtraction(MM_prompt_eta_c,MM_random_eta_c, MM_eta_c);	
 	RandomSubtraction(MM_prompt_eta_c_4d,MM_random_eta_c_4d, MM_eta_c_4d);	
-	RandomSubtraction(MM_prompt_eta_c_4d_2pi2g,MM_random_eta_c_4d_2pi2g, MM_eta_c_4d_2pi2g);	
 	
 	ShowTimeCuts(time_eta, time_eta_cuts);
 
@@ -264,14 +391,6 @@ void	PEtaExample::DefineHistograms()
 	MM_prompt_eta_n_2g = new TH1D("MM_prompt_eta_n_2g","MM_prompt_eta_n_2g",1500,0,1500);
 	MM_random_eta_n_2g = new TH1D("MM_random_eta_n_2g","MM_random_eta_n_2g",1500,0,1500);
 	MM_eta_n_2g		  = new TH1D("MM_eta_n_2g",		 "MM_eta_n_2g",	   1500,0,1500);	
-
-	MM_prompt_eta_n_3ol = new TH1D("MM_prompt_eta_n_3ol","MM_prompt_eta_n_3ol",1500,0,1500);
-	MM_random_eta_n_3ol = new TH1D("MM_random_eta_n_3ol","MM_random_eta_n_3ol",1500,0,1500);
-	MM_eta_n_3ol		  = new TH1D("MM_eta_n_3ol",	 "MM_eta_n_3ol",	   1500,0,1500);	
-
-	MM_prompt_eta_n_5om = new TH1D("MM_prompt_eta_n_5om","MM_prompt_eta_n_5om",1500,0,1500);
-	MM_random_eta_n_5om = new TH1D("MM_random_eta_n_5om","MM_random_eta_n_5om",1500,0,1500);
-	MM_eta_n_5om		= new TH1D("MM_eta_n_5om",	 "MM_eta_n_5om",	   1500,0,1500);	
 	
 	MM_prompt_eta_c = new TH1D("MM_prompt_eta_c","MM_prompt_eta_c",1500,0,1500);
 	MM_random_eta_c = new TH1D("MM_random_eta_c","MM_random_eta_c",1500,0,1500);
@@ -280,14 +399,12 @@ void	PEtaExample::DefineHistograms()
 	MM_prompt_eta_c_4d = new TH1D("MM_prompt_eta_c_4d","MM_prompt_eta_c_4d",1500,0,1500);
 	MM_random_eta_c_4d = new TH1D("MM_random_eta_c_4d","MM_random_eta_c_4d",1500,0,1500);
 	MM_eta_c_4d		= new TH1D("MM_eta_c_4d",		 "MM_eta_c_4d",	   1500,0,1500);	
-
-	MM_prompt_eta_c_4d_2pi2g = new TH1D("MM_prompt_eta_c_4d_2pi2g","MM_prompt_eta_c_4d_2pi2g",1500,0,1500);
-	MM_random_eta_c_4d_2pi2g = new TH1D("MM_random_eta_c_4d_2pi2g","MM_random_eta_c_4d_2pi2g",1500,0,1500);
-	MM_eta_c_4d_2pi2g		= new TH1D("MM_eta_c_4d_2pi2g",		 "MM_eta_c_4d_2pi2g",	   1500,0,1500);	
 }
 
 Bool_t 	PEtaExample::WriteHistograms(TFile* pfile)
 {
+	cout << "Writing histograms." << endl;
+		
 	if(!pfile) return kFALSE;
 	pfile->cd();
 

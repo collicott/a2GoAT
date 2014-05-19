@@ -33,14 +33,6 @@ private:
 	TH1* 	MM_random_eta_n_2g;
 	TH1* 	MM_eta_n_2g;
 
-	TH1* 	MM_prompt_eta_n_3ol;
-	TH1* 	MM_random_eta_n_3ol;
-	TH1* 	MM_eta_n_3ol;
-
-	TH1* 	MM_prompt_eta_n_5om;
-	TH1* 	MM_random_eta_n_5om;
-	TH1* 	MM_eta_n_5om;
-
 	TH1* 	MM_prompt_eta_c;
 	TH1* 	MM_random_eta_c;
 	TH1* 	MM_eta_c;
@@ -49,17 +41,8 @@ private:
 	TH1* 	MM_random_eta_c_4d;
 	TH1* 	MM_eta_c_4d;		
 
-	TH1* 	MM_prompt_eta_c_4d_2pi2g;
-	TH1* 	MM_random_eta_c_4d_2pi2g;
-	TH1* 	MM_eta_c_4d_2pi2g;
-
 	Int_t 	N_eta;
-	Int_t	N_5omn;
-	Int_t 	N_3oln;
-	Int_t 	N_6g;
-	Int_t 	N_2g;
-	Int_t	N_2piX;
-	Int_t	N_other;
+
 		
 protected:
 
@@ -68,7 +51,8 @@ public:
     PEtaExample();
     virtual ~PEtaExample();
 
-    virtual Bool_t	Init(Char_t* file_config);	
+    virtual Bool_t	Init(const char* configfile);	
+    virtual Bool_t	File(const char* file_in, const char* file_out);    
     virtual void 	Analyse();
 	virtual void	Reconstruct();
 	void	PostReconstruction();
