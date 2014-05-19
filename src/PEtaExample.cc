@@ -306,8 +306,7 @@ Bool_t	PEtaExample::File(const char* file_in, const char* file_out)
 
 void	PEtaExample::Analyse()
 {
-	
-	cout << 
+
 	TraverseGoATEntries();
 	cout << "Total Etas found: " << N_eta << endl << endl;
 	
