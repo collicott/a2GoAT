@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
 	}
 	if (files_found == 0)
 	{
-		cout << "ERROR: No AcquRoot files found!" << endl;
+		cout << "ERROR: No GoAT files found!" << endl;
 		return 0;
 	}
 
