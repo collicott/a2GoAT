@@ -1,5 +1,5 @@
-#ifndef __PPi0_h__
-#define __PPi0_h__
+#ifndef __PPi0Example_h__
+#define __PPi0Example_h__
 
 #include <iostream>
 #include <fstream>
@@ -11,7 +11,7 @@ using namespace std;
 
 #define maxentries	1024
 
-class	PPi0 : public PPhysics
+class	PPi0Example : public PPhysics
 {
 private:
 
@@ -77,8 +77,8 @@ protected:
 
 
 public:
-    PPi0();
-    virtual ~PPi0();
+    PPi0Example();
+    virtual ~PPi0Example();
 
     virtual Bool_t	Init(const char* configfile);
     virtual Bool_t	File(const char* gfile, const char* tfile, const char* hfile);

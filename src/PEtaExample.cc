@@ -1,6 +1,6 @@
 #ifndef __CINT__
 
-#include "PEta.h"
+#include "PEtaExample.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
 		return 0;
 	}	
 	
-	// Create instance of PEta class
-	PEta* peta = new PEta;
+	// Create instance of PEtaExample class
+	PEtaExample* peta = new PEtaExample;
 
 	// Perform full initialisation 
 	if(!peta->Init(configfile)){
@@ -44,15 +44,15 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-PEta::PEta() 
+PEtaExample::PEtaExample() 
 { 
 }
 
-PEta::~PEta()
+PEtaExample::~PEtaExample()
 {
 }
 
-Bool_t	PEta::Init(Char_t* configfile)
+Bool_t	PEtaExample::Init(Char_t* configfile)
 {
 
 	OpenGoATFile("AnalysisFiles/Open_GoAT_Compton_354.root", "READ");
@@ -85,7 +85,7 @@ Bool_t	PEta::Init(Char_t* configfile)
 	return kTRUE;
 }
 
-void	PEta::Analyse()
+void	PEtaExample::Analyse()
 {
 	N_eta	= 0;
 	N_5omn  = 0;
@@ -128,7 +128,7 @@ void	PEta::Analyse()
 
 }
 
-void	PEta::Reconstruct()
+void	PEtaExample::Reconstruct()
 {
 	if(GetGoATEvent() % 100000 == 0) printf("Event: %d  Total Etas found: %d \n",GetGoATEvent(), N_eta);
 
@@ -221,7 +221,7 @@ void	PEta::Reconstruct()
 
 }
 
-void  PEta::PostReconstruction()
+void  PEtaExample::PostReconstruction()
 {
 	RandomSubtraction(MM_prompt_eta,MM_random_eta, MM_eta);		
 	
@@ -240,7 +240,7 @@ void  PEta::PostReconstruction()
 
 }
 
-void	PEta::DefineHistograms()
+void	PEtaExample::DefineHistograms()
 {
 	time_eta		= new TH1D("time_eta",		"time_eta",		1000,-500,500);
 	time_eta_cuts	= new TH1D("time_eta_cuts",	"time_eta_cuts",1000,-500,500);
@@ -282,7 +282,7 @@ void	PEta::DefineHistograms()
 	MM_eta_c_4d_2pi2g		= new TH1D("MM_eta_c_4d_2pi2g",		 "MM_eta_c_4d_2pi2g",	   1500,0,1500);	
 }
 
-Bool_t 	PEta::WriteHistograms(TFile* pfile)
+Bool_t 	PEtaExample::WriteHistograms(TFile* pfile)
 {
 	if(!pfile) return kFALSE;
 	pfile->cd();

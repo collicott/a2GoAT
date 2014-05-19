@@ -1,6 +1,6 @@
 #ifndef __CINT__
 
-#include "PPi0.h"
+#include "PPi0Example.h"
 
 int main(int argc, char *argv[])
 {
@@ -74,8 +74,8 @@ int main(int argc, char *argv[])
 	// If no server file is specified, allow for checking in the config file
 	else serverfile = configfile;
 
-	// Create instance of PPi0 class
-	PPi0* ppi0 = new PPi0;
+	// Create instance of PPi0Example class
+	PPi0Example* ppi0 = new PPi0Example;
 
 	// If unset, scan server or config file for file settings
 	if(dir_in.length() == 0)
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 	// Perform full initialisation 
 	if(!ppi0->Init(configfile.c_str()))
 	{
-		cout << "ERROR: PPi0 Init failed!" << endl;
+		cout << "ERROR: PPi0Example Init failed!" << endl;
 		return 0;
 	}
 
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
 			cout << "Output tree '" << tree_out << "' chosen" << endl;
 			cout << "Output hist '" << hist_out << "' chosen" << endl << endl;			
 			if(!ppi0->File(file_in.c_str(), tree_out.c_str(), hist_out.c_str())) 
-					cout << "ERROR: PPi0 failed on file " << file_in << "!" << endl;
+					cout << "ERROR: PPi0Example failed on file " << file_in << "!" << endl;
 			files_found++;
 		}
 	}
@@ -230,12 +230,12 @@ int main(int argc, char *argv[])
 					hist_out = dir_out+pre_hist+suffix;
 					
 					files_found++;
-					// Run PPi0
+					// Run PPi0Example
 					
 					cout << "Output tree '" << tree_out << "' chosen" << endl;
 					cout << "Output hist '" << hist_out << "' chosen" << endl << endl;						
 					if(!ppi0->File(file_in.c_str(), tree_out.c_str(), hist_out.c_str())) 
-						cout << "ERROR: PPi0 failed on file " << file_in << "!" << endl;
+						cout << "ERROR: PPi0Example failed on file " << file_in << "!" << endl;
 
 				}
 			}
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-PPi0::PPi0() :
+PPi0Example::PPi0Example() :
 			nentries(0),
 			TC(0),
 			E(0),
@@ -275,12 +275,13 @@ PPi0::PPi0() :
 	MissE	= new Double_t[maxentries];
 }
 
-PPi0::~PPi0()
+PPi0Example::~PPi0Example()
 {
 }
 
-Bool_t	PPi0::Init(const char* configfile)
+Bool_t	PPi0Example::Init(const char* configfile)
 {
+
 	// Set by user in the future...
 	SetTarget(938);
 	
@@ -307,7 +308,7 @@ Bool_t	PPi0::Init(const char* configfile)
 	return kTRUE;
 }
 
-Bool_t	PPi0::File(const char* gfile, const char* tfile, const char* hfile)
+Bool_t	PPi0Example::File(const char* gfile, const char* tfile, const char* hfile)
 {
 	if(ReconstructPhysicsTree == kTRUE)
 	{
@@ -340,7 +341,7 @@ Bool_t	PPi0::File(const char* gfile, const char* tfile, const char* hfile)
 	return kTRUE;
 }
 
-void	PPi0::Analyse()
+void	PPi0Example::Analyse()
 {
 	if(ReconstructPhysicsTree == kTRUE)
 	{	
@@ -365,7 +366,7 @@ void	PPi0::Analyse()
 		
 }
 
-void	PPi0::Reconstruct()
+void	PPi0Example::Reconstruct()
 {
 	if(GetGoATEvent() % 100000 == 0) printf("Event: %d\n",GetGoATEvent());
 
@@ -393,7 +394,7 @@ void	PPi0::Reconstruct()
 
 }
 
-void  PPi0::PostReconstruction()
+void  PPi0Example::PostReconstruction()
 {
 	Int_t N = (Int_t)treePhysics->GetEntries();
 	for (Int_t i=0;i<N;i++) {
@@ -455,7 +456,7 @@ void  PPi0::PostReconstruction()
 
 }
 
-Bool_t  PPi0::InitPhysicsTree(TFile* F)
+Bool_t  PPi0Example::InitPhysicsTree(TFile* F)
 {
 	if(!F) return kFALSE;
 	F->cd();
@@ -476,7 +477,7 @@ Bool_t  PPi0::InitPhysicsTree(TFile* F)
 	return kTRUE;
 }
 
-Bool_t  PPi0::OpenPhysicsTree(TFile* F)
+Bool_t  PPi0Example::OpenPhysicsTree(TFile* F)
 {
 	if(!F) {cout << "1" << endl;return kFALSE; }
 	
@@ -496,7 +497,7 @@ Bool_t  PPi0::OpenPhysicsTree(TFile* F)
 	return kTRUE;
 }
 
-Bool_t  PPi0::WriteTrees(TFile* F)
+Bool_t  PPi0Example::WriteTrees(TFile* F)
 {
 	if(!F) return kFALSE;
 	F->cd();
@@ -506,7 +507,7 @@ Bool_t  PPi0::WriteTrees(TFile* F)
 	return kTRUE;
 }
 
-void	PPi0::InitHistograms()
+void	PPi0Example::InitHistograms()
 {
 
 	// 1-D histograms
@@ -584,7 +585,7 @@ void	PPi0::InitHistograms()
 	E_theta_phi_random->Sumw2();*/
 }
 
-Bool_t 	PPi0::WriteHistograms(TFile* hfile)
+Bool_t 	PPi0Example::WriteHistograms(TFile* hfile)
 {
 	if(!hfile) return kFALSE;
 	hfile->cd();
@@ -622,7 +623,7 @@ Bool_t 	PPi0::WriteHistograms(TFile* hfile)
 	return kTRUE;
 }
 
-Bool_t	PPi0::OpenPhysTreeFile(const char* tfile, Option_t* option)
+Bool_t	PPi0Example::OpenPhysTreeFile(const char* tfile, Option_t* option)
 {
 	PhysTreeFile = new TFile(tfile, option);
 	if(!PhysTreeFile) return kFALSE;
@@ -633,7 +634,7 @@ Bool_t	PPi0::OpenPhysTreeFile(const char* tfile, Option_t* option)
 	return kTRUE;
 }
 
-Bool_t 	PPi0::ClosePhysTreeFile()
+Bool_t 	PPi0Example::ClosePhysTreeFile()
 {
 	if(!PhysTreeFile) return kFALSE;
 	PhysTreeFile->Close();

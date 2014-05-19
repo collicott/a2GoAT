@@ -1,5 +1,5 @@
-#ifndef __PEta_h__
-#define __PEta_h__
+#ifndef __PEtaExample_h__
+#define __PEtaExample_h__
 
 #include <iostream>
 #include <fstream>
@@ -9,7 +9,7 @@ using namespace std;
 
 #include "PPhysics.h"
 
-class	PEta : public PPhysics
+class	PEtaExample : public PPhysics
 {
 private:
 
@@ -65,8 +65,8 @@ protected:
 
 
 public:
-    PEta();
-    virtual ~PEta();
+    PEtaExample();
+    virtual ~PEtaExample();
 
     virtual Bool_t	Init(Char_t* file_config);	
     virtual void 	Analyse();

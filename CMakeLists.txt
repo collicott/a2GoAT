@@ -39,18 +39,18 @@ add_executable(goat
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
-add_executable(pi0
-   src/PPi0.cc
+add_executable(pi0-example
+   src/PPi0Example.cc
    src/PPhysics.cc
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(pi0 ${ROOT_LIBRARIES})
+target_link_libraries(pi0-example ${ROOT_LIBRARIES})
 
-add_executable(eta
-   src/PEta.cc
+add_executable(eta-example
+   src/PEtaExample.cc
    src/PPhysics.cc
    src/GoATTreeManager.cc
    src/GAcquTreeManager.cc
    )
-target_link_libraries(eta ${ROOT_LIBRARIES})
+target_link_libraries(eta-example ${ROOT_LIBRARIES})
