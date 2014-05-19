@@ -240,12 +240,11 @@ int main(int argc, char *argv[])
 					file_in = dir_in+file;
 					// Build output file name
 					suffix = file.substr(pre_in.length(),length-pre_in.length());
-					file_out = pre_out+suffix;
+					file_out = dir_out+pre_out+suffix;
 
 					// Check for previously created output file
-					if((file_list->Contains(file_out.c_str())) && !overwrite) continue;
+					if((gSystem->IsFileInIncludePath(file_out.c_str())) && !overwrite) continue;
 					
-					file_out.insert(0,dir_out);
 					files_found++;
 
 					// Run GoAT
