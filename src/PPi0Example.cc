@@ -511,7 +511,8 @@ Bool_t  PPi0Example::WriteTrees(TFile* F)
 
 void	PPi0Example::InitHistograms()
 {
-
+	gROOT->cd();
+	
 	// 1-D histograms
 
 	time_pi0		= new TH1D("time_pi0",		"time_pi0",		1200,-600,600);
@@ -592,35 +593,8 @@ Bool_t 	PPi0Example::WriteHistograms(TFile* hfile)
 	if(!hfile) return kFALSE;
 	hfile->cd();
 
-	time_pi0->Write();
-	time_pi0_cuts->Write();	
-
-	TC_prompt->Write(); 
-	TC_random->Write();
-	TC_sub->Write();
-
-	E_prompt->Write(); 
-	E_random->Write();
-	E_sub->Write();
-	
-	theta_prompt->Write(); 
-	theta_random->Write();
-	theta_sub->Write();		
-	
-	phi_prompt->Write(); 
-	phi_random->Write();
-	phi_sub->Write();	
-	
-	MM_prompt_pi0->Write();
-	MM_random_pi0->Write();
-	MM_sub_pi0->Write(); 
-	
-	ME_prompt_pi0->Write(); 
-	ME_random_pi0->Write();
-	ME_sub_pi0->Write();
-
-	TC_theta_phi_prompt->Write(); 
-	TC_theta_phi_random->Write();  
+	gROOT->GetList()->Write();
+	gROOT->GetList()->Delete();
 		
 	return kTRUE;
 }

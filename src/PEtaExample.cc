@@ -244,6 +244,8 @@ void  PEtaExample::PostReconstruction()
 
 void	PEtaExample::DefineHistograms()
 {
+	gROOT->cd();
+	
 	time_eta		= new TH1D("time_eta",		"time_eta",		1000,-500,500);
 	time_eta_cuts	= new TH1D("time_eta_cuts",	"time_eta_cuts",1000,-500,500);
 
@@ -289,46 +291,9 @@ Bool_t 	PEtaExample::WriteHistograms(TFile* pfile)
 	if(!pfile) return kFALSE;
 	pfile->cd();
 
-	time_eta->Write();
-	time_eta_cuts->Write();	
-			
-//	MM_prompt_eta->Write();
-//	MM_random_eta->Write();
-	MM_eta->Write();
-
-//	MM_prompt_eta_n->Write();
-//	MM_random_eta_n->Write();
-	MM_eta_n->Write();
-
-//	MM_prompt_eta_n_6g->Write();
-//	MM_random_eta_n_6g->Write();
-	MM_eta_n_6g->Write();
-	
-//	MM_prompt_eta_n_2g->Write();
-//	MM_random_eta_n_2g->Write();
-	MM_eta_n_2g->Write();	
-
-//	MM_prompt_eta_n_3ol->Write();
-//	MM_random_eta_n_3ol->Write();
-	MM_eta_n_3ol->Write();	
-	
-//	MM_prompt_eta_n_5om->Write();
-//	MM_random_eta_n_5om->Write();
-	MM_eta_n_5om->Write();		
-	
-//	MM_prompt_eta_c->Write();
-//	MM_random_eta_c->Write();
-	MM_eta_c->Write();
-
-//	MM_prompt_eta_c_4d->Write();
-//	MM_random_eta_c_4d->Write();
-	MM_eta_c_4d->Write();
-
-//	MM_prompt_eta_c_4d_2pi2g->Write();
-//	MM_random_eta_c_4d_2pi2g->Write();
-	MM_eta_c_4d_2pi2g->Write();	
-	
-	
+	gROOT->GetList()->Write();
+	gROOT->GetList()->Delete();
+		
 	return kTRUE;
 }
 
