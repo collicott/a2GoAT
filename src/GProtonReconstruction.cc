@@ -142,8 +142,6 @@ Bool_t  GProtonReconstruction::Process()
 
     TraverseEntries(0, photons->GetNEntries()+1);
 
-    if(!Write())    return kFALSE;
-
     Write(PhiDiffEtap);
     Write(PhiDiffEta);
     Write(PhiDiffPi0);

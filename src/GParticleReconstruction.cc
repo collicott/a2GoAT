@@ -122,7 +122,6 @@ Bool_t  GParticleReconstruction::Process()
 
     TraverseEntries(0, rawEvent->GetNEntries()+1);
 
-    if(!Write())    return kFALSE;
     if(!Write(taggerTime))  return kFALSE;
     if(!Write(accepted))  return kFALSE;
     if(!Write(CBTime))  return kFALSE;

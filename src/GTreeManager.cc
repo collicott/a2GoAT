@@ -181,7 +181,14 @@ Bool_t  GTreeManager::Process(const char* input_filename, const char* output_fil
     }
     cout << "Created output file " << file_out->GetName() << "!" << file_out->GetTitle() << endl;
 
-    return Process();
+    isWritten   = kFALSE;
+
+    if(!Process())
+        return kFALSE;
+
+    if(isWritten)
+        return kTRUE;
+    return Write();
 }
 
 Bool_t  GTreeManager::Write()
@@ -200,6 +207,8 @@ Bool_t  GTreeManager::Write()
     if(scalers->IsOpenForOutput())     scalers->Write();
     if(fitData->IsOpenForOutput())     fitData->Write();
 
+    isWritten   = kTRUE;
+
     return kTRUE;
 }
 
@@ -208,6 +217,7 @@ Bool_t  GTreeManager::Write(const TNamed* object)
     if(!file_out)   return kFALSE;
     file_out->cd();
     object->Write();
+    std::cout << "object " << object->GetName() << " has been written to disk." << std::endl;
     return kTRUE;
 }
 

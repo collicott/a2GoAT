@@ -128,8 +128,6 @@ Bool_t  GFitEtap6g::Process()
 
     TraverseEntries(0, photons->GetNEntries()+1);
 
-    if(!Write())    return kFALSE;
-
     Write(ConfidenceLevel);
     Write(ChiSq);
     for(int i=0; i<24; i++)

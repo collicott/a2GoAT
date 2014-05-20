@@ -85,7 +85,6 @@ Bool_t  GMesonReconstruction::Process()
 
     TraverseEntries(0, photons->GetNEntries()+1);
 
-    if(!Write())    return kFALSE;
     if(!Write(h2g.invMassPi0))    return kFALSE;
     if(!Write(h2g.invMassEta))    return kFALSE;
     if(!Write(h2g.invMassEtap))    return kFALSE;

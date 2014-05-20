@@ -55,7 +55,6 @@ Bool_t  GCorrectScalers::Process()
     actualEvent = EventAtFirstScalerRead;
     TraverseEntries(EventAtFirstScalerRead+1, EventAtLastScalerRead);
 
-    if(!Write())    return kFALSE;
     if(!Write(taggerTime))  return kFALSE;
     if(!Write(accepted))  return kFALSE;
     return kTRUE;

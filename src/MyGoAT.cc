@@ -141,7 +141,7 @@ void* start(void* arguments)
     delete  tree;
 
 	end = clock();
-	cout << "Time required for execution: "
+    cout << "\nTime required for execution: "
 	<< (double)(end-start)/CLOCKS_PER_SEC
 	<< " seconds." << "\n\n";
 

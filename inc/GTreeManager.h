@@ -19,6 +19,7 @@ class  GTreeManager
 {
 private:
     TFile*  file_in;
+    Bool_t  isWritten;
 
     //Bool_t  EntryChecking(const GTree* tree);
     Bool_t  CreateMeson(GTreeMeson*& mesonTree, const TString& _Name);

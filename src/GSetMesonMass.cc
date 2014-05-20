@@ -57,7 +57,6 @@ Bool_t  GSetMesonMass::Process()
 
     TraverseEntries(0, photons->GetNEntries()+1);
 
-    if(!Write())    return kFALSE;
     return kTRUE;
 }
 

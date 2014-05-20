@@ -68,7 +68,6 @@ Bool_t  GTaggerReconstruction::Process()
 
     TraverseEntries(0, photons->GetNEntries()+1);
 
-    if(!Write())    return kFALSE;
     return kTRUE;
 }
 
