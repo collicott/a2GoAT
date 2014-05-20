@@ -1,10 +1,11 @@
 #include "GTreeMeson.h"
+#include "GTreeManager.h"
 
 
 GTreeMeson::GTreeMeson(GTreeManager *Manager, const TString& _Name)    :
     GTreeParticle(Manager, _Name)
 {
-    for(int i=0; i<GTreeMeson_NDaughterEntries; i++)
+    for(int i=0; i<GTreeMeson_MaxEntries; i++)
     {
         daughter0PDG[i] = 0;
         daughter1PDG[i] = 0;
@@ -46,34 +47,61 @@ void    GTreeMeson::SetBranches()
     tree_out->Branch("Daughter2Indices",daughter2Indices,"Daughter2Indices[nParticles]/b");
 }
 
-/*Bool_t  GTreeMeson::Init(const char* filename_input, const char* filename_output, const Bool_t override)
+TLorentzVector& GTreeMeson::GetDaughter(const Int_t index, const Int_t daugther_index)
 {
-    if(!GTree::Init(filename_input, filename_output, override))
-        return kFALSE;
-
-    tree_out->Branch("pi0.", &pi0, sizeof(TLorentzVector)*32, 0);
-    tree_out->Branch("eta.", &eta, sizeof(TLorentzVector)*32, 0);
-    tree_out->Branch("etap.", &etap, sizeof(TLorentzVector)*32, 0);
-
-    for(int i=0; i<tree_in->GetEntries(); i++)
+    UChar_t    daughter_pdg;
+    UChar_t    daughter_index;
+    switch(daugther_index)
     {
-        pi0->Clear();
-        eta->Clear();
-        etap->Clear();
-        GetEntry(i);
-        switch(photons->GetEntriesFast())
-        {
+        case 0:
+            daughter_pdg    = daughter0PDG[index];
+            daughter_index  = daughter0Indices[index];
+            break;
+        case 1:
+            daughter_pdg    = daughter1PDG[index];
+            daughter_index  = daughter1Indices[index];
+            break;
         case 2:
-            //Reconstruct2g();
+            daughter_pdg    = daughter2PDG[index];
+            daughter_index  = daughter2Indices[index];
             break;
-        case 3:
-            Reconstruct3g();
-            break;
-        }
     }
 
-    Write();
-}*/
+    if(daughter_pdg == 22)
+        return manager->photons->Particle(daughter_index);
+    if(daughter_pdg == 111)
+        return manager->pi0->Particle(daughter_index);
+    if(daughter_pdg == 221)
+        return manager->eta->Particle(daughter_index);
+}
+
+const   TLorentzVector& GTreeMeson::GetDaughter(const Int_t index, const Int_t daugther_index) const
+{
+    UChar_t    daughter_pdg;
+    UChar_t    daughter_index;
+    switch(daugther_index)
+    {
+        case 0:
+            daughter_pdg    = daughter0PDG[index];
+            daughter_index  = daughter0Indices[index];
+            break;
+        case 1:
+            daughter_pdg    = daughter1PDG[index];
+            daughter_index  = daughter1Indices[index];
+            break;
+        case 2:
+            daughter_pdg    = daughter2PDG[index];
+            daughter_index  = daughter2Indices[index];
+            break;
+    }
+
+    if(daughter_pdg == 22)
+        return manager->photons->Particle(daughter_index);
+    if(daughter_pdg == 111)
+        return manager->pi0->Particle(daughter_index);
+    if(daughter_pdg == 221)
+        return manager->eta->Particle(daughter_index);
+}
 
 
 

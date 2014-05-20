@@ -28,13 +28,13 @@ public:
 private:
     TString         name;
     Int_t           status;
-    GTreeManager*   manager;
 
     void    GetEntryFast(const UInt_t index)    {tree_in->GetEntry(index);}
 
 protected:
-    TTree*  tree_in;
-    TTree*  tree_out;
+    TTree*          tree_in;
+    TTree*          tree_out;
+    GTreeManager*   manager;
 
     virtual void    SetBranchAdresses() = 0;
     virtual void    SetBranches() = 0;

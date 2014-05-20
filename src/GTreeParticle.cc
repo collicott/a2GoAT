@@ -1,4 +1,5 @@
 #include "GTreeParticle.h"
+#include "GTreeManager.h"
 
 
 using namespace std;
@@ -9,8 +10,6 @@ GTreeParticle::GTreeParticle(GTreeManager *Manager, const TString& _Name)    :
     particles(new TClonesArray("TLorentzVector", 32000)),
     nParticles(0)
 {
-    for(int i=0; i<GTreeParticle_NDaughterEntries; i++)
-        daughters[i] = 0;
 }
 
 GTreeParticle::~GTreeParticle()
@@ -30,5 +29,4 @@ void    GTreeParticle::SetBranches()
     tree_out->Branch("particles.", &particles, 32000, 0);
     tree_out->Branch("rawIndex",daughters,"rawIndex[nParticles]/I");
 }
-
 

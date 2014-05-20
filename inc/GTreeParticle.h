@@ -7,17 +7,16 @@
 
 #include "GTree.h"
 
-#define GTreeParticle_NDaughterEntries  512
-
+#define GTreeParticle_MaxEntries  128
 
 class   GTreeMeson;
 
 class  GTreeParticle    : public GTree
 {
 private:
-    UInt_t          nParticles;
-    TClonesArray*	particles;		// reconstructed
-    Int_t           daughters[GTreeParticle_NDaughterEntries];  // nDaughters in GTreeMeson
+    UInt_t              nParticles;
+    TClonesArray*       particles;	// reconstructed
+    Int_t               daughters[GTreeParticle_MaxEntries];  // nDaughters in GTreeMeson
 
 
 protected:
@@ -30,7 +29,7 @@ public:
 
     inline  void            AddParticle(const TLorentzVector& vec, const Int_t _RawIndex = -1);
     virtual void            Clear()     {nParticles = 0; particles->Clear();}
-            Int_t           GetDaughterIndex(const Int_t index)    const       {return daughters[index];}
+            Int_t           GetDaughterIndex(const Int_t index) const       {return daughters[index];}
             UInt_t          GetNParticles()    const       {return nParticles;}
             TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
     const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
@@ -42,7 +41,7 @@ public:
 
 void    GTreeParticle::AddParticle(const TLorentzVector& vec, const Int_t _RawIndex)
 {
-    daughters[nParticles] = _RawIndex;
+    daughters[nParticles]   = _RawIndex;
     new((*particles)[nParticles]) TLorentzVector(vec);
     nParticles++;
 }

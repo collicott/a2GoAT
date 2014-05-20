@@ -58,6 +58,7 @@ public:
             Bool_t  Process(const char* input_filename, const char* output_filename);
 
     friend  class GTree;
+    friend  class GTreeMeson;
 };
 
 #endif
