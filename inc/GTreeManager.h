@@ -36,7 +36,10 @@ protected:
     GTreeScaler*    scalers;
     GTreeEvent*     eventFlags;
     GTreeParticle*  photons;
+    GTreeParticle*  electrons;
+    GTreeParticle*  chargedPi;
     GTreeParticle*  protons;
+    GTreeParticle*  neutrons;
     GTreeMeson*     pi0;
     GTreeMeson*     eta;
     GTreeMeson*     etap;

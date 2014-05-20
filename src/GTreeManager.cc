@@ -16,7 +16,10 @@ GTreeManager::GTreeManager()    :
     scalers(0),
     eventFlags(0),
     photons(0),
+    electrons(0),
+    chargedPi(0),
     protons(0),
+    neutrons(0),
     pi0(0),
     eta(0),
     etap(0),
@@ -26,7 +29,10 @@ GTreeManager::GTreeManager()    :
     eta = new GTreeMeson(this, TString("Eta"));
     pi0 = new GTreeMeson(this, TString("Pi0"));
     photons = new GTreeParticle(this, TString("Photons"));
+    electrons = new GTreeParticle(this, TString("Electrons"));
+    chargedPi = new GTreeParticle(this, TString("ChargedPi"));
     protons = new GTreeParticle(this, TString("Protons"));
+    neutrons = new GTreeParticle(this, TString("Neutrons"));
     eventFlags = new GTreeEvent(this);
     rawEvent = new GTreeRawEvent(this);
     tagger = new GTreeTagger(this);
@@ -74,10 +80,25 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
         if(photons->IsOpenForInput())
             readList.Add(photons);
     }
+    if(electrons)
+    {
+        if(electrons->IsOpenForInput())
+            readList.Add(electrons);
+    }
+    if(chargedPi)
+    {
+        if(chargedPi->IsOpenForInput())
+            readList.Add(chargedPi);
+    }
     if(protons)
     {
         if(protons->IsOpenForInput())
             readList.Add(protons);
+    }
+    if(neutrons)
+    {
+        if(neutrons->IsOpenForInput())
+            readList.Add(photons);
     }
 
     if(rawEvent)
@@ -167,8 +188,14 @@ Bool_t  GTreeManager::Process(const char* input_filename, const char* output_fil
         pi0->OpenForInput();
     if(file_in->Get("Photons"))
         photons->OpenForInput();
+    if(file_in->Get("Electrons"))
+        electrons->OpenForInput();
+    if(file_in->Get("ChargedPi"))
+        chargedPi->OpenForInput();
     if(file_in->Get("Protons"))
         protons->OpenForInput();
+    if(file_in->Get("Neutrons"))
+        neutrons->OpenForInput();
 
 
 
@@ -199,7 +226,10 @@ Bool_t  GTreeManager::Write()
     if(eta->IsOpenForOutput())         eta->Write();
     if(etap->IsOpenForOutput())        etap->Write();
     if(photons->IsOpenForOutput())     photons->Write();
+    if(electrons->IsOpenForOutput())   electrons->Write();
+    if(chargedPi->IsOpenForOutput())   chargedPi->Write();
     if(protons->IsOpenForOutput())     protons->Write();
+    if(neutrons->IsOpenForOutput())    neutrons->Write();
     if(eventFlags->IsOpenForOutput())  eventFlags->Write();
     if(rawEvent->IsOpenForOutput())    rawEvent->Write();
     if(tagger->IsOpenForOutput())      tagger->Write();
