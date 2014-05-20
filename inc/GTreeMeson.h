@@ -40,7 +40,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeMeson(const TString& _Name);
+    GTreeMeson(GTreeManager *Manager, const TString& _Name);
     virtual ~GTreeMeson();
 
     inline  void            AddParticle(const TLorentzVector& vec, const Int_t nDaughters = 0, const Int_t* PDGList = 0, const Int_t* Indices = 0);

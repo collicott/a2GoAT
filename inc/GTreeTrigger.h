@@ -25,7 +25,7 @@ private:
     virtual void    SetBranches();
 
 public:
-    GTreeTrigger();
+    GTreeTrigger(GTreeManager *Manager);
     virtual ~GTreeTrigger();
 
 

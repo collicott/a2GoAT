@@ -84,7 +84,7 @@ Bool_t  GMesonReconstruction::Process(const char* input_filename, const char* ou
     if(!CreateTagger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
     if(!CreateTrigger())    return kFALSE;
-    scalers->Clone(*file_out);
+    scalers->Clone();
 
     h2g.invMassPi0  = new TH1D("h2g_invMassPi0", "h2g_invMassPi0", 500, 0, 500);
     h2g.invMassEta  = new TH1D("h2g_invMassEta", "h2g_invMassEta", 700, 200, 900);

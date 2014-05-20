@@ -4,8 +4,8 @@
 using namespace std;
 
 
-GTreeFit::GTreeFit()    :
-    GTree(TString("Fit")),
+GTreeFit::GTreeFit(GTreeManager *Manager)    :
+    GTree(Manager, TString("Fit")),
     ConfidenceLevel(0),
     ChiSq(0),
     particle(new TLorentzVector())

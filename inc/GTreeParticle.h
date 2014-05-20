@@ -25,7 +25,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeParticle(const TString& _Name);
+    GTreeParticle(GTreeManager *Manager, const TString& _Name);
     virtual ~GTreeParticle();
 
     inline  void            AddParticle(const TLorentzVector& vec, const Int_t _RawIndex = -1);

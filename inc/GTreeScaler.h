@@ -23,7 +23,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeScaler();
+    GTreeScaler(GTreeManager *Manager);
     virtual ~GTreeScaler();
 
     virtual void        Clear()     {}

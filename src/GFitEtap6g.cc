@@ -137,7 +137,7 @@ Bool_t  GFitEtap6g::Process(const char* input_filename, const char* output_filen
     if(!CreateTagger())    return kFALSE;
     if(!CreateTrigger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
-    scalers->Clone(*file_out);
+    scalers->Clone();
 
 	ConfidenceLevel	= new TH1D("ConfidenceLevel", "ConfidenceLevel", 1000, 0, 1);
 	ChiSq			= new TH1D("ChiSq", "ChiSq", 1000, 0, 100);

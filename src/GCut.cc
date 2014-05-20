@@ -173,7 +173,7 @@ Bool_t  GCut::Process(const char* input_filename, const char* output_filename)
     if(!CreateTagger())    return kFALSE;
     if(!CreateTrigger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
-    scalers->Clone(*file_out);
+    scalers->Clone();
 
     TraverseEntries(0, photons->GetNEntries()+1);
 

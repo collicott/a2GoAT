@@ -26,10 +26,9 @@ public:
     friend  class   GTreeManager;
 
 private:
-    TString name;
-    Int_t   status;
-    TFile*  file_in;
-    TFile*  file_out;
+    TString         name;
+    Int_t           status;
+    GTreeManager*   manager;
 
     void    GetEntryFast(const UInt_t index)    {tree_in->GetEntry(index);}
 
@@ -41,11 +40,11 @@ protected:
     virtual void    SetBranches() = 0;
 
 public:
-    GTree(const TString& _Name);
+    GTree(GTreeManager* Manager, const TString& _Name);
     virtual ~GTree();
 
     virtual void        Clear() = 0;
-            void        Clone(TFile& outputFile);
+            void        Clone();
             void        Fill();
     inline  Bool_t      GetEntry(const UInt_t index);
     const   char*       GetName() const {return name.Data();}
@@ -53,8 +52,8 @@ public:
             Bool_t      IsClosed()          {return !status;}
             Bool_t      IsOpenForInput()    {return status & FLAG_OPENFORINPUT;}
             Bool_t      IsOpenForOutput()   {return status & FLAG_OPENFOROUTPUT;}
-            Bool_t      OpenForInput(TFile& inputFile);
-            Bool_t      OpenForOutput(TFile& outputFile);
+            Bool_t      OpenForInput();
+            Bool_t      OpenForOutput();
     virtual void        Print(const Bool_t All = kFALSE) const;
             Bool_t      Write();
 

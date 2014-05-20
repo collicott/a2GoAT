@@ -124,7 +124,7 @@ Bool_t  GParticleReconstruction::Process(const char* input_filename, const char*
     if(!CreateTagger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
     if(!CreateTrigger())    return kFALSE;
-    scalers->Clone(*file_out);
+    scalers->Clone();
 
     file_out->cd();
     taggerTime  = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);

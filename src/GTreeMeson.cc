@@ -1,8 +1,8 @@
 #include "GTreeMeson.h"
 
 
-GTreeMeson::GTreeMeson(const TString& _Name)    :
-    GTreeParticle(_Name)
+GTreeMeson::GTreeMeson(GTreeManager *Manager, const TString& _Name)    :
+    GTreeParticle(Manager, _Name)
 {
     for(int i=0; i<GTreeMeson_NDaughterEntries; i++)
     {

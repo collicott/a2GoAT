@@ -74,7 +74,7 @@ Bool_t  GSetMesonMass::Process(const char* input_filename, const char* output_fi
     if(!CreateTagger())    return kFALSE;
     if(!CreateTrigger())    return kFALSE;
     if(!CreateEventFlags())    return kFALSE;
-    scalers->Clone(*file_out);
+    scalers->Clone();
 
     TraverseEntries(0, photons->GetNEntries()+1);
 

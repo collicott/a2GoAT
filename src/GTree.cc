@@ -1,16 +1,16 @@
 #include "GTree.h"
+#include "GTreeManager.h"
 
 
 using namespace std;
 
 
-GTree::GTree(const TString& _Name)    :
+GTree::GTree(GTreeManager *Manager, const TString& _Name)    :
     name(_Name),
     status(FLAG_CLOSED),
-    file_in(0),
-    file_out(0),
     tree_in(0),
-    tree_out(0)
+    tree_out(0),
+    manager(Manager)
 {
 }
 
@@ -20,10 +20,10 @@ GTree::~GTree()
     if(tree_out) delete tree_out;
 }
 
-void    GTree::Clone(TFile& outputFile)
+void    GTree::Clone()
 {
-    file_out = &outputFile;
-    outputFile.cd();
+    //file_out = &outputFile;
+    manager->file_out->cd();
     tree_out = tree_in->CloneTree();
 }
 
@@ -40,11 +40,9 @@ void    GTree::Fill()
         tree_out->Fill();
 }
 
-Bool_t  GTree::OpenForInput(TFile& inputFile)
+Bool_t  GTree::OpenForInput()
 {
-    file_in = &inputFile;
-
-    inputFile.GetObject(name.Data(),tree_in);
+    manager->file_in->GetObject(name.Data(),tree_in);
     if(tree_in)
     {
         SetBranchAdresses();
@@ -53,16 +51,14 @@ Bool_t  GTree::OpenForInput(TFile& inputFile)
         return kTRUE;
     }
 
-    cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): could not find a tree called " << name.Data() << " in input file " << inputFile.GetName() << "!" << endl;
+    cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): could not find a tree called " << name.Data() << " in input file " << manager->file_in->GetName() << "!" << endl;
     status = status & (~FLAG_OPENFORINPUT);
     return kFALSE;
 }
 
-Bool_t  GTree::OpenForOutput(TFile& outputFile)
+Bool_t  GTree::OpenForOutput()
 {
-    file_out = &outputFile;
-
-    outputFile.cd();
+    manager->file_out->cd();
     tree_out    = new TTree(name.Data(), name.Data());
     if(tree_out)
     {
@@ -71,7 +67,7 @@ Bool_t  GTree::OpenForOutput(TFile& outputFile)
         return kTRUE;
     }
 
-    cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): can not create output tree " << name.Data() << " in output file " << outputFile.GetName() << "!" << endl;
+    cout << "#ERROR# GTree::OpenForInput(TFile& inputFile): can not create output tree " << name.Data() << " in output file " << manager->file_in->GetName() << "!" << endl;
     status = status & (~FLAG_OPENFOROUTPUT);
     return kFALSE;
 }
@@ -90,9 +86,9 @@ void    GTree::Print(const Bool_t All) const
 
 Bool_t	GTree::Write()
 {
-    if(!file_out)   return kFALSE;
+    if(!manager->file_out)   return kFALSE;
     if(!tree_out)   return kFALSE;
-    file_out->cd();
+    manager->file_out->cd();
     tree_out->Write();
     return kTRUE;
 }

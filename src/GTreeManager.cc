@@ -24,17 +24,17 @@ GTreeManager::GTreeManager()    :
     etap(0),
     fitData(0)
 {
-    etap = new GTreeMeson(TString("Etap"));
-    eta = new GTreeMeson(TString("Eta"));
-    pi0 = new GTreeMeson(TString("Pi0"));
-    photons = new GTreeParticle(TString("Photons"));
-    protons = new GTreeParticle(TString("Protons"));
-    eventFlags = new GTreeEvent();
-    rawEvent = new GTreeRawEvent();
-    tagger = new GTreeTagger();
-    trigger = new GTreeTrigger();
-    scalers = new GTreeScaler();
-    fitData = new GTreeFit();
+    etap = new GTreeMeson(this, TString("Etap"));
+    eta = new GTreeMeson(this, TString("Eta"));
+    pi0 = new GTreeMeson(this, TString("Pi0"));
+    photons = new GTreeParticle(this, TString("Photons"));
+    protons = new GTreeParticle(this, TString("Protons"));
+    eventFlags = new GTreeEvent(this);
+    rawEvent = new GTreeRawEvent(this);
+    tagger = new GTreeTagger(this);
+    trigger = new GTreeTrigger(this);
+    scalers = new GTreeScaler(this);
+    fitData = new GTreeFit(this);
 }
 
 GTreeManager::~GTreeManager()
@@ -130,58 +130,50 @@ Bool_t   GTreeManager::Create(const char* filename)
 Bool_t  GTreeManager::CreateMeson(GTreeMeson*& mesonTree, const TString& _Name)
 {
     if(!file_out) return kFALSE;
-    if(!mesonTree)   mesonTree = new GTreeMeson(_Name);
-    return mesonTree->OpenForOutput(*file_out);
+    return mesonTree->OpenForOutput();
 }
 
 Bool_t  GTreeManager::CreateParticle(GTreeParticle*& particleTree, const TString& _Name)
 {
     if(!file_out) return kFALSE;
-    if(!particleTree)   particleTree = new GTreeParticle(_Name);
-    return particleTree->OpenForOutput(*file_out);
+    return particleTree->OpenForOutput();
 }
 
 Bool_t   GTreeManager::CreateEventFlags()
 {
     if(!file_out) return kFALSE;
-    if(!eventFlags)   eventFlags = new GTreeEvent();
-    return eventFlags->OpenForOutput(*file_out);
+    return eventFlags->OpenForOutput();
 }
 
 Bool_t   GTreeManager::CreateRawEvent()
 {
     if(!file_out) return kFALSE;
-    if(!rawEvent)   rawEvent = new GTreeRawEvent();
-    return rawEvent->OpenForOutput(*file_out);
+    return rawEvent->OpenForOutput();
 }
 
 Bool_t   GTreeManager::CreateTagger()
 {
     if(!file_out) return kFALSE;
-    if(!tagger)   tagger = new GTreeTagger();
-    return tagger->OpenForOutput(*file_out);
+    return tagger->OpenForOutput();
 }
 
 Bool_t   GTreeManager::CreateTrigger()
 {
     if(!file_out)return kFALSE;
-    if(!trigger)  trigger = new GTreeTrigger(); //Added by James
-    return trigger->OpenForOutput(*file_out);
+    return trigger->OpenForOutput();
 }
 
 
 Bool_t   GTreeManager::CreateScalers()
 {
     if(!file_out) return kFALSE;
-    if(!scalers)   scalers = new GTreeScaler();
-    return scalers->OpenForOutput(*file_out);
+    return scalers->OpenForOutput();
 }
 
 Bool_t   GTreeManager::CreateFitData()
 {
     if(!file_out) return kFALSE;
-    if(!fitData)   fitData = new GTreeFit();
-    return fitData->OpenForOutput(*file_out);
+    return fitData->OpenForOutput();
 }
 
 
@@ -201,8 +193,7 @@ Bool_t   GTreeManager::Open(const char* filename)
 Bool_t   GTreeManager::OpenMeson(GTreeMeson*& mesonTree, const TString& _Name)
 {
     if(!file_in) return kFALSE;
-    if(!mesonTree)   mesonTree = new GTreeMeson(_Name);
-    if(!mesonTree->OpenForInput(*file_in))   return kFALSE;
+    if(!mesonTree->OpenForInput())   return kFALSE;
     //return EntryChecking(rawEvent);
     return kTRUE;
 }
@@ -210,8 +201,7 @@ Bool_t   GTreeManager::OpenMeson(GTreeMeson*& mesonTree, const TString& _Name)
 Bool_t   GTreeManager::OpenParticle(GTreeParticle*& particleTree, const TString& _Name)
 {
     if(!file_in) return kFALSE;
-    if(!particleTree)   particleTree = new GTreeParticle(_Name);
-    if(!particleTree->OpenForInput(*file_in))   return kFALSE;
+    if(!particleTree->OpenForInput())   return kFALSE;
     //return EntryChecking(rawEvent);
     return kTRUE;
 }
@@ -219,8 +209,7 @@ Bool_t   GTreeManager::OpenParticle(GTreeParticle*& particleTree, const TString&
 Bool_t   GTreeManager::OpenEventFlags()
 {
     if(!file_in) return kFALSE;
-    if(!eventFlags)   eventFlags = new GTreeEvent();
-    if(!eventFlags->OpenForInput(*file_in))   return kFALSE;
+    if(!eventFlags->OpenForInput())   return kFALSE;
     //return EntryChecking(rawEvent);
     return kTRUE;
 }
@@ -228,8 +217,7 @@ Bool_t   GTreeManager::OpenEventFlags()
 Bool_t   GTreeManager::OpenRawEvent()
 {
     if(!file_in) return kFALSE;
-    if(!rawEvent)   rawEvent = new GTreeRawEvent();
-    if(!rawEvent->OpenForInput(*file_in))   return kFALSE;
+    if(!rawEvent->OpenForInput())   return kFALSE;
     //return EntryChecking(rawEvent);
     return kTRUE;
 }
@@ -237,8 +225,7 @@ Bool_t   GTreeManager::OpenRawEvent()
 Bool_t   GTreeManager::OpenTagger()
 {
     if(!file_in) return kFALSE;
-    if(!tagger)   tagger = new GTreeTagger();
-    if(!tagger->OpenForInput(*file_in))   return kFALSE;
+    if(!tagger->OpenForInput())   return kFALSE;
     //return EntryChecking(tagger);
     return kTRUE;
 }
@@ -246,23 +233,20 @@ Bool_t   GTreeManager::OpenTagger()
 Bool_t   GTreeManager::OpenTrigger()
 {
     if(!file_in)return kFALSE;
-    if(!trigger)  trigger = new GTreeTrigger();          //Added by James
-    if(!trigger->OpenForInput(*file_in)) return kFALSE;
+    if(!trigger->OpenForInput()) return kFALSE;
     return kTRUE;
 }
 
 Bool_t   GTreeManager::OpenScalers()
 {
     if(!file_in) return kFALSE;
-    if(!scalers)   scalers = new GTreeScaler();
-    return scalers->OpenForInput(*file_in);
+    return scalers->OpenForInput();
 }
 
 Bool_t   GTreeManager::OpenFitData()
 {
     if(!file_in) return kFALSE;
-    if(!fitData)   fitData = new GTreeFit();
-    return fitData->OpenForInput(*file_in);
+    return fitData->OpenForInput();
 }
 
 

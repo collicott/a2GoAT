@@ -79,6 +79,8 @@ public:
 
     virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0) = 0;
             Bool_t  ProcessFolder(const char* input_foldername, const char* output_foldername, const char* filePrefix, const char* fileSuffix, const char* outfilePrefix);
+
+    friend  class GTree;
 };
 
 #endif

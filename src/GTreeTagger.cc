@@ -1,7 +1,7 @@
 #include "GTreeTagger.h"
 
-GTreeTagger::GTreeTagger()    :
-    GTree(TString("treeTagger")),
+GTreeTagger::GTreeTagger(GTreeManager *Manager)    :
+    GTree(Manager, TString("treeTagger")),
     nTagged(0),
     nPrompt(0),
     nRand(0),

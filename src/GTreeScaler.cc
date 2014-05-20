@@ -3,8 +3,8 @@
 #include <TLeaf.h>
 
 
-GTreeScaler::GTreeScaler()    :
-    GTree(TString("treeScaler")),
+GTreeScaler::GTreeScaler(GTreeManager *Manager)    :
+    GTree(Manager, TString("treeScaler")),
     EventNumber(0),
     EventID(0),
     NScaler(0)

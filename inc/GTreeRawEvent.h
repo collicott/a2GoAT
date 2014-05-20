@@ -40,7 +40,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeRawEvent();
+    GTreeRawEvent(GTreeManager *Manager);
     virtual ~GTreeRawEvent();
 
     virtual void    Clear()     {nParticles = 0;}

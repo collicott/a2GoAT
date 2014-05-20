@@ -70,15 +70,15 @@ Bool_t  GTaggerReconstruction::Process(const char* input_filename, const char* o
 
 
     if(!Create(output_filename))    return kFALSE;
-    etap->Clone(*file_out);
-    eta->Clone(*file_out);
-    pi0->Clone(*file_out);
-    photons->Clone(*file_out);
-    protons->Clone(*file_out);
+    etap->Clone();
+    eta->Clone();
+    pi0->Clone();
+    photons->Clone();
+    protons->Clone();
     if(!CreateTagger())    return kFALSE;
-    eventFlags->Clone(*file_out);
-    trigger->Clone(*file_out);
-    scalers->Clone(*file_out);
+    eventFlags->Clone();
+    trigger->Clone();
+    scalers->Clone();
 
     TraverseEntries(0, photons->GetNEntries()+1);
 

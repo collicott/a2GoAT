@@ -22,7 +22,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeFit();
+    GTreeFit(GTreeManager *Manager);
     virtual ~GTreeFit();
 
             void            AddParticle(const TLorentzVector& vec)			{*particle	= vec;}

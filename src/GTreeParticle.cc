@@ -4,8 +4,8 @@
 using namespace std;
 
 
-GTreeParticle::GTreeParticle(const TString& _Name)    :
-    GTree(_Name),
+GTreeParticle::GTreeParticle(GTreeManager *Manager, const TString& _Name)    :
+    GTree(Manager,_Name),
     particles(new TClonesArray("TLorentzVector", 32000)),
     nParticles(0)
 {

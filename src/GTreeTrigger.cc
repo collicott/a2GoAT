@@ -2,8 +2,8 @@
 
 
 
-GTreeTrigger::GTreeTrigger()    :
-    GTree(TString("treeTrigger")),
+GTreeTrigger::GTreeTrigger(GTreeManager* Manager)    :
+    GTree(Manager, TString("treeTrigger")),
     ESum(0),
     Mult(0),
     nTriggerPattern(0),

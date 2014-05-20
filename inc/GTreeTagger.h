@@ -29,7 +29,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeTagger();
+    GTreeTagger(GTreeManager *Manager);
     virtual ~GTreeTagger();
 
     virtual void    Clear()             {nTagged = 0; ClearPromptRand();}

@@ -15,7 +15,7 @@ protected:
     virtual void    SetBranches();
 
 public:
-    GTreeEvent();
+    GTreeEvent(GTreeManager *Manager);
     virtual ~GTreeEvent();
 
     virtual void            Clear()                         {}

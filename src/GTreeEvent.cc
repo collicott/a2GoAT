@@ -4,8 +4,8 @@
 using namespace std;
 
 
-GTreeEvent::GTreeEvent()    :
-    GTree(TString("EventFlags")),
+GTreeEvent::GTreeEvent(GTreeManager *Manager)    :
+    GTree(Manager, TString("EventFlags")),
     EventNumber(0)
 {
 }

@@ -1,7 +1,7 @@
 #include "GTreeRawEvent.h"
 
-GTreeRawEvent::GTreeRawEvent()    :
-    GTree(TString("treeRawEvent")),
+GTreeRawEvent::GTreeRawEvent(GTreeManager *Manager)    :
+    GTree(Manager, TString("treeRawEvent")),
     nParticles(0)
 {
     for(int i=0; i<GTreeRawEvent_MAX; i++)
