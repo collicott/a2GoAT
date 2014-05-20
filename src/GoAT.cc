@@ -35,10 +35,16 @@ int main(int argc, char *argv[])
 
 	if(argc == 1)
 	{
-		cout << "Please provide a config file" << endl;
+		system("man ./documents/goat.man");
 		return 0;
 	}
-	else if(argc == 2) configfile = argv[1];
+	else if(argc == 2)
+	{
+		flag = argv[1];
+		flag.erase(0,1);
+		if(strcmp(flag.c_str(), "help") == 0) system("man ./documents/goat.man");
+		else configfile= argv[1];
+	}
 	else
 	{
 		for(int i=1; i<argc; i++)

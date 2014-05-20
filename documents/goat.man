@@ -1,0 +1,52 @@
+.TH goat
+.SH DESCRIPTION
+.B goat
+Analayse raw trees output by AcquRoot class TA2GoAT
+.SH SYNOPSIS
+.B goat
+[\fBconfigfile]
+[\fB\-n]
+[\fB\-f\fR \fIfilename\fR]
+[\fB\-d\fR \fIdirectory\fR]
+.B ...
+.SH OPTIONS
+.TP
+.BR configfile
+Specify a config file (see examples in directory configfiles)
+.TP
+.BR \-f ", " \fIfilename\fR
+Set a single input file name (ex. Acqu_XXX.root)
+.TP
+.BR \-d ", " \fIdirectory\fR
+Set the input directory. 
+If no input file name is set, all files within directory are analysed. Note: searches for default name Acqu_XXX.root
+.TP
+.BR \-p ", " \fIprefix\fR
+Set the input prefix. Input prefix is used when searching directory for files. Note: searches for default name prefix_XXX.root
+.TP
+.BR \-F ", " \fIfilename\fR
+Set a single output file name (ex. GoAT_XXX.root). If no output file name is set, default is chosen as GoAT_XXX.root
+.TP
+.BR \-D ", " \fIdirectory\fR
+Set the output directory. 
+If no output folder is set, input folder is used. 
+.TP
+.BR \-P ", " \fIprefix\fR
+Set the output prefix. Output prefix is used when setting output names automatically. If set, default output name is prefix_XXX.root
+.TP
+.BR \-n 
+Do not overwrite output files (skips input file)
+
+.SH EXAMPLES
+.TP
+.BR "./build/bin/goat -d /scratch/Acqu/ -D /scratch/GoAT/ GoAT-Eta.dat -n"
+
+This command will search for all files in directory /scratch/Acqu/ for files which match the format Acqu_XXX.root. All files will be analysed and output to the directory /scratch/GoAT/ with a format GoAT_XXX.root. The file GoAT-Eta.dat is used to set all config parameters. No-clobber option is set, if output file already exists, input file will be skipped.
+
+.TP
+.BR "./build/bin/goat -f Acqu_CB_300.root -P Batman GoAT-Pi0.dat "
+
+This command will analyse file Acqu_CB_300.root (in current directory). Output file will be named Batman_CB_300.root. The file GoAT-Pi0.dat is used to set all config parameters.
+
+.SH
+.SH Author: C. Collicott
