@@ -10,7 +10,6 @@
 #include "GTreeEvent.h"
 #include "GTreeParticle.h"
 #include "GTreeMeson.h"
-#include "GHistFile.h"
 #include "GTreeTrigger.h" //Added by James
 #include "GTreeFit.h"
 
