@@ -24,7 +24,7 @@ public:
     GCorrectScalers();
     virtual ~GCorrectScalers();
 
-    virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
+    virtual Bool_t  Process();
             UInt_t  GetEventAtFirstScalerRead()     const {return EventAtFirstScalerRead;}
             UInt_t  GetEventAtLastScalerRead()      const {return EventAtLastScalerRead;}
 };

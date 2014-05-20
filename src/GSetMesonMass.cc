@@ -51,29 +51,8 @@ void  GSetMesonMass::ProcessEvent()
     }
 }
 
-Bool_t  GSetMesonMass::Process(const char* input_filename, const char* output_filename)
+Bool_t  GSetMesonMass::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenEtap())    return kFALSE;
-    if(!OpenEta())    return kFALSE;
-    if(!OpenPi0())    return kFALSE;
-    if(!OpenPhotons())    return kFALSE;
-    if(!OpenProtons())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(!OpenTrigger())    return kFALSE;
-    if(!OpenScalers())    return kFALSE;
-    if(!OpenEventFlags())    return kFALSE;
-
-
-    if(!Create(output_filename))    return kFALSE;
-    if(!CreateEtap())    return kFALSE;
-    if(!CreateEta())    return kFALSE;
-    if(!CreatePi0())    return kFALSE;
-    if(!CreatePhotons())    return kFALSE;
-    if(!CreateProtons())    return kFALSE;
-    if(!CreateTagger())    return kFALSE;
-    if(!CreateTrigger())    return kFALSE;
-    if(!CreateEventFlags())    return kFALSE;
     scalers->Clone();
 
     TraverseEntries(0, photons->GetNEntries()+1);

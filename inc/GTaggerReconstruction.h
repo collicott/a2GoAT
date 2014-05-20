@@ -26,7 +26,7 @@ public:
     GTaggerReconstruction();
     virtual ~GTaggerReconstruction();
 
-    virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
+    virtual Bool_t  Process();
     
     void	SetTaggerTimePrompt(const Double_t min, const Double_t max)	{promptWindow[0] = min; promptWindow[1] = max;}
     void	SetTaggerTimeRand0(const Double_t min, const Double_t max)	{randWindow[0][0] = min; randWindow[0][1] = max;}

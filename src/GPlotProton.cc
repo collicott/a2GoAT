@@ -42,18 +42,8 @@ void  GPlotProton::ProcessEvent()
 	}
 }
 
-Bool_t  GPlotProton::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotProton::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-
-    if(!OpenEtap())    return kFALSE;
-    if(!OpenEta())    return kFALSE;
-    if(!OpenPi0())    return kFALSE;
-    if(!OpenProtons())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-
-	if(!Create(output_filename))    return kFALSE;
-
 	protonAngleDiffPrompt	= new TH1D("protonAngleDiffPrompt", "Proton Angle Difference Prompt", 1000, 0, 100);
     protonAngleDiffRand		= new TH1D("protonAngleDiffRand", "Proton Angle Difference Rand", 1000, 0, 100);
     phiDiff					= new TH1D("phiDiff", "Phi Difference Proton Meson", 3600, 0, 360);

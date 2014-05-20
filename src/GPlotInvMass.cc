@@ -25,13 +25,8 @@ void  GPlotInvMass::ProcessEvent()
         }
 }
 
-Bool_t  GPlotInvMass::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotInvMass::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenPhotons())    return kFALSE;
-
-    if(!Create(output_filename))    return kFALSE;
-
     invMass   = new TH1D("invMass", "invMass", 2000, 0, 2000);
 
     TraverseEntries(0, photons->GetNEntries()+1);

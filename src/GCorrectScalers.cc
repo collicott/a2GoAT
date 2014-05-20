@@ -29,27 +29,20 @@ void  GCorrectScalers::ProcessEvent()
     actualEvent++;
 }
 
-Bool_t  GCorrectScalers::Process(const char* input_filename, const char* output_filename)
+Bool_t  GCorrectScalers::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenRawEvent())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(!OpenScalers())    return kFALSE;
-    if(!OpenTrigger())    return kFALSE;
-
-    if(scalers->GetNEntries()<2)    return kFALSE;
+    if(!scalers->IsOpenForInput())
+        scalers->OpenForInput();
+    if(scalers->GetNEntries()<2)
+    {
+        std::cout << "Less than 2 scaler reads. Can not find events with correct scalers" <<std::endl;
+        return kFALSE;
+    }
     scalers->GetEntry(0);
     EventAtFirstScalerRead   = scalers->GetEventNumber();
     scalers->GetEntry(scalers->GetNEntries()-1);
     EventAtLastScalerRead       = scalers->GetEventNumber();
 
-    if(!file_out)
-    {
-        if(!Create(output_filename))    return kFALSE;
-    }
-    if(!CreateTagger())    return kFALSE;
-    if(!CreateEventFlags())    return kFALSE;
-    if(!CreateTrigger())    return kFALSE;
     scalers->Clone();
 
     file_out->cd();

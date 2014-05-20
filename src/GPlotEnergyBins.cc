@@ -56,19 +56,8 @@ void  GPlotEnergyBins::ProcessEvent()
 	}
 }
 
-Bool_t  GPlotEnergyBins::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotEnergyBins::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-
-    if(!OpenEtap())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(withFit)
-    {
-        if(!OpenFitData())    return kFALSE;
-    }
-
-	if(!Create(output_filename))    return kFALSE;
-	
 	/*file_out->cd();
     gDirectory->mkdir("prompt");
     file_out->cd();

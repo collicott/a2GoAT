@@ -41,14 +41,8 @@ void  GPlotScalers::ProcessEvent()
     }
 }
 
-Bool_t  GPlotScalers::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotScalers::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-
-    if(!OpenScalers())    return kFALSE;
-
-	if(!Create(output_filename))    return kFALSE;
-	
 	/*file_out->cd();
     gDirectory->mkdir("prompt");
     file_out->cd();

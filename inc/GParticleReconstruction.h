@@ -31,7 +31,7 @@ public:
     GParticleReconstruction();
     virtual ~GParticleReconstruction();
 
-    virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
+    virtual Bool_t  Process();
 
     void    SetCBTimeCut(const Double_t min, const Double_t max)    {CBTimeCut[0]=min; CBTimeCut[1]=max;}
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}

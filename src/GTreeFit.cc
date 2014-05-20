@@ -5,7 +5,7 @@ using namespace std;
 
 
 GTreeFit::GTreeFit(GTreeManager *Manager)    :
-    GTree(Manager, TString("Fit")),
+    GTree(Manager, TString("treeFit")),
     ConfidenceLevel(0),
     ChiSq(0),
     particle(new TLorentzVector())

@@ -45,6 +45,7 @@ public:
 
     virtual void        Clear() = 0;
             void        Clone();
+            void        CloseForInput()     {status = status & ~FLAG_OPENFORINPUT;}
             void        Fill();
     inline  Bool_t      GetEntry(const UInt_t index);
     const   char*       GetName() const {return name.Data();}

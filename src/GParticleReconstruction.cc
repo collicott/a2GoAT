@@ -92,12 +92,8 @@ void  GParticleReconstruction::ProcessEvent()
     protons->Fill();
 }
 
-Bool_t  GParticleReconstruction::Process(const char* input_filename, const char* output_filename)
+Bool_t  GParticleReconstruction::Process()
 {
-    if(!Create(output_filename))    return kFALSE;
-    if(!CreatePhotons())    return kFALSE;
-    if(!CreateProtons())    return kFALSE;
-
     file_out->cd();
     CBTime              = new TH1D("CBTimeOR", "CBTimeOR", 10000, -1000, 1000);
     TAPSTime            = new TH1D("TAPSTimeOR", "TAPSTimeOR", 10000, -1000, 1000);
@@ -106,7 +102,7 @@ Bool_t  GParticleReconstruction::Process(const char* input_filename, const char*
 
     if(DoScalerCorrection)
     {
-        if(!GCorrectScalers::Process(input_filename, output_filename))  return kFALSE;
+        if(!GCorrectScalers::Process())  return kFALSE;
 
         if(!Write(CBTime))  return kFALSE;
         if(!Write(TAPSTime))  return kFALSE;
@@ -115,15 +111,6 @@ Bool_t  GParticleReconstruction::Process(const char* input_filename, const char*
         return kTRUE;
     }
 
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenRawEvent())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(!OpenScalers())    return kFALSE;
-    if(!OpenTrigger())    return kFALSE;
-
-    if(!CreateTagger())    return kFALSE;
-    if(!CreateEventFlags())    return kFALSE;
-    if(!CreateTrigger())    return kFALSE;
     scalers->Clone();
 
     file_out->cd();

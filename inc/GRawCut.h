@@ -22,7 +22,7 @@ public:
     GRawCut();
     virtual ~GRawCut();
 
-    virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
+    virtual Bool_t  Process();
 
     void    SetNPhoton(const Int_t Multiplicity);
     void    SetNProton(const Int_t Multiplicity);

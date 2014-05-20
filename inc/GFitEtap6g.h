@@ -24,7 +24,7 @@ public:
     GFitEtap6g();
     virtual ~GFitEtap6g();
 
-    virtual Bool_t  Process(const char* input_filename, const char* output_filename = 0);
+    virtual Bool_t  Process();
 };
 
 

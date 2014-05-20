@@ -113,30 +113,8 @@ void  GFitEtap6g::ProcessEvent()
     fitData->Fill();
 }
 
-Bool_t  GFitEtap6g::Process(const char* input_filename, const char* output_filename)
+Bool_t  GFitEtap6g::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenEtap())    return kFALSE;
-    if(!OpenEta())    return kFALSE;
-    if(!OpenPi0())    return kFALSE;
-    if(!OpenPhotons())    return kFALSE;
-    if(!OpenProtons())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(!OpenScalers())    return kFALSE;
-    if(!OpenTrigger())    return kFALSE;
-    if(!OpenEventFlags())    return kFALSE;
-
-
-    if(!Create(output_filename))    return kFALSE;
-    if(!CreateFitData())    return kFALSE;
-    if(!CreateEtap())    return kFALSE;
-    if(!CreateEta())    return kFALSE;
-    if(!CreatePi0())    return kFALSE;
-    if(!CreatePhotons())    return kFALSE;
-    if(!CreateProtons())    return kFALSE;
-    if(!CreateTagger())    return kFALSE;
-    if(!CreateTrigger())    return kFALSE;
-    if(!CreateEventFlags())    return kFALSE;
     scalers->Clone();
 
 	ConfidenceLevel	= new TH1D("ConfidenceLevel", "ConfidenceLevel", 1000, 0, 1);

@@ -64,26 +64,8 @@ void  GMesonReconstruction::ProcessEvent()
     }*/
 }
 
-Bool_t  GMesonReconstruction::Process(const char* input_filename, const char* output_filename)
+Bool_t  GMesonReconstruction::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenPhotons())    return kFALSE;
-    if(!OpenProtons())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(!OpenScalers())    return kFALSE;
-    if(!OpenTrigger())    return kFALSE;
-    if(!OpenEventFlags())    return kFALSE;
-
-
-    if(!Create(output_filename))    return kFALSE;
-    if(!CreateEtap())    return kFALSE;
-    if(!CreateEta())    return kFALSE;
-    if(!CreatePi0())    return kFALSE;
-    if(!CreatePhotons())    return kFALSE;
-    if(!CreateProtons())    return kFALSE;
-    if(!CreateTagger())    return kFALSE;
-    if(!CreateEventFlags())    return kFALSE;
-    if(!CreateTrigger())    return kFALSE;
     scalers->Clone();
 
     h2g.invMassPi0  = new TH1D("h2g_invMassPi0", "h2g_invMassPi0", 500, 0, 500);

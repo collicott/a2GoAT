@@ -29,19 +29,8 @@ void  GRawCut::ProcessEvent()
     tagger->Fill();
 }
 
-Bool_t  GRawCut::Process(const char* input_filename, const char* output_filename)
+Bool_t  GRawCut::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-    if(!OpenScalers())    return kFALSE;
-    if(!OpenTrigger())    return kFALSE;
-    if(!OpenEventFlags())    return kFALSE;
-
-
-    if(!Create(output_filename))    return kFALSE;
-    if(!CreateTagger())    return kFALSE;
-    if(!CreateTrigger())    return kFALSE;
-    if(!CreateEventFlags())    return kFALSE;
     scalers->Clone();
 
     TraverseEntries(0, photons->GetNEntries()+1);

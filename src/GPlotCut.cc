@@ -466,18 +466,8 @@ void  GPlotCut::ProcessEvent()
     }
 }
 
-Bool_t  GPlotCut::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotCut::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenPhotons())    return kFALSE;
-    if(!OpenProtons())    return kFALSE;
-    if(!OpenEtap())    return kFALSE;
-    if(!OpenEta())    return kFALSE;
-    if(!OpenPi0())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-
-    if(!Create(output_filename))    return kFALSE;
-
     Init();
 
     TraverseEntries(0, pi0->GetNEntries()+1);

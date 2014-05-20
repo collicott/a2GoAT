@@ -34,14 +34,8 @@ void  GPlotTime::ProcessEvent()
     }
 }
 
-Bool_t  GPlotTime::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotTime::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenRawEvent())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-
-    if(!Create(output_filename))    return kFALSE;
-
     file_out->cd();
     taggerTime = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);
     file_out->cd();

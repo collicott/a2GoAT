@@ -54,18 +54,8 @@ void  GPlotCutMC::ProcessEvent()
         }
 }
 
-Bool_t  GPlotCutMC::Process(const char* input_filename, const char* output_filename)
+Bool_t  GPlotCutMC::Process()
 {
-    if(!Open(input_filename))    return kFALSE;
-    if(!OpenPhotons())    return kFALSE;
-    if(!OpenProtons())    return kFALSE;
-    if(!OpenEtap())    return kFALSE;
-    if(!OpenEta())    return kFALSE;
-    if(!OpenPi0())    return kFALSE;
-    if(!OpenTagger())    return kFALSE;
-
-    if(!Create(output_filename))    return kFALSE;
-
     h_eta.invMassEta   = new TH1D("eta_invMass", "eta_invMass", 2000, 0, 2000);
     h_eta.invMassPi0[0]= new TH1D("eta_pi0a_invMass", "eta_pi0a_invMass", 2000, 0, 2000);
     h_eta.invMassPi0[1]= new TH1D("eta_pi0b_invMass", "eta_pi0b_invMass", 2000, 0, 2000);

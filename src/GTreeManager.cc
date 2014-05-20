@@ -50,6 +50,9 @@ void    GTreeManager::CloseFiles()
 
 Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
 {
+    if(!file_in)
+        return kFALSE;
+
     TObjArray   readList;
 
     if(etap)
@@ -114,205 +117,84 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
     }
 }
 
-Bool_t   GTreeManager::Create(const char* filename)
+Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
 {
-    if(file_out) delete file_out;
-    file_out = TFile::Open(filename, "RECREATE");
-    if(!file_out)
-    {
-        cout << "#ERROR: Can not create output file " << filename << "!" << endl;
+    if(!file_in)
         return kFALSE;
+
+    if(!scalers)
+        return kFALSE;
+    if(!scalers->IsOpenForInput())
+        return kFALSE;
+
+    for(int i=min; i<=max; i++)
+    {
+        scalers->GetEntryFast(i);
+        ProcessEvent();
     }
-    cout << "Created output file " << file_out->GetName() << "!" << file_out->GetTitle() << endl;
-    return kTRUE;
 }
 
-Bool_t  GTreeManager::CreateMeson(GTreeMeson*& mesonTree, const TString& _Name)
-{
-    if(!file_out) return kFALSE;
-    return mesonTree->OpenForOutput();
-}
-
-Bool_t  GTreeManager::CreateParticle(GTreeParticle*& particleTree, const TString& _Name)
-{
-    if(!file_out) return kFALSE;
-    return particleTree->OpenForOutput();
-}
-
-Bool_t   GTreeManager::CreateEventFlags()
-{
-    if(!file_out) return kFALSE;
-    return eventFlags->OpenForOutput();
-}
-
-Bool_t   GTreeManager::CreateRawEvent()
-{
-    if(!file_out) return kFALSE;
-    return rawEvent->OpenForOutput();
-}
-
-Bool_t   GTreeManager::CreateTagger()
-{
-    if(!file_out) return kFALSE;
-    return tagger->OpenForOutput();
-}
-
-Bool_t   GTreeManager::CreateTrigger()
-{
-    if(!file_out)return kFALSE;
-    return trigger->OpenForOutput();
-}
-
-
-Bool_t   GTreeManager::CreateScalers()
-{
-    if(!file_out) return kFALSE;
-    return scalers->OpenForOutput();
-}
-
-Bool_t   GTreeManager::CreateFitData()
-{
-    if(!file_out) return kFALSE;
-    return fitData->OpenForOutput();
-}
-
-
-Bool_t   GTreeManager::Open(const char* filename)
+Bool_t  GTreeManager::Process(const char* input_filename, const char* output_filename)
 {
     if(file_in) delete file_in;
-    file_in = TFile::Open(filename);
+    file_in = TFile::Open(input_filename);
     if(!file_in)
     {
-        cout << "#ERROR: Can not open input file " << filename << "!" << endl;
+        cout << "#ERROR: Can not open input file " << input_filename << "!" << endl;
         return kFALSE;
     }
     cout << "Opened input file " << file_in->GetName() << "!" << file_in->GetTitle() << endl;
-    return kTRUE;
-}
 
-Bool_t   GTreeManager::OpenMeson(GTreeMeson*& mesonTree, const TString& _Name)
-{
-    if(!file_in) return kFALSE;
-    if(!mesonTree->OpenForInput())   return kFALSE;
-    //return EntryChecking(rawEvent);
-    return kTRUE;
-}
-
-Bool_t   GTreeManager::OpenParticle(GTreeParticle*& particleTree, const TString& _Name)
-{
-    if(!file_in) return kFALSE;
-    if(!particleTree->OpenForInput())   return kFALSE;
-    //return EntryChecking(rawEvent);
-    return kTRUE;
-}
-
-Bool_t   GTreeManager::OpenEventFlags()
-{
-    if(!file_in) return kFALSE;
-    if(!eventFlags->OpenForInput())   return kFALSE;
-    //return EntryChecking(rawEvent);
-    return kTRUE;
-}
-
-Bool_t   GTreeManager::OpenRawEvent()
-{
-    if(!file_in) return kFALSE;
-    if(!rawEvent->OpenForInput())   return kFALSE;
-    //return EntryChecking(rawEvent);
-    return kTRUE;
-}
-
-Bool_t   GTreeManager::OpenTagger()
-{
-    if(!file_in) return kFALSE;
-    if(!tagger->OpenForInput())   return kFALSE;
-    //return EntryChecking(tagger);
-    return kTRUE;
-}
-
-Bool_t   GTreeManager::OpenTrigger()
-{
-    if(!file_in)return kFALSE;
-    if(!trigger->OpenForInput()) return kFALSE;
-    return kTRUE;
-}
-
-Bool_t   GTreeManager::OpenScalers()
-{
-    if(!file_in) return kFALSE;
-    return scalers->OpenForInput();
-}
-
-Bool_t   GTreeManager::OpenFitData()
-{
-    if(!file_in) return kFALSE;
-    return fitData->OpenForInput();
-}
+    if(file_in->Get("treeRawEvent"))
+        rawEvent->OpenForInput();
+    if(file_in->Get("treeTagger"))
+        tagger->OpenForInput();
+    if(file_in->Get("treeTrigger"))
+        trigger->OpenForInput();
+    if(file_in->Get("treeEventFlags"))
+        eventFlags->OpenForInput();
+    if(file_in->Get("treeFit"))
+        fitData->OpenForInput();
+    if(file_in->Get("Etap"))
+        etap->OpenForInput();
+    if(file_in->Get("Eta"))
+        eta->OpenForInput();
+    if(file_in->Get("Pi0"))
+        pi0->OpenForInput();
+    if(file_in->Get("Photons"))
+        photons->OpenForInput();
+    if(file_in->Get("Protons"))
+        protons->OpenForInput();
 
 
-Bool_t  GTreeManager::ProcessFolder(const char* input_foldername, const char* output_foldername, const char* filePrefix, const char* fileSuffix, const char* outfilePrefix)
-{
-    //open folders
-    TSystemDirectory    folder_in("input_folder", input_foldername);
-    if(!folder_in.IsFolder())   return kFALSE;
-    std::cout << "Input folder: " << folder_in.GetTitle() <<  std::endl;
-    std::cout << "File input patter: " << TString(filePrefix).Append("<RunNumber>").Append(fileSuffix) <<  std::endl;
-    TSystemDirectory    folder_out("output_folder", output_foldername);
-    if(!folder_out.IsFolder())  return kFALSE;
-    std::cout << "Output folder: " << folder_out.GetName() <<  std::endl;
-    std::cout << "File output patter: " << TString(outfilePrefix).Append("<RunNumber>").Append(fileSuffix) <<  std::endl;
 
-    //run over folder
-    TList*  files   = folder_in.GetListOfFiles();
-    if (files)
+    if(file_out) delete file_out;
+    file_out = TFile::Open(output_filename, "RECREATE");
+    if(!file_out)
     {
-        TSystemFile *file;
-        TString fname_in;
-        TString fname_out;
-        TString number;
-        TString prefix(filePrefix);
-        TString suffix(fileSuffix);
-        if(!suffix.EndsWith(".root"))
-            suffix.Append(".root");
-        TIter next(files);
-        while ((file=(TSystemFile*)next()))
-        {
-            fname_in    = file->GetName();
-            if (!file->IsDirectory() && fname_in.EndsWith(TString(fileSuffix)) && fname_in.BeginsWith(filePrefix))
-            {
-                number  = fname_in(prefix.Length(),fname_in.Length()-prefix.Length());
-                number  = number(0,number.Length()-prefix.Length()+2);
-                fname_out = outfilePrefix;
-                fname_out.Append(number).Append(suffix);
-                std::cout << "Analysing file " << fname_in << ". Output to file " << fname_out << std::endl;
-                if(!Process(fname_in.Data(), fname_out.Data()))
-                {
-                    CloseFiles();
-                    return kFALSE;
-                }
-            }
-        }
-        return kTRUE;
+        cout << "#ERROR: Can not create output file " << output_filename << "!" << endl;
+        return kFALSE;
     }
-    return kFALSE;
-}
+    cout << "Created output file " << file_out->GetName() << "!" << file_out->GetTitle() << endl;
 
+    return Process();
+}
 
 Bool_t  GTreeManager::Write()
 {
     if(!file_out)   return kFALSE;
 
-    if(pi0)         pi0->Write();
-    if(eta)         eta->Write();
-    if(etap)        etap->Write();
-    if(photons)     photons->Write();
-    if(protons)     protons->Write();
-    if(eventFlags)  eventFlags->Write();
-    if(rawEvent)    rawEvent->Write();
-    if(tagger)      tagger->Write();
-    if(trigger)     trigger->Write(); //Added by James
-    if(scalers)     scalers->Write();
-    if(fitData)     fitData->Write();
+    if(pi0->IsOpenForOutput())         pi0->Write();
+    if(eta->IsOpenForOutput())         eta->Write();
+    if(etap->IsOpenForOutput())        etap->Write();
+    if(photons->IsOpenForOutput())     photons->Write();
+    if(protons->IsOpenForOutput())     protons->Write();
+    if(eventFlags->IsOpenForOutput())  eventFlags->Write();
+    if(rawEvent->IsOpenForOutput())    rawEvent->Write();
+    if(tagger->IsOpenForOutput())      tagger->Write();
+    if(trigger->IsOpenForOutput())     trigger->Write();
+    if(scalers->IsOpenForOutput())     scalers->Write();
+    if(fitData->IsOpenForOutput())     fitData->Write();
 
     return kTRUE;
 }
