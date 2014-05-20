@@ -32,6 +32,7 @@ public:
             Int_t 		GetNScaler()    			const	{return NScaler;}
     const	UInt_t*		GetScaler()                 const	{return	Scaler;}
             UInt_t		GetScaler(const Int_t index)const	{return	Scaler[index];}
+            UInt_t		GetScalerEntry(const Int_t event_number);
             void 		SetNScaler(const Int_t num);
     virtual void        Print(const Bool_t All = kFALSE) const;
 };

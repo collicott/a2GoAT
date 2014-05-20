@@ -10,11 +10,9 @@ using namespace std;
 GTreeManager::GTreeManager()    :
     file_in(0),
     file_out(0),
-    //minEntry(0),
-    //nEntries(0),
     rawEvent(0),
     tagger(0),
-    trigger(0), //Added by James
+    trigger(0),
     scalers(0),
     eventFlags(0),
     photons(0),
@@ -125,7 +123,13 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
     if(!scalers)
         return kFALSE;
     if(!scalers->IsOpenForInput())
-        return kFALSE;
+    {
+        if(!scalers->OpenForInput())
+        {
+            std::cout << "Can not open treeScaler in input file." << std::endl;
+            return 0;
+        }
+    }
 
     for(int i=min; i<=max; i++)
     {

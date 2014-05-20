@@ -37,6 +37,24 @@ void    GTreeScaler::SetBranches()
 }
 
 
+UInt_t  GTreeScaler::GetScalerEntry(const Int_t event_number)
+{
+    if(!IsOpenForInput())
+    {
+        if(!OpenForInput())
+        {
+            std::cout << "Can not open treeScaler in input file." << std::endl;
+            return 0;
+        }
+    }
+
+    for(Int_t i=0; i<GetNEntries(); i++)
+    {
+        GetEntry(i);
+        if(event_number<EventNumber)
+            return i;
+    }
+}
 
 
 void    GTreeScaler::SetNScaler(const Int_t num)
