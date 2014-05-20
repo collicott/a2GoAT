@@ -24,6 +24,17 @@ GTreeManager::GTreeManager()    :
     etap(0),
     fitData(0)
 {
+    etap = new GTreeMeson(TString("Etap"));
+    eta = new GTreeMeson(TString("Eta"));
+    pi0 = new GTreeMeson(TString("Pi0"));
+    photons = new GTreeParticle(TString("Photons"));
+    protons = new GTreeParticle(TString("Protons"));
+    eventFlags = new GTreeEvent();
+    rawEvent = new GTreeRawEvent();
+    tagger = new GTreeTagger();
+    trigger = new GTreeTrigger();
+    scalers = new GTreeScaler();
+    fitData = new GTreeFit();
 }
 
 GTreeManager::~GTreeManager()

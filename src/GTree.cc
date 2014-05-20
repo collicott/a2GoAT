@@ -27,6 +27,19 @@ void    GTree::Clone(TFile& outputFile)
     tree_out = tree_in->CloneTree();
 }
 
+
+void    GTree::Fill()
+{
+    if(!IsOpenForOutput())
+    {
+        //std::cout << "tree " << name.Data() << " has not been opened! Can not been filled." << std::endl;
+        //std::cout << "exit program" << std::endl;
+        //exit(EXIT_FAILURE);
+    }
+    else
+        tree_out->Fill();
+}
+
 Bool_t  GTree::OpenForInput(TFile& inputFile)
 {
     file_in = &inputFile;

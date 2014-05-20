@@ -3,7 +3,7 @@
 
 
 #include <iostream>
-
+#include <stdlib.h>
 
 #include <TObject.h>
 #include <TFile.h>
@@ -46,10 +46,10 @@ public:
 
     virtual void        Clear() = 0;
             void        Clone(TFile& outputFile);
-            void        Fill()      {tree_out->Fill();}
+            void        Fill();
     inline  Bool_t      GetEntry(const UInt_t index);
     const   char*       GetName() const {return name.Data();}
-            UInt_t      GetNEntries()   const {return tree_in->GetEntries();}
+            UInt_t      GetNEntries()   { if(IsOpenForInput()) return tree_in->GetEntries(); return 0;}
             Bool_t      IsClosed()          {return !status;}
             Bool_t      IsOpenForInput()    {return status & FLAG_OPENFORINPUT;}
             Bool_t      IsOpenForOutput()   {return status & FLAG_OPENFOROUTPUT;}
