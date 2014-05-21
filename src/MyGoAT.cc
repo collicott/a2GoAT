@@ -8,6 +8,7 @@
 #include "GTaggerReconstruction.h"
 #include "GProtonReconstruction.h"
 #include "GFitEtap6g.h"
+#include "GCut.h"
 
 using namespace std;
 
@@ -17,11 +18,53 @@ using namespace std;
 
 void    PrintHelp()
 {
-    cout << "particle:  particle reconstruction" << endl;
+    cout << "general Syntax:" << endl;
+    cout << "<keyword> <inputfile> <outputfile> <parameters>" << endl;
+    cout << "Or:" << endl;
+    cout << "<keyword> <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <parameters>" << endl << endl;
 
-    cout << endl;
-    cout << "example:" << endl;
-    cout << "MyGoAT particle <inputFile> <outputFile>" << endl;
+    cout << "keyword: particle         starts Particle Reconstruction with ScalerCorrection" << endl;
+    cout << "\tparameters are TimeCuts for CB and TAPS (CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax)" << endl;
+    cout << "\tparticle <inputfile> <outputfile> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\tparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl << endl;
+
+    cout << "keyword: mcparticle       starts Particle Reconstruction without ScalerCorrection (for MC)" << endl;
+    cout << "\tparameters are TimeCuts for CB and TAPS (CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax)" << endl;
+    cout << "\tmcparticle <inputfile> <outputfile> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\tmcparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl << endl;
+
+    cout << "keyword: cutparticle      cut on number of photons and protons" << endl;
+    cout << "\tparameters are number of photons and protons" << endl;
+    cout << "\tcutparticle <inputfile> <outputfile> <NPhoton, NProton>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\tcutparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <NPhoton, NProton>" << endl << endl;
+
+    cout << "keyword: meson         starts Meson Reconstruction for pi0 eta and etap" << endl;
+    cout << "\tno parameters" << endl;
+    cout << "\tmeson <inputfile> <outputfile>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\tmeson <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix>" << endl << endl;
+
+    cout << "keyword: cutmeson      cut on number of photons, protons and mesons" << endl;
+    cout << "\tparameters are number of photons, protons, pi0, eta and etap" << endl;
+    cout << "\tcutparticle <inputfile> <outputfile> <NPhoton, NProton, NPi0, NEta and NEtap>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\tcutparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <NPhoton, NProton, NPi0, NEta and NEtap>" << endl << endl;
+
+    cout << "keyword: tagger         starts Tagger Reconstruction" << endl;
+    cout << "\tparameters are prompt window and 2 random windows" << endl;
+    cout << "\ttagger <inputfile> <outputfile> <PromptMin, PromptMax, Rand1Min, Rand1Max, Rand2Min, Rand2Max>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\ttagger <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <PromptMin, PromptMax, Rand1Min, Rand1Max, Rand2Min, Rand2Max>" << endl << endl;
+
+    cout << "keyword: proton         starts Proton Reconstruction" << endl;
+    cout << "\tparameters are coplanarity cut for Proton and Meson and max angle between missing Proton and detectede Proton" << endl;
+    cout << "\tproton <inputfile> <outputfile> <CoplanaryMin, CoplanaryMax, MaxAngleDetectedMissingProton>" << endl;
+    cout << "\tOr:" << endl;
+    cout << "\tproton <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CoplanaryMin, CoplanaryMax, MaxAngleDetectedMissingProton>" << endl << endl;
+
 }
 
 
@@ -126,6 +169,79 @@ void* start(void* arguments)
         cout << "Kinematic Fitting of Etap to 6 gamma started." << endl;
         tree    = new GFitEtap6g();
     }
+    else if(strcmp(arg->type, "cutparticle") == 0 || strcmp(arg->type, "cutParticle") == 0 || strcmp(arg->type, "CutParticle") == 0)
+    {
+        GRawCut*   help    = new GRawCut();
+
+        if(arg->nValues!=2)
+        {
+            cout << "To many or few Arguments given." << endl;
+            PrintHelp();
+            return 0;
+        }
+        cout << "Set Raw Photon number to " << arg->value[0] << " and Raw Proton number to " << arg->value[1] << "." << endl;
+        help->SetNPhoton(arg->value[0]);
+        help->SetNProton(arg->value[1]);
+
+        tree    = help;
+    }
+    else if(strcmp(arg->type, "cutmeson") == 0 || strcmp(arg->type, "cutMeson") == 0 || strcmp(arg->type, "CutMeson") == 0)
+    {
+        GCut*   help    = new GCut();
+
+        if(arg->nValues!=5)
+        {
+            cout << "To many or few Arguments given." << endl;
+            PrintHelp();
+            return 0;
+        }
+        cout << "Set Photon number to " << arg->value[0] << "." << endl;
+        cout << "Set Proton number to " << arg->value[1] << "." << endl;
+        cout << "Set Pi0 number to " << arg->value[2] << "." << endl;
+        cout << "Set Eta number to " << arg->value[3] << "." << endl;
+        cout << "Set Etap number to " << arg->value[4] << "." << endl;
+        help->SetNPhoton(arg->value[0]);
+        help->SetNProton(arg->value[1]);
+        help->SetNPi0(arg->value[2]);
+        help->SetNEta(arg->value[3]);
+        help->SetNEtap(arg->value[4]);
+
+        tree    = help;
+    }
+    else if(strcmp(arg->type, "invMass") == 0 || strcmp(arg->type, "InvMass") == 0 || strcmp(arg->type, "IM") == 0 || strcmp(arg->type, "im") == 0 || strcmp(arg->type, "invariantmass") == 0 || strcmp(arg->type, "invariantMass") == 0)
+    {
+        GCut*   help    = new GCut();
+
+        if(arg->nValues!=6)
+        {
+            cout << "To many or few Arguments given." << endl;
+            PrintHelp();
+            return 0;
+        }
+        cout << "Set Pi0 invariant mass cut from " << arg->value[0] << " to " << arg->value[1] << "." << endl;
+        cout << "Set Eta invariant mass cut from " << arg->value[2] << " to " << arg->value[3] << "." << endl;
+        cout << "Set Etap invariant mass cut from " << arg->value[4] << " to " << arg->value[5] << "." << endl;
+        help->SetPi0InvMassCut(arg->value[0],arg->value[1]);
+        help->SetEtaInvMassCut(arg->value[2],arg->value[3]);
+        help->SetEtapInvMassCut(arg->value[4],arg->value[5]);
+
+        tree    = help;
+    }
+    else if(strcmp(arg->type, "misMass") == 0 || strcmp(arg->type, "MisMass") == 0 || strcmp(arg->type, "MM") == 0 || strcmp(arg->type, "mm") == 0 || strcmp(arg->type, "missingmass") == 0 || strcmp(arg->type, "missingMass") == 0)
+    {
+        GCut*   help    = new GCut();
+
+        if(arg->nValues!=2)
+        {
+            cout << "To many or few Arguments given." << endl;
+            PrintHelp();
+            return 0;
+        }
+        cout << "Set missing mass cut from " << arg->value[0] << " to " << arg->value[1] << "." << endl;
+        help->SetMisMassCut(arg->value[0],arg->value[1]);
+
+        tree    = help;
+    }
     else
     {
         cout << "Reconstruction type " << arg->type <<" is unknown." << endl;
@@ -134,6 +250,7 @@ void* start(void* arguments)
         PrintHelp();
         return 0;
     }
+
 
 
     tree->Process(arg->fileName_in, arg->fileName_out);
@@ -175,41 +292,7 @@ int main(int argc, char *argv[])
 
     if(!strcmp(type, "h") || !strcmp(type, "-h")  || !strcmp(type, "--h")  || !strcmp(type, "help")  || !strcmp(type, "-help")  || !strcmp(type, "--help"))
     {
-        cout << "general Syntax:" << endl;
-        cout << "<keyword> <inputfile> <outputfile> <parameters>" << endl;
-        cout << "Or:" << endl;
-        cout << "<keyword> <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <parameters>" << endl << endl;
-
-        cout << "keyword: particle         starts Particle Reconstruction with ScalerCorrection" << endl;
-        cout << "\tparameters are TimeCuts for CB and TAPS (CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax)" << endl;
-        cout << "\tparticle <inputfile> <outputfile> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl;
-        cout << "\tOr:" << endl;
-        cout << "\tparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl << endl;
-
-        cout << "keyword: mcparticle         starts Particle Reconstruction without ScalerCorrection (for MC)" << endl;
-        cout << "\tparameters are TimeCuts for CB and TAPS (CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax)" << endl;
-        cout << "\tmcparticle <inputfile> <outputfile> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl;
-        cout << "\tOr:" << endl;
-        cout << "\tmcparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl << endl;
-
-        cout << "keyword: meson         starts Meson Reconstruction for pi0 eta and etap" << endl;
-        cout << "\tno parameters" << endl;
-        cout << "\tmeson <inputfile> <outputfile>" << endl;
-        cout << "\tOr:" << endl;
-        cout << "\tmeson <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix>" << endl << endl;
-
-        cout << "keyword: tagger         starts Tagger Reconstruction" << endl;
-        cout << "\tparameters are prompt window and 2 random windows" << endl;
-        cout << "\ttagger <inputfile> <outputfile> <PromptMin, PromptMax, Rand1Min, Rand1Max, Rand2Min, Rand2Max>" << endl;
-        cout << "\tOr:" << endl;
-        cout << "\ttagger <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <PromptMin, PromptMax, Rand1Min, Rand1Max, Rand2Min, Rand2Max>" << endl << endl;
-
-        cout << "keyword: proton         starts Proton Reconstruction" << endl;
-        cout << "\tparameters are coplanarity cut for Proton and Meson and max angle between missing Proton and detectede Proton" << endl;
-        cout << "\tproton <inputfile> <outputfile> <CoplanaryMin, CoplanaryMax, MaxAngleDetectedMissingProton>" << endl;
-        cout << "\tOr:" << endl;
-        cout << "\tproton <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CoplanaryMin, CoplanaryMax, MaxAngleDetectedMissingProton>" << endl << endl;
-
+        PrintHelp();
         return 0;
     }
 
