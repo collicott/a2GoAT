@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
     gSystem->Load("libPhysics.so");
     gSystem->Load("libHist.so");
 
-    // Associate 1nd terminal input with the input file ----------------
+    // Associate 1nd terminal input with reconstruction type ----------------
     if(argc < 2)
     {
         cout << "No reconstruction type given." << endl;
@@ -170,6 +170,46 @@ int main(int argc, char *argv[])
         cout << "Check Arguments!" << endl;
         cout << endl;
         PrintHelp();
+        return 0;
+    }
+
+    if(!strcmp(type, "h") || !strcmp(type, "-h")  || !strcmp(type, "--h")  || !strcmp(type, "help")  || !strcmp(type, "-help")  || !strcmp(type, "--help"))
+    {
+        cout << "general Syntax:" << endl;
+        cout << "<keyword> <inputfile> <outputfile> <parameters>" << endl;
+        cout << "Or:" << endl;
+        cout << "<keyword> <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <parameters>" << endl << endl;
+
+        cout << "keyword: particle         starts Particle Reconstruction with ScalerCorrection" << endl;
+        cout << "\tparameters are TimeCuts for CB and TAPS (CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax)" << endl;
+        cout << "\tparticle <inputfile> <outputfile> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl;
+        cout << "\tOr:" << endl;
+        cout << "\tparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl << endl;
+
+        cout << "keyword: mcparticle         starts Particle Reconstruction without ScalerCorrection (for MC)" << endl;
+        cout << "\tparameters are TimeCuts for CB and TAPS (CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax)" << endl;
+        cout << "\tmcparticle <inputfile> <outputfile> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl;
+        cout << "\tOr:" << endl;
+        cout << "\tmcparticle <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CBTimeMin, CBTimeMax, TAPSTimeMin, TAPSTimeMax>" << endl << endl;
+
+        cout << "keyword: meson         starts Meson Reconstruction for pi0 eta and etap" << endl;
+        cout << "\tno parameters" << endl;
+        cout << "\tmeson <inputfile> <outputfile>" << endl;
+        cout << "\tOr:" << endl;
+        cout << "\tmeson <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix>" << endl << endl;
+
+        cout << "keyword: tagger         starts Tagger Reconstruction" << endl;
+        cout << "\tparameters are prompt window and 2 random windows" << endl;
+        cout << "\ttagger <inputfile> <outputfile> <PromptMin, PromptMax, Rand1Min, Rand1Max, Rand2Min, Rand2Max>" << endl;
+        cout << "\tOr:" << endl;
+        cout << "\ttagger <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <PromptMin, PromptMax, Rand1Min, Rand1Max, Rand2Min, Rand2Max>" << endl << endl;
+
+        cout << "keyword: proton         starts Proton Reconstruction" << endl;
+        cout << "\tparameters are coplanarity cut for Proton and Meson and max angle between missing Proton and detectede Proton" << endl;
+        cout << "\tproton <inputfile> <outputfile> <CoplanaryMin, CoplanaryMax, MaxAngleDetectedMissingProton>" << endl;
+        cout << "\tOr:" << endl;
+        cout << "\tproton <inputfolder> <outputfolder> <inputprefix> <suffix> <outputprefix> <CoplanaryMin, CoplanaryMax, MaxAngleDetectedMissingProton>" << endl << endl;
+
         return 0;
     }
 
