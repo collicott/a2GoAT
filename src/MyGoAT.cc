@@ -271,8 +271,8 @@ int main(int argc, char *argv[])
             return 0;
         }
 
-        TSystemDirectory    dir_in(fileName_in, ".");
-        TSystemDirectory    dir_out(fileName_out, ".");
+        TSystemDirectory    dir_in(fileName_in, fileName_in);
+        TSystemDirectory    dir_out(fileName_out, fileName_out);
 
         TString currentInput;
         TString currentOutput;
@@ -287,8 +287,12 @@ int main(int argc, char *argv[])
                 continue;
             if(!currentInput.EndsWith(suffix))
                 continue;
-            currentOutput   = currentInput(prefix_in.Length(), currentInput.Length() - prefix_in.Length() - suffix.Length());
+            currentInput.Prepend("/");
+            currentInput.Prepend(dir_in.GetName());
+            currentOutput   = currentInput(prefix_in.Length()+strlen(dir_in.GetName())+1, currentInput.Length() - prefix_in.Length() - suffix.Length()-strlen(dir_in.GetName())-1);
             currentOutput.Prepend(prefix_out);
+            currentOutput.Prepend("/");
+            currentOutput.Prepend(dir_out.GetName());
             currentOutput.Append(suffix);
 
             printf("process file %d\n", counter);
