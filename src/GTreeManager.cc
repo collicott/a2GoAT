@@ -127,13 +127,15 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
             readList.Add(fitData);
     }
 
-    for(int i=min; i<=max; i++)
+    for(UInt_t i=min; i<=max; i++)
     {
         for(int l=0; l<readList.GetEntriesFast(); l++)
             ((GTree*)readList[l])->GetEntryFast(i);
 
         ProcessEvent();
     }
+
+    return kTRUE;
 }
 
 Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
@@ -148,18 +150,64 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
         if(!scalers->OpenForInput())
         {
             std::cout << "Can not open treeScaler in input file." << std::endl;
-            return 0;
+            return kFALSE;
         }
     }
 
-    for(int i=min; i<=max; i++)
+    for(UInt_t i=min; i<=max; i++)
     {
         scalers->GetEntryFast(i);
         ProcessEvent();
     }
+
+    return kTRUE;
 }
 
-Bool_t  GTreeManager::Process(const char* input_filename, const char* output_filename)
+Int_t   GTreeManager::CheckInput(const char* input_filename)
+{
+    TFile*  file = TFile::Open(input_filename);
+    if(!file)
+    {
+        cout << "#ERROR: Can not open input file " << input_filename << "!" << endl;
+        return 0;
+    }
+
+    Int_t   ret = 0;
+
+    if(file->Get("treeRawEvent"))
+        ret = ret | TreeFlag_RawEvent;
+    if(file->Get("treeTagger"))
+        ret = ret | TreeFlag_Tagger;
+    if(file->Get("treeTrigger"))
+        ret = ret | TreeFlag_Trigger;
+    if(file->Get("treeEventFlags"))
+        ret = ret | TreeFlag_EventFlags;
+    if(file->Get("treeFit"))
+        ret = ret | TreeFlag_Fit;
+    if(file->Get("Etap"))
+        ret = ret | TreeFlag_Etap;
+    if(file->Get("Eta"))
+        ret = ret | TreeFlag_Eta;
+    if(file->Get("Pi0"))
+        ret = ret | TreeFlag_Pi0;
+    if(file->Get("Photons"))
+        ret = ret | TreeFlag_Photons;
+    if(file->Get("Electrons"))
+        ret = ret | TreeFlag_Electrons;
+    if(file->Get("ChargedPi"))
+        ret = ret | TreeFlag_ChargedPi;
+    if(file->Get("Protons"))
+        ret = ret | TreeFlag_Protons;
+    if(file->Get("Neutrons"))
+        ret = ret | TreeFlag_Neutrons;
+
+    delete file;
+    return ret;
+}
+
+
+
+Bool_t  GTreeManager::Start(const char* input_filename, const char* output_filename)
 {
     if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);

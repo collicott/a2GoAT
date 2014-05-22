@@ -17,6 +17,25 @@
 
 class  GTreeManager
 {
+public:
+    enum    TreeFlag
+    {
+        TreeFlag_RawEvent   =      1,
+        TreeFlag_Tagger     =      2,
+        TreeFlag_Trigger    =      4,
+        TreeFlag_Scalers    =      8,
+        TreeFlag_EventFlags =     16,
+        TreeFlag_Photons    =     32,
+        TreeFlag_Electrons  =     64,
+        TreeFlag_ChargedPi  =    128,
+        TreeFlag_Protons    =    256,
+        TreeFlag_Neutrons   =    512,
+        TreeFlag_Pi0        =   1024,
+        TreeFlag_Eta        =   2048,
+        TreeFlag_Etap       =   4096,
+        TreeFlag_Fit        =   8192
+    };
+
 private:
     TFile*  file_in;
     Bool_t  isWritten;
@@ -46,6 +65,7 @@ protected:
     GTreeFit*		fitData;
 
             void    CloseFiles();
+    virtual Bool_t  Process() = 0;
     virtual void    ProcessEvent() = 0;
             //void    SetMinEntry(const UInt_t num)   {minEntry = num;}
             //void    SetNEntries(const UInt_t num)   {nEntries = num;}
@@ -58,8 +78,8 @@ public:
     GTreeManager();
     virtual ~GTreeManager();
 
-    virtual Bool_t  Process() = 0;
-            Bool_t  Process(const char* input_filename, const char* output_filename);
+    static  Int_t   CheckInput(const char* input_filename);
+    Bool_t  Start(const char* input_filename, const char* output_filename);
 
     friend  class GTree;
     friend  class GTreeMeson;
