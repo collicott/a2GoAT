@@ -62,7 +62,7 @@ void    GTreeMeson::AddParticle(const TLorentzVector& vec, const Int_t PDGDaught
     daughter1PDG[nParticles]      = PDGDaughter1;
     daughter1Indices[nParticles]  = IndexDaughter1;
     daughter2PDG[nParticles]      = PDGDaughter2;
-    daughter2Indices[nParticles]  = PDGDaughter2;
+    daughter2Indices[nParticles]  = IndexDaughter2;
     nParticles++;
 }
 void    GTreeMeson::AddParticle(const TLorentzVector& vec, const Int_t nDaughters , const Int_t* PDGList, const Int_t* Indices)

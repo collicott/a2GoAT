@@ -55,8 +55,8 @@ public:
             void            RemovePrompt(const Int_t index);
             void            RemoveRand(const Int_t index);
             void            SetTagger(const Int_t _NTagged, const Int_t* _Tagged_ch, const Double_t *_Tagged_t, const Double_t* _Photonbeam_E, const TLorentzVector *missingVector);
-            void            SetPrompt(const Int_t index)   {promptIndex[nPrompt] = index; nPrompt++;}
-            void            SetRand(const Int_t index)   {randIndex[nRand] = index; nRand++;}
+            void            SetPrompt(const Int_t index)   {promptIndex[(Int_t)nPrompt] = index; nPrompt++;}
+            void            SetRand(const Int_t index)   {randIndex[(Int_t)nRand] = index; nRand++;}
 };
 
 #endif

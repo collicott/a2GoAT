@@ -7,8 +7,8 @@ using namespace std;
 
 GTreeParticle::GTreeParticle(GTreeManager *Manager, const TString& _Name)    :
     GTree(Manager,_Name),
-    particles(new TClonesArray("TLorentzVector", 32000)),
-    nParticles(0)
+    nParticles(0),
+    particles(new TClonesArray("TLorentzVector", 32000))
 {
 }
 
