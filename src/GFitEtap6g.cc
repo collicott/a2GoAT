@@ -30,11 +30,27 @@ void  GFitEtap6g::ProcessEvent()
 	
 	GKinFitterParticle	pho[6];
 	
+    Int_t Ebin  = 0;
+    Int_t Thbin = 0;
+    Float_t resth = 0;
+    Float_t resph = 0;
+    Float_t resE  = 0;
+
 	fit.Reset();
 	for(int i=0; i<6; i++)
 	{
+        Ebin  = GammaEloss->GetXaxis()->FindFixBin(photons->Particle(i).E());
+        Thbin = GammaEloss->GetYaxis()->FindFixBin(photons->Particle(i).Theta()*TMath::RadToDeg());
+        // Get resolutions
+        resth = GammaThetaRes->GetBinContent(Ebin, Thbin);
+        resph = GammaPhiRes->GetBinContent(Ebin, Thbin);
+        resE  = GammaERes->GetBinContent(Ebin, Thbin);
+        if(resth==0 || resph==0 || resE==0 ) return; // If energy or angle is out of calibrated  range!
+        // Now set particle parameters
+        //                     LorentzVector
 		pho[i].Set4Vector(photons->Particle(i));
-		pho[i].SetResolutions(3, 3, 60);
+        std::cout << "Res: " << resth << ", " << resph << ", " << photons->Particle(i).E()*resE << std::endl;
+        pho[i].SetResolutions(resth, resph, 2 *photons->Particle(i).E()*resE);
 		fit.AddPosKFParticle(pho[i]);
 	}
 	Int_t	sub[6];
@@ -46,7 +62,7 @@ void  GFitEtap6g::ProcessEvent()
 	fit.AddSubInvMassConstraint(2, sub, MASS_PI0);
 	sub[0]	= eta->GetDaughterIndex(0, 0);
 	sub[1]	= eta->GetDaughterIndex(0, 1);
-	fit.AddSubInvMassConstraint(2, sub, MASS_ETA);
+    fit.AddSubInvMassConstraint(2, sub, MASS_ETA);
 	//fit.AddInvMassConstraint(MASS_ETAP);
 	
 	if(fit.Solve()<0)
@@ -116,6 +132,12 @@ void  GFitEtap6g::ProcessEvent()
 Bool_t  GFitEtap6g::Process()
 {
     scalers->Clone();
+
+    GammaResFile   = new TFile("~/GammaRes.root");
+    GammaEloss     = (TH2F*)GammaResFile->Get("Eloss");
+    GammaERes      = (TH2F*)GammaResFile->Get("EResIter");
+    GammaThetaRes  = (TH2F*)GammaResFile->Get("ThetaRes;1");
+    GammaPhiRes    = (TH2F*)GammaResFile->Get("PhiRes;1");
 
 	ConfidenceLevel	= new TH1D("ConfidenceLevel", "ConfidenceLevel", 1000, 0, 1);
 	ChiSq			= new TH1D("ChiSq", "ChiSq", 1000, 0, 100);

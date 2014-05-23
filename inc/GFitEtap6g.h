@@ -2,6 +2,7 @@
 #define __GFitEtap6g_h__
 
 #include <TH1D.h>
+#include <TH2F.h>
 
 #include "GTreeManager.h"
 #include "GKinFitter.h"
@@ -15,6 +16,12 @@ private:
     TH1D*           ChiSq;
     
     GKinFitter	fit;
+
+    TFile*  GammaResFile;
+    TH2F*   GammaEloss;
+    TH2F*   GammaERes;
+    TH2F*   GammaThetaRes;
+    TH2F*   GammaPhiRes;
 
 protected:
 
