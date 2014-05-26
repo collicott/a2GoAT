@@ -26,12 +26,14 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Process();
 
 public:
     GParticleReconstruction();
     virtual ~GParticleReconstruction();
 
-    virtual Bool_t  Process();
+    static  Int_t   InputNeeded()   {return GTreeManager::TreeFlag_RawEvent;}
+    static  Int_t   OutputNeeded()  {}
 
     void    SetCBTimeCut(const Double_t min, const Double_t max)    {CBTimeCut[0]=min; CBTimeCut[1]=max;}
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}

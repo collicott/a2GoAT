@@ -46,12 +46,14 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Process();
 
 public:
     GMesonReconstruction();
     virtual ~GMesonReconstruction();
 
-    virtual Bool_t  Process();
+    static  Int_t   InputNeeded()   {return GTreeManager::TreeFlag_Photons;}
+    static  Int_t   OutputNeeded()  {}
 
     void    SetPi0Width(const Double_t width)   {pi0Width = width;}
     void    SetEtaWidth(const Double_t width)   {etaWidth = width;}
