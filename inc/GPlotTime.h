@@ -18,6 +18,8 @@ private:
 
 protected:
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
+
             void    FillTaggerTime(const Double_t _TaggerTime)  {taggerTime->Fill(_TaggerTime);}
             void    FillCBTime(const Double_t _CBTime)          {CBTime->Fill(_CBTime);}
             void    FillTAPSTime(const Double_t _TAPSTime)      {TAPSTime->Fill(_TAPSTime);}
@@ -25,8 +27,6 @@ protected:
 public:
     GPlotTime();
     virtual ~GPlotTime();
-
-    virtual Bool_t  Process();
 };
 
 #endif

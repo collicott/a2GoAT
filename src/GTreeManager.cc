@@ -258,7 +258,7 @@ Bool_t  GTreeManager::Start(const char* input_filename, const char* output_filen
 
     isWritten   = kFALSE;
 
-    if(!Process())
+    if(!Start())
         return kFALSE;
 
     if(isWritten)

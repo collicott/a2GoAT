@@ -22,12 +22,11 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GProtonReconstruction();
     virtual ~GProtonReconstruction();
-
-    virtual Bool_t  Process();
     
     void	SetProtonAngleDiffCut(const Double_t max)				{angleDiffCut = max;}
     void	SetPhiDiffCut(const Double_t min, const Double_t max)	{phiDiffCut[0] = min; phiDiffCut[1] = max;}

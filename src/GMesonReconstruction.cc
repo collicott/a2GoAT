@@ -64,7 +64,7 @@ void  GMesonReconstruction::ProcessEvent()
     }*/
 }
 
-Bool_t  GMesonReconstruction::Process()
+Bool_t  GMesonReconstruction::Start()
 {
     scalers->Clone();
 

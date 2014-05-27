@@ -129,7 +129,7 @@ void  GFitEtap6g::ProcessEvent()
     fitData->Fill();
 }
 
-Bool_t  GFitEtap6g::Process()
+Bool_t  GFitEtap6g::Start()
 {
     scalers->Clone();
 

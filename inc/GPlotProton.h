@@ -17,12 +17,11 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GPlotProton();
     virtual ~GPlotProton();
-
-    virtual Bool_t  Process();
 };
 
 

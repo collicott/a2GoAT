@@ -56,7 +56,7 @@ void  GPlotEnergyBins::ProcessEvent()
 	}
 }
 
-Bool_t  GPlotEnergyBins::Process()
+Bool_t  GPlotEnergyBins::Start()
 {
 	/*file_out->cd();
     gDirectory->mkdir("prompt");

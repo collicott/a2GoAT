@@ -37,12 +37,11 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GCut();
     virtual ~GCut();
-
-    virtual Bool_t  Process();
 
     void    SetNPhoton(const Int_t Multiplicity);
     void    SetNProton(const Int_t Multiplicity);

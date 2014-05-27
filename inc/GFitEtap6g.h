@@ -26,12 +26,11 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GFitEtap6g();
     virtual ~GFitEtap6g();
-
-    virtual Bool_t  Process();
 };
 
 

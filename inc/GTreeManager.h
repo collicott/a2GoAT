@@ -65,10 +65,8 @@ protected:
     GTreeFit*		fitData;
 
             void    CloseFiles();
-    virtual Bool_t  Process() = 0;
     virtual void    ProcessEvent() = 0;
-            //void    SetMinEntry(const UInt_t num)   {minEntry = num;}
-            //void    SetNEntries(const UInt_t num)   {nEntries = num;}
+    virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
             Bool_t  TraverseScalerEntries(const UInt_t min, const UInt_t max);
             Bool_t  Write();

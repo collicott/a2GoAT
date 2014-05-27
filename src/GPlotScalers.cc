@@ -41,7 +41,7 @@ void  GPlotScalers::ProcessEvent()
     }
 }
 
-Bool_t  GPlotScalers::Process()
+Bool_t  GPlotScalers::Start()
 {
 	/*file_out->cd();
     gDirectory->mkdir("prompt");

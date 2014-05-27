@@ -29,7 +29,7 @@ void  GRawCut::ProcessEvent()
     tagger->Fill();
 }
 
-Bool_t  GRawCut::Process()
+Bool_t  GRawCut::Start()
 {
     scalers->Clone();
 

@@ -68,7 +68,7 @@ void* start(void* arguments)
     }
 
 
-    tree->Process(arg->fileName_in, arg->fileName_out);
+    tree->Start(arg->fileName_in, arg->fileName_out);
 
     delete  tree;
 

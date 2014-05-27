@@ -54,7 +54,7 @@ void  GPlotCutMC::ProcessEvent()
         }
 }
 
-Bool_t  GPlotCutMC::Process()
+Bool_t  GPlotCutMC::Start()
 {
     h_eta.invMassEta   = new TH1D("eta_invMass", "eta_invMass", 2000, 0, 2000);
     h_eta.invMassPi0[0]= new TH1D("eta_pi0a_invMass", "eta_pi0a_invMass", 2000, 0, 2000);

@@ -34,7 +34,7 @@ void  GPlotTime::ProcessEvent()
     }
 }
 
-Bool_t  GPlotTime::Process()
+Bool_t  GPlotTime::Start()
 {
     file_out->cd();
     taggerTime = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);

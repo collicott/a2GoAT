@@ -25,7 +25,7 @@ void  GPlotInvMass::ProcessEvent()
         }
 }
 
-Bool_t  GPlotInvMass::Process()
+Bool_t  GPlotInvMass::Start()
 {
     invMass   = new TH1D("invMass", "invMass", 2000, 0, 2000);
 

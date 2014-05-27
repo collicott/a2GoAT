@@ -136,7 +136,7 @@ void  GProtonReconstruction::ProcessEvent()
     }*/
 }
 
-Bool_t  GProtonReconstruction::Process()
+Bool_t  GProtonReconstruction::Start()
 {
     scalers->Clone();
 

@@ -17,12 +17,11 @@ protected:
     Int_t   nProton;
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GRawCut();
     virtual ~GRawCut();
-
-    virtual Bool_t  Process();
 
     void    SetNPhoton(const Int_t Multiplicity);
     void    SetNProton(const Int_t Multiplicity);

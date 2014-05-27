@@ -150,7 +150,7 @@ void  GCut::ProcessEvent()
     etap->Fill();
 }
 
-Bool_t  GCut::Process()
+Bool_t  GCut::Start()
 {
     scalers->Clone();
 

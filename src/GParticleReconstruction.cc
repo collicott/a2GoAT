@@ -92,7 +92,7 @@ void  GParticleReconstruction::ProcessEvent()
     protons->Fill();
 }
 
-Bool_t  GParticleReconstruction::Process()
+Bool_t  GParticleReconstruction::Start()
 {
     file_out->cd();
     CBTime              = new TH1D("CBTimeOR", "CBTimeOR", 10000, -1000, 1000);

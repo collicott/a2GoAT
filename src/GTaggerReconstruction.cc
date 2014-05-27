@@ -55,7 +55,7 @@ void  GTaggerReconstruction::ProcessEvent()
     tagger->Fill();
 }
 
-Bool_t  GTaggerReconstruction::Process()
+Bool_t  GTaggerReconstruction::Start()
 {
     etap->Clone();
     eta->Clone();

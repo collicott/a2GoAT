@@ -42,7 +42,7 @@ void  GPlotProton::ProcessEvent()
 	}
 }
 
-Bool_t  GPlotProton::Process()
+Bool_t  GPlotProton::Start()
 {
 	protonAngleDiffPrompt	= new TH1D("protonAngleDiffPrompt", "Proton Angle Difference Prompt", 1000, 0, 100);
     protonAngleDiffRand		= new TH1D("protonAngleDiffRand", "Proton Angle Difference Rand", 1000, 0, 100);

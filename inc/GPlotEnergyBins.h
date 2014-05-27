@@ -18,12 +18,11 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GPlotEnergyBins();
     virtual ~GPlotEnergyBins();
-
-    virtual Bool_t  Process();
 
     void            WorkWithFit()                                   {withFit = true;}
 };

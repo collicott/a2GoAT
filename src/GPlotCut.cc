@@ -466,7 +466,7 @@ void  GPlotCut::ProcessEvent()
     }
 }
 
-Bool_t  GPlotCut::Process()
+Bool_t  GPlotCut::Start()
 {
     Init();
 

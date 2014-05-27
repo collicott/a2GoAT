@@ -114,12 +114,11 @@ private:
 
 protected:
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GPlotCut();
     virtual ~GPlotCut();
-
-    virtual Bool_t  Process();
 };
 
 

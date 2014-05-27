@@ -16,12 +16,11 @@ private:
 protected:
 
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GPlotScalers();
     virtual ~GPlotScalers();
-
-    virtual Bool_t  Process();
 };
 
 

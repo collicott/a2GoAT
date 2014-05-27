@@ -26,12 +26,11 @@ private:
 
 protected:
     virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     GPlotCutMC();
     virtual ~GPlotCutMC();
-
-    virtual Bool_t  Process();
 };
 
 

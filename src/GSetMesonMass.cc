@@ -51,7 +51,7 @@ void  GSetMesonMass::ProcessEvent()
     }
 }
 
-Bool_t  GSetMesonMass::Process()
+Bool_t  GSetMesonMass::Start()
 {
     scalers->Clone();
 
