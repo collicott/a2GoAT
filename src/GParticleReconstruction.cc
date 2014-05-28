@@ -1,19 +1,133 @@
-
 #include "GParticleReconstruction.h"
 
 
+using namespace std;
+
 GParticleReconstruction::GParticleReconstruction() :
-							Identified(0),
-							nParticles(0),
-							nDaughterList(0),
-							Charge(0)
+    CBTime(0),
+    TAPSTime(0),
+    CBTimeAfterCut(0),
+    TAPSTimeAfterCut(0),
+    DoScalerCorrection(kFALSE),
+    DoTrigger(kFALSE),
+    E_Sum(50),
+    multiplicity(1)
 {
-	Identified 	= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
-	Charge	 	= new Int_t[GAcquTREEMANAGER_MAX_PARTICLE];
+    CBTimeCut[0] = -1000000.0;
+    CBTimeCut[1] = 1000000.0;
+    TAPSTimeCut[0] = -1000000.0;
+    TAPSTimeCut[1] = 1000000.0;
 }
 
 GParticleReconstruction::~GParticleReconstruction()
 {
+    if(CBTime) delete CBTime;
+    if(TAPSTime) delete TAPSTime;
+    if(CBTimeAfterCut) delete CBTimeAfterCut;
+    if(TAPSTimeAfterCut) delete TAPSTimeAfterCut;
+}
+
+Bool_t GParticleReconstruction::Trigger()
+{
+    if(trigger->GetESum() < E_Sum)
+        return kFALSE;
+    if(trigger->GetMult() < multiplicity)
+        return kFALSE;
+    return kTRUE;
+}
+
+void GParticleReconstruction::ProcessEvent()
+{
+    if(DoTrigger)
+    {
+        if(!Trigger())
+            return;
+    }
+    if(rawEvent->GetNCB() != 2 && rawEvent->GetNCB() != 6 && rawEvent->GetNCB() != 10)
+        return;
+    if(rawEvent->GetNTAPS()>1)
+        return;
+
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+            CBTime->Fill(rawEvent->GetTime(i));
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+            TAPSTime->Fill(rawEvent->GetTime(i));
+    }
+
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+        {
+            if(rawEvent->GetTime(i)<CBTimeCut[0] || rawEvent->GetTime(i)>CBTimeCut[1])
+                return;
+        }
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+        {
+            if(rawEvent->GetTime(i)<TAPSTimeCut[0] || rawEvent->GetTime(i)>TAPSTimeCut[1])
+                return;
+        }
+    }
+
+    GCorrectScalers::ProcessEvent();
+
+    photons->Clear();
+    protons->Clear();
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+        {
+            CBTimeAfterCut->Fill(rawEvent->GetTime(i));
+            photons->AddParticle(rawEvent->GetVector(i), i);
+        }
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+        {
+            TAPSTimeAfterCut->Fill(rawEvent->GetTime(i));
+            protons->AddParticle(rawEvent->GetVector(i, 938.272046), i);
+        }
+    }
+    photons->Fill();
+    protons->Fill();
+}
+
+Bool_t GParticleReconstruction::Start()
+{
+    file_out->cd();
+    CBTime = new TH1D("CBTimeOR", "CBTimeOR", 10000, -1000, 1000);
+    TAPSTime = new TH1D("TAPSTimeOR", "TAPSTimeOR", 10000, -1000, 1000);
+    CBTimeAfterCut = new TH1D("CBTimeOR_Cut", "CBTimeOR_Cut", 10000, -1000, 1000);
+    TAPSTimeAfterCut = new TH1D("TAPSTimeOR_Cut", "TAPSTimeOR_Cut", 10000, -1000, 1000);
+
+    if(DoScalerCorrection)
+    {
+        if(!GCorrectScalers::Process()) return kFALSE;
+
+        if(!Write(CBTime)) return kFALSE;
+        if(!Write(TAPSTime)) return kFALSE;
+        if(!Write(CBTimeAfterCut)) return kFALSE;
+        if(!Write(TAPSTimeAfterCut)) return kFALSE;
+        return kTRUE;
+    }
+
+    scalers->Clone();
+
+    file_out->cd();
+    taggerTime = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);
+    accepted = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
+    accepted->SetBinContent(1, rawEvent->GetNEntries());
+    accepted->SetBinContent(2, rawEvent->GetNEntries());
+    accepted->SetBinContent(3, 0);
+
+    TraverseEntries(0, rawEvent->GetNEntries()+1);
+
+    if(!Write(taggerTime)) return kFALSE;
+    if(!Write(accepted)) return kFALSE;
+    if(!Write(CBTime)) return kFALSE;
+    if(!Write(TAPSTime)) return kFALSE;
+    if(!Write(CBTimeAfterCut)) return kFALSE;
+    if(!Write(TAPSTimeAfterCut)) return kFALSE;
+    return kTRUE;
 }
 
 Bool_t	GParticleReconstruction::PostInit()
@@ -251,10 +365,27 @@ void	GParticleReconstruction::InitEvent()
 		Identified[i] = pdg_rootino; 
 		SetInputMass(i,0.0);
 	}	
+=======
+GParticleReconstruction::GParticleReconstruction()  :
+    CBTime(0),
+    TAPSTime(0),
+    CBTimeAfterCut(0),
+    TAPSTimeAfterCut(0),
+    DoScalerCorrection(kFALSE),
+    DoTrigger(kFALSE),
+    E_Sum(50),
+    multiplicity(1)
+{
+    CBTimeCut[0]    = -1000000.0;
+    CBTimeCut[1]    = 1000000.0;
+    TAPSTimeCut[0]    = -1000000.0;
+    TAPSTimeCut[1]    = 1000000.0;
+>>>>>>> newStructure
 }
 
-void 	GParticleReconstruction::CheckNeutrality()
+GParticleReconstruction::~GParticleReconstruction()
 {
+<<<<<<< HEAD
 
 	// Rough start, this will soon be user controlled
 	Bool_t considerPID 	= kTRUE;
@@ -284,10 +415,17 @@ void 	GParticleReconstruction::CheckNeutrality()
 			}
 		}			
 	}
+=======
+    if(CBTime)              delete  CBTime;
+    if(TAPSTime)            delete  TAPSTime;
+    if(CBTimeAfterCut)      delete  CBTimeAfterCut;
+    if(TAPSTimeAfterCut)    delete  TAPSTimeAfterCut;
+>>>>>>> newStructure
 }
 
-void	GParticleReconstruction::PhotonReconstruction()
+Bool_t  GParticleReconstruction::Trigger()
 {
+<<<<<<< HEAD
 	// Mark neutral rootinos as photons (for now)
 	// Note if neutron ID is done before this, they are left as neutrons
 	
@@ -298,10 +436,18 @@ void	GParticleReconstruction::PhotonReconstruction()
 			Identified[i] = pdgDB->GetParticle("gamma")->PdgCode();
 		}
 	}
+=======
+    if(trigger->GetESum() < E_Sum)
+        return kFALSE;
+    if(trigger->GetMult() < multiplicity)
+        return kFALSE;
+    return kTRUE;
+>>>>>>> newStructure
 }
 
-void	GParticleReconstruction::ChargedReconstruction()
+void  GParticleReconstruction::ProcessEvent()
 {
+<<<<<<< HEAD
 	
 	for (int i = 0; i < GetNParticles(); i++) 
 	{
@@ -383,19 +529,41 @@ void	GParticleReconstruction::ChargedReconstruction()
 	}			
 				
 }
+=======
+    if(DoTrigger)
+    {
+        if(!Trigger())
+            return;
+    }
+    if(rawEvent->GetNCB() != 2 && rawEvent->GetNCB() != 6 && rawEvent->GetNCB() != 10)
+        return;
+    if(rawEvent->GetNTAPS()>1)
+        return;
 
-void	GParticleReconstruction::MesonReconstruction()
-{
-	Int_t		index1	  [GetNParticles() * (GetNParticles() -1)];
-	Int_t		index2	  [GetNParticles() * (GetNParticles() -1)];	
-	Int_t 		tempID    [GetNParticles() * (GetNParticles() -1)];
-	Double_t 	diff_meson[GetNParticles() * (GetNParticles() -1)];
-	Int_t 		sort_index[GetNParticles() * (GetNParticles() -1)];
-	Bool_t 		is_meson  [GetNParticles()];
-	
-	Int_t 		ndaughter = 0;
-	Int_t		daughter_list[GetNParticles()];
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+            CBTime->Fill(rawEvent->GetTime(i));
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+            TAPSTime->Fill(rawEvent->GetTime(i));
+    }
+>>>>>>> newStructure
 
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+        {
+            if(rawEvent->GetTime(i)<CBTimeCut[0] || rawEvent->GetTime(i)>CBTimeCut[1])
+                return;
+        }
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+        {
+            if(rawEvent->GetTime(i)<TAPSTimeCut[0] || rawEvent->GetTime(i)>TAPSTimeCut[1])
+                return;
+        }
+    }
+
+<<<<<<< HEAD
 //	TLorentzVector	initialParticle[GetNParticles()];
 	TLorentzVector	reaction_p4;	
 		
@@ -527,11 +695,38 @@ void	GParticleReconstruction::MesonReconstruction()
 		AddParticle(tempID[i],2,daughter_list);		
 	}
 		
+=======
+    GCorrectScalers::ProcessEvent();
+
+    photons->Clear();
+    protons->Clear();
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+        {
+            CBTimeAfterCut->Fill(rawEvent->GetTime(i));
+            photons->AddParticle(rawEvent->GetVector(i), i);
+        }
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+        {
+            TAPSTimeAfterCut->Fill(rawEvent->GetTime(i));
+            protons->AddParticle(rawEvent->GetVector(i, 938.272046), i);
+        }
+    }
+    photons->Fill();
+    protons->Fill();
+>>>>>>> newStructure
 }
 
-void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[])
+Bool_t  GParticleReconstruction::Start()
 {
+    file_out->cd();
+    CBTime              = new TH1D("CBTimeOR", "CBTimeOR", 10000, -1000, 1000);
+    TAPSTime            = new TH1D("TAPSTimeOR", "TAPSTimeOR", 10000, -1000, 1000);
+    CBTimeAfterCut      = new TH1D("CBTimeOR_Cut", "CBTimeOR_Cut", 10000, -1000, 1000);
+    TAPSTimeAfterCut    = new TH1D("TAPSTimeOR_Cut", "TAPSTimeOR_Cut", 10000, -1000, 1000);
 
+<<<<<<< HEAD
 	TLorentzVector part  = GetVector(index_list[0]);
 	
 	Double_t Ek			 = GetEk(index_list[0]);
@@ -661,28 +856,35 @@ void	GParticleReconstruction::AddParticle(Int_t pdg_code, Int_t nindex, Int_t in
 TCutG*	GParticleReconstruction::OpenCutFile(Char_t* filename, Char_t* cutname)
 {
 	CutFile 	= new TFile(filename, "READ");
+=======
+    if(DoScalerCorrection)
+    {
+        if(!GCorrectScalers::Process())  return kFALSE;
+>>>>>>> newStructure
 
-    if( !CutFile || !CutFile->IsOpen() ) {
-        cerr << "Can't open cut file: " << filename << endl;
-        throw false;
+        if(!Write(CBTime))  return kFALSE;
+        if(!Write(TAPSTime))  return kFALSE;
+        if(!Write(CBTimeAfterCut))  return kFALSE;
+        if(!Write(TAPSTimeAfterCut))  return kFALSE;
+        return kTRUE;
     }
 
+    scalers->Clone();
 
-    // Try to find a TCutG with the name we want
-    // GetObject checks the type to be TCutG,
-    // see http://root.cern.ch/root/html534/TDirectory.html#TDirectory:GetObject
-    CutFile->GetObject(cutname, Cut);
+    file_out->cd();
+    taggerTime  = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);
+    accepted    = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
+    accepted->SetBinContent(1, rawEvent->GetNEntries());
+    accepted->SetBinContent(2, rawEvent->GetNEntries());
+    accepted->SetBinContent(3, 0);
 
-    if( !Cut ) {
-        cerr << "Could not find a TCutG with the name " << cutname << " in " << filename << endl;
-        throw false;
-    }
-	
-	TCutG* Cut_clone = Cut;
-	CutFile->Close();
+    TraverseEntries(0, rawEvent->GetNEntries()+1);
 
-	cout << "cut file " << filename << 
-						" opened (Cut-name = " << cutname << ")"<< endl;
-	return Cut_clone;
-	
+    if(!Write(taggerTime))  return kFALSE;
+    if(!Write(accepted))  return kFALSE;
+    if(!Write(CBTime))  return kFALSE;
+    if(!Write(TAPSTime))  return kFALSE;
+    if(!Write(CBTimeAfterCut))  return kFALSE;
+    if(!Write(TAPSTimeAfterCut))  return kFALSE;
+    return kTRUE;
 }
