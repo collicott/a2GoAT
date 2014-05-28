@@ -6,6 +6,7 @@
 
 #include "GDataChecks.h"
 #include "GCorrectScalers.h"
+#include "GConfigFile.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
@@ -13,9 +14,20 @@
 
 #define	pdg_rootino 0
 
-class	GParticleReconstruction : public GDataChecks, public GCorrectScalers
+class	GParticleReconstruction : public GDataChecks, public GCorrectScalers, public GConfigFile
 {
+public:
+    enum ReconstructionType
+    {
+        ReconstructionType_AllPhotons,
+        ReconstructionType_AllProtons,
+        ReconstructionType_PID_VETO
+    };
+
 private:
+    ReconstructionType  CB_type;
+    ReconstructionType  TAPS_type;
+
     char 		cutfilename[256];
     char 		cutname[256];
 
@@ -63,11 +75,6 @@ private:
     Int_t 		nDaughterList;
     Int_t 		i;
 
-    TH1D*       CBTime;
-    TH1D*       TAPSTime;
-    TH1D*       CBTimeAfterCut;
-    TH1D*       TAPSTimeAfterCut;
-
     Double_t    CBTimeCut[2];
     Double_t    TAPSTimeCut[2];
 
@@ -94,6 +101,8 @@ public:
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}
     void    SetScalerCorrection(const Bool_t value)                 {DoScalerCorrection = value;}
     void    SetTrigger(const Double_t esum, const Int_t mult)       {DoTrigger = kTRUE; E_Sum = esum; multiplicity = mult;}
+    void    SetCBType(const ReconstructionType type)                {CB_type = type;}
+    void    SetTAPSType(const ReconstructionType type)              {TAPS_type = type;}
 
     Bool_t	PostInit();
     void	InitEvent();

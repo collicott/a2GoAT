@@ -4,10 +4,6 @@
 using namespace std;
 
 GParticleReconstruction::GParticleReconstruction() :
-    CBTime(0),
-    TAPSTime(0),
-    CBTimeAfterCut(0),
-    TAPSTimeAfterCut(0),
     DoScalerCorrection(kFALSE),
     DoTrigger(kFALSE),
     E_Sum(50),
@@ -21,10 +17,6 @@ GParticleReconstruction::GParticleReconstruction() :
 
 GParticleReconstruction::~GParticleReconstruction()
 {
-    if(CBTime) delete CBTime;
-    if(TAPSTime) delete TAPSTime;
-    if(CBTimeAfterCut) delete CBTimeAfterCut;
-    if(TAPSTimeAfterCut) delete TAPSTimeAfterCut;
 }
 
 Bool_t GParticleReconstruction::Trigger()
@@ -36,77 +28,14 @@ Bool_t GParticleReconstruction::Trigger()
     return kTRUE;
 }
 
-void GParticleReconstruction::ProcessEvent()
-{
-    if(DoTrigger)
-    {
-        if(!Trigger())
-            return;
-    }
-    if(rawEvent->GetNCB() != 2 && rawEvent->GetNCB() != 6 && rawEvent->GetNCB() != 10)
-        return;
-    if(rawEvent->GetNTAPS()>1)
-        return;
-
-    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
-    {
-        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
-            CBTime->Fill(rawEvent->GetTime(i));
-        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
-            TAPSTime->Fill(rawEvent->GetTime(i));
-    }
-
-    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
-    {
-        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
-        {
-            if(rawEvent->GetTime(i)<CBTimeCut[0] || rawEvent->GetTime(i)>CBTimeCut[1])
-                return;
-        }
-        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
-        {
-            if(rawEvent->GetTime(i)<TAPSTimeCut[0] || rawEvent->GetTime(i)>TAPSTimeCut[1])
-                return;
-        }
-    }
-
-    GCorrectScalers::ProcessEvent();
-
-    photons->Clear();
-    protons->Clear();
-    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
-    {
-        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
-        {
-            CBTimeAfterCut->Fill(rawEvent->GetTime(i));
-            photons->AddParticle(rawEvent->GetVector(i), i);
-        }
-        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
-        {
-            TAPSTimeAfterCut->Fill(rawEvent->GetTime(i));
-            protons->AddParticle(rawEvent->GetVector(i, 938.272046), i);
-        }
-    }
-    photons->Fill();
-    protons->Fill();
-}
 
 Bool_t GParticleReconstruction::Start()
 {
     file_out->cd();
-    CBTime = new TH1D("CBTimeOR", "CBTimeOR", 10000, -1000, 1000);
-    TAPSTime = new TH1D("TAPSTimeOR", "TAPSTimeOR", 10000, -1000, 1000);
-    CBTimeAfterCut = new TH1D("CBTimeOR_Cut", "CBTimeOR_Cut", 10000, -1000, 1000);
-    TAPSTimeAfterCut = new TH1D("TAPSTimeOR_Cut", "TAPSTimeOR_Cut", 10000, -1000, 1000);
 
     if(DoScalerCorrection)
     {
         if(!GCorrectScalers::Process()) return kFALSE;
-
-        if(!Write(CBTime)) return kFALSE;
-        if(!Write(TAPSTime)) return kFALSE;
-        if(!Write(CBTimeAfterCut)) return kFALSE;
-        if(!Write(TAPSTimeAfterCut)) return kFALSE;
         return kTRUE;
     }
 
@@ -123,10 +52,6 @@ Bool_t GParticleReconstruction::Start()
 
     if(!Write(taggerTime)) return kFALSE;
     if(!Write(accepted)) return kFALSE;
-    if(!Write(CBTime)) return kFALSE;
-    if(!Write(TAPSTime)) return kFALSE;
-    if(!Write(CBTimeAfterCut)) return kFALSE;
-    if(!Write(TAPSTimeAfterCut)) return kFALSE;
     return kTRUE;
 }
 
@@ -325,8 +250,64 @@ Bool_t	GParticleReconstruction::PostInit()
 	return kTRUE;
 }
 
-void	GParticleReconstruction::Reconstruct()
+void	GParticleReconstruction::ProcessEvent()
 {
+    if(DoTrigger)
+    {
+        if(!Trigger())
+            return;
+    }
+
+    GCorrectScalers::ProcessEvent();
+
+    photons->Clear();
+    electrons->Clear();
+    chargedPi->Clear();
+    protons->Clear();
+    neutrons->Clear();
+
+    for(Int_t i=0; i<rawEvent->GetNParticles(); i++)
+    {
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
+        {
+            if(rawEvent->GetTime(i)<CBTimeCut[0] || rawEvent->GetTime(i)>CBTimeCut[1])
+                return;
+
+            switch(CB_type)
+            {
+                case ReconstructionType_AllPhotons:
+                    photons->AddParticle(rawEvent->GetVector(i), i);
+                    break;
+                case ReconstructionType_PID_VETO:
+                    break;
+            }
+        }
+
+        if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
+        {
+            if(rawEvent->GetTime(i)<TAPSTimeCut[0] || rawEvent->GetTime(i)>TAPSTimeCut[1])
+                return;
+
+            switch(TAPS_type)
+            {
+                case ReconstructionType_AllPhotons:
+                    photons->AddParticle(rawEvent->GetVector(i), i);
+                    break;
+                case ReconstructionType_AllProtons:
+                    protons->AddParticle(rawEvent->GetVector(i), i);
+                    break;
+                case ReconstructionType_PID_VETO:
+                    break;
+            }
+        }
+    }
+
+    photons->Fill();
+    electrons->Fill();
+    chargedPi->Fill();
+    protons->Fill();
+    neutrons->Fill();
+
 	InitEvent();
 	CheckNeutrality();
     
@@ -340,7 +321,7 @@ void	GParticleReconstruction::Reconstruct()
 	if(ReconstructChargedParticles == 1) 	ChargedReconstruction();
 	if(ReconstructMesons == 1)	 			MesonReconstruction();
 
-	for (int i = 0; i < GetNParticles(); i++) 
+    for (int i = 0; i < rawEvent->GetNParticles(); i++)
 	{
 		// Finally add particles which were temporarily identified
 		if (Identified[i] == pdgDB->GetParticle("pi+")->PdgCode())

@@ -41,6 +41,7 @@ add_executable(goat
    inc/GTreeTrigger.h
    inc/GTreeFit.h
    inc/GTreeManager.h
+   inc/GConfigFile.h
    inc/GCorrectScalers.h
    inc/GoAT.h
    inc/GSort.h
@@ -57,6 +58,7 @@ add_executable(goat
    src/GTreeTrigger.cc
    src/GTreeFit.cc
    src/GTreeManager.cc
+   src/GConfigFile.cc
    src/GCorrectScalers.cc
    src/GoAT.cc 
    src/GSort.cc
@@ -77,6 +79,7 @@ add_executable(pi0-example
    inc/GTreeTrigger.h
    inc/GTreeFit.h
    inc/GTreeManager.h
+   inc/GConfigFile.h
    inc/PPi0Example.h
    inc/PPhysics.h
    src/GTree.cc
@@ -90,6 +93,7 @@ add_executable(pi0-example
    src/GTreeTrigger.cc
    src/GTreeFit.cc
    src/GTreeManager.cc
+   src/GConfigFile.cc
    src/PPi0Example.cc
    src/PPhysics.cc
    )
@@ -107,6 +111,7 @@ add_executable(eta-example
    inc/GTreeTrigger.h
    inc/GTreeFit.h
    inc/GTreeManager.h
+   inc/GConfigFile.h
    inc/PEtaExample.h
    inc/PPhysics.h
    src/GTree.cc
@@ -120,6 +125,7 @@ add_executable(eta-example
    src/GTreeTrigger.cc
    src/GTreeFit.cc
    src/GTreeManager.cc
+   src/GConfigFile.cc
    src/PEtaExample.cc
    src/PPhysics.cc
    )
@@ -137,6 +143,7 @@ add_executable(MyGoAT
    inc/GTreeTrigger.h
    inc/GTreeFit.h
    inc/GTreeManager.h
+   inc/GConfigFile.h
    inc/GCorrectScalers.h
    inc/GParticleReconstruction.h
    inc/GMesonReconstruction.h
@@ -158,6 +165,7 @@ add_executable(MyGoAT
    src/GTreeTrigger.cc
    src/GTreeFit.cc
    src/GTreeManager.cc
+   src/GConfigFile.cc
    src/GCorrectScalers.cc
    src/GParticleReconstruction.cc
    src/GMesonReconstruction.cc

@@ -4,6 +4,8 @@
 
 #include <TLorentzVector.h>
 #include <TH1.h>
+#include <TDatabasePDG.h>
+
 #include "GTreeRawEvent.h"
 #include "GTreeTagger.h"
 #include "GTreeScaler.h"
@@ -67,6 +69,9 @@ protected:
     GTreeMeson*         eta;
     GTreeMeson*         etap;
     GTreeFit*           fitData;
+
+    TDatabasePDG *pdgDB;
+
 
             void    CloseFiles();
     virtual void    ProcessEvent() = 0;
