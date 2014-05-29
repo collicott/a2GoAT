@@ -3,8 +3,9 @@
 #define __GDataChecks_h__
 
 #include "GTreeManager.h"
+#include "GConfigFile.h"
 
-class	GDataChecks : virtual public GTreeManager
+class	GDataChecks : virtual public GConfigFile, virtual public GTreeManager
 {
 private:
 

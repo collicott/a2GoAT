@@ -45,8 +45,8 @@ add_executable(goat
    inc/GCorrectScalers.h
    inc/GoAT.h
    inc/GSort.h
-   inc/GParticleReconstruction.h
    inc/GDataChecks.h
+   inc/GParticleReconstruction.h
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeDetectorHits.cc
@@ -62,8 +62,8 @@ add_executable(goat
    src/GCorrectScalers.cc
    src/GoAT.cc 
    src/GSort.cc
-   src/GParticleReconstruction.cc
    src/GDataChecks.cc
+   src/GParticleReconstruction.cc
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
@@ -145,6 +145,7 @@ add_executable(MyGoAT
    inc/GTreeManager.h
    inc/GConfigFile.h
    inc/GCorrectScalers.h
+   inc/GDataChecks.h
    inc/GParticleReconstruction.h
    inc/GMesonReconstruction.h
    inc/GSetMesonMass.h
@@ -153,6 +154,8 @@ add_executable(MyGoAT
    inc/GKinFitterParticle.h
    inc/GKinFitter.h
    inc/GFitEtap6g.h
+   inc/GRawCut.h
+   inc/GCut.h
    inc/MyGoAT.h
    src/GTree.cc
    src/GTreeRawEvent.cc
@@ -167,6 +170,7 @@ add_executable(MyGoAT
    src/GTreeManager.cc
    src/GConfigFile.cc
    src/GCorrectScalers.cc
+   src/GDataChecks.cc
    src/GParticleReconstruction.cc
    src/GMesonReconstruction.cc
    src/GSetMesonMass.cc
@@ -175,6 +179,8 @@ add_executable(MyGoAT
    src/GKinFitterParticle.cc
    src/GKinFitter.cc
    src/GFitEtap6g.cc
+   src/GRawCut.cc
+   src/GCut.cc
    src/MyGoAT.cc
    )
 target_link_libraries(MyGoAT ${ROOT_LIBRARIES})

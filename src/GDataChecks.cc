@@ -1,6 +1,10 @@
 
 #include "GDataChecks.h"
 
+
+using namespace std;
+
+
 GDataChecks::GDataChecks()  :
 				CheckCBStability(0),
 				CBHitsThresh1(0),
@@ -16,8 +20,8 @@ GDataChecks::~GDataChecks()
 
 Bool_t	GDataChecks::PostInit()
 {
-	config = ReadConfig("CheckCBStability");
-	if( sscanf(config.c_str(),"%d %lf\n", &CheckCBStability, &CBStabilityCutoff) == 2 ) 
+    config = ReadConfig("CheckCBStability");
+    if( sscanf(config.c_str(),"%d %lf\n", (int*)(&CheckCBStability), &CBStabilityCutoff) == 2 )
 	{	
 		if(CheckCBStability)
 		{
@@ -25,7 +29,7 @@ Bool_t	GDataChecks::PostInit()
 			cout << "Using cutoff ratio of " << CBStabilityCutoff << endl << endl;	
 		}
 	}
-	else if( sscanf(config.c_str(),"%d\n", &CheckCBStability) == 1 ) 
+    else if( sscanf(config.c_str(),"%d\n", (int*)(&CheckCBStability)) == 1 )
 	{	
 		if(CheckCBStability)
 		{
@@ -59,16 +63,25 @@ inline Bool_t 	GDataChecks::CheckCBHits(const Int_t min, const Int_t max)
     Int_t SumQ3 = 0;
     Int_t SumQ4 = 0;
 
+    if(!detectorHits->IsOpenForInput())
+    {
+        if(!detectorHits->OpenForInput())
+        {
+            cout << "Can not check CB Hits. Now treeDetectorHits available." << endl;
+            return false;
+        }
+    }
+
     for(int i=min; i<=max; i++)
     {
-        GetTreeDetectorHitsEntry(i);
+        detectorHits->GetEntry(i);
 
-        for (int j=0; j<=GetNNaI_Hits(); j++)
+        for (int j=0; j<=detectorHits->GetNNaI_Hits(); j++)
         {
-            if  (GetNaI_Hits(j) <  180) SumQ1++;
-            if ((GetNaI_Hits(j) >= 180) && (GetNaI_Hits(j) < 360)) SumQ2++;
-            if ((GetNaI_Hits(j) >= 360) && (GetNaI_Hits(j) < 540)) SumQ3++;
-            if ((GetNaI_Hits(j) >= 540) && (GetNaI_Hits(j) < 720)) SumQ4++;
+            if  (detectorHits->GetNaI_Hits(j) <  180) SumQ1++;
+            if ((detectorHits->GetNaI_Hits(j) >= 180) && (detectorHits->GetNaI_Hits(j) < 360)) SumQ2++;
+            if ((detectorHits->GetNaI_Hits(j) >= 360) && (detectorHits->GetNaI_Hits(j) < 540)) SumQ3++;
+            if ((detectorHits->GetNaI_Hits(j) >= 540) && (detectorHits->GetNaI_Hits(j) < 720)) SumQ4++;
         }
     }
 

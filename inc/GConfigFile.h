@@ -22,8 +22,8 @@ public:
     Char_t* GetConfigFile()	{return global_config_file;}
 
     std::string	ReadConfig(const std::string& key_in, Int_t instance, Char_t* configname);
-    std::string	ReadConfig(const std::string& key_in, Int_t instance) {return ReadConfig(key_in,instance,GetConfigFile());}
-    std::string	ReadConfig(const std::string& key_in) {return ReadConfig(key_in,0,GetConfigFile());}
+    std::string	ReadConfig(const std::string& key_in, Int_t instance)                       {return ReadConfig(key_in, instance, global_config_file);}
+    std::string	ReadConfig(const std::string& key_in)                                       {return ReadConfig(key_in, 0, global_config_file);}
 };
 
 #endif

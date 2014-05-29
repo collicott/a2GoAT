@@ -6,7 +6,6 @@
 
 #include "GDataChecks.h"
 #include "GCorrectScalers.h"
-#include "GConfigFile.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
@@ -14,19 +13,28 @@
 
 #define	pdg_rootino 0
 
-class	GParticleReconstruction : public GDataChecks, public GCorrectScalers, public GConfigFile
+class	GParticleReconstruction : public GDataChecks, public GCorrectScalers
 {
 public:
     enum ReconstructionType
     {
         ReconstructionType_AllPhotons,
         ReconstructionType_AllProtons,
-        ReconstructionType_PID_VETO
+        ReconstructionType_dEoverE_Cut
+    };
+    enum ReconstructionType_dEoverE_Type
+    {
+        ReconstructionType_dEoverE_Cut_None     = 0,
+        ReconstructionType_dEoverE_Cut_Proton   = 1,
+        ReconstructionType_dEoverE_Cut_PiPlus   = 2,
+        ReconstructionType_dEoverE_Cut_Electron = 4
     };
 
 private:
-    ReconstructionType  CB_type;
-    ReconstructionType  TAPS_type;
+    ReconstructionType                 CB_type;
+    ReconstructionType_dEoverE_Type    CB_dEoverE_type;
+    ReconstructionType                 TAPS_type;
+    ReconstructionType_dEoverE_Type    TAPS_dEoverE_type;
 
     char 		cutfilename[256];
     char 		cutname[256];
@@ -55,10 +63,6 @@ private:
     Int_t		Cut_CB_electron_active;
     Int_t		Cut_TAPS_electron_active;
     Int_t 		Cut_electron_active;
-
-    TCutG* 		Cut_proton;
-    TCutG*		Cut_pion;
-    TCutG*		Cut_electron;
 
     Int_t		ReconstructMesons;
     Double_t	meson_theta_min;
@@ -101,14 +105,14 @@ public:
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}
     void    SetScalerCorrection(const Bool_t value)                 {DoScalerCorrection = value;}
     void    SetTrigger(const Double_t esum, const Int_t mult)       {DoTrigger = kTRUE; E_Sum = esum; multiplicity = mult;}
-    void    SetCBType(const ReconstructionType type)                {CB_type = type;}
-    void    SetTAPSType(const ReconstructionType type)              {TAPS_type = type;}
+    void    SetCBType(const ReconstructionType type, const ReconstructionType_dEoverE_Type dEoverE_type = ReconstructionType_dEoverE_Cut_None)    {CB_type = type; CB_dEoverE_type = dEoverE_type;}
+    void    SetTAPSType(const ReconstructionType type, const ReconstructionType_dEoverE_Type dEoverE_type = ReconstructionType_dEoverE_Cut_None)  {TAPS_type = type; TAPS_dEoverE_type = dEoverE_type;}
 
     Bool_t	PostInit();
-    void	InitEvent();
-    void	CheckNeutrality();
-    void 	PhotonReconstruction();
-    void 	ChargedReconstruction();
+    //void	CheckNeutrality();
+    //void 	PhotonReconstruction();
+    void 	ChargedReconstructionCB(const Int_t index);
+    void 	ChargedReconstructionTAPS(const Int_t index);
     void 	MesonReconstruction();
     void	AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[]);
     void	AddParticle(Int_t pdg_code, Int_t i)                    {Int_t index_list[1]; index_list[0] = i; AddParticle(pdg_code, 1, index_list);}

@@ -2,6 +2,8 @@
 
 #include "PEtaExample.h"
 
+using namespace std;
+
 /**
  * @brief the main routine
  * @param argc number of parameters

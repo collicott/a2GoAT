@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <fstream>
-using namespace std;
 #include <cstdio>
 #include <string> 
 
-#include "GoATTreeManager.h"
+#include <TH3.h>
 
-class	PPhysics : public GoATTreeManager
+#include "GTreeManager.h"
+
+class	PPhysics : virtual public GTreeManager
 {
 private:
 
