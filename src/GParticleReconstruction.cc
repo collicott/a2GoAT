@@ -37,24 +37,19 @@ Bool_t GParticleReconstruction::Start()
 {
     file_out->cd();
 
-    if(DoScalerCorrection)
-    {
-        if(!GCorrectScalers::Process()) return kFALSE;
-        return kTRUE;
-    }
-
-    scalers->Clone();
-
-    file_out->cd();
-    taggerTime = new TH1D("TaggerTimeOR", "TaggerTimeOR", 10000, -1000, 1000);
     accepted = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
     accepted->SetBinContent(1, rawEvent->GetNEntries());
     accepted->SetBinContent(2, rawEvent->GetNEntries());
     accepted->SetBinContent(3, 0);
 
-    TraverseEntries(0, rawEvent->GetNEntries()+1);
+    if(DoScalerCorrection)
+    {
+        if(!TraverseValidEvents())
+            return kFALSE;
+    }
+    else
+        TraverseEntries(0, rawEvent->GetNEntries()+1);
 
-    if(!Write(taggerTime)) return kFALSE;
     if(!Write(accepted)) return kFALSE;
     return kTRUE;
 }
@@ -261,8 +256,6 @@ void	GParticleReconstruction::ProcessEvent()
         if(!Trigger())
             return;
     }
-
-    GCorrectScalers::ProcessEvent();
 
     photons->Clear();
     electrons->Clear();

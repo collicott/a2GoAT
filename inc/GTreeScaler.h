@@ -27,6 +27,7 @@ public:
     virtual ~GTreeScaler();
 
     virtual void        Clear()     {}
+            void        CloneValidEntries();
             Int_t 		GetEventID()        		const	{return EventID;}
             Int_t 		GetEventNumber()        	const	{return EventNumber;}
             Int_t 		GetNScaler()    			const	{return NScaler;}

@@ -79,3 +79,30 @@ void    GTreeScaler::Print(const Bool_t All) const
             std::cout << "Scaler " << i << ": " << Scaler[i] << std::endl;
     }
 }
+
+void    GTreeScaler::CloneValidEntries()
+{
+    if(!IsOpenForInput())
+    {
+        if(!OpenForInput())
+        {
+            std::cout << "Can not open " << GetName() << " in input file." << std::endl;
+            return;
+        }
+    }
+    if(!IsOpenForOutput())
+    {
+        if(!OpenForOutput())
+        {
+            std::cout << "Can not create " << GetName() << " in output file." << std::endl;
+            return;
+        }
+    }
+
+    for(int i=1; i<GetNEntries(); i++)
+    {
+        GetEntry(i);
+        Fill();
+    }
+
+}

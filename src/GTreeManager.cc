@@ -41,6 +41,8 @@ GTreeManager::GTreeManager()    :
     trigger = new GTreeTrigger(this);
     scalers = new GTreeScaler(this);
     fitData = new GTreeFit(this);
+
+    pdgDB = TDatabasePDG::Instance();
 }
 
 GTreeManager::~GTreeManager()
@@ -280,6 +282,7 @@ Bool_t  GTreeManager::Start(const char* input_filename, const char* output_filen
 Bool_t  GTreeManager::Write()
 {
     if(!file_out)   return kFALSE;
+    file_out->cd();
 
     if(pi0->IsOpenForOutput())         pi0->Write();
     if(eta->IsOpenForOutput())         eta->Write();
