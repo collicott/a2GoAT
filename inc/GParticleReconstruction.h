@@ -59,16 +59,8 @@ private:
     Int_t		Cut_TAPS_electron_active;
     Int_t 		Cut_electron_active;
 
-    Int_t		ReconstructMesons;
-    Double_t	meson_theta_min;
-    Double_t	meson_theta_max;
-
     Int_t* 		Identified;
     Int_t* 		Charge;
-
-    //Int_t 		nParticles;
-    //Int_t 		nDaughterList;
-    //Int_t 		i;
 
     Double_t    CBTimeCut[2];
     Double_t    TAPSTimeCut[2];

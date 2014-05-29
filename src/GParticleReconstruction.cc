@@ -194,26 +194,6 @@ Bool_t	GParticleReconstruction::Init()
 	else cout << "Charged particle reconstruction is NOT active." << endl;
 	cout << endl;
 	
-	config = ReadConfig("Do-Meson-Reconstruction");	
-	if (strcmp(config.c_str(), "nokey") == 0) ReconstructMesons = 0;	
-	else if(sscanf( config.c_str(), "%d %lf %lf\n", 
-		 &ReconstructMesons,&meson_theta_min, &meson_theta_max) == 3)
-	{
-		cout << "meson reconstruction is active over theta range [" << 
-		meson_theta_min << "," << meson_theta_max <<"]" << endl;
-	}
-	else if(sscanf( config.c_str(), "%d \n",  &ReconstructMesons) == 1)
-	{
-		cout << "Full meson reconstruction is active" << endl;
-		meson_theta_min = 0.0;
-		meson_theta_max = 180.0;
-	}
-	else 
-	{
-		cout << "ERROR: Do-Meson-Reconstruction set improperly" << endl;
-		return kFALSE;
-	}
-	
 	return kTRUE;
 }
 
