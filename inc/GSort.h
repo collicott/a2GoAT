@@ -2,13 +2,13 @@
 #ifndef __GSort_h__
 #define __GSort_h__
 
-#include "GParticleReconstruction.h"
+#include "GTreeManager.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
 #define DEFAULT_ETAP_IM_WIDTH 60.0
 
-class	GSort : public GParticleReconstruction
+class	GSort : virtual public GTreeManager
 {
 private:
 

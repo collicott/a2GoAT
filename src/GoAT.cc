@@ -168,7 +168,8 @@ int main(int argc, char *argv[])
 	cout << endl;
 	
 	// Perform full initialisation 
-	if(!goat->Init(configfile.c_str()))
+    goat->SetConfigFile(configfile.c_str());
+    if(!goat->Init())
 	{
 		cout << "ERROR: GoAT Init failed!" << endl;
 		return 0;
@@ -281,7 +282,7 @@ int main(int argc, char *argv[])
 
 
 GoAT::GoAT() :
-				UseParticleReconstruction(0)
+    UseParticleReconstruction(0)
 { 
 }
 
@@ -289,13 +290,12 @@ GoAT::~GoAT()
 {
 }
 
-Bool_t	GoAT::Init(const char* configfile)
+Bool_t	GoAT::Init()
 {
 	// Initialise shared pdg database
 	pdgDB = TDatabasePDG::Instance();	
 	
-	cout << endl << "Initialising GoAT analysis..." << endl << endl;
-	SetConfigFile((Char_t*)configfile);
+    cout << endl << "Initialising GoAT analysis..." << endl << endl;
 		
     std::string config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;

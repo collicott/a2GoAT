@@ -5,8 +5,6 @@ using namespace std;
 
 GParticleReconstruction::GParticleReconstruction() :
     Identified(new Int_t[GTreeRawEvent_MAX]),
-    nParticles(0),
-    nDaughterList(0),
     Charge(new Int_t[GTreeRawEvent_MAX]),
     DoScalerCorrection(kFALSE),
     DoTrigger(kFALSE),
@@ -216,39 +214,6 @@ Bool_t	GParticleReconstruction::Init()
 		return kFALSE;
 	}
 	
-
-	if (ReconstructMesons == 1) 
-	{
-		config = ReadConfig("Cut-IM-Width-Pi0");	
-		sscanf( config.c_str(), "%lf\n", &width_pi0);
-		if(width_pi0) cout << "Pi0 IM width cut set to " << width_pi0 << " MeV" << endl;
-		else 
-		{
-			width_pi0 = DEFAULT_PI0_IM_WIDTH; 
-			cout << "Pi0 IM width cut set to default (" << width_pi0 << " MeV)" << endl;
-		}
-
-		config = ReadConfig("Cut-IM-Width-Eta");	
-		sscanf( config.c_str(), "%lf\n", &width_eta);
-		if(width_pi0) cout << "Eta IM width cut set to " << width_eta << " MeV" << endl;
-		else 
-		{
-			width_eta = DEFAULT_ETA_IM_WIDTH; 
-			cout << "Pi0 IM width cut set to default (" << width_eta << " MeV)" << endl;
-		}
-
-		config = ReadConfig("Cut-IM-Width-Eta-Prime");	
-		sscanf( config.c_str(), "%lf\n", &width_etaP);
-		if(width_etaP) cout << "Eta-Prime IM width cut set to " << width_etaP << " MeV" << endl;
-		else 
-		{
-			width_etaP = DEFAULT_ETAP_IM_WIDTH; 
-			cout << "Eta-Prime IM width cut set to default (" << width_etaP << " MeV)" << endl;
-		}		
-		cout << endl;
-	}
-	else cout << "Meson reconstruction is NOT active." << endl;	
-
 	return kTRUE;
 }
 
@@ -375,14 +340,14 @@ void	GParticleReconstruction::ChargedReconstructionCB(const Int_t index)
     }
     if(CB_dEoverE_type & ReconstructionType_dEoverE_Cut_PiPlus)
     {
-        if(Cut_CB_pion->IsInside(rawEvent->GetEk(i),rawEvent->Get_dE(i)))
-            Identified[i] = pdgDB->GetParticle("pi+")->PdgCode();
+        if(Cut_CB_pion->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
+            Identified[index] = pdgDB->GetParticle("pi+")->PdgCode();
     }
 
     if(CB_dEoverE_type & ReconstructionType_dEoverE_Cut_Electron)
     {
-        if(Cut_CB_electron->IsInside(rawEvent->GetEk(i),rawEvent->Get_dE(i)))
-            Identified[i] = pdgDB->GetParticle("e-")->PdgCode();
+        if(Cut_CB_electron->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
+            Identified[index] = pdgDB->GetParticle("e-")->PdgCode();
     }
 }
 
@@ -395,14 +360,14 @@ void	GParticleReconstruction::ChargedReconstructionTAPS(const Int_t index)
     }
     if(TAPS_dEoverE_type & ReconstructionType_dEoverE_Cut_PiPlus)
     {
-        if(Cut_TAPS_pion->IsInside(rawEvent->GetEk(i),rawEvent->Get_dE(i)))
-            Identified[i] = pdgDB->GetParticle("pi+")->PdgCode();
+        if(Cut_TAPS_pion->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
+            Identified[index] = pdgDB->GetParticle("pi+")->PdgCode();
     }
 
     if(TAPS_dEoverE_type & ReconstructionType_dEoverE_Cut_Electron)
     {
-        if(Cut_TAPS_electron->IsInside(rawEvent->GetEk(i),rawEvent->Get_dE(i)))
-            Identified[i] = pdgDB->GetParticle("e-")->PdgCode();
+        if(Cut_TAPS_electron->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
+            Identified[index] = pdgDB->GetParticle("e-")->PdgCode();
     }
 }
 

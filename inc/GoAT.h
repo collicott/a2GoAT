@@ -8,9 +8,11 @@
 
 
 #include "GSort.h"
+#include "GParticleReconstruction.h"
+#include "GMesonReconstruction.h"
 
 
-class	GoAT : public GSort
+class	GoAT : public GSort, public GParticleReconstruction, public GMesonReconstruction
 {
 private:
 	Int_t	UsePeriodMacro;
@@ -28,6 +30,6 @@ public:
     GoAT();
     virtual ~GoAT();
 
-    Bool_t	Init(const char* configfile);
+    Bool_t	Init();
 };
 #endif

@@ -6,10 +6,6 @@
 
 #include "GDataChecks.h"
 
-#define DEFAULT_PI0_IM_WIDTH 20.0
-#define DEFAULT_ETA_IM_WIDTH 44.0
-#define DEFAULT_ETAP_IM_WIDTH 60.0
-
 #define	pdg_rootino 0
 
 class	GParticleReconstruction : public GDataChecks
@@ -67,16 +63,12 @@ private:
     Double_t	meson_theta_min;
     Double_t	meson_theta_max;
 
-    Double_t	width_pi0;
-    Double_t	width_eta;
-    Double_t	width_etaP;
-
     Int_t* 		Identified;
     Int_t* 		Charge;
 
-    Int_t 		nParticles;
-    Int_t 		nDaughterList;
-    Int_t 		i;
+    //Int_t 		nParticles;
+    //Int_t 		nDaughterList;
+    //Int_t 		i;
 
     Double_t    CBTimeCut[2];
     Double_t    TAPSTimeCut[2];

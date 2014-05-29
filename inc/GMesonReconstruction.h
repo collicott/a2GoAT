@@ -4,13 +4,17 @@
 
 #include "GTreeManager.h"
 
+#define DEFAULT_PI0_IM_WIDTH 20.0
+#define DEFAULT_ETA_IM_WIDTH 44.0
+#define DEFAULT_ETAP_IM_WIDTH 60.0
 
-class  GMesonReconstruction  : public GTreeManager
+
+class  GMesonReconstruction  : virtual public GTreeManager
 {
 private:
-    Double_t    pi0Width;
-    Double_t    etaWidth;
-    Double_t    etapWidth;
+    Double_t	width_pi0;
+    Double_t	width_eta;
+    Double_t	width_etap;
 
     static  Int_t   perm6g[15][6];
     static  Int_t   perm10g[27][10];
@@ -39,6 +43,7 @@ private:
         }   hetap;
     }   h6g;
 
+    Bool_t  Init();
     void    Reconstruct2g();
     void    Reconstruct6g();
     void    Reconstruct10g();
@@ -54,10 +59,9 @@ public:
 
     static  Int_t   InputNeeded()   {return GTreeManager::TreeFlag_Photons;}
     static  Int_t   OutputNeeded()  {}
-
-    void    SetPi0Width(const Double_t width)   {pi0Width = width;}
-    void    SetEtaWidth(const Double_t width)   {etaWidth = width;}
-    void    SetEtapWidth(const Double_t width)  {etapWidth = width;}
+            void    SetPi0Width(const Double_t width)   {width_pi0 = width;}
+            void    SetEtaWidth(const Double_t width)   {width_eta = width;}
+            void    SetEtapWidth(const Double_t width)  {width_etap = width;}
 };
 
 

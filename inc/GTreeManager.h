@@ -80,6 +80,7 @@ protected:
             void    CloseFiles();
             Bool_t  FindValidEvents();
             Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
+    virtual Bool_t  Init() {}
     virtual void    ProcessEvent() = 0;
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);

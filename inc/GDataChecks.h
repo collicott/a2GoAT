@@ -4,7 +4,7 @@
 
 #include "GTreeManager.h"
 
-class	GDataChecks : public GTreeManager
+class	GDataChecks : virtual public GTreeManager
 {
 private:
 

@@ -5,9 +5,9 @@ using namespace std;
 
 
 GMesonReconstruction::GMesonReconstruction()    :
-    pi0Width(22),
-    etaWidth(40),
-    etapWidth(60)
+    width_pi0(22),
+    width_eta(40),
+    width_etap(60)
 {
 }
 
@@ -105,11 +105,11 @@ void    GMesonReconstruction::Reconstruct2g()
     TLorentzVector  meson(photons->Particle(0) + photons->Particle(1));
     Double_t        ChiSq[3];
 
-    ChiSq[0]    = (MASS_PI0 - meson.M())/pi0Width;
+    ChiSq[0]    = (MASS_PI0 - meson.M())/width_pi0;
     ChiSq[0]   *= ChiSq[0];
-    ChiSq[1]    = (MASS_ETA - meson.M())/etaWidth;
+    ChiSq[1]    = (MASS_ETA - meson.M())/width_eta;
     ChiSq[1]   *= ChiSq[1];
-    ChiSq[2]    = (MASS_ETAP - meson.M())/etapWidth;
+    ChiSq[2]    = (MASS_ETAP - meson.M())/width_etap;
     ChiSq[2]   *= ChiSq[2];
 
     Double_t    minChiSq    = ChiSq[0];
@@ -157,12 +157,12 @@ void    GMesonReconstruction::Reconstruct6g()
         meson[i][0] = photons->Particle(perm6g[i][0]) + photons->Particle(perm6g[i][1]);
         meson[i][1] = photons->Particle(perm6g[i][2]) + photons->Particle(perm6g[i][3]);
         meson[i][2] = photons->Particle(perm6g[i][4]) + photons->Particle(perm6g[i][5]);
-        help[0][0]     = (MASS_ETA - meson[i][0].M())/etaWidth;
-        help[0][1]     = (MASS_ETA - meson[i][1].M())/etaWidth;
-        help[0][2]     = (MASS_ETA - meson[i][2].M())/etaWidth;
-        help[1][0]     = (MASS_PI0 - meson[i][0].M())/pi0Width;
-        help[1][1]     = (MASS_PI0 - meson[i][1].M())/pi0Width;
-        help[1][2]     = (MASS_PI0 - meson[i][2].M())/pi0Width;
+        help[0][0]     = (MASS_ETA - meson[i][0].M())/width_eta;
+        help[0][1]     = (MASS_ETA - meson[i][1].M())/width_eta;
+        help[0][2]     = (MASS_ETA - meson[i][2].M())/width_eta;
+        help[1][0]     = (MASS_PI0 - meson[i][0].M())/width_pi0;
+        help[1][1]     = (MASS_PI0 - meson[i][1].M())/width_pi0;
+        help[1][2]     = (MASS_PI0 - meson[i][2].M())/width_pi0;
         ChiSq[i][0] = (help[0][0]*help[0][0]) + (help[1][1]*help[1][1]) + (help[1][2]*help[1][2]);
         ChiSq[i][1] = (help[1][0]*help[1][0]) + (help[0][1]*help[0][1]) + (help[1][2]*help[1][2]);
         ChiSq[i][2] = (help[1][0]*help[1][0]) + (help[1][1]*help[1][1]) + (help[0][2]*help[0][2]);
@@ -286,6 +286,40 @@ void    GMesonReconstruction::Reconstruct6g()
 void    GMesonReconstruction::Reconstruct10g()
 {
 
+}
+
+
+Bool_t	GMesonReconstruction::Init()
+{
+    string config = ReadConfig("Cut-IM-Width-Pi0");
+    sscanf( config.c_str(), "%lf\n", &width_pi0);
+    if(width_pi0) cout << "Pi0 IM width cut set to " << width_pi0 << " MeV" << endl;
+    else
+    {
+        width_pi0 = DEFAULT_PI0_IM_WIDTH;
+        cout << "Pi0 IM width cut set to default (" << width_pi0 << " MeV)" << endl;
+    }
+
+    config = ReadConfig("Cut-IM-Width-Eta");
+    sscanf( config.c_str(), "%lf\n", &width_eta);
+    if(width_pi0) cout << "Eta IM width cut set to " << width_eta << " MeV" << endl;
+    else
+    {
+        width_eta = DEFAULT_ETA_IM_WIDTH;
+        cout << "Pi0 IM width cut set to default (" << width_eta << " MeV)" << endl;
+    }
+
+    config = ReadConfig("Cut-IM-Width-Eta-Prime");
+    sscanf( config.c_str(), "%lf\n", &width_etap);
+    if(width_etap) cout << "Eta-Prime IM width cut set to " << width_etap << " MeV" << endl;
+    else
+    {
+        width_etap = DEFAULT_ETAP_IM_WIDTH;
+        cout << "Eta-Prime IM width cut set to default (" << width_etap << " MeV)" << endl;
+    }
+    cout << endl;
+
+    return kTRUE;
 }
 
 
