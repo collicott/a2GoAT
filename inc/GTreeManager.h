@@ -46,7 +46,7 @@ private:
 
     UInt_t  EventAtFirstScalerRead;
     UInt_t  EventAtLastScalerRead;
-    UInt_t  actualEvent;
+    UInt_t  currentEvent;
 
     //Bool_t  EntryChecking(const GTree* tree);
     Bool_t  CreateMeson(GTreeMeson*& mesonTree, const TString& _Name);
@@ -92,6 +92,7 @@ public:
     virtual ~GTreeManager();
 
     static  Int_t   CheckInput(const char* input_filename);
+            UInt_t  GetEventNumber() const {return currentEvent;}
             UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
             UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
             Bool_t  Start(const char* input_filename, const char* output_filename);

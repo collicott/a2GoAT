@@ -27,7 +27,7 @@ GTreeManager::GTreeManager()    :
     fitData(0),
     EventAtFirstScalerRead(0),
     EventAtLastScalerRead(0),
-    actualEvent(0)
+    currentEvent(0)
 {
     etap = new GTreeMeson(this, TString("Etap"));
     eta = new GTreeMeson(this, TString("Eta"));
@@ -144,6 +144,7 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
         for(int l=0; l<readList.GetEntriesFast(); l++)
             ((GTree*)readList[l])->GetEntryFast(i);
 
+        currentEvent = i;
         ProcessEvent();
     }
 
