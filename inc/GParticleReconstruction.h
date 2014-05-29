@@ -5,7 +5,6 @@
 
 
 #include "GDataChecks.h"
-#include "GCorrectScalers.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
@@ -13,7 +12,7 @@
 
 #define	pdg_rootino 0
 
-class	GParticleReconstruction : public GDataChecks, public GCorrectScalers
+class	GParticleReconstruction : public GDataChecks
 {
 public:
     enum ReconstructionType

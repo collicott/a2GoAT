@@ -42,7 +42,6 @@ add_executable(goat
    inc/GTreeFit.h
    inc/GTreeManager.h
    inc/GConfigFile.h
-   inc/GCorrectScalers.h
    inc/GoAT.h
    inc/GSort.h
    inc/GDataChecks.h
@@ -59,7 +58,6 @@ add_executable(goat
    src/GTreeFit.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
-   src/GCorrectScalers.cc
    src/GoAT.cc 
    src/GSort.cc
    src/GDataChecks.cc
@@ -144,7 +142,6 @@ add_executable(MyGoAT
    inc/GTreeFit.h
    inc/GTreeManager.h
    inc/GConfigFile.h
-   inc/GCorrectScalers.h
    inc/GDataChecks.h
    inc/GParticleReconstruction.h
    inc/GMesonReconstruction.h
@@ -169,7 +166,6 @@ add_executable(MyGoAT
    src/GTreeFit.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
-   src/GCorrectScalers.cc
    src/GDataChecks.cc
    src/GParticleReconstruction.cc
    src/GMesonReconstruction.cc

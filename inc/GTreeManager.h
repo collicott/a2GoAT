@@ -37,13 +37,16 @@ public:
         TreeFlag_Pi0            =   2048,
         TreeFlag_Eta            =   4096,
         TreeFlag_Etap           =   8192,
-        TreeFlag_Fit            =  16384,
-
+        TreeFlag_Fit            =  16384
     };
 
 private:
     TFile*  file_in;
     Bool_t  isWritten;
+
+    UInt_t  EventAtFirstScalerRead;
+    UInt_t  EventAtLastScalerRead;
+    UInt_t  actualEvent;
 
     //Bool_t  EntryChecking(const GTree* tree);
     Bool_t  CreateMeson(GTreeMeson*& mesonTree, const TString& _Name);
@@ -74,10 +77,13 @@ protected:
 
 
             void    CloseFiles();
+            Bool_t  FindValidEvents();
+            Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
     virtual void    ProcessEvent() = 0;
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
             Bool_t  TraverseScalerEntries(const UInt_t min, const UInt_t max);
+            Bool_t  TraverseValidEvents();
             Bool_t  Write();
             Bool_t  Write(const TNamed* object);
 
@@ -86,7 +92,9 @@ public:
     virtual ~GTreeManager();
 
     static  Int_t   CheckInput(const char* input_filename);
-    Bool_t  Start(const char* input_filename, const char* output_filename);
+            UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
+            UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
+            Bool_t  Start(const char* input_filename, const char* output_filename);
 
     friend  class GTree;
     friend  class GTreeMeson;

@@ -37,7 +37,7 @@ Bool_t GParticleReconstruction::Start()
 {
     file_out->cd();
 
-    accepted = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
+    TH1I*   accepted = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
     accepted->SetBinContent(1, rawEvent->GetNEntries());
     accepted->SetBinContent(2, rawEvent->GetNEntries());
     accepted->SetBinContent(3, 0);
@@ -48,9 +48,10 @@ Bool_t GParticleReconstruction::Start()
             return kFALSE;
     }
     else
-        TraverseEntries(0, rawEvent->GetNEntries()+1);
+        TraverseEntries(0, rawEvent->GetNEntries());
 
     if(!Write(accepted)) return kFALSE;
+    if(accepted)    delete accepted;
     return kTRUE;
 }
 
