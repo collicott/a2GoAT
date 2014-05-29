@@ -2,6 +2,10 @@
 #include "GSort.h"
 
 
+using namespace std;
+
+
+
 GSort::GSort() :
      SP_n(0),
      SP_type(0),
@@ -31,10 +35,10 @@ GSort::~GSort()
 {
 }
 
-Bool_t	GSort::PostInit()
+Bool_t	GSort::Init()
 {
 	// Cut on CB Energy Sum (raw data cut)
-	config = ReadConfig("SortRaw-CBEnergySum");
+    string config = ReadConfig("SortRaw-CBEnergySum");
 	if (strcmp(config.c_str(), "nokey") == 0) SortRawCBESum = 0;
 	else if( sscanf(config.c_str(),"%lf %s\n",&SR_CBESum, string_in1) == 2 )
 	{
@@ -191,39 +195,39 @@ Bool_t GSort::SortAnalyseEvent()
 		switch (SR_nPart_total_condition) 	// Total number of particles
 		{
 			case 0:
-				if (GetNParticles() < SR_nPart_total) 	return kFALSE;
+                if (rawEvent->GetNParticles() < SR_nPart_total) 	return kFALSE;
 				break;
 			case 1:
-				if (GetNParticles() > SR_nPart_total) 	return kFALSE;
+                if (rawEvent->GetNParticles() > SR_nPart_total) 	return kFALSE;
 				break;
 			case 2:
-				if (GetNParticles() != SR_nPart_total) 	return kFALSE;
+                if (rawEvent->GetNParticles() != SR_nPart_total) 	return kFALSE;
 				break;
 		}
 		
 		switch (SR_nPart_CB_condition) 	// Number of particles in CB
 		{
 			case 0:
-				if (GetNCB() < SR_nPart_CB) 			return kFALSE;
+                if (rawEvent->GetNCB() < SR_nPart_CB) 			return kFALSE;
 				break;
 			case 1:
-				if (GetNCB() > SR_nPart_CB) 			return kFALSE;
+                if (rawEvent->GetNCB() > SR_nPart_CB) 			return kFALSE;
 				break;
 			case 2:
-				if (GetNCB() != SR_nPart_CB) 			return kFALSE;
+                if (rawEvent->GetNCB() != SR_nPart_CB) 			return kFALSE;
 				break;
 		}
 		
 		switch (SR_nPart_TAPS_condition) 	// Number of particles in TAPS
 		{
 			case 0:
-				if (GetNTAPS() < SR_nPart_TAPS) 		return kFALSE;
+                if (rawEvent->GetNTAPS() < SR_nPart_TAPS) 		return kFALSE;
 				break;
 			case 1:
-				if (GetNTAPS() > SR_nPart_TAPS) 		return kFALSE;
+                if (rawEvent->GetNTAPS() > SR_nPart_TAPS) 		return kFALSE;
 				break;
 			case 2:
-				if (GetNTAPS() != SR_nPart_TAPS)		return kFALSE;
+                if (rawEvent->GetNTAPS() != SR_nPart_TAPS)		return kFALSE;
 				break;
 		}
 	}
@@ -233,13 +237,13 @@ Bool_t GSort::SortAnalyseEvent()
 		switch (SR_CBESum_condition) 	// Crystal Ball Energy Sum
 		{
 			case 0:
-				if (GetESum() < SR_CBESum) 				return kFALSE;
+                if (trigger->GetESum() < SR_CBESum) 				return kFALSE;
 				break;
 			case 1:
-				if (GetESum() > SR_CBESum) 				return kFALSE;
+                if (trigger->GetESum() > SR_CBESum) 				return kFALSE;
 				break;
 			case 2:
-				if (GetESum() != SR_CBESum)				return kFALSE;
+                if (trigger->GetESum() != SR_CBESum)				return kFALSE;
 				break;
 		}
 	}	
@@ -250,7 +254,7 @@ Bool_t GSort::SortAnalyseEvent()
 
 Bool_t GSort::SortFillEvent()
 {
-	if(SortNParticles == 1)
+    /*if(SortNParticles == 1)
 	{
 		switch (S_nParticles_condition) // Number of reconstructed part
 		{
@@ -286,7 +290,7 @@ Bool_t GSort::SortFillEvent()
 			
 	// No cut failed, so return TRUE
 	return kTRUE;
-
+*/
 }
 
 
@@ -294,7 +298,7 @@ Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin
 {
 	Int_t NumberFound = 0;
 	
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+/*	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
 		if (GoATTree_GetPDG(i) == PDG)
 		{
@@ -318,7 +322,7 @@ Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin
 			if (NumberFound != Num)	return kFALSE;
 			break;
 	}
-			
+            */
 	return kTRUE;
 }
 
@@ -326,7 +330,7 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 {
 	Int_t NumberFound = 0;
 	
-	switch (charge)
+    /*switch (charge)
 	{
 		case 0: // Neutral sort
 			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
@@ -369,7 +373,7 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 			if (NumberFound != Num)	return kFALSE;
 			break;
 	}
-			
+            */
 	return kTRUE;
 }
 

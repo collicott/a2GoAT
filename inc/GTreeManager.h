@@ -6,19 +6,20 @@
 #include <TH1.h>
 #include <TDatabasePDG.h>
 
+#include "GConfigFile.h"
 #include "GTreeRawEvent.h"
 #include "GTreeTagger.h"
 #include "GTreeScaler.h"
 #include "GTreeEvent.h"
 #include "GTreeParticle.h"
 #include "GTreeMeson.h"
-#include "GTreeTrigger.h" //Added by James
+#include "GTreeTrigger.h"
 #include "GTreeFit.h"
 #include "GTreeDetectorHits.h"
 
 
 
-class  GTreeManager
+class  GTreeManager : public GConfigFile
 {
 public:
     enum    TreeFlag
@@ -95,7 +96,7 @@ public:
             UInt_t  GetEventNumber() const {return currentEvent;}
             UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
             UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
-            Bool_t  Start(const char* input_filename, const char* output_filename);
+            Bool_t  StartFile(const char* input_filename, const char* output_filename);
 
     friend  class GTree;
     friend  class GTreeMeson;

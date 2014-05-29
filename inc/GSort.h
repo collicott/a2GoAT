@@ -3,7 +3,6 @@
 #define __GSort_h__
 
 #include "GParticleReconstruction.h"
-#include "GoATTreeManager.h"
 
 #define DEFAULT_PI0_IM_WIDTH 20.0
 #define DEFAULT_ETA_IM_WIDTH 44.0
@@ -47,15 +46,14 @@ private:
 	std::string string_out1, string_out2, string_out3;
 			    
 protected:
+    Bool_t	Init();
 	    
 public:
 
 	GSort();
-	~GSort();
+    virtual ~GSort();
 
-	virtual void	Analyse() {;}
-	virtual void	Reconstruct();
-	Bool_t	PostInit();
+    virtual void	Reconstruct();
 
     Bool_t	SortAnalyseEvent();
     Bool_t	SortFillEvent();

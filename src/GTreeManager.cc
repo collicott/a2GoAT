@@ -222,7 +222,7 @@ Int_t   GTreeManager::CheckInput(const char* input_filename)
 
 
 
-Bool_t  GTreeManager::Start(const char* input_filename, const char* output_filename)
+Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
     if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);

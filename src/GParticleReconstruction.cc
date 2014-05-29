@@ -55,11 +55,13 @@ Bool_t GParticleReconstruction::Start()
     return kTRUE;
 }
 
-Bool_t	GParticleReconstruction::PostInit()
+Bool_t	GParticleReconstruction::Init()
 {		
+    GDataChecks::Init();
+
 	cout << endl << "Particle Reconstruction turned ON" << endl;
 
-	config = ReadConfig("Do-Charged-Particle-Reconstruction");	
+    std::string config = ReadConfig("Do-Charged-Particle-Reconstruction");
 	if (strcmp(config.c_str(), "nokey") == 0) ReconstructChargedParticles = 0;	
 	else if(sscanf( config.c_str(), "%d %lf %lf\n", 
 		 &ReconstructChargedParticles,&charged_theta_min,&charged_theta_max) == 3)

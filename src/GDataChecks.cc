@@ -18,9 +18,9 @@ GDataChecks::~GDataChecks()
 {
 }
 
-Bool_t	GDataChecks::PostInit()
+Bool_t	GDataChecks::Init()
 {
-    config = ReadConfig("CheckCBStability");
+    std::string config = ReadConfig("CheckCBStability");
     if( sscanf(config.c_str(),"%d %lf\n", (int*)(&CheckCBStability), &CBStabilityCutoff) == 2 )
 	{	
 		if(CheckCBStability)

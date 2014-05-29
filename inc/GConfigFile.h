@@ -9,21 +9,21 @@
 class  GConfigFile
 {
 private:
-    Char_t*		global_config_file;
+    std::string	global_config_file;
 
 protected:
-    std::string config;
 
 public:
     GConfigFile();
+    GConfigFile(const Char_t* config_file);
     virtual ~GConfigFile();
 
-    void 	SetConfigFile(Char_t* config_file)	{global_config_file = config_file;}
-    Char_t* GetConfigFile()	{return global_config_file;}
+            void    SetConfigFile(const Char_t* config_file)	{global_config_file;}
+    const   Char_t* GetConfigFile() const                       {}
 
-    std::string	ReadConfig(const std::string& key_in, Int_t instance, Char_t* configname);
-    std::string	ReadConfig(const std::string& key_in, Int_t instance)                       {return ReadConfig(key_in, instance, global_config_file);}
-    std::string	ReadConfig(const std::string& key_in)                                       {return ReadConfig(key_in, 0, global_config_file);}
+    std::string	ReadConfig(const std::string& key_in, const Int_t instance, const Char_t* configname);
+    std::string	ReadConfig(const std::string& key_in, const Int_t instance)                             {return ReadConfig(key_in, instance, global_config_file.c_str());}
+    std::string	ReadConfig(const std::string& key_in)                                                   {return ReadConfig(key_in, 0, global_config_file.c_str());}
 };
 
 #endif

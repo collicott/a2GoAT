@@ -9,8 +9,10 @@
 #include <TH3.h>
 
 #include "GTreeManager.h"
+#include "GConfigFile.h"
 
-class	PPhysics : virtual public GTreeManager
+
+class	PPhysics : virtual public GTreeManager, virtual public GConfigFile
 {
 private:
 

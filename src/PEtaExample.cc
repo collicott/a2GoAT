@@ -1,5 +1,8 @@
 #ifndef __CINT__
 
+#include <TSystemFile.h>
+#include <TSystemDirectory.h>
+
 #include "PEtaExample.h"
 
 using namespace std;
@@ -287,67 +290,52 @@ Bool_t	PEtaExample::Init(const char* configfile)
 	return kTRUE;
 }
 
-Bool_t	PEtaExample::File(const char* file_in, const char* file_out)
+
+Bool_t	PEtaExample::Start()
 {
-	OpenGoATFile(file_in, "READ");
-	OpenHistFile(file_out);
-	DefineHistograms();
+    DefineHistograms();
 
-	cout << "Setting up tree files:" << endl;
-	if(!OpenTreeParticles(GoATFile)) 	return kFALSE;
-	if(!OpenTreeTagger(GoATFile))		return kFALSE;
-	cout << endl;
+    //if(!FindValidGoATEvents())  return kFALSE;
 
-	cout << "Detmining valid for analysis:" << endl;	
-	if(!FindValidGoATEvents())			return kFALSE;	
-	cout << endl;
-		
-	Analyse();	
-	return kTRUE;
-}
+    TraverseEntries(0, eta->GetNEntries());
+    cout << "Total Etas found: " << N_eta << endl << endl;
 
-void	PEtaExample::Analyse()
-{
-
-	TraverseGoATEntries();
-	cout << "Total Etas found: " << N_eta << endl << endl;
-	
-	PostReconstruction();		
-	WriteHistograms();
-	CloseHistFile();	
-
+    PostReconstruction();
+    WriteHistograms();
+    CloseHistFile();
+    return kTRUE;
 }
 
 void	PEtaExample::Reconstruct()
 {
-	if(GetGoATEvent() == 0) N_eta = 0;
-	else if(GetGoATEvent() % 100000 == 0) cout << "Event: "<< GetGoATEvent() << " Total Etas found: " << N_eta << endl;
+    if(GetEventNumber() == 0) N_eta = 0;
+    else if(GetEventNumber() % 100000 == 0) cout << "Event: "<< GetEventNumber() << " Total Etas found: " << N_eta << endl;
 
 	FillTimePDG(pdgDB->GetParticle("eta")->PdgCode(),time_eta);
 	MissingMassPDG(pdgDB->GetParticle("eta")->PdgCode(), MM_prompt_eta, MM_random_eta);
 
 	// Some neutral decays
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    //for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if(GoATTree_GetPDG(i) == pdgDB->GetParticle("eta")->PdgCode()) 	N_eta++;
+        /*if(GoATTree_GetPDG(i) == pdgDB->GetParticle("eta")->PdgCode()) 	N_eta++;
 		
 		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore
-		if(GoATTree_GetCharge(i) != 0) 	continue; // charged -> ignore
+        if(GoATTree_GetCharge(i) != 0) 	continue; // charged -> ignore*/
 
 		FillMissingMass(i, MM_prompt_eta_n, MM_random_eta_n);
-		if (GoATTree_GetNDaughters(i) == 2) FillMissingMass(i, MM_prompt_eta_n_2g, MM_random_eta_n_2g);
-		if (GoATTree_GetNDaughters(i) == 6) FillMissingMass(i, MM_prompt_eta_n_6g, MM_random_eta_n_6g);
-		
+        //if (GoATTree_GetNDaughters(i) == 2) FillMissingMass(i, MM_prompt_eta_n_2g, MM_random_eta_n_2g);
+        //if (GoATTree_GetNDaughters(i) == 6) FillMissingMass(i, MM_prompt_eta_n_6g, MM_random_eta_n_6g);
+
 	}
 
 	// Some charged decays
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    //for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
-		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore	
-		if(GoATTree_GetCharge(i) == 0) 	continue; // neutral -> ignore
+        //if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore
+        //if(GoATTree_GetCharge(i) == 0) 	continue; // neutral -> ignore
 
 		FillMissingMass(i, MM_prompt_eta_c, MM_random_eta_c);
-		if (GoATTree_GetNDaughters(i) == 4) FillMissingMass(i, MM_prompt_eta_c_4d, MM_random_eta_c_4d);
+        //if (GoATTree_GetNDaughters(i) == 4) FillMissingMass(i, MM_prompt_eta_c_4d, MM_random_eta_c_4d);
 
 	}	
 

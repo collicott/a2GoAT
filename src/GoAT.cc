@@ -6,6 +6,11 @@
 #include "TSystemFile.h"
 #include <time.h>
 
+
+using namespace std;
+
+
+
 /**
  * @brief the main routine
  * @param argc number of parameters
@@ -207,7 +212,7 @@ int main(int argc, char *argv[])
 			}
 			
 			cout << "Output file '" << file_out << "' chosen" << endl << endl;
-			if(!goat->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
+            if(!goat->StartFile(file_in.c_str(), file_out.c_str())) cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
 			files_found++;
 		}
 	}
@@ -254,9 +259,8 @@ int main(int argc, char *argv[])
 					files_found++;
 
 					// Run GoAT
-					if(!goat->File(file_in.c_str(), file_out.c_str())) 
+                    if(!goat->StartFile(file_in.c_str(), file_out.c_str()))
 						cout << "ERROR: GoAT failed on file " << file_in << "!" << endl;
-
 				}
 			}
 		}
@@ -293,13 +297,13 @@ Bool_t	GoAT::Init(const char* configfile)
 	cout << endl << "Initialising GoAT analysis..." << endl << endl;
 	SetConfigFile((Char_t*)configfile);
 		
-	config = ReadConfig("Period-Macro");
+    std::string config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
 
 	cout << "==========================================================" << endl;	
 	cout << "Setting up Data Checks:" << endl;	
 	cout << "==========================================================" << endl;	
-	if(!GDataChecks::PostInit()) 
+    if(!GDataChecks::Init())
 	{
 		cout << "GDataChecks Init failed!" << endl; 
 		return kFALSE;
@@ -308,7 +312,7 @@ Bool_t	GoAT::Init(const char* configfile)
 	cout << "==========================================================" << endl;	
 	cout << "Setting up sorting criteria:" << endl;	
 	cout << "==========================================================" << endl;	
-	if(!GSort::PostInit()) 
+    if(!GSort::Init())
 	{
 		cout << "GSort Init failed!" << endl; 
 		return kFALSE;
@@ -327,7 +331,7 @@ Bool_t	GoAT::Init(const char* configfile)
 
 	if(UseParticleReconstruction) 
 	{
-		if(!GParticleReconstruction::PostInit())
+        if(!GParticleReconstruction::Init())
 		{
 			cout << "GParticleReconstruction Init failed!" << endl; 
 			return kFALSE;
@@ -341,66 +345,30 @@ Bool_t	GoAT::Init(const char* configfile)
 	return kTRUE;
 }
 
-Bool_t	GoAT::File(const char* file_in, const char* file_out)
+void	GoAT::ProcessEvent()
 {
-	cout << "Opening files: " << endl;
-	if(!OpenAcquFile(file_in))	return kFALSE;	
-	if(!OpenGoATFile(file_out))	return kFALSE;	
-	
-	cout << endl;
+    if(UsePeriodMacro == 1)
+    {
+        if(GetEventNumber() % period == 0)
+            cout << "Event: " << GetEventNumber() << "  Events Accepted: " << nEvents_written << endl;
+    }
 
-	cout << "Setting up tree files:" << endl;
-	if(!OpenTreeRawEvent())			return kFALSE;
-	if(!OpenTreeTagger())			return kFALSE;
-	if(!OpenTreeTrigger())			return kFALSE;
-	if(!OpenTreeDetectorHits())		return kFALSE;	
-	OpenTreeScaler();
-	cout << endl;
-	
+    if(SortAnalyseEvent())
+    {
+        //if(UseParticleReconstruction) GParticleReconstruction::Reconstruct();
+
+        //if(SortFillEvent()) {FillEvent(); nEvents_written++;}
+    }
+}
+
+Bool_t	GoAT::Start()
+{
 	cout << "Checking scaler reads for valid events:" << endl;	
-	if(!FindValidAcquEvents())		return kFALSE;
+    if(!TraverseValidEvents())		return kFALSE;
 	cout << endl;
 
-	cout << "Opening particle reconstruction tree: ";	
-	InitTreeParticles();
-	cout << endl;
-	
-	Analyse();
-	
-	// Close the Acqu file before leaving.
-	CloseAcquFile();
-	
-	return kTRUE;
-}
 
-void	GoAT::Analyse()
-{
-	cout << "Analysing ..." << endl;
-	TraverseAcquEntries();	
-	
-	CloseOutputFile();
-	cout << endl << "File complete. " << "Total Events Accepted: " << nEvents_written << endl;
-	cout << "==========================================================" << endl << endl;	
-}
 
-void	GoAT::Reconstruct()
-{
-	if(UsePeriodMacro == 1)
-	{
-		if(GetActualEvent() % period == 0) 
-			cout << "Event: " << GetActualEvent() << "  Events Accepted: " << nEvents_written << endl;
-	}
-
-	if(SortAnalyseEvent())
-	{
-		if(UseParticleReconstruction) GParticleReconstruction::Reconstruct();
-		
-		if(SortFillEvent()) {FillEvent(); nEvents_written++;}
-	}
-}
-
-Bool_t 	GoAT::Write()
-{
 	return kTRUE;
 }
 

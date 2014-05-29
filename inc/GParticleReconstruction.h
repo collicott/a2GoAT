@@ -86,10 +86,11 @@ private:
     Double_t    E_Sum;
     Int_t       multiplicity;
 
-    Bool_t      Trigger();
+    TCutG*	OpenCutFile(Char_t* filename, Char_t* cutname);
+    Bool_t  Trigger();
 
 protected:
-
+            Bool_t	Init();
     virtual void    ProcessEvent();
     virtual Bool_t  Start();
 
@@ -107,16 +108,13 @@ public:
     void    SetCBType(const ReconstructionType type, const ReconstructionType_dEoverE_Type dEoverE_type = ReconstructionType_dEoverE_Cut_None)    {CB_type = type; CB_dEoverE_type = dEoverE_type;}
     void    SetTAPSType(const ReconstructionType type, const ReconstructionType_dEoverE_Type dEoverE_type = ReconstructionType_dEoverE_Cut_None)  {TAPS_type = type; TAPS_dEoverE_type = dEoverE_type;}
 
-    Bool_t	PostInit();
     //void	CheckNeutrality();
     //void 	PhotonReconstruction();
     void 	ChargedReconstructionCB(const Int_t index);
     void 	ChargedReconstructionTAPS(const Int_t index);
     void 	MesonReconstruction();
-    void	AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[]);
-    void	AddParticle(Int_t pdg_code, Int_t i)                    {Int_t index_list[1]; index_list[0] = i; AddParticle(pdg_code, 1, index_list);}
-
-    TCutG*	OpenCutFile(Char_t* filename, Char_t* cutname);
+    //void	AddParticle(Int_t pdg_code, Int_t nindex, Int_t index_list[]);
+    //void	AddParticle(Int_t pdg_code, Int_t i)                    {Int_t index_list[1]; index_list[0] = i; AddParticle(pdg_code, 1, index_list);}
 };
 
 #endif

@@ -6,9 +6,9 @@
 #include <cstdio>
 #include <string> 
 
+
 #include "GSort.h"
-#include "GParticleReconstruction.h"
-#include "GoATTreeManager.h"
+
 
 class	GoAT : public GSort
 {
@@ -20,18 +20,14 @@ private:
 
 	Int_t 	nEvents_written;
 protected:
+    virtual void 	ProcessEvent();
+    virtual Bool_t	Start();
 
 
 public:
     GoAT();
     virtual ~GoAT();
 
-    virtual Bool_t	Init(const char* configfile);	
-    virtual Bool_t	File(const char* file_in, const char* file_out);
-    
-    virtual void 	Analyse();
-    virtual void	Reconstruct();
-    virtual Bool_t	Write();
-    
+    Bool_t	Init(const char* configfile);
 };
 #endif

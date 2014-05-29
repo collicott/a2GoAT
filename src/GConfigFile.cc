@@ -9,6 +9,11 @@ GConfigFile::GConfigFile()  :
 
 }
 
+GConfigFile::GConfigFile(const Char_t* config_file)  :
+    global_config_file(0)
+{
+    SetConfigFile(config_file);
+}
 
 GConfigFile::~GConfigFile()
 {
@@ -17,7 +22,7 @@ GConfigFile::~GConfigFile()
 
 
 
-std::string GConfigFile::ReadConfig(const std::string& key_in, Int_t instance, Char_t* configname)
+std::string GConfigFile::ReadConfig(const std::string& key_in, const Int_t instance, const Char_t* configname)
 {
     Int_t string_instance = 0;
     std::string key = key_in;

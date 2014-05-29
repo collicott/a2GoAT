@@ -44,7 +44,8 @@ private:
 
 		
 protected:
-
+    virtual void    ProcessEvent()  {}
+    virtual Bool_t  Start();
 
 public:
     PEtaExample();
