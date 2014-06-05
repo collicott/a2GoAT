@@ -54,7 +54,7 @@ void  GFitEtap6g::ProcessEvent()
 		fit.AddPosKFParticle(pho[i]);
 	}
 	Int_t	sub[6];
-	sub[0]	= pi0->GetDaughterIndex(0, 0);
+    /*sub[0]	= pi0->GetDaughterIndex(0, 0);
 	sub[1]	= pi0->GetDaughterIndex(0, 1);
 	fit.AddSubInvMassConstraint(2, sub, MASS_PI0);
 	sub[0]	= pi0->GetDaughterIndex(1, 0);

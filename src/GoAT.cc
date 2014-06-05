@@ -292,9 +292,6 @@ GoAT::~GoAT()
 
 Bool_t	GoAT::Init()
 {
-	// Initialise shared pdg database
-	pdgDB = TDatabasePDG::Instance();	
-	
     cout << endl << "Initialising GoAT analysis..." << endl << endl;
 		
     std::string config = ReadConfig("Period-Macro");
@@ -355,7 +352,9 @@ void	GoAT::ProcessEvent()
 
     if(SortAnalyseEvent())
     {
-        //if(UseParticleReconstruction) GParticleReconstruction::Reconstruct();
+        if(UseParticleReconstruction) //GParticleReconstruction::ProcessEvent();
+            this->GParticleReconstruction::ProcessEvent();
+
 
         //if(SortFillEvent()) {FillEvent(); nEvents_written++;}
     }
