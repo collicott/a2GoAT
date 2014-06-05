@@ -33,7 +33,7 @@ std::string GConfigFile::ReadConfig(const std::string& key_in, const Int_t insta
     ifstream configfile;
 
     configfile.open(configname);
-    std::cout << "config: " << configname << std::endl;
+    //std::cout << "config: " << configname << std::endl;
 
     if (configfile.is_open())
     {

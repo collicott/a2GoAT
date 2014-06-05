@@ -24,7 +24,7 @@ public:
 
     std::string	ReadConfig(const std::string& key_in, const Int_t instance, const Char_t* configname);
     std::string	ReadConfig(const std::string& key_in, const Int_t instance)                             {return ReadConfig(key_in, instance, global_config_file.c_str());}
-    std::string	ReadConfig(const std::string& key_in)                                                   {std::cout << "il: " << global_config_file << std::endl; return ReadConfig(key_in, 0, global_config_file.c_str());}
+    std::string	ReadConfig(const std::string& key_in)                                                   {/*std::cout << "il: " << global_config_file << std::endl;*/ return ReadConfig(key_in, 0, global_config_file.c_str());}
 };
 
 #endif
