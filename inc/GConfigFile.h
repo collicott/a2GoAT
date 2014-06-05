@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <iostream>
 #include <TROOT.h>
 
 
@@ -18,12 +19,12 @@ public:
     GConfigFile(const Char_t* config_file);
     virtual ~GConfigFile();
 
-            void    SetConfigFile(const Char_t* config_file)	{global_config_file;}
+            void    SetConfigFile(const Char_t* config_file)	{global_config_file = config_file;}
     const   Char_t* GetConfigFile() const                       {}
 
     std::string	ReadConfig(const std::string& key_in, const Int_t instance, const Char_t* configname);
     std::string	ReadConfig(const std::string& key_in, const Int_t instance)                             {return ReadConfig(key_in, instance, global_config_file.c_str());}
-    std::string	ReadConfig(const std::string& key_in)                                                   {return ReadConfig(key_in, 0, global_config_file.c_str());}
+    std::string	ReadConfig(const std::string& key_in)                                                   {std::cout << "il: " << global_config_file << std::endl; return ReadConfig(key_in, 0, global_config_file.c_str());}
 };
 
 #endif

@@ -1,18 +1,17 @@
 #include "GConfigFile.h"
 #include <algorithm>
 #include <fstream>
+#include <iostream>
 
 
 GConfigFile::GConfigFile()  :
-    global_config_file(0)
+    global_config_file()
 {
-
 }
 
 GConfigFile::GConfigFile(const Char_t* config_file)  :
-    global_config_file(0)
+    global_config_file(config_file)
 {
-    SetConfigFile(config_file);
 }
 
 GConfigFile::~GConfigFile()
@@ -34,6 +33,7 @@ std::string GConfigFile::ReadConfig(const std::string& key_in, const Int_t insta
     ifstream configfile;
 
     configfile.open(configname);
+    std::cout << "config: " << configname << std::endl;
 
     if (configfile.is_open())
     {
