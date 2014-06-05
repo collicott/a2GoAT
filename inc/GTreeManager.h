@@ -100,7 +100,7 @@ public:
             Bool_t  StartFile(const char* input_filename, const char* output_filename);
 
     friend  class GTree;
-    friend  class GTreeMeson;
+    //friend  class GTreeMeson;
 };
 
 #endif
