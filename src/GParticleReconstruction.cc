@@ -59,6 +59,144 @@ Bool_t	GParticleReconstruction::Init()
 
 	cout << endl << "Particle Reconstruction turned ON" << endl;
 
+    //CB
+
+    CB_type         = ReconstructionType_AllPhotons;
+    CB_dEoverE_type = dEoverE_Cut_None;
+
+    std::string config = ReadConfig("Cut-dE-E-CB-Proton");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+        {
+            CB_type         = ReconstructionType_dEoverE;
+            CB_dEoverE_type = dEoverE_Type(dEoverE_Cut_Proton | CB_dEoverE_type);
+            if(!(Cut_CB_proton = OpenCutFile(cutfilename,cutname)))
+            {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            cout << "ERROR: Cut-dE-E-CB-Proton set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    config = ReadConfig("Cut-dE-E-CB-Pion");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+        {
+            CB_type         = ReconstructionType_dEoverE;
+            CB_dEoverE_type = dEoverE_Type(dEoverE_Cut_PiPlus | CB_dEoverE_type);
+            if(!(Cut_CB_proton = OpenCutFile(cutfilename,cutname)))
+            {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    config = ReadConfig("Cut-dE-E-CB-Electron");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+        {
+            CB_type         = ReconstructionType_dEoverE;
+            CB_dEoverE_type = dEoverE_Type(dEoverE_Cut_Electron | CB_dEoverE_type);
+            if(!(Cut_CB_proton = OpenCutFile(cutfilename,cutname)))
+            {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    //TAPS
+
+    TAPS_type         = ReconstructionType_AllPhotons;
+    TAPS_dEoverE_type = dEoverE_Cut_None;
+
+    config = ReadConfig("TAPS-ALL-PROTONS");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        TAPS_type   = ReconstructionType_AllProtons;
+        return kTRUE;
+    }
+
+    config = ReadConfig("Cut-dE-E-CB-Proton");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+        {
+            TAPS_type         = ReconstructionType_dEoverE;
+            TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_Proton | CB_dEoverE_type);
+            if(!(Cut_TAPS_proton = OpenCutFile(cutfilename,cutname)))
+            {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            cout << "ERROR: Cut-dE-E-CB-Proton set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    config = ReadConfig("Cut-dE-E-CB-Pion");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+        {
+            TAPS_type         = ReconstructionType_dEoverE;
+            TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_PiPlus | CB_dEoverE_type);
+            if(!(Cut_TAPS_proton = OpenCutFile(cutfilename,cutname)))
+            {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    config = ReadConfig("Cut-dE-E-CB-Electron");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
+        {
+            TAPS_type           = ReconstructionType_dEoverE;
+            TAPS_dEoverE_type     = dEoverE_Type(dEoverE_Cut_Electron | CB_dEoverE_type);
+            if(!(Cut_TAPS_proton  = OpenCutFile(cutfilename,cutname)))
+            {
+                cerr << "Failed to load cut! Terminating..." << endl;
+                exit(1);
+            }
+        }
+        else
+        {
+            cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+/*
     std::string config = ReadConfig("Do-Charged-Particle-Reconstruction");
 	if (strcmp(config.c_str(), "nokey") == 0) ReconstructChargedParticles = 0;	
 	else if(sscanf( config.c_str(), "%d %lf %lf\n", 
@@ -192,12 +330,12 @@ Bool_t	GParticleReconstruction::Init()
 		
 	}
 	else cout << "Charged particle reconstruction is NOT active." << endl;
-	cout << endl;
+    cout << endl;*/
 	
 	return kTRUE;
 }
 
-void	GParticleReconstruction::ProcessEvent()
+void	GParticleReconstruction::ProcessEventWithoutFilling()
 {
     if(DoTrigger)
     {
@@ -223,7 +361,7 @@ void	GParticleReconstruction::ProcessEvent()
                 case ReconstructionType_AllPhotons:
                     photons->AddParticle(rawEvent->GetVector(i), i);
                     break;
-                case ReconstructionType_dEoverE_Cut:
+                case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
                     Charge[i] = 0;
                     if ((rawEvent->GetWC0_E(i) > 0.0) || (rawEvent->GetWC1_E(i) > 0.0)) 	Charge[i] = 1;
@@ -254,7 +392,7 @@ void	GParticleReconstruction::ProcessEvent()
                 case ReconstructionType_AllProtons:
                     protons->AddParticle(rawEvent->GetVector(i), i);
                     break;
-                case ReconstructionType_dEoverE_Cut:
+                case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
                     Charge[i] = 0;
                     if ((rawEvent->Get_dE(i) > 0.0) && (rawEvent->Get_dE(i) < 1000.0)) 		Charge[i] = 1;
@@ -287,44 +425,34 @@ void	GParticleReconstruction::ProcessEvent()
             //photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), i);
     }
 
+}
+
+
+void	GParticleReconstruction::ProcessEvent()
+{
+    ProcessEventWithoutFilling();
+
     photons->Fill();
     electrons->Fill();
     chargedPi->Fill();
     protons->Fill();
     neutrons->Fill();
-
-
-
-    /*if(ReconstructMesons == 1)	 			MesonReconstruction();
-
-    for (int i = 0; i < rawEvent->GetNParticles(); i++)
-	{
-		// Finally add particles which were temporarily identified
-		if (Identified[i] == pdgDB->GetParticle("pi+")->PdgCode())
-				 AddParticle(pdgDB->GetParticle("pi+")->PdgCode(),i);
-		if (Identified[i] == pdgDB->GetParticle("e-")->PdgCode())
-				 AddParticle(pdgDB->GetParticle("e-")->PdgCode(),i);
-		if (Identified[i] == pdgDB->GetParticle("gamma")->PdgCode())
-				 AddParticle(pdgDB->GetParticle("gamma")->PdgCode(),i);
-		if (Identified[i] == pdg_rootino) 	AddParticle(pdg_rootino,i);
-
-    }*/
 }
 
 void	GParticleReconstruction::ChargedReconstructionCB(const Int_t index)
 {
-    if(CB_dEoverE_type & ReconstructionType_dEoverE_Cut_Proton)
+    if(CB_dEoverE_type & dEoverE_Cut_Proton)
     {
         if(Cut_CB_proton->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
             Identified[index] = pdgDB->GetParticle("proton")->PdgCode();
     }
-    if(CB_dEoverE_type & ReconstructionType_dEoverE_Cut_PiPlus)
+    if(CB_dEoverE_type & dEoverE_Cut_PiPlus)
     {
         if(Cut_CB_pion->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
             Identified[index] = pdgDB->GetParticle("pi+")->PdgCode();
     }
 
-    if(CB_dEoverE_type & ReconstructionType_dEoverE_Cut_Electron)
+    if(CB_dEoverE_type & dEoverE_Cut_Electron)
     {
         if(Cut_CB_electron->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
             Identified[index] = pdgDB->GetParticle("e-")->PdgCode();
@@ -333,18 +461,18 @@ void	GParticleReconstruction::ChargedReconstructionCB(const Int_t index)
 
 void	GParticleReconstruction::ChargedReconstructionTAPS(const Int_t index)
 {
-    if(TAPS_dEoverE_type & ReconstructionType_dEoverE_Cut_Proton)
+    if(TAPS_dEoverE_type & dEoverE_Cut_Proton)
     {
         if(Cut_TAPS_proton->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
             Identified[index] = pdgDB->GetParticle("proton")->PdgCode();
     }
-    if(TAPS_dEoverE_type & ReconstructionType_dEoverE_Cut_PiPlus)
+    if(TAPS_dEoverE_type & dEoverE_Cut_PiPlus)
     {
         if(Cut_TAPS_pion->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
             Identified[index] = pdgDB->GetParticle("pi+")->PdgCode();
     }
 
-    if(TAPS_dEoverE_type & ReconstructionType_dEoverE_Cut_Electron)
+    if(TAPS_dEoverE_type & dEoverE_Cut_Electron)
     {
         if(Cut_TAPS_electron->IsInside(rawEvent->GetEk(index),rawEvent->Get_dE(index)))
             Identified[index] = pdgDB->GetParticle("e-")->PdgCode();

@@ -15,21 +15,21 @@ public:
     {
         ReconstructionType_AllPhotons,
         ReconstructionType_AllProtons,
-        ReconstructionType_dEoverE_Cut
+        ReconstructionType_dEoverE
     };
-    enum ReconstructionType_dEoverE_Type
+    enum dEoverE_Type
     {
-        ReconstructionType_dEoverE_Cut_None     = 0,
-        ReconstructionType_dEoverE_Cut_Proton   = 1,
-        ReconstructionType_dEoverE_Cut_PiPlus   = 2,
-        ReconstructionType_dEoverE_Cut_Electron = 4
+        dEoverE_Cut_None     = 0,
+        dEoverE_Cut_Proton   = 1,
+        dEoverE_Cut_PiPlus   = 2,
+        dEoverE_Cut_Electron = 4
     };
 
 private:
     ReconstructionType                 CB_type;
-    ReconstructionType_dEoverE_Type    CB_dEoverE_type;
+    dEoverE_Type    CB_dEoverE_type;
     ReconstructionType                 TAPS_type;
-    ReconstructionType_dEoverE_Type    TAPS_dEoverE_type;
+    dEoverE_Type    TAPS_dEoverE_type;
 
     char 		cutfilename[256];
     char 		cutname[256];
@@ -43,7 +43,6 @@ private:
     TCutG* 		Cut_TAPS_pion;
     TCutG*		Cut_TAPS_electron;
 
-    Int_t 		ReconstructChargedParticles;
     Double_t	charged_theta_min;
     Double_t	charged_theta_max;
 
@@ -75,6 +74,7 @@ private:
 
 protected:
             Bool_t	Init();
+            void    ProcessEventWithoutFilling();
     virtual void    ProcessEvent();
     virtual Bool_t  Start();
 
@@ -89,8 +89,8 @@ public:
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}
     void    SetScalerCorrection(const Bool_t value)                 {DoScalerCorrection = value;}
     void    SetTrigger(const Double_t esum, const Int_t mult)       {DoTrigger = kTRUE; E_Sum = esum; multiplicity = mult;}
-    void    SetCBType(const ReconstructionType type, const ReconstructionType_dEoverE_Type dEoverE_type = ReconstructionType_dEoverE_Cut_None)    {CB_type = type; CB_dEoverE_type = dEoverE_type;}
-    void    SetTAPSType(const ReconstructionType type, const ReconstructionType_dEoverE_Type dEoverE_type = ReconstructionType_dEoverE_Cut_None)  {TAPS_type = type; TAPS_dEoverE_type = dEoverE_type;}
+    void    SetCBType(const ReconstructionType type, const dEoverE_Type dEoverE_type = dEoverE_Cut_None)    {CB_type = type; CB_dEoverE_type = dEoverE_type;}
+    void    SetTAPSType(const ReconstructionType type, const dEoverE_Type dEoverE_type = dEoverE_Cut_None)  {TAPS_type = type; TAPS_dEoverE_type = dEoverE_type;}
 
     //void	CheckNeutrality();
     //void 	PhotonReconstruction();
