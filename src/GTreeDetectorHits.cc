@@ -3,7 +3,7 @@
 
 
 GTreeDetectorHits::GTreeDetectorHits(GTreeManager *Manager)    :
-    GTree(Manager, TString("EventFlags")),
+    GTree(Manager, TString("treeDetectorHits")),
     nNaI_Hits(0),
     nPID_Hits(0),
     nWC_Hits(0),
