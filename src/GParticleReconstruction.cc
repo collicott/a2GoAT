@@ -359,7 +359,7 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
             switch(CB_type)
             {
                 case ReconstructionType_AllPhotons:
-                    photons->AddParticle(rawEvent->GetVector(i), i);
+                    photons->AddParticle(rawEvent->GetVector(i), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
                     break;
                 case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
@@ -387,10 +387,10 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
             switch(TAPS_type)
             {
                 case ReconstructionType_AllPhotons:
-                    photons->AddParticle(rawEvent->GetVector(i), i);
+                    photons->AddParticle(rawEvent->GetVector(i), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
                     break;
                 case ReconstructionType_AllProtons:
-                    protons->AddParticle(rawEvent->GetVector(i), i);
+                    protons->AddParticle(rawEvent->GetVector(i), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
                     break;
                 case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
@@ -414,13 +414,13 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
     {
         // Finally add particles which were temporarily identified
         if (Identified[i] == pdgDB->GetParticle("proton")->PdgCode())
-            protons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("proton")->Mass()*1000), i);
+            protons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("proton")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
         else if (Identified[i] == pdgDB->GetParticle("pi+")->PdgCode())
-            chargedPi->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("pi+")->Mass()*1000), i);
+            chargedPi->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("pi+")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
         else if (Identified[i] == pdgDB->GetParticle("e-")->PdgCode())
-            electrons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("e-")->Mass()*1000), i);
+            electrons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("e-")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
         else if (Identified[i] == pdgDB->GetParticle("gamma")->PdgCode())
-            photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), i);
+            photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
         //else if (Identified[i] == pdg_rootino) 	AddParticle(pdg_rootino,i);
             //photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), i);
     }
