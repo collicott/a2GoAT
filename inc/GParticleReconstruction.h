@@ -91,6 +91,7 @@ public:
     void    SetTrigger(const Double_t esum, const Int_t mult)       {DoTrigger = kTRUE; E_Sum = esum; multiplicity = mult;}
     void    SetCBType(const ReconstructionType type, const dEoverE_Type dEoverE_type = dEoverE_Cut_None)    {CB_type = type; CB_dEoverE_type = dEoverE_type;}
     void    SetTAPSType(const ReconstructionType type, const dEoverE_Type dEoverE_type = dEoverE_Cut_None)  {TAPS_type = type; TAPS_dEoverE_type = dEoverE_type;}
+    void    SetThetaRangeChargedParticles(const Double_t min, const Double_t max)  {charged_theta_min = min; charged_theta_max = max;}
 
     //void	CheckNeutrality();
     //void 	PhotonReconstruction();

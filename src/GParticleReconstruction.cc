@@ -9,7 +9,9 @@ GParticleReconstruction::GParticleReconstruction() :
     DoScalerCorrection(kFALSE),
     DoTrigger(kFALSE),
     E_Sum(50),
-    multiplicity(1)
+    multiplicity(1),
+    charged_theta_min(0),
+    charged_theta_max(180)
 {
     CBTimeCut[0] = -1000000.0;
     CBTimeCut[1] = 1000000.0;
@@ -91,7 +93,7 @@ Bool_t	GParticleReconstruction::Init()
         {
             CB_type         = ReconstructionType_dEoverE;
             CB_dEoverE_type = dEoverE_Type(dEoverE_Cut_PiPlus | CB_dEoverE_type);
-            if(!(Cut_CB_proton = OpenCutFile(cutfilename,cutname)))
+            if(!(Cut_CB_pion = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
                 exit(1);
@@ -111,7 +113,7 @@ Bool_t	GParticleReconstruction::Init()
         {
             CB_type         = ReconstructionType_dEoverE;
             CB_dEoverE_type = dEoverE_Type(dEoverE_Cut_Electron | CB_dEoverE_type);
-            if(!(Cut_CB_proton = OpenCutFile(cutfilename,cutname)))
+            if(!(Cut_CB_electron = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
                 exit(1);
@@ -163,7 +165,7 @@ Bool_t	GParticleReconstruction::Init()
         {
             TAPS_type         = ReconstructionType_dEoverE;
             TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_PiPlus | CB_dEoverE_type);
-            if(!(Cut_TAPS_proton = OpenCutFile(cutfilename,cutname)))
+            if(!(Cut_TAPS_pion = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
                 exit(1);
@@ -183,7 +185,7 @@ Bool_t	GParticleReconstruction::Init()
         {
             TAPS_type           = ReconstructionType_dEoverE;
             TAPS_dEoverE_type     = dEoverE_Type(dEoverE_Cut_Electron | CB_dEoverE_type);
-            if(!(Cut_TAPS_proton  = OpenCutFile(cutfilename,cutname)))
+            if(!(Cut_TAPS_electron  = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
                 exit(1);
@@ -354,7 +356,7 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
         if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
         {
             if(rawEvent->GetTime(i)<CBTimeCut[0] || rawEvent->GetTime(i)>CBTimeCut[1])
-                return;
+                break;
 
             switch(CB_type)
             {
@@ -382,7 +384,7 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
         if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
         {
             if(rawEvent->GetTime(i)<TAPSTimeCut[0] || rawEvent->GetTime(i)>TAPSTimeCut[1])
-                return;
+                break;
 
             switch(TAPS_type)
             {
