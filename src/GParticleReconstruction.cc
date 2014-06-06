@@ -138,13 +138,13 @@ Bool_t	GParticleReconstruction::Init()
         return kTRUE;
     }
 
-    config = ReadConfig("Cut-dE-E-CB-Proton");
+    config = ReadConfig("Cut-dE-E-TAPS-Proton");
     if (strcmp(config.c_str(), "nokey") != 0)
     {
         if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
         {
             TAPS_type         = ReconstructionType_dEoverE;
-            TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_Proton | CB_dEoverE_type);
+            TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_Proton | TAPS_dEoverE_type);
             if(!(Cut_TAPS_proton = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
@@ -153,18 +153,18 @@ Bool_t	GParticleReconstruction::Init()
         }
         else
         {
-            cout << "ERROR: Cut-dE-E-CB-Proton set improperly" << endl;
+            cout << "ERROR: Cut-dE-E-TAPS-Proton set improperly" << endl;
             return kFALSE;
         }
     }
 
-    config = ReadConfig("Cut-dE-E-CB-Pion");
+    config = ReadConfig("Cut-dE-E-TAPS-Pion");
     if (strcmp(config.c_str(), "nokey") != 0)
     {
         if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
         {
             TAPS_type         = ReconstructionType_dEoverE;
-            TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_PiPlus | CB_dEoverE_type);
+            TAPS_dEoverE_type = dEoverE_Type(dEoverE_Cut_PiPlus | TAPS_dEoverE_type);
             if(!(Cut_TAPS_pion = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
@@ -173,18 +173,18 @@ Bool_t	GParticleReconstruction::Init()
         }
         else
         {
-            cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+            cout << "ERROR: Cut-dE-E-TAPS-Pion set improperly" << endl;
             return kFALSE;
         }
     }
 
-    config = ReadConfig("Cut-dE-E-CB-Electron");
+    config = ReadConfig("Cut-dE-E-TAPS-Electron");
     if (strcmp(config.c_str(), "nokey") != 0)
     {
         if(sscanf( config.c_str(), "%s %s\n", cutfilename,cutname) == 2)
         {
             TAPS_type           = ReconstructionType_dEoverE;
-            TAPS_dEoverE_type     = dEoverE_Type(dEoverE_Cut_Electron | CB_dEoverE_type);
+            TAPS_dEoverE_type     = dEoverE_Type(dEoverE_Cut_Electron | TAPS_dEoverE_type);
             if(!(Cut_TAPS_electron  = OpenCutFile(cutfilename,cutname)))
             {
                 cerr << "Failed to load cut! Terminating..." << endl;
@@ -193,7 +193,7 @@ Bool_t	GParticleReconstruction::Init()
         }
         else
         {
-            cout << "ERROR: Cut-dE-E-CB-Pion set improperly" << endl;
+            cout << "ERROR: Cut-dE-E-TAPS-Pion set improperly" << endl;
             return kFALSE;
         }
     }
