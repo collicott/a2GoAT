@@ -2,7 +2,10 @@
 #define __GTreeMeson_h__
 
 
-#include "GTreeParticle.h"
+#include <TClonesArray.h>
+#include <TLorentzVector.h>
+
+#include "GTree.h"
 
 
 #define MASS_PI0    134.9766
@@ -11,11 +14,12 @@
 #define MASS_PROTON 938.272046
 
 
-#define GTreeMeson_MaxEntries  64
+#define GTreeMeson_MaxEntries       32
+#define GTreeMeson_MaxSubEntries     6
 
 using namespace std;
 
-class  GTreeMeson   : public GTreeParticle
+class  GTreeMeson   : public GTree
 {
 public:
     enum GTreeMeson_DecayType
@@ -24,22 +28,18 @@ public:
         Decay_2Gamma,                               //2 subParticles
         Decay_2ChargedPi,                           //2 subParticles
         Decay_2ChargedPi1Gamma,                     //3 subParticles
-        Decay_3Pi0,                                 //6 subParticles
-        Decay_2Pi01ChargedPi,                       //5 subParticles
         Decay_1Pi02ChargedPi,                       //4 subParticles
+        Decay_2Pi01ChargedPi,                       //5 subParticles
         Decay_1Pi02ChargedPi1Gamma,                 //5 subParticles
-        Decay_2Pi01Eta,                             //6 subParticles
+        Decay_3Pi0,                                 //6 subParticles
+        Decay_2Pi01Eta                              //6 subParticles
     };
 
 private:
-    //UChar_t             nDaughters[GTreeMeson_MaxEntries];
+    UInt_t              nParticles;
+    TClonesArray*       particles;
     UChar_t             decayType[GTreeMeson_MaxEntries];
-    TClonesArray*       subParticles0;
-    TClonesArray*       subParticles1;
-    TClonesArray*       subParticles2;
-    TClonesArray*       subParticles3;
-    TClonesArray*       subParticles4;
-    TClonesArray*       subParticles5;
+    TClonesArray*       subParticles[GTreeMeson_MaxSubEntries];
 
 protected:
     virtual void    SetBranchAdresses();
@@ -54,7 +54,14 @@ public:
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3);
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4);
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4, const TLorentzVector& _SubParticle5);
-    virtual void            Clear()     {nParticles = 0; particles->Clear(); subParticles0->Clear(); subParticles1->Clear(); subParticles2->Clear(); subParticles3->Clear(); subParticles4->Clear(); subParticles5->Clear();}
+    virtual void            Clear()     {nParticles = 0; particles->Clear(); subParticles[0]->Clear(); subParticles[1]->Clear(); subParticles[2]->Clear(); subParticles[3]->Clear(); subParticles[4]->Clear(); subParticles[5]->Clear();}
+            UInt_t          GetNParticles()                const	{return nParticles;}
+            TLorentzVector& Meson(const Int_t particle)             {return *((TLorentzVector*)particles->At(particle));}
+    const   TLorentzVector& Meson(const Int_t particle) const       {return *((TLorentzVector*)particles->At(particle));}
+            TLorentzVector& Particle(const Int_t particle)          {return Meson(particle);}
+    const   TLorentzVector& Particle(const Int_t particle) const    {return Meson(particle);}
+            TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)subParticles[meson]->At(subParticle));}
+    const   TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle) const {return *((TLorentzVector*)subParticles[meson]->At(subParticle));}
 };
 
 
@@ -68,8 +75,8 @@ void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzV
 
     decayType[nParticles]   = type;
     new((*particles)[nParticles]) TLorentzVector(_SubParticle0 + _SubParticle1);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle0);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle1);
+    new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
+    new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
     nParticles++;
 }
 void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2)
@@ -82,9 +89,9 @@ void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzV
 
     decayType[nParticles]   = type;
     new((*particles)[nParticles]) TLorentzVector(_SubParticle0 + _SubParticle1 + _SubParticle2);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle0);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle1);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle2);
+    new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
+    new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
+    new((*subParticles[2])[nParticles]) TLorentzVector(_SubParticle2);
     nParticles++;
 }
 void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3)
@@ -97,10 +104,10 @@ void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzV
 
     decayType[nParticles]   = type;
     new((*particles)[nParticles]) TLorentzVector(_SubParticle0 + _SubParticle1 + _SubParticle2 + _SubParticle3);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle0);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle1);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle2);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle3);
+    new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
+    new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
+    new((*subParticles[2])[nParticles]) TLorentzVector(_SubParticle2);
+    new((*subParticles[3])[nParticles]) TLorentzVector(_SubParticle3);
     nParticles++;
 }
 void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4)
@@ -113,11 +120,11 @@ void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzV
 
     decayType[nParticles]   = type;
     new((*particles)[nParticles]) TLorentzVector(_SubParticle0 + _SubParticle1 + _SubParticle2 + _SubParticle3 + _SubParticle4);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle0);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle1);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle2);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle3);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle4);
+    new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
+    new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
+    new((*subParticles[2])[nParticles]) TLorentzVector(_SubParticle2);
+    new((*subParticles[3])[nParticles]) TLorentzVector(_SubParticle3);
+    new((*subParticles[4])[nParticles]) TLorentzVector(_SubParticle4);
     nParticles++;
 }
 void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4, const TLorentzVector& _SubParticle5)
@@ -130,68 +137,13 @@ void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzV
 
     decayType[nParticles]   = type;
     new((*particles)[nParticles]) TLorentzVector(_SubParticle0 + _SubParticle1 + _SubParticle2 + _SubParticle3 + _SubParticle4 + _SubParticle5);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle0);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle1);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle2);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle3);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle4);
-    new((*subParticles0)[nParticles]) TLorentzVector(_SubParticle5);
+    new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
+    new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
+    new((*subParticles[2])[nParticles]) TLorentzVector(_SubParticle2);
+    new((*subParticles[3])[nParticles]) TLorentzVector(_SubParticle3);
+    new((*subParticles[4])[nParticles]) TLorentzVector(_SubParticle4);
+    new((*subParticles[5])[nParticles]) TLorentzVector(_SubParticle5);
     nParticles++;
 }
-
-/*
-void    GTreeMeson::AddParticle(const TLorentzVector& vec, const Int_t PDGDaughter0, const Int_t IndexDaughter0, const Int_t PDGDaughter1, const Int_t IndexDaughter1, const Int_t PDGDaughter2, const Int_t IndexDaughter2)
-{
-    daughters[nParticles]   = 3;
-    new((*particles)[nParticles]) TLorentzVector(vec);
-    daughter0PDG[nParticles]      = PDGDaughter0;
-    daughter0Indices[nParticles]  = IndexDaughter0;
-    daughter1PDG[nParticles]      = PDGDaughter1;
-    daughter1Indices[nParticles]  = IndexDaughter1;
-    daughter2PDG[nParticles]      = PDGDaughter2;
-    daughter2Indices[nParticles]  = IndexDaughter2;
-    nParticles++;
-}
-void    GTreeMeson::AddParticle(const TLorentzVector& vec, const Int_t nDaughters , const Int_t* PDGList, const Int_t* Indices)
-{
-    daughters[nParticles]   = nDaughters;
-    new((*particles)[nParticles]) TLorentzVector(vec);
-    switch(nDaughters)
-    {
-    case 0:
-        daughter0PDG[nParticles]      = 0;
-        daughter0Indices[nParticles]  = 0;
-        daughter1PDG[nParticles]      = 0;
-        daughter1Indices[nParticles]  = 0;
-        daughter2PDG[nParticles]      = 0;
-        daughter2Indices[nParticles]  = 0;
-        break;
-    case 1:
-        daughter0PDG[nParticles]      = PDGList[0];
-        daughter0Indices[nParticles]  = Indices[0];
-        daughter1PDG[nParticles]      = 0;
-        daughter1Indices[nParticles]  = 0;
-        daughter2PDG[nParticles]      = 0;
-        daughter2Indices[nParticles]  = 0;
-        break;
-    case 2:
-        daughter0PDG[nParticles]      = PDGList[0];
-        daughter0Indices[nParticles]  = Indices[0];
-        daughter1PDG[nParticles]      = PDGList[1];
-        daughter1Indices[nParticles]  = Indices[1];
-        daughter2PDG[nParticles]      = 0;
-        daughter2Indices[nParticles]  = 0;
-        break;
-    case 3:
-        daughter0PDG[nParticles]      = PDGList[0];
-        daughter0Indices[nParticles]  = Indices[0];
-        daughter1PDG[nParticles]      = PDGList[1];
-        daughter1Indices[nParticles]  = Indices[1];
-        daughter2PDG[nParticles]      = PDGList[2];
-        daughter2Indices[nParticles]  = Indices[2];
-        break;
-    }
-    nParticles++;
-}*/
 
 #endif
