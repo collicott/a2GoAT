@@ -47,7 +47,8 @@ public:
             Double_t        GetWC1_E(const Int_t index)         const	{return WC1_E[index];}
             TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
     const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
-            void            RemoveParticle(const Int_t index)   {particles->RemoveAt(index); particles->Compress();}   
+            void            RemoveParticle(const Int_t index)   {particles->RemoveAt(index); particles->Compress();}
+    virtual Bool_t          Write();
 
 
     friend  class GTreeMeson;

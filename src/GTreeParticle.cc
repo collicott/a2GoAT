@@ -1,6 +1,7 @@
 #include "GTreeParticle.h"
 #include "GTreeManager.h"
 
+#include <TCanvas.h>
 
 using namespace std;
 
@@ -48,4 +49,25 @@ void    GTreeParticle::SetBranches()
     tree_out->Branch("d_E",&d_E, "d_E[nParticles]/D");
     tree_out->Branch("WC0_E",&WC0_E, "WC0_E[nParticles]/D");
     tree_out->Branch("WC1_E",&WC1_E, "WC1_E[nParticles]/D");
+}
+
+
+Bool_t	GTreeParticle::Write()
+{
+    if(!manager->file_out)          return kFALSE;
+    if(!tree_out)                   return kFALSE;
+    if(!IsOpenForOutput())          return kFALSE;
+
+    TCanvas c1("c1");
+    c1.cd();
+    tree_out->Draw("nParticles>>htmp(1,0,1)");
+    TH1F* hist = (TH1F*)gDirectory->Get("htmp");
+    //std::cout << hist->GetEntries()<< "\t" << hist->GetBinContent(hist->GetBin(1)) << std::endl;
+    if(hist->GetEntries() == hist->GetBinContent(hist->GetBin(1)))
+    {
+        std::cout << "tree" << GetName() << " has not been written to disk. All Events have 0 " << GetName() << "." << std::endl;
+        return kTRUE;
+    }
+
+    return GTree::Write();
 }

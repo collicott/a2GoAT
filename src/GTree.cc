@@ -102,12 +102,13 @@ void    GTree::Print(const Bool_t All) const
 
 Bool_t	GTree::Write()
 {
-    if(!manager->file_out)   return kFALSE;
-    if(!tree_out)   return kFALSE;
-    if(!IsOpenForOutput())   return kFALSE;
+    if(!manager->file_out)          return kFALSE;
+    if(!tree_out)                   return kFALSE;
+    if(!IsOpenForOutput())          return kFALSE;
+
     manager->file_out->cd();
     tree_out->Write();
-    std::cout << "tree " << name << " has been written to disk." << std::endl;
+    std::cout << "tree" << name << " has been written to disk." << std::endl;
     return kTRUE;
 }
 

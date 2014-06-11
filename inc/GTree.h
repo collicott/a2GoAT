@@ -56,7 +56,7 @@ public:
             Bool_t      OpenForInput();
             Bool_t      OpenForOutput();
     virtual void        Print(const Bool_t All = kFALSE) const;
-            Bool_t      Write();
+    virtual Bool_t      Write();
 
 };
 
