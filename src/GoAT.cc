@@ -353,9 +353,10 @@ void	GoAT::ProcessEvent()
     if(SortAnalyseEvent())
     {
         if(UseParticleReconstruction) //GParticleReconstruction::ProcessEvent();
-            this->GParticleReconstruction::ProcessEvent();
-
-
+        {
+            GParticleReconstruction::ProcessEvent();
+            nEvents_written++;
+        }
         //if(SortFillEvent()) {FillEvent(); nEvents_written++;}
     }
 }
