@@ -363,7 +363,6 @@ void	GoAT::ProcessEvent()
 
 Bool_t	GoAT::Start()
 {
-	cout << "Checking scaler reads for valid events:" << endl;	
     if(!TraverseValidEvents())		return kFALSE;
 	cout << endl;
 

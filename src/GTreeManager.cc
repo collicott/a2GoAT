@@ -321,6 +321,7 @@ Bool_t  GTreeManager::Write(const TNamed* object)
 
 Bool_t  GTreeManager::FindValidEvents()
 {
+    cout << "Checking scaler reads for valid events:" << endl;
     if(!scalers->IsOpenForInput())
     {
         if(!scalers->OpenForInput())
@@ -340,7 +341,7 @@ Bool_t  GTreeManager::FindValidEvents()
     EventAtFirstScalerRead   = scalers->GetEventNumber();
     scalers->GetEntry(scalers->GetNEntries()-1);
     EventAtLastScalerRead       = scalers->GetEventNumber();
-
+    cout << "\tValid events from " << (EventAtFirstScalerRead+1) << " to " << EventAtLastScalerRead << "."<< endl;
     file_out->cd();
     TH1I*   accepted    = new TH1I("CountScalerValid", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
     accepted->SetBinContent(1, rawEvent->GetNEntries());
