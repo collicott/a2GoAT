@@ -20,13 +20,13 @@ GSort::GSort() :
 {
 	SP_n 		= new Int_t[50];
 	SP_type		= new Int_t[50];
-	SP_condition= new Int_t[50];
+    SP_condition= new Sort_Condition[50];
 	SP_theta_min= new Double_t[50];
 	SP_theta_max= new Double_t[50];
 
 	SN_n 		= new Int_t[50];
 	SN_type		= new Int_t[50];
-	SN_condition= new Int_t[50];
+    SN_condition= new Sort_Condition[50];
 	SN_theta_min= new Double_t[50];
 	SN_theta_max= new Double_t[50];
 }
@@ -132,9 +132,10 @@ Bool_t	GSort::Init()
 	n_cut_SN = 0;
 	do
 	{
-		char pdg[256], cond[256];	
-		Int_t num, condition;
-		Double_t th_min, th_max;
+        char            pdg[256], cond[256];
+        Int_t           num;
+        Sort_Condition  condition;
+        Double_t        th_min, th_max;
 
 		config = ReadConfig("Sort-Particle",instance);
 		if( sscanf( config.c_str(), "%s %d %s %lf %lf\n", pdg, &num, cond, &th_min, &th_max) == 5 )
@@ -194,41 +195,47 @@ Bool_t GSort::SortAnalyseEvent()
 	{
 		switch (SR_nPart_total_condition) 	// Total number of particles
 		{
-			case 0:
+            case Condion_EqualOrMore:
                 if (rawEvent->GetNParticles() < SR_nPart_total) 	return kFALSE;
 				break;
-			case 1:
+            case Condion_EqualOrLess:
                 if (rawEvent->GetNParticles() > SR_nPart_total) 	return kFALSE;
 				break;
-			case 2:
+            case Condion_Equal:
                 if (rawEvent->GetNParticles() != SR_nPart_total) 	return kFALSE;
 				break;
+            case Condion_NONE:
+                return kFALSE;
 		}
 		
 		switch (SR_nPart_CB_condition) 	// Number of particles in CB
 		{
-			case 0:
+            case Condion_EqualOrMore:
                 if (rawEvent->GetNCB() < SR_nPart_CB) 			return kFALSE;
 				break;
-			case 1:
+            case Condion_EqualOrLess:
                 if (rawEvent->GetNCB() > SR_nPart_CB) 			return kFALSE;
 				break;
-			case 2:
+            case Condion_Equal:
                 if (rawEvent->GetNCB() != SR_nPart_CB) 			return kFALSE;
 				break;
+            case Condion_NONE:
+                return kFALSE;
 		}
 		
 		switch (SR_nPart_TAPS_condition) 	// Number of particles in TAPS
 		{
-			case 0:
+            case Condion_EqualOrMore:
                 if (rawEvent->GetNTAPS() < SR_nPart_TAPS) 		return kFALSE;
 				break;
-			case 1:
+            case Condion_EqualOrLess:
                 if (rawEvent->GetNTAPS() > SR_nPart_TAPS) 		return kFALSE;
 				break;
-			case 2:
+            case Condion_Equal:
                 if (rawEvent->GetNTAPS() != SR_nPart_TAPS)		return kFALSE;
 				break;
+            case Condion_NONE:
+                return kFALSE;
 		}
 	}
 	
@@ -236,37 +243,41 @@ Bool_t GSort::SortAnalyseEvent()
 	{
 		switch (SR_CBESum_condition) 	// Crystal Ball Energy Sum
 		{
-			case 0:
+            case Condion_EqualOrMore:
                 if (trigger->GetESum() < SR_CBESum) 				return kFALSE;
 				break;
-			case 1:
+            case Condion_EqualOrLess:
                 if (trigger->GetESum() > SR_CBESum) 				return kFALSE;
 				break;
-			case 2:
+            case Condion_Equal:
                 if (trigger->GetESum() != SR_CBESum)				return kFALSE;
 				break;
+            case Condion_NONE:
+                return kFALSE;
 		}
 	}	
 	
 	return kTRUE;
 }
 
-
+/*
 Bool_t GSort::SortFillEvent()
 {
-    /*if(SortNParticles == 1)
+    if(SortNParticles == 1)
 	{
 		switch (S_nParticles_condition) // Number of reconstructed part
 		{
-			case 0:
+            case Condion_EqualOrMore:
 				if(GoATTree_GetNParticles() < S_nParticles)  return kFALSE;
 				break;
-			case 1:
+            case Condion_EqualOrLess:
 				if(GoATTree_GetNParticles() > S_nParticles)  return kFALSE;
 				break;
-			case 2:
+            case Condion_Equal:
 				if(GoATTree_GetNParticles() != S_nParticles) return kFALSE;
 				break;
+            case Condion_NONE:
+                return kFALSE;
 		}
 	}
 
@@ -288,9 +299,9 @@ Bool_t GSort::SortFillEvent()
 							SP_theta_max[i]))		return kFALSE;
 	}		
 			
-	// No cut failed, so return TRUE
+    // No cut failed, so return TRUE
 	return kTRUE;
-*/
+
 }
 
 
@@ -298,7 +309,7 @@ Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin
 {
 	Int_t NumberFound = 0;
 	
-/*	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
 	{
 		if (GoATTree_GetPDG(i) == PDG)
 		{
@@ -312,17 +323,19 @@ Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin
 
 	switch (cond)
 	{
-		case 0:
+        case Condion_EqualOrMore:
 			if (NumberFound < Num) 	return kFALSE;
 			break;
-		case 1:
+        case Condion_EqualOrLess:
 			if (NumberFound > Num) 	return kFALSE;
 			break;
-		case 2:
+        case Condion_Equal:
 			if (NumberFound != Num)	return kFALSE;
 			break;
+        case Condion_NONE:
+            return kFALSE;
 	}
-            */
+
 	return kTRUE;
 }
 
@@ -330,7 +343,7 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 {
 	Int_t NumberFound = 0;
 	
-    /*switch (charge)
+    switch (charge)
 	{
 		case 0: // Neutral sort
 			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
@@ -363,41 +376,43 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 
 	switch (cond)
 	{
-		case 0:
+        case Condion_EqualOrMore:
 			if (NumberFound < Num) 	return kFALSE;
 			break;
-		case 1:
+        case Condion_EqualOrLess:
 			if (NumberFound > Num) 	return kFALSE;
 			break;
-		case 2:
+        case Condion_Equal:
 			if (NumberFound != Num)	return kFALSE;
 			break;
+        case Condion_NONE:
+            return kFALSE;
 	}
-            */
-	return kTRUE;
-}
 
-void GSort::CheckConfigCondition(char string[], int *condition, std::string& string_out)
+	return kTRUE;
+}*/
+
+void GSort::CheckConfigCondition(char string[], Sort_Condition *condition, std::string& string_out)
 {
 		if(strcmp(string,"+") == 0) 
 		{
 			string_out = "or more ";
-			(*condition) = 0;
+            (*condition) = Condion_EqualOrMore;
 		}
 		else if (strcmp(string,"-") == 0) 
 		{
 			string_out = "or less ";
-			(*condition) = 1;
+            (*condition) = Condion_EqualOrLess;
 		}		
 		else if (strcmp(string,"=") == 0) 
 		{
 			string_out = "exactly ";
-			(*condition) = 2;
+            (*condition) = Condion_Equal;
 		}
 		else
 		{
 			string_out = "error ";
-			(*condition) = -1;
+            (*condition) = Condion_NONE;
 		}
 
 }
