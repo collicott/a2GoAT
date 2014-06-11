@@ -83,7 +83,7 @@ public:
     virtual ~GParticleReconstruction();
 
     static  Int_t   InputNeeded()   {return GTreeManager::TreeFlag_RawEvent;}
-    static  Int_t   OutputNeeded()  {}
+    static  Int_t   OutputNeeded()  {return GTreeManager::TreeFlag_Photons | GTreeManager::TreeFlag_Electrons | GTreeManager::TreeFlag_ChargedPi | GTreeManager::TreeFlag_Protons | GTreeManager::TreeFlag_Neutrons;}
 
     void    SetCBTimeCut(const Double_t min, const Double_t max)    {CBTimeCut[0]=min; CBTimeCut[1]=max;}
     void    SetTAPSTimeCut(const Double_t min, const Double_t max)  {TAPSTimeCut[0]=min; TAPSTimeCut[1]=max;}

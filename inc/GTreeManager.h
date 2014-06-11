@@ -80,7 +80,6 @@ protected:
             void    CloseFiles();
             Bool_t  FindValidEvents();
             Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
-    virtual Bool_t  Init() {}
     virtual void    ProcessEvent() = 0;
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
@@ -97,6 +96,7 @@ public:
             UInt_t  GetEventNumber() const {return currentEvent;}
             UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
             UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
+    virtual Bool_t  Init() {}
             Bool_t  StartFile(const char* input_filename, const char* output_filename);
 
     friend  class GTree;

@@ -19,6 +19,7 @@ private:
 	Int_t 	period;
 	
 	Bool_t 	UseParticleReconstruction;
+    Bool_t 	UseMesonReconstruction;
 
 	Int_t 	nEvents_written;
 protected:

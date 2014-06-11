@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 	else serverfile = configfile;
 
 	// Create instance of GoAT class
-	GoAT* goat = new GoAT;
+    GTreeManager* goat = new GParticleReconstruction;//GoAT;
 
 	// If unset, scan server or config file for file settings
 	if(dir_in.length() == 0)
@@ -353,11 +353,19 @@ void	GoAT::ProcessEvent()
 
     if(SortAnalyseEvent())
     {
-        if(UseParticleReconstruction) //GParticleReconstruction::ProcessEvent();
+        if(UseParticleReconstruction)
         {
-            GParticleReconstruction::ProcessEvent();
-            nEvents_written++;
+            if(UseMesonReconstruction)
+            {
+                GParticleReconstruction::ProcessEventWithoutFilling();
+                GMesonReconstruction::ProcessEvent();
+            }
+            else
+                GParticleReconstruction::ProcessEvent();
         }
+        else if(UseMesonReconstruction)
+            GMesonReconstruction::ProcessEvent();
+        nEvents_written++;
         //if(SortFillEvent()) {FillEvent(); nEvents_written++;}
     }
 }
@@ -365,11 +373,8 @@ void	GoAT::ProcessEvent()
 Bool_t	GoAT::Start()
 {
     if(!TraverseValidEvents())		return kFALSE;
-	cout << endl;
 
-
-
-	return kTRUE;
+    return kTRUE;
 }
 
 #endif

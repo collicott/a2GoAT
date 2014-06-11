@@ -35,23 +35,8 @@ Bool_t GParticleReconstruction::Trigger()
 
 Bool_t GParticleReconstruction::Start()
 {
-    file_out->cd();
+    if(!TraverseValidEvents())		return kFALSE;
 
-    TH1I*   accepted = new TH1I("Accepted", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
-    accepted->SetBinContent(1, rawEvent->GetNEntries());
-    accepted->SetBinContent(2, rawEvent->GetNEntries());
-    accepted->SetBinContent(3, 0);
-
-    if(DoScalerCorrection)
-    {
-        if(!TraverseValidEvents())
-            return kFALSE;
-    }
-    else
-        TraverseEntries(0, rawEvent->GetNEntries());
-
-    if(!Write(accepted)) return kFALSE;
-    if(accepted)    delete accepted;
     return kTRUE;
 }
 
