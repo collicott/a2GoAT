@@ -118,10 +118,7 @@ Bool_t	GParticleReconstruction::Init()
 
     config = ReadConfig("TAPS-ALL-PROTONS");
     if (strcmp(config.c_str(), "nokey") != 0)
-    {
         TAPS_type   = ReconstructionType_AllProtons;
-        return kTRUE;
-    }
 
     config = ReadConfig("Cut-dE-E-TAPS-Proton");
     if (strcmp(config.c_str(), "nokey") != 0)
@@ -179,6 +176,26 @@ Bool_t	GParticleReconstruction::Init()
         else
         {
             cout << "ERROR: Cut-dE-E-TAPS-Pion set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    config = ReadConfig("CB-PARTICLE-TIME-CUT");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%lf %lf\n", &CBTimeCut[0], &CBTimeCut[1]) != 2)
+        {
+            cout << "ERROR: CB-PARTICLE-TIME-CUT set improperly" << endl;
+            return kFALSE;
+        }
+    }
+
+    config = ReadConfig("TAPS-PARTICLE-TIME-CUT");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        if(sscanf( config.c_str(), "%lf %lf\n", &TAPSTimeCut[0], &TAPSTimeCut[1]) != 2)
+        {
+            cout << "ERROR: CB-PARTICLE-TIME-CUT set improperly" << endl;
             return kFALSE;
         }
     }
@@ -322,12 +339,12 @@ Bool_t	GParticleReconstruction::Init()
 	return kTRUE;
 }
 
-void	GParticleReconstruction::ProcessEventWithoutFilling()
+Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
 {
     if(DoTrigger)
     {
         if(!Trigger())
-            return;
+            return kFALSE;
     }
 
     photons->Clear();
@@ -341,7 +358,7 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
         if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_CB)
         {
             if(rawEvent->GetTime(i)<CBTimeCut[0] || rawEvent->GetTime(i)>CBTimeCut[1])
-                break;
+                return kFALSE;
 
             switch(CB_type)
             {
@@ -369,7 +386,7 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
         if(rawEvent->GetApparatus(i) == GTreeRawEvent::APPARATUS_TAPS)
         {
             if(rawEvent->GetTime(i)<TAPSTimeCut[0] || rawEvent->GetTime(i)>TAPSTimeCut[1])
-                break;
+                return kFALSE;
 
             switch(TAPS_type)
             {
@@ -412,12 +429,14 @@ void	GParticleReconstruction::ProcessEventWithoutFilling()
             //photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), i);
     }
 
+    return kTRUE;
 }
 
 
 void	GParticleReconstruction::ProcessEvent()
 {
-    ProcessEventWithoutFilling();
+    if(!ProcessEventWithoutFilling())
+        return;
 
     photons->Fill();
     electrons->Fill();

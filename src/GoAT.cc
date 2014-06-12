@@ -320,7 +320,7 @@ Bool_t	GoAT::Init()
 	cout << "Setting up analysis classes:" << endl;	
 	cout << "==========================================================" << endl;	
     config = ReadConfig("DO-PARTICLE-RECONSTRUCTION");
-
+    if (strcmp(config.c_str(), "nokey") != 0)
     {
         int buffer=0;
         sscanf( config.c_str(), "%d\n", &buffer);

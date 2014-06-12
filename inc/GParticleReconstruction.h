@@ -74,7 +74,7 @@ private:
 
 protected:
             Bool_t	Init();
-            void    ProcessEventWithoutFilling();
+            Bool_t  ProcessEventWithoutFilling();
     virtual void    ProcessEvent();
     virtual Bool_t  Start();
 
