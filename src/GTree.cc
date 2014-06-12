@@ -88,6 +88,18 @@ Bool_t  GTree::OpenForOutput()
     return kFALSE;
 }
 
+
+void    GTree::Close()
+{
+    status = FLAG_CLOSED;
+    if(tree_in)
+        cout << tree_in->GetName() << endl;
+    if(tree_in)
+        delete tree_in;
+    if(tree_out)
+        delete tree_out;
+}
+
 void    GTree::Print(const Bool_t All) const
 {
     std::cout << "GTree: Name->" << name.Data() << " Status->";

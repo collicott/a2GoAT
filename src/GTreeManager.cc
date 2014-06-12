@@ -224,6 +224,22 @@ Int_t   GTreeManager::CheckInput(const char* input_filename)
 
 Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
+    pi0->Close();
+    eta->Close();
+    etap->Close();
+    photons->Close();
+    electrons->Close();
+    chargedPi->Close();
+    protons->Close();
+    neutrons->Close();
+    detectorHits->Close();
+    eventFlags->Close();
+    rawEvent->Close();
+    tagger->Close();
+    trigger->Close();
+    scalers->Close();
+    fitData->Close();
+
     if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);
     if(!file_in)
