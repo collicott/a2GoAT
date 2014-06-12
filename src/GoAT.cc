@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 	else serverfile = configfile;
 
 	// Create instance of GoAT class
-    GTreeManager* goat = new GParticleReconstruction;//GoAT;
+    GTreeManager* goat = new GoAT;
 
 	// If unset, scan server or config file for file settings
 	if(dir_in.length() == 0)
