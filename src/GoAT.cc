@@ -334,7 +334,25 @@ Bool_t	GoAT::Init()
 			cout << "GParticleReconstruction Init failed!" << endl; 
 			return kFALSE;
 		}
-	}			
+    }
+
+    config = ReadConfig("DO-MESON-RECONSTRUCTION");
+    if (strcmp(config.c_str(), "nokey") != 0)
+    {
+        int buffer=0;
+        sscanf( config.c_str(), "%d\n", &buffer);
+        UseMesonReconstruction = (buffer==1);
+    }
+
+    if(UseMesonReconstruction)
+    {
+        if(!GMesonReconstruction::Init())
+        {
+            cout << "GParticleReconstruction Init failed!" << endl;
+            return kFALSE;
+        }
+    }
+
 	cout << endl;	
 
 	cout << "Initialisation complete." << endl;

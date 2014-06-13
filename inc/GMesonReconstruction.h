@@ -16,11 +16,8 @@ private:
     Double_t	width_eta;
     Double_t	width_etap;
 
-    Int_t		ReconstructMesons;
     Double_t	meson_theta_min;
     Double_t	meson_theta_max;
-
-    Bool_t  Init();
 
 protected:
 
@@ -31,6 +28,7 @@ public:
     GMesonReconstruction();
     virtual ~GMesonReconstruction();
 
+            Bool_t  Init();
     static  Int_t   InputNeeded()   {return GTreeManager::TreeFlag_Photons;}
     static  Int_t   OutputNeeded()  {}
             void    SetPi0Width(const Double_t width)   {width_pi0 = width;}
