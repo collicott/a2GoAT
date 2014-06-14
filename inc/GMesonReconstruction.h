@@ -21,6 +21,7 @@ private:
 
 protected:
 
+            Bool_t  ProcessEventWithoutFilling();
     virtual void    ProcessEvent();
     virtual Bool_t  Start();
 

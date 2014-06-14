@@ -35,6 +35,12 @@ Bool_t GParticleReconstruction::Trigger()
 
 Bool_t GParticleReconstruction::Start()
 {
+    photons->CloseForInput();
+    electrons->CloseForInput();
+    chargedPi->CloseForInput();
+    protons->CloseForInput();
+    neutrons->CloseForInput();
+
     if(!TraverseValidEvents())		return kFALSE;
 
     return kTRUE;
@@ -443,6 +449,7 @@ void	GParticleReconstruction::ProcessEvent()
     chargedPi->Fill();
     protons->Fill();
     neutrons->Fill();
+    FillReadList();
 }
 
 void	GParticleReconstruction::ChargedReconstructionCB(const Int_t index)

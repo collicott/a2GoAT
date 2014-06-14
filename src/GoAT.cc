@@ -375,21 +375,77 @@ void	GoAT::ProcessEvent()
         {
             if(UseMesonReconstruction)
             {
-                GParticleReconstruction::ProcessEventWithoutFilling();
-                GMesonReconstruction::ProcessEvent();
+                if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
+                if(!GMesonReconstruction::ProcessEventWithoutFilling())  return;
+                photons->Fill();
+                electrons->Fill();
+                chargedPi->Fill();
+                protons->Fill();
+                neutrons->Fill();
+                pi0->Fill();
+                eta->Fill();
+                etap->Fill();
+                FillReadList();
             }
             else
-                GParticleReconstruction::ProcessEvent();
+            {
+                if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
+                photons->Fill();
+                electrons->Fill();
+                chargedPi->Fill();
+                protons->Fill();
+                neutrons->Fill();
+                FillReadList();
+            }
         }
         else if(UseMesonReconstruction)
-            GMesonReconstruction::ProcessEvent();
+        {
+            GMesonReconstruction::ProcessEventWithoutFilling();
+            photons->Fill();
+            chargedPi->Fill();
+            pi0->Fill();
+            eta->Fill();
+            etap->Fill();
+            FillReadList();
+        }
         nEvents_written++;
+
         //if(SortFillEvent()) {FillEvent(); nEvents_written++;}
     }
 }
 
 Bool_t	GoAT::Start()
 {
+    if(UseParticleReconstruction)
+    {
+        if(UseMesonReconstruction)
+        {
+            photons->CloseForInput();
+            electrons->CloseForInput();
+            chargedPi->CloseForInput();
+            protons->CloseForInput();
+            neutrons->CloseForInput();
+            pi0->CloseForInput();
+            eta->CloseForInput();
+            etap->CloseForInput();
+        }
+        else
+        {
+            photons->CloseForInput();
+            electrons->CloseForInput();
+            chargedPi->CloseForInput();
+            protons->CloseForInput();
+            neutrons->CloseForInput();
+        }
+    }
+    else if(UseMesonReconstruction)
+    {
+        GMesonReconstruction::ProcessEvent();
+        pi0->CloseForInput();
+        eta->CloseForInput();
+        etap->CloseForInput();
+    }
+
     if(!TraverseValidEvents())		return kFALSE;
 
     return kTRUE;

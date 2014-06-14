@@ -42,8 +42,9 @@ public:
     };
 
 private:
-    TFile*  file_in;
-    Bool_t  isWritten;
+    TFile*      file_in;
+    TObjArray   readList;
+    Bool_t      isWritten;
 
     UInt_t  EventAtFirstScalerRead;
     UInt_t  EventAtLastScalerRead;
@@ -78,6 +79,7 @@ protected:
 
 
             void    CloseFiles();
+            void    FillReadList()      {for(int l=0; l<readList.GetEntriesFast(); l++) ((GTree*)readList[l])->Fill();}
             Bool_t  FindValidEvents();
             Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
     virtual void    ProcessEvent() = 0;

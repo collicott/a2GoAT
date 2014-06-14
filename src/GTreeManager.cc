@@ -64,8 +64,6 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
     if(!file_in)
         return kFALSE;
 
-    TObjArray   readList;
-
     if(etap)
     {
         if(etap->IsOpenForInput())

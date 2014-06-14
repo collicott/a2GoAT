@@ -16,6 +16,16 @@ GMesonReconstruction::~GMesonReconstruction()
 
 }
 
+Bool_t GMesonReconstruction::Start()
+{
+    pi0->CloseForInput();
+    eta->CloseForInput();
+    etap->CloseForInput();
+
+    if(!TraverseEntries(0, photons->GetNEntries()))		return kFALSE;
+
+    return kTRUE;
+}
 
 Bool_t	GMesonReconstruction::Init()
 {
@@ -68,7 +78,7 @@ Bool_t	GMesonReconstruction::Init()
     return kTRUE;
 }
 
-void  GMesonReconstruction::ProcessEvent()
+Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 {
     pi0->Clear();
     eta->Clear();
@@ -116,6 +126,7 @@ void  GMesonReconstruction::ProcessEvent()
         pdg_list[ndaughter] = pdgDB->GetParticle("pi+")->PdgCode();
         ndaughter++;
     }
+
 //###################################
 //************From Here**************
 //###################################
@@ -140,18 +151,21 @@ void  GMesonReconstruction::ProcessEvent()
         pi0->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
+        return kTRUE;
     }
     else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter >= 2))
     {
         eta->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
+        return kTRUE;
     }
     else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter >= 2))
     {
         etap->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
+        return kTRUE;
     }
 
     // LEVEL 2:
@@ -203,8 +217,8 @@ void  GMesonReconstruction::ProcessEvent()
                 index2[k]		= j;
                 k++;
             }
-            }
         }
+    }
 
     TMath::Sort(k, diff_meson, sort_index, kFALSE);
 
@@ -222,11 +236,11 @@ void  GMesonReconstruction::ProcessEvent()
         if(tempID[i] == pdgDB->GetParticle("pi0")->PdgCode())
         {
             pi0->AddParticle(*daughter_list[index1[i]], *daughter_list[index2[i]], pdg_list[index1[i]], pdg_list[index2[i]]);
-            if(pdg_list[index1[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+            if(index1[i] < photons->GetNParticles())
                 photons->RemoveParticle(daughter_index[index1[i]]);
             else
                 chargedPi->RemoveParticle(daughter_index[index1[i]]);
-            if(pdg_list[index2[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+            if(index2[i] < photons->GetNParticles())
                 photons->RemoveParticle(daughter_index[index2[i]]);
             else
                 chargedPi->RemoveParticle(daughter_index[index2[i]]);
@@ -234,11 +248,11 @@ void  GMesonReconstruction::ProcessEvent()
         if(tempID[i] == pdgDB->GetParticle("eta")->PdgCode())
         {
             eta->AddParticle(*daughter_list[index1[i]], *daughter_list[index2[i]], pdg_list[index1[i]], pdg_list[index2[i]]);
-            if(pdg_list[index1[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+            if(index1[i] < photons->GetNParticles())
                 photons->RemoveParticle(daughter_index[index1[i]]);
             else
                 chargedPi->RemoveParticle(daughter_index[index1[i]]);
-            if(pdg_list[index2[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+            if(index2[i] < photons->GetNParticles())
                 photons->RemoveParticle(daughter_index[index2[i]]);
             else
                 chargedPi->RemoveParticle(daughter_index[index2[i]]);
@@ -246,11 +260,11 @@ void  GMesonReconstruction::ProcessEvent()
         if(tempID[i] == pdgDB->GetParticle("eta'")->PdgCode())
         {
             etap->AddParticle(*daughter_list[index1[i]], *daughter_list[index2[i]], pdg_list[index1[i]], pdg_list[index2[i]]);
-            if(pdg_list[index1[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+            if(index1[i] < photons->GetNParticles())
                 photons->RemoveParticle(daughter_index[index1[i]]);
             else
                 chargedPi->RemoveParticle(daughter_index[index1[i]]);
-            if(pdg_list[index2[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+            if(index2[i] < photons->GetNParticles())
                 photons->RemoveParticle(daughter_index[index2[i]]);
             else
                 chargedPi->RemoveParticle(daughter_index[index2[i]]);
@@ -258,15 +272,14 @@ void  GMesonReconstruction::ProcessEvent()
     }
     photons->Compress();
     chargedPi->Compress();
+    return kTRUE;
+}
 
-    photons->Fill();
-    chargedPi->Fill();
+void  GMesonReconstruction::ProcessEvent()
+{
+    if(!ProcessEventWithoutFilling())   return;
     pi0->Fill();
     eta->Fill();
     etap->Fill();
-}
-
-Bool_t  GMesonReconstruction::Start()
-{
-
+    FillReadList();
 }
