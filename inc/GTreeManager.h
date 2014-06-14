@@ -101,7 +101,7 @@ public:
 
     friend  class GTree;
     friend  class GTreeParticle;
-    //friend  class GTreeMeson;
+    friend  class GTreeMeson;
 };
 
 #endif

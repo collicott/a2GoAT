@@ -21,24 +21,12 @@ using namespace std;
 
 class  GTreeMeson   : public GTree
 {
-public:
-    enum GTreeMeson_DecayType
-    {
-        Decay_NONE                  = 0,
-        Decay_2Gamma,                               //2 subParticles
-        Decay_2ChargedPi,                           //2 subParticles
-        Decay_2ChargedPi1Gamma,                     //3 subParticles
-        Decay_1Pi02ChargedPi,                       //4 subParticles
-        Decay_2Pi01ChargedPi,                       //5 subParticles
-        Decay_1Pi02ChargedPi1Gamma,                 //5 subParticles
-        Decay_3Pi0,                                 //6 subParticles
-        Decay_2Pi01Eta                              //6 subParticles
-    };
-
 private:
     UInt_t              nParticles;
     TClonesArray*       particles;
-    UChar_t             decayType[GTreeMeson_MaxEntries];
+    UChar_t             nPhotons[GTreeMeson_MaxEntries];
+    UChar_t             nChargedPi[GTreeMeson_MaxEntries];
+    Int_t*              pdg[GTreeMeson_MaxSubEntries];
     TClonesArray*       subParticles[GTreeMeson_MaxSubEntries];
 
 protected:
@@ -49,36 +37,31 @@ public:
     GTreeMeson(GTreeManager *Manager, const TString& _Name);
     virtual ~GTreeMeson();
 
-    inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1);
+            void            AddParticle(const Int_t nSubParticles, TLorentzVector** subParticle_list, const Int_t* pdg_list);
+    /*inline  void            AddParticle( const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1);
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2);
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3);
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4);
-    inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4, const TLorentzVector& _SubParticle5);
+    inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2, const TLorentzVector& _SubParticle3, const TLorentzVector& _SubParticle4, const TLorentzVector& _SubParticle5);*/
     virtual void            Clear()     {nParticles = 0; particles->Clear(); subParticles[0]->Clear(); subParticles[1]->Clear(); subParticles[2]->Clear(); subParticles[3]->Clear(); subParticles[4]->Clear(); subParticles[5]->Clear();}
             UInt_t          GetNParticles()                const	{return nParticles;}
             TLorentzVector& Meson(const Int_t particle)             {return *((TLorentzVector*)particles->At(particle));}
     const   TLorentzVector& Meson(const Int_t particle) const       {return *((TLorentzVector*)particles->At(particle));}
             TLorentzVector& Particle(const Int_t particle)          {return Meson(particle);}
     const   TLorentzVector& Particle(const Int_t particle) const    {return Meson(particle);}
-            TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)subParticles[meson]->At(subParticle));}
-    const   TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle) const {return *((TLorentzVector*)subParticles[meson]->At(subParticle));}
+//            TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)subParticles[meson]->At(subParticle));}
+//    const   TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle) const {return *((TLorentzVector*)subParticles[meson]->At(subParticle));}
 };
 
 
-void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1)
+/*void    GTreeMeson::AddParticle(const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1)
 {
-    if(type != Decay_2Gamma && type != Decay_2ChargedPi)
-    {
-        cout << "Given Wrong type or wrong # of subParticles in GTreeMeson::AddParticle" << endl;
-        return;
-    }
-
-    decayType[nParticles]   = type;
+    nPhotons[nParticles]   = 0;
     new((*particles)[nParticles]) TLorentzVector(_SubParticle0 + _SubParticle1);
-    new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
-    new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
+    //new((*subParticles[0])[nParticles]) TLorentzVector(_SubParticle0);
+    //new((*subParticles[1])[nParticles]) TLorentzVector(_SubParticle1);
     nParticles++;
-}
+}/*
 void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2)
 {
     if(type != Decay_2ChargedPi1Gamma)
@@ -144,6 +127,6 @@ void    GTreeMeson::AddParticle(const GTreeMeson_DecayType type, const TLorentzV
     new((*subParticles[4])[nParticles]) TLorentzVector(_SubParticle4);
     new((*subParticles[5])[nParticles]) TLorentzVector(_SubParticle5);
     nParticles++;
-}
+}*/
 
 #endif
