@@ -70,12 +70,21 @@ Bool_t	GMesonReconstruction::Init()
 
 void  GMesonReconstruction::ProcessEvent()
 {
-    Int_t		index1	  [rawEvent->GetNParticles() * (rawEvent->GetNParticles() -1)];
-    Int_t		index2	  [rawEvent->GetNParticles() * (rawEvent->GetNParticles() -1)];
-    Int_t 		tempID    [rawEvent->GetNParticles() * (rawEvent->GetNParticles() -1)];
-    Double_t 	diff_meson[rawEvent->GetNParticles() * (rawEvent->GetNParticles() -1)];
-    Int_t 		sort_index[rawEvent->GetNParticles() * (rawEvent->GetNParticles() -1)];
-    Bool_t 		is_meson  [rawEvent->GetNParticles()];
+    pi0->Clear();
+    eta->Clear();
+    etap->Clear();
+
+    Int_t       maxSubs = photons->GetNParticles() + chargedPi->GetNParticles();
+
+    Int_t		index1	  [maxSubs * maxSubs];
+    Int_t		index2	  [maxSubs * maxSubs];
+    Int_t 		tempID    [maxSubs * maxSubs];
+    Double_t 	diff_meson[maxSubs * maxSubs];
+    Int_t 		sort_index[maxSubs * maxSubs];
+    Bool_t 		is_meson  [maxSubs];
+    Int_t 		ndaughter   = 0;
+    TLorentzVector* daughter_list[maxSubs];
+    Int_t       pdg_list[maxSubs];
 
     //	TLorentzVector	initialParticle[GetNParticles()];
     TLorentzVector	reaction_p4;
@@ -88,13 +97,26 @@ void  GMesonReconstruction::ProcessEvent()
         is_meson[i] = kFALSE;
 
         reaction_p4 += photons->Particle(i);
-        //daughter_list[ndaughter] = i;
-        //ndaughter++;
+        daughter_list[ndaughter] = &photons->Particle(i);
+        pdg_list[ndaughter] = pdgDB->GetParticle("gamma")->PdgCode();
+        ndaughter++;
+    }
+    for (int i = 0; i < chargedPi->GetNParticles(); i++)
+    {
+        if (chargedPi->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
+        if (chargedPi->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
+
+        is_meson[i] = kFALSE;
+
+        reaction_p4 += chargedPi->Particle(i);
+        daughter_list[ndaughter] = &chargedPi->Particle(i);
+        pdg_list[ndaughter] = pdgDB->GetParticle("pi+")->PdgCode();
+        ndaughter++;
     }
 //###################################
 //************From Here**************
 //###################################
-/*
+
     // LEVEL 1:
     // Test full reaction 4 momentum (ignoring protons and neutrons)
     // This is to test the following complex decays
@@ -108,26 +130,27 @@ void  GMesonReconstruction::ProcessEvent()
 
     Double_t diff_pi0  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("pi0" )->Mass()*1000)  )/width_pi0;
     Double_t diff_eta  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta" )->Mass()*1000)  )/width_eta;
-    Double_t diff_etaP = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etaP;
+    Double_t diff_etap = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etap;
 
-    if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_eta < diff_etaP) && (ndaughter >= 2))
+    if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etap) && (ndaughter >= 2))
     {
-        AddParticle(pdgDB->GetParticle("pi0")->PdgCode(),ndaughter,daughter_list);
-        return;
+        pi0->AddParticle(ndaughter, daughter_list, pdg_list);
+        photons->Clear();
+        chargedPi->Clear();
     }
-
-    if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP) && (ndaughter >= 2))
+    else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter >= 2))
     {
-        AddParticle(pdgDB->GetParticle("eta")->PdgCode(),ndaughter,daughter_list);
-        return;
+        eta->AddParticle(ndaughter, daughter_list, pdg_list);
+        photons->Clear();
+        chargedPi->Clear();
     }
-
-    if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta) && (ndaughter >= 2))
+    else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter >= 2))
     {
-        AddParticle(pdgDB->GetParticle("eta'")->PdgCode(),ndaughter,daughter_list);
-        return;
+        etap->AddParticle(ndaughter, daughter_list, pdg_list);
+        photons->Clear();
+        chargedPi->Clear();
     }
-
+/*
     // LEVEL 2:
     // Well that didn't work, let's try to make some 2 particle checks
     // Loop over possible 2-particle combinations (skip i=j, ij = ji)
@@ -204,6 +227,12 @@ void  GMesonReconstruction::ProcessEvent()
 
         AddParticle(tempID[i],2,daughter_list);
     }*/
+
+    photons->Fill();
+    chargedPi->Fill();
+    pi0->Fill();
+    eta->Fill();
+    etap->Fill();
 }
 
 Bool_t  GMesonReconstruction::Start()
