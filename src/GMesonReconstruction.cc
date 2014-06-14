@@ -84,6 +84,7 @@ void  GMesonReconstruction::ProcessEvent()
     Bool_t 		is_meson  [maxSubs];
     Int_t 		ndaughter   = 0;
     TLorentzVector* daughter_list[maxSubs];
+    Int_t       daughter_index[maxSubs];
     Int_t       pdg_list[maxSubs];
 
     //	TLorentzVector	initialParticle[GetNParticles()];
@@ -98,6 +99,7 @@ void  GMesonReconstruction::ProcessEvent()
 
         reaction_p4 += photons->Particle(i);
         daughter_list[ndaughter] = &photons->Particle(i);
+        daughter_index[ndaughter]= i;
         pdg_list[ndaughter] = pdgDB->GetParticle("gamma")->PdgCode();
         ndaughter++;
     }
@@ -110,6 +112,7 @@ void  GMesonReconstruction::ProcessEvent()
 
         reaction_p4 += chargedPi->Particle(i);
         daughter_list[ndaughter] = &chargedPi->Particle(i);
+        daughter_index[ndaughter]= i;
         pdg_list[ndaughter] = pdgDB->GetParticle("pi+")->PdgCode();
         ndaughter++;
     }
@@ -150,7 +153,7 @@ void  GMesonReconstruction::ProcessEvent()
         photons->Clear();
         chargedPi->Clear();
     }
-/*
+
     // LEVEL 2:
     // Well that didn't work, let's try to make some 2 particle checks
     // Loop over possible 2-particle combinations (skip i=j, ij = ji)
@@ -160,29 +163,23 @@ void  GMesonReconstruction::ProcessEvent()
     // Reset daughter list
     ndaughter = 0;
     Int_t k = 0;
-    for (int i = 0; i < GetNParticles(); i++)
+    for (int i = 0; i < maxSubs; i++)
     {
-        if (GetTheta(i) < meson_theta_min) continue; // user rejected theta region
-        if (GetTheta(i) > meson_theta_max) continue; // user rejected theta region
+        if (daughter_list[i]->Theta() < meson_theta_min) continue; // user rejected theta region
+        if (daughter_list[i]->Theta() > meson_theta_max) continue; // user rejected theta region
 
-        if (Identified[i] == pdgDB->GetParticle("proton")->PdgCode()) continue;
-        if (Identified[i] == pdgDB->GetParticle("neutron")->PdgCode()) continue;
-
-        for (int j = i+1; j < GetNParticles(); j++)
+        for (int j = i+1; j < maxSubs; j++)
         {
-            if (GetTheta(j) < meson_theta_min) continue; // user rejected theta region
-            if (GetTheta(j) > meson_theta_max) continue; // user rejected theta region
+            if (daughter_list[i]->Theta() < meson_theta_min) continue; // user rejected theta region
+            if (daughter_list[i]->Theta() > meson_theta_max) continue; // user rejected theta region
 
-            if (Identified[i] == pdgDB->GetParticle("proton")->PdgCode()) continue;
-            if (Identified[i] == pdgDB->GetParticle("neutron")->PdgCode()) continue;
-
-            TLorentzVector p4 = GetVector(i) + GetVector(j);
+            TLorentzVector p4 = *daughter_list[i] + *daughter_list[j];
 
             Double_t diff_pi0  = TMath::Abs( p4.M() - (pdgDB->GetParticle("pi0" )->Mass()*1000) )/width_pi0;
             Double_t diff_eta  = TMath::Abs( p4.M() - (pdgDB->GetParticle("eta" )->Mass()*1000) )/width_eta;
-            Double_t diff_etaP = TMath::Abs( p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etaP;
+            Double_t diff_etap = TMath::Abs( p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etap;
 
-            if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etaP))
+            if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etap))
             {
                 diff_meson[k] 	= diff_pi0;
                 tempID[k] 		= pdgDB->GetParticle("pi0")->PdgCode();
@@ -190,7 +187,7 @@ void  GMesonReconstruction::ProcessEvent()
                 index2[k]		= j;
                 k++;
             }
-            if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etaP))
+            if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap))
             {
                 diff_meson[k]	= diff_eta;
                 tempID[k] 		= pdgDB->GetParticle("eta")->PdgCode();
@@ -198,9 +195,9 @@ void  GMesonReconstruction::ProcessEvent()
                 index2[k]		= j;
                 k++;
             }
-            if ((diff_etaP <= 1.0) && (diff_etaP < diff_pi0) && (diff_etaP < diff_eta))
+            if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta))
             {
-                diff_meson[k]	= diff_etaP;
+                diff_meson[k]	= diff_etap;
                 tempID[k] 		= pdgDB->GetParticle("eta'")->PdgCode();
                 index1[k]		= i;
                 index2[k]		= j;
@@ -214,19 +211,53 @@ void  GMesonReconstruction::ProcessEvent()
     for (Int_t i = 0; i < k; i++)
     {
         //particle pair already involved in a meson reconstruction?
-        if( is_meson[index1[i]] == kTRUE)  continue;
-        if( is_meson[index2[i]] == kTRUE)  continue;
+        if(is_meson[index1[i]] == kTRUE)  continue;
+        if(is_meson[index2[i]] == kTRUE)  continue;
 
         // New meson identified!
         is_meson[index1[i]] = kTRUE;
         is_meson[index2[i]] = kTRUE;
 
         // Add to particle list
-        daughter_list[0] = index1[i];
-        daughter_list[1] = index2[i];
-
-        AddParticle(tempID[i],2,daughter_list);
-    }*/
+        if(tempID[i] == pdgDB->GetParticle("pi0")->PdgCode())
+        {
+            pi0->AddParticle(*daughter_list[index1[i]], *daughter_list[index2[i]], pdg_list[index1[i]], pdg_list[index2[i]]);
+            if(pdg_list[index1[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+                photons->RemoveParticle(daughter_index[index1[i]]);
+            else
+                chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            if(pdg_list[index2[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+                photons->RemoveParticle(daughter_index[index2[i]]);
+            else
+                chargedPi->RemoveParticle(daughter_index[index2[i]]);
+        }
+        if(tempID[i] == pdgDB->GetParticle("eta")->PdgCode())
+        {
+            eta->AddParticle(*daughter_list[index1[i]], *daughter_list[index2[i]], pdg_list[index1[i]], pdg_list[index2[i]]);
+            if(pdg_list[index1[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+                photons->RemoveParticle(daughter_index[index1[i]]);
+            else
+                chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            if(pdg_list[index2[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+                photons->RemoveParticle(daughter_index[index2[i]]);
+            else
+                chargedPi->RemoveParticle(daughter_index[index2[i]]);
+        }
+        if(tempID[i] == pdgDB->GetParticle("eta'")->PdgCode())
+        {
+            etap->AddParticle(*daughter_list[index1[i]], *daughter_list[index2[i]], pdg_list[index1[i]], pdg_list[index2[i]]);
+            if(pdg_list[index1[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+                photons->RemoveParticle(daughter_index[index1[i]]);
+            else
+                chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            if(pdg_list[index2[i]] == pdgDB->GetParticle("gamma")->PdgCode())
+                photons->RemoveParticle(daughter_index[index2[i]]);
+            else
+                chargedPi->RemoveParticle(daughter_index[index2[i]]);
+        }
+    }
+    photons->Compress();
+    chargedPi->Compress();
 
     photons->Fill();
     chargedPi->Fill();

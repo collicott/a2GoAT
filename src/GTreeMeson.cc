@@ -93,6 +93,44 @@ void    GTreeMeson::SetBranches()
     tree_out->Branch("pdgSubParticle5",pdg[5],"pdgSubParticle5[nParticles]/i");
 }
 
+void    GTreeMeson::AddParticle(const TLorentzVector& subParticle0, const TLorentzVector& subParticle1, const Int_t pdg0, const Int_t pdg1)
+{
+    nPhotons[nParticles]    = 0;
+    nChargedPi[nParticles]  = 0;
+
+    if(pdg0 == manager->pdgDB->GetParticle("gamma")->PdgCode())
+    {
+        nPhotons[nParticles]++;
+        pdg[0][nParticles]  = manager->pdgDB->GetParticle("gamma")->PdgCode();
+    }
+    else
+    {
+        nChargedPi[nParticles]++;
+        pdg[0][nParticles]  = manager->pdgDB->GetParticle("pi+")->PdgCode();
+    }
+    new((*subParticles[0])[nParticles]) TLorentzVector(subParticle0);
+
+    if(pdg1 == manager->pdgDB->GetParticle("gamma")->PdgCode())
+    {
+        nPhotons[nParticles]++;
+        pdg[1][nParticles]  = manager->pdgDB->GetParticle("gamma")->PdgCode();
+    }
+    else
+    {
+        nChargedPi[nParticles]++;
+        pdg[1][nParticles]  = manager->pdgDB->GetParticle("pi+")->PdgCode();
+    }
+    new((*subParticles[1])[nParticles]) TLorentzVector(subParticle1);
+
+    pdg[2][nParticles]  = 0;
+    pdg[3][nParticles]  = 0;
+    pdg[4][nParticles]  = 0;
+    pdg[5][nParticles]  = 0;
+
+    new((*particles)[nParticles]) TLorentzVector(subParticle0 + subParticle1);
+    nParticles++;
+}
+
 void    GTreeMeson::AddParticle(const Int_t nSubParticles, TLorentzVector** subParticle_list, const Int_t* pdg_list)
 {
     nPhotons[nParticles]    = 0;
