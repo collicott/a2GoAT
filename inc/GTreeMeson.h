@@ -38,7 +38,7 @@ public:
     virtual ~GTreeMeson();
 
             void            AddParticle(const TLorentzVector& subParticle0, const TLorentzVector& subParticle1, const Int_t pdg0, const Int_t pdg1);
-            void            AddParticle(const Int_t nSubParticles, TLorentzVector** subParticle_list, const Int_t* pdg_list);
+            //void            AddParticle(const Int_t nSubParticles, TLorentzVector** subParticle_list, const Int_t* pdg_list);
             void            AddParticle(const Int_t nSubPhotons, TLorentzVector** subPhotons_list, const Int_t nSubChargedPi, TLorentzVector** subChargedPi_list);
     /*inline  void            AddParticle( const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1);
     inline  void            AddParticle(const GTreeMeson_DecayType type, const TLorentzVector& _SubParticle0, const TLorentzVector& _SubParticle1, const TLorentzVector& _SubParticle2);

@@ -148,21 +148,24 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
     if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etap) && (ndaughter >= 2))
     {
-        pi0->AddParticle(ndaughter, daughter_list, pdg_list);
+        pi0->AddParticle(photons->GetNParticles(), daughter_list, chargedPi->GetNParticles(), &daughter_list[photons->GetNParticles()]);
+        //pi0->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
         return kTRUE;
     }
     else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter >= 2))
     {
-        eta->AddParticle(ndaughter, daughter_list, pdg_list);
+        eta->AddParticle(photons->GetNParticles(), daughter_list, chargedPi->GetNParticles(), &daughter_list[photons->GetNParticles()]);
+        //eta->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
         return kTRUE;
     }
     else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter >= 2))
     {
-        etap->AddParticle(ndaughter, daughter_list, pdg_list);
+        etap->AddParticle(photons->GetNParticles(), daughter_list, chargedPi->GetNParticles(), &daughter_list[photons->GetNParticles()]);
+        //etap->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
         return kTRUE;

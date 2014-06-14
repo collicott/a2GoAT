@@ -102,38 +102,38 @@ void    GTreeMeson::AddParticle(const TLorentzVector& subParticle0, const TLoren
 
     if(pdg0 == manager->pdgDB->GetParticle("gamma")->PdgCode())
     {
-        nPhotons[nParticles]++;
-        //pdg[0][nParticles]  = manager->pdgDB->GetParticle("gamma")->PdgCode();
+        if(pdg1 == manager->pdgDB->GetParticle("gamma")->PdgCode())
+            nPhotons[nParticles]    += 2;
+        else
+        {
+            nPhotons[nParticles]++;
+            nChargedPi[nParticles]++;
+        }
+        new((*((TClonesArray*)subParticles->At(nParticles)))[0]) TLorentzVector(subParticle0);
+        new((*((TClonesArray*)subParticles->At(nParticles)))[1]) TLorentzVector(subParticle1);
     }
     else
     {
-        nChargedPi[nParticles]++;
-        //pdg[0][nParticles]  = manager->pdgDB->GetParticle("pi+")->PdgCode();
+        if(pdg1 == manager->pdgDB->GetParticle("gamma")->PdgCode())
+        {
+            nChargedPi[nParticles]++;
+            nPhotons[nParticles]++;
+            new((*((TClonesArray*)subParticles->At(nParticles)))[0]) TLorentzVector(subParticle1);
+            new((*((TClonesArray*)subParticles->At(nParticles)))[1]) TLorentzVector(subParticle0);
+        }
+        else
+        {
+            nChargedPi[nParticles]  += 2;
+            new((*((TClonesArray*)subParticles->At(nParticles)))[0]) TLorentzVector(subParticle0);
+            new((*((TClonesArray*)subParticles->At(nParticles)))[1]) TLorentzVector(subParticle0);
+        }
     }
-    new((*((TClonesArray*)subParticles->At(nParticles)))[0]) TLorentzVector(subParticle0);
-
-    if(pdg1 == manager->pdgDB->GetParticle("gamma")->PdgCode())
-    {
-        nPhotons[nParticles]++;
-        //pdg[1][nParticles]  = manager->pdgDB->GetParticle("gamma")->PdgCode();
-    }
-    else
-    {
-        nChargedPi[nParticles]++;
-        //pdg[1][nParticles]  = manager->pdgDB->GetParticle("pi+")->PdgCode();
-    }
-    new((*((TClonesArray*)subParticles->At(nParticles)))[1]) TLorentzVector(subParticle1);
-
-    /*pdg[2][nParticles]  = 0;
-    pdg[3][nParticles]  = 0;
-    pdg[4][nParticles]  = 0;
-    pdg[5][nParticles]  = 0;*/
 
     new((*particles)[nParticles]) TLorentzVector(subParticle0 + subParticle1);
     nParticles++;
 }
 
-void    GTreeMeson::AddParticle(const Int_t nSubParticles, TLorentzVector** subParticle_list, const Int_t* pdg_list)
+/*void    GTreeMeson::AddParticle(const Int_t nSubParticles, TLorentzVector** subParticle_list, const Int_t* pdg_list)
 {
     new((*subParticles)[nParticles]) TClonesArray("TLorentzVector", 32);
 
@@ -161,7 +161,7 @@ void    GTreeMeson::AddParticle(const Int_t nSubParticles, TLorentzVector** subP
     }
     new((*particles)[nParticles]) TLorentzVector(sum);
     nParticles++;
-}
+}*/
 
 void    GTreeMeson::AddParticle(const Int_t nSubPhotons, TLorentzVector** subPhotons_list, const Int_t nSubChargedPi, TLorentzVector** subChargedPi_list)
 {
