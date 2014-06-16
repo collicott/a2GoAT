@@ -22,10 +22,11 @@ using namespace std;
 class  GTreeMeson   : public GTree
 {
 private:
-    UInt_t              nParticles;
-    TClonesArray*       particles;
-    UChar_t             nPhotons[GTreeMeson_MaxEntries];
-    UChar_t             nChargedPi[GTreeMeson_MaxEntries];
+    UChar_t             nMesons;
+    TClonesArray*       mesons;
+    UChar_t             nSubParticles[GTreeMeson_MaxEntries];
+    UChar_t             nSubPhotons[GTreeMeson_MaxEntries];
+    UChar_t             nSubChargedPi[GTreeMeson_MaxEntries];
     TClonesArray*       subParticles;
 
 protected:
@@ -37,15 +38,16 @@ public:
     virtual ~GTreeMeson();
 
             void            AddParticle(const TLorentzVector& subParticle0, const TLorentzVector& subParticle1, const Int_t pdg0, const Int_t pdg1);
-            void            AddParticle(const Int_t nSubPhotons, TLorentzVector** subPhotons_list, const Int_t nSubChargedPi, TLorentzVector** subChargedPi_list);
-    virtual void            Clear()     {nParticles = 0; particles->Clear(); subParticles->Clear();}
-            UInt_t          GetNParticles()                const	{return nParticles;}
-            TLorentzVector& Meson(const Int_t particle)             {return *((TLorentzVector*)particles->At(particle));}
-    const   TLorentzVector& Meson(const Int_t particle) const       {return *((TLorentzVector*)particles->At(particle));}
-            TLorentzVector& Particle(const Int_t particle)          {return Meson(particle);}
-    const   TLorentzVector& Particle(const Int_t particle) const    {return Meson(particle);}
-            TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)(((TClonesArray*)subParticles->At(subParticle))->At(subParticle)));}
-    const   TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle) const {return *((TLorentzVector*)(((TClonesArray*)subParticles->At(subParticle))->At(subParticle)));}
+            void            AddParticle(const Int_t _NSubPhotons, TLorentzVector** subPhotons_list, const Int_t _NSubChargedPi, TLorentzVector** subChargedPi_list);
+    virtual void            Clear()     {nMesons = 0; mesons->Clear(); subParticles->Clear();}
+            UInt_t          GetNMesons()                const	{return nMesons;}
+            UInt_t          GetNSubParticles(const Int_t meson)          const	{return nSubParticles[meson];}
+            UInt_t          GetNSubPhotons(const Int_t meson)            const	{return nSubPhotons[meson];}
+            UInt_t          GetNSubChargedPi(const Int_t meson)          const	{return nSubChargedPi[meson];}
+            TLorentzVector& Meson(const Int_t meson)             {return *((TLorentzVector*)mesons->At(meson));}
+    const   TLorentzVector& Meson(const Int_t meson) const       {return *((TLorentzVector*)mesons->At(meson));}
+            TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)(((TClonesArray*)subParticles->At(meson))->At(subParticle)));}
+    const   TLorentzVector& SubParticle(const Int_t meson, const Int_t subParticle) const {return *((TLorentzVector*)(((TClonesArray*)subParticles->At(meson))->At(subParticle)));}
 };
 
 
