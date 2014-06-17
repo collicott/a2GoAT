@@ -96,10 +96,10 @@ void    GTreeMeson::AddParticle(const Int_t _NSubPhotons, TLorentzVector** subPh
         sum += *subPhotons_list[i];
         new((*((TClonesArray*)subParticles->At(nMesons)))[i]) TLorentzVector(*subPhotons_list[i]);
     }
-    for(int i=_NSubPhotons; i<_NSubChargedPi + _NSubPhotons; i++)
+    for(int i=0; i<_NSubChargedPi; i++)
     {
         sum += *subChargedPi_list[i];
-        new((*((TClonesArray*)subParticles->At(nMesons)))[i]) TLorentzVector(*subChargedPi_list[i]);
+        new((*((TClonesArray*)subParticles->At(nMesons)))[i+ _NSubPhotons]) TLorentzVector(*subChargedPi_list[i]);
     }
     new((*mesons)[nMesons]) TLorentzVector(sum);
     nMesons++;
