@@ -97,12 +97,12 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
     {
         nSubPhotons[nParticles]++;
         new((*((TClonesArray*)subPhotons->At(nParticles)))[0]) TLorentzVector(subParticle0);
-        Apparatus[nParticles]    = manager->chargedPi->GetApparatus(subParticle_index0);
-        time[nParticles]         = manager->chargedPi->GetTime(subParticle_index0);
-        clusterSize[nParticles]  = manager->chargedPi->GetClusterSize(subParticle_index0);
-        d_E[nParticles]          = manager->chargedPi->Get_dE(subParticle_index0);
-        WC0_E[nParticles]        = manager->chargedPi->GetWC0_E(subParticle_index0);
-        WC1_E[nParticles]        = manager->chargedPi->GetWC1_E(subParticle_index0);
+        Apparatus[nParticles]    = manager->photons->GetApparatus(subParticle_index0);
+        time[nParticles]         = manager->photons->GetTime(subParticle_index0);
+        clusterSize[nParticles]  = manager->photons->GetClusterSize(subParticle_index0);
+        d_E[nParticles]          = manager->photons->Get_dE(subParticle_index0);
+        WC0_E[nParticles]        = manager->photons->GetWC0_E(subParticle_index0);
+        WC1_E[nParticles]        = manager->photons->GetWC1_E(subParticle_index0);
     }
     else
     {
@@ -119,12 +119,12 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
     {
         nSubPhotons[nParticles]++;
         new((*((TClonesArray*)subPhotons->At(nParticles)))[1]) TLorentzVector(subParticle1);
-        Apparatus[nParticles]    = Apparatus[nParticles] | manager->chargedPi->GetApparatus(subParticle_index1);
-        time[nParticles]         += manager->chargedPi->GetTime(subParticle_index1);
-        clusterSize[nParticles]  += manager->chargedPi->GetClusterSize(subParticle_index1);
-        d_E[nParticles]          += manager->chargedPi->Get_dE(subParticle_index1);
-        WC0_E[nParticles]        += manager->chargedPi->GetWC0_E(subParticle_index1);
-        WC1_E[nParticles]        += manager->chargedPi->GetWC1_E(subParticle_index1);
+        Apparatus[nParticles]    = Apparatus[nParticles] | manager->photons->GetApparatus(subParticle_index1);
+        time[nParticles]         += manager->photons->GetTime(subParticle_index1);
+        clusterSize[nParticles]  += manager->photons->GetClusterSize(subParticle_index1);
+        d_E[nParticles]          += manager->photons->Get_dE(subParticle_index1);
+        WC0_E[nParticles]        += manager->photons->GetWC0_E(subParticle_index1);
+        WC1_E[nParticles]        += manager->photons->GetWC1_E(subParticle_index1);
     }
     else
     {

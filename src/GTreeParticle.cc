@@ -71,3 +71,25 @@ Bool_t	GTreeParticle::Write()
 
     return GTree::Write();
 }
+
+void    GTreeParticle::RemoveParticles(const Int_t nIndices, const Int_t* indices)
+{
+    Int_t*  sort    = new Int_t[nIndices];
+    TMath::Sort(nIndices, indices, sort);
+    for(int i=0; i<nIndices; i++)
+    {
+        nParticles--;
+        if(sort[i] != nParticles)
+        {
+            Apparatus[sort[i]]  = Apparatus[nParticles];
+            time[sort[i]]       = time[nParticles];
+            clusterSize[sort[i]]= clusterSize[nParticles];
+            d_E[sort[i]]        = d_E[nParticles];
+            WC0_E[sort[i]]      = WC0_E[nParticles];
+            WC1_E[sort[i]]      = WC1_E[nParticles];
+            //particles->RemoveAt(sort[i]);
+            new((*particles)[sort[i]]) TLorentzVector(*((TLorentzVector*)particles->At(nParticles)));
+        }
+        particles->RemoveAt(nParticles);
+    }
+}

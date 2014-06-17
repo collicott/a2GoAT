@@ -187,8 +187,8 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
         for (int j = i+1; j < maxSubs; j++)
         {
-            if (daughter_list[i]->Theta() < meson_theta_min) continue; // user rejected theta region
-            if (daughter_list[i]->Theta() > meson_theta_max) continue; // user rejected theta region
+            if (daughter_list[j]->Theta() < meson_theta_min) continue; // user rejected theta region
+            if (daughter_list[j]->Theta() > meson_theta_max) continue; // user rejected theta region
 
             TLorentzVector p4 = *daughter_list[i] + *daughter_list[j];
 
@@ -204,7 +204,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index2[k]		= j;
                 k++;
             }
-            if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap))
+            else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap))
             {
                 diff_meson[k]	= diff_eta;
                 tempID[k] 		= pdgDB->GetParticle("eta")->PdgCode();
@@ -212,7 +212,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index2[k]		= j;
                 k++;
             }
-            if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta))
+            else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta))
             {
                 diff_meson[k]	= diff_etap;
                 tempID[k] 		= pdgDB->GetParticle("eta'")->PdgCode();
@@ -224,6 +224,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     }
 
     TMath::Sort(k, diff_meson, sort_index, kFALSE);
+
+    Int_t		nIndex_photon_delete    = 0;
+    Int_t		nIndex_chargedPi_delete = 0;
+    Int_t		index_photon_delete[GTreeParticle_MaxEntries];
+    Int_t		index_chargedPi_delete[GTreeParticle_MaxEntries * maxSubs];
 
     for (Int_t i = 0; i < k; i++)
     {
@@ -240,41 +245,90 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         {
             pi0->AddParticle(daughter_index[index1[i]], *daughter_list[index1[i]], pdg_list[index1[i]], daughter_index[index2[i]], *daughter_list[index2[i]], pdg_list[index2[i]]);
             if(index1[i] < photons->GetNParticles())
-                photons->RemoveParticle(daughter_index[index1[i]]);
+            {
+                index_photon_delete[nIndex_photon_delete] = daughter_index[index1[i]];
+                nIndex_photon_delete++;
+                //photons->RemoveParticle(daughter_index[index1[i]]);
+            }
             else
-                chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            {
+                index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index1[i]];
+                nIndex_chargedPi_delete++;
+                //chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            }
             if(index2[i] < photons->GetNParticles())
-                photons->RemoveParticle(daughter_index[index2[i]]);
+            {
+                index_photon_delete[nIndex_photon_delete] = daughter_index[index2[i]];
+                nIndex_photon_delete++;
+                //photons->RemoveParticle(daughter_index[index2[i]]);
+            }
             else
-                chargedPi->RemoveParticle(daughter_index[index2[i]]);
+            {
+                index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index2[i]];
+                nIndex_chargedPi_delete++;
+                //chargedPi->RemoveParticle(daughter_index[index2[i]]);
+            }
         }
-        if(tempID[i] == pdgDB->GetParticle("eta")->PdgCode())
+        else if(tempID[i] == pdgDB->GetParticle("eta")->PdgCode())
         {
             eta->AddParticle(daughter_index[index1[i]], *daughter_list[index1[i]], pdg_list[index1[i]], daughter_index[index2[i]], *daughter_list[index2[i]], pdg_list[index2[i]]);
             if(index1[i] < photons->GetNParticles())
-                photons->RemoveParticle(daughter_index[index1[i]]);
+            {
+                index_photon_delete[nIndex_photon_delete] = daughter_index[index1[i]];
+                nIndex_photon_delete++;
+                //photons->RemoveParticle(daughter_index[index1[i]]);
+            }
             else
-                chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            {
+                index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index1[i]];
+                nIndex_chargedPi_delete++;
+                //chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            }
             if(index2[i] < photons->GetNParticles())
-                photons->RemoveParticle(daughter_index[index2[i]]);
+            {
+                index_photon_delete[nIndex_photon_delete] = daughter_index[index2[i]];
+                nIndex_photon_delete++;
+                //photons->RemoveParticle(daughter_index[index2[i]]);
+            }
             else
-                chargedPi->RemoveParticle(daughter_index[index2[i]]);
+            {
+                index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index2[i]];
+                nIndex_chargedPi_delete++;
+                //chargedPi->RemoveParticle(daughter_index[index2[i]]);
+            }
         }
-        if(tempID[i] == pdgDB->GetParticle("eta'")->PdgCode())
+        else if(tempID[i] == pdgDB->GetParticle("eta'")->PdgCode())
         {
             etap->AddParticle(daughter_index[index1[i]], *daughter_list[index1[i]], pdg_list[index1[i]], daughter_index[index2[i]], *daughter_list[index2[i]], pdg_list[index2[i]]);
             if(index1[i] < photons->GetNParticles())
-                photons->RemoveParticle(daughter_index[index1[i]]);
+            {
+                index_photon_delete[nIndex_photon_delete] = daughter_index[index1[i]];
+                nIndex_photon_delete++;
+                //photons->RemoveParticle(daughter_index[index1[i]]);
+            }
             else
-                chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            {
+                index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index1[i]];
+                nIndex_chargedPi_delete++;
+                //chargedPi->RemoveParticle(daughter_index[index1[i]]);
+            }
             if(index2[i] < photons->GetNParticles())
-                photons->RemoveParticle(daughter_index[index2[i]]);
+            {
+                index_photon_delete[nIndex_photon_delete] = daughter_index[index2[i]];
+                nIndex_photon_delete++;
+                //photons->RemoveParticle(daughter_index[index2[i]]);
+            }
             else
-                chargedPi->RemoveParticle(daughter_index[index2[i]]);
+            {
+                index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index2[i]];
+                nIndex_chargedPi_delete++;
+                //chargedPi->RemoveParticle(daughter_index[index2[i]]);
+            }
         }
     }
-    photons->Compress();
-    chargedPi->Compress();
+    photons->RemoveParticles(nIndex_photon_delete, index_photon_delete);
+    chargedPi->RemoveParticles(nIndex_chargedPi_delete, index_chargedPi_delete);
+
     return kTRUE;
 }
 
