@@ -46,8 +46,10 @@ private:
     TObjArray   readList;
     Bool_t      isWritten;
 
-    UInt_t  EventAtFirstScalerRead;
-    UInt_t  EventAtLastScalerRead;
+    UInt_t  nValidScalerReads;
+    UInt_t  validScalerRead[GTreeScaler_MAX];
+    UInt_t  eventNumberValidScalerRead[GTreeScaler_MAX];
+    UInt_t  eventNumberBeforeValidScalerRead[GTreeScaler_MAX];
     UInt_t  currentEvent;
 
     //Bool_t  EntryChecking(const GTree* tree);
@@ -80,8 +82,7 @@ protected:
 
             void    CloseFiles();
             void    FillReadList()      {for(int l=0; l<readList.GetEntriesFast(); l++) ((GTree*)readList[l])->Fill();}
-            Bool_t  FindValidEvents();
-            Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
+            //Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
     virtual void    ProcessEvent() = 0;
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
@@ -96,8 +97,8 @@ public:
 
     static  Int_t   CheckInput(const char* input_filename);
             UInt_t  GetEventNumber() const {return currentEvent;}
-            UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
-            UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
+            //UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
+            //UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
     virtual Bool_t  Init() {}
             Bool_t  StartFile(const char* input_filename, const char* output_filename);
 

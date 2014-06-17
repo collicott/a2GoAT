@@ -25,8 +25,7 @@ GTreeManager::GTreeManager()    :
     eta(0),
     etap(0),
     fitData(0),
-    EventAtFirstScalerRead(0),
-    EventAtLastScalerRead(0),
+    nValidScalerReads(0),
     currentEvent(0)
 {
     etap = new GTreeMeson(this, TString("Etap"));
@@ -137,7 +136,7 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
             readList.Add(fitData);
     }
 
-    for(UInt_t i=min; i<=max; i++)
+    for(UInt_t i=min; i<max; i++)
     {
         for(int l=0; l<readList.GetEntriesFast(); l++)
             ((GTree*)readList[l])->GetEntryFast(i);
@@ -333,7 +332,7 @@ Bool_t  GTreeManager::Write(const TNamed* object)
 }
 
 
-Bool_t  GTreeManager::FindValidEvents()
+Bool_t  GTreeManager::TraverseValidEvents()
 {
     cout << "Checking scaler reads for valid events:" << endl;
     if(!scalers->IsOpenForInput())
@@ -351,33 +350,57 @@ Bool_t  GTreeManager::FindValidEvents()
         return kFALSE;
     }
 
+    int shift = scalers->GetEventNumber() - scalers->GetEventID();
+    nValidScalerReads = 0;
     scalers->GetEntry(0);
-    EventAtFirstScalerRead   = scalers->GetEventNumber();
-    scalers->GetEntry(scalers->GetNEntries()-1);
-    EventAtLastScalerRead       = scalers->GetEventNumber();
-    cout << "\tValid events from " << (EventAtFirstScalerRead+1) << " to " << EventAtLastScalerRead << "."<< endl;
+    for(int i=1; i<scalers->GetNEntries(); i++)
+    {
+        scalers->GetEntry(i);
+        if(scalers->GetEventNumber() - scalers->GetEventID() == shift)
+        {
+            eventNumberBeforeValidScalerRead[nValidScalerReads] = scalers->GetEventNumber();
+            scalers->GetEntry(i-1);
+            eventNumberValidScalerRead[nValidScalerReads] = scalers->GetEventNumber();
+            validScalerRead[nValidScalerReads] = i;
+            nValidScalerReads++;
+        }
+    }
+
     file_out->cd();
     TH1I*   accepted    = new TH1I("CountScalerValid", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
     accepted->SetBinContent(1, rawEvent->GetNEntries());
-    accepted->SetBinContent(2, EventAtLastScalerRead-EventAtFirstScalerRead);
-    accepted->SetBinContent(3, (EventAtFirstScalerRead+1)+(rawEvent->GetNEntries()-EventAtLastScalerRead-1));
+
+    scalers->GetEntry(0);
+    int start = eventNumberBeforeValidScalerRead[0];
+    int stop  = eventNumberValidScalerRead[0];
+    for(int i=1; i<nValidScalerReads; i++)
+    {
+        if(validScalerRead[i] == validScalerRead[i-1]+1)
+            stop    = eventNumberValidScalerRead[i];
+        else
+        {
+            cout << "\tValid events from " << start << " to " << stop << "."<< endl;
+            accepted->SetBinContent(2, accepted->GetBinContent(2) + (stop-start));
+            TraverseEntries(start, stop);
+            start = eventNumberBeforeValidScalerRead[i];
+            stop  = eventNumberValidScalerRead[i];
+        }
+    }
+    cout << "\tValid events from " << start << " to " << stop << "."<< endl;
+    accepted->SetBinContent(2, accepted->GetBinContent(2) + (stop-start));
+    TraverseEntries(start, stop);
+
+    accepted->SetBinContent(3, rawEvent->GetNEntries() - accepted->GetBinContent(2));
 
     if(!Write(accepted))  return kFALSE;
     return kTRUE;
 }
 
-Bool_t  GTreeManager::FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent)
+/*Bool_t  GTreeManager::FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent)
 {
     if(!FindValidEvents())
         return kFALSE;
     firstValidEvent = EventAtFirstScalerRead+1;
     lastValidEvent  = EventAtLastScalerRead;
     return kTRUE;
-}
-
-Bool_t  GTreeManager::TraverseValidEvents()
-{
-    if(!FindValidEvents())
-        return kFALSE;
-    TraverseEntries(EventAtFirstScalerRead+1, EventAtLastScalerRead);
-}
+}*/
