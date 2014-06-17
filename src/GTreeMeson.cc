@@ -24,20 +24,20 @@ GTreeMeson::~GTreeMeson()
 void    GTreeMeson::SetBranchAdresses()
 {
     GTreeParticle::SetBranchAdresses();
-    tree_in->SetBranchAddress("nSubParticles",nSubParticles);
-    tree_in->SetBranchAddress("nSubPhotons",nSubPhotons);
-    tree_in->SetBranchAddress("nSubChargedPi",nSubChargedPi);
-    tree_in->SetBranchAddress("nSubPhotons.",&nSubPhotons);
-    tree_in->SetBranchAddress("subChargedPi.",&subChargedPi);
+    tree_in->SetBranchAddress("nSubParticles", &nSubParticles);
+    tree_in->SetBranchAddress("nSubPhotons", &nSubPhotons);
+    tree_in->SetBranchAddress("nSubChargedPi", &nSubChargedPi);
+    tree_in->SetBranchAddress("subPhotons.", &subPhotons);
+    tree_in->SetBranchAddress("subChargedPi.", &subChargedPi);
 }
 
 void    GTreeMeson::SetBranches()
 {
     GTreeParticle::SetBranches();
-    tree_out->Branch("nSubParticles",nSubParticles, "nSubParticles[nParticles]/b");
-    tree_out->Branch("nSubPhotons",nSubPhotons,"nSubParticles[nParticles]/b");
-    tree_out->Branch("nSubChargedPi",nSubChargedPi,"nSubParticles[nParticles]/b");
-    tree_out->Branch("nSubPhotons.", &nSubPhotons, 32, 0);
+    tree_out->Branch("nSubParticles", &nSubParticles, "nSubParticles[nParticles]/b");
+    tree_out->Branch("nSubPhotons", &nSubPhotons,"nSubParticles[nParticles]/b");
+    tree_out->Branch("nSubChargedPi", &nSubChargedPi,"nSubParticles[nParticles]/b");
+    tree_out->Branch("subPhotons.", &subPhotons, 32, 0);
     tree_out->Branch("subChargedPi.", &subChargedPi, 32, 0);
 }
 
@@ -118,7 +118,7 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
     if(pdg1 == manager->pdgDB->GetParticle("gamma")->PdgCode())
     {
         nSubPhotons[nParticles]++;
-        new((*((TClonesArray*)subPhotons->At(nParticles)))[0]) TLorentzVector(subParticle1);
+        new((*((TClonesArray*)subPhotons->At(nParticles)))[1]) TLorentzVector(subParticle1);
         Apparatus[nParticles]    = Apparatus[nParticles] | manager->chargedPi->GetApparatus(subParticle_index1);
         time[nParticles]         += manager->chargedPi->GetTime(subParticle_index1);
         clusterSize[nParticles]  += manager->chargedPi->GetClusterSize(subParticle_index1);
@@ -129,7 +129,7 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
     else
     {
         nSubChargedPi[nParticles]++;
-        new((*((TClonesArray*)subChargedPi->At(nParticles)))[0]) TLorentzVector(subParticle1);
+        new((*((TClonesArray*)subChargedPi->At(nParticles)))[1]) TLorentzVector(subParticle1);
         Apparatus[nParticles]    = Apparatus[nParticles] | manager->chargedPi->GetApparatus(subParticle_index1);
         time[nParticles]         += manager->chargedPi->GetTime(subParticle_index1);
         clusterSize[nParticles]  += manager->chargedPi->GetClusterSize(subParticle_index1);
