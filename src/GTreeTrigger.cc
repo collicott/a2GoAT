@@ -28,6 +28,7 @@ void    GTreeTrigger::SetBranchAdresses()
 {
     tree_in->SetBranchAddress("ESum", 	&ESum);
     tree_in->SetBranchAddress("Mult", 	&Mult);
+    tree_in->SetBranchAddress("EventNumber", 	&EventNumber);
     tree_in->SetBranchAddress("nTriggerPattern", &nTriggerPattern);
     tree_in->SetBranchAddress("TriggerPattern", TriggerPattern);
     tree_in->SetBranchAddress("HelicityBit", 	&helicityBit);
@@ -42,6 +43,7 @@ void    GTreeTrigger::SetBranches()
 {
     tree_out->Branch("ESum", &ESum,"ESum/D");
     tree_out->Branch("Mult", &Mult, "Mult/I");
+    tree_out->Branch("EventNumber", &EventNumber, "EventNumber/i");
     tree_out->Branch("HelicityBit", &helicityBit, "HelicityBit/b");
     tree_out->Branch("nTriggerPattern", &nTriggerPattern, "nTriggerPattern/I");
     tree_out->Branch("TriggerPattern", TriggerPattern, "TriggerPattern[nTriggerPattern]/I");

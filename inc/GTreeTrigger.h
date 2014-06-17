@@ -12,6 +12,7 @@ class  GTreeTrigger : public GTree
 private:
     Double_t 	ESum;
     Int_t 		Mult;
+    UInt_t 		EventNumber;
     Int_t 		nTriggerPattern;
     Int_t 		TriggerPattern[GTreeTrigger_MAX];
     UChar_t     helicityBit;
@@ -32,6 +33,7 @@ public:
     virtual void        Clear()                         {nTriggerPattern = 0; nError = 0;}
             Int_t 		GetMult()        		const	{return Mult;}
             Double_t	GetESum()           	const	{return ESum;}
+            UInt_t      GetEventNumber()        const	{return EventNumber;}
             UChar_t 	GetHelicityBit()    	const	{return helicityBit;}
             Int_t		GetNTriggerPattern()    const	{return	nTriggerPattern;}
     const   Int_t*		GetTriggerPattern()     const	{return	TriggerPattern;}
@@ -39,6 +41,7 @@ public:
     const   Int_t*		GetErrModID()           const {return ErrModID;}
     const   Int_t*		GetErrModIndex()        const {return ErrModIndex;}
     const   Int_t*		GetErrCode()            const {return ErrCode;}
+            void        SetEventNumber(const UInt_t eventNumber)    {EventNumber = eventNumber;}
 
 };
 

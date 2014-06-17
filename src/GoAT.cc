@@ -373,41 +373,36 @@ void	GoAT::ProcessEvent()
     {
         if(UseParticleReconstruction)
         {
+            trigger->SetEventNumber(GetEventNumber());
             if(UseMesonReconstruction)
             {
                 if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
                 if(!GMesonReconstruction::ProcessEventWithoutFilling())  return;
-                photons->Fill();
                 electrons->Fill();
-                chargedPi->Fill();
                 protons->Fill();
                 neutrons->Fill();
                 pi0->Fill();
                 eta->Fill();
                 etap->Fill();
-                FillReadList();
             }
             else
             {
                 if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
-                photons->Fill();
                 electrons->Fill();
-                chargedPi->Fill();
                 protons->Fill();
                 neutrons->Fill();
-                FillReadList();
             }
         }
         else if(UseMesonReconstruction)
         {
             GMesonReconstruction::ProcessEventWithoutFilling();
-            photons->Fill();
-            chargedPi->Fill();
             pi0->Fill();
             eta->Fill();
             etap->Fill();
-            FillReadList();
         }
+        photons->Fill();
+        chargedPi->Fill();
+        FillReadList();
         nEvents_written++;
 
         //if(SortFillEvent()) {FillEvent(); nEvents_written++;}

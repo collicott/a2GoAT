@@ -335,6 +335,9 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 void  GMesonReconstruction::ProcessEvent()
 {
     if(!ProcessEventWithoutFilling())   return;
+
+    trigger->SetEventNumber(GetEventNumber());
+
     pi0->Fill();
     eta->Fill();
     etap->Fill();

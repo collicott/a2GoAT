@@ -440,9 +440,10 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
 
 
 void	GParticleReconstruction::ProcessEvent()
-{
-    if(!ProcessEventWithoutFilling())
-        return;
+{    
+    if(!ProcessEventWithoutFilling())   return;
+
+    trigger->SetEventNumber(GetEventNumber());
 
     photons->Fill();
     electrons->Fill();
