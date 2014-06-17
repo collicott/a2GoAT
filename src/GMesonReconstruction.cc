@@ -148,7 +148,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
     if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etap) && (ndaughter >= 2))
     {
-        pi0->AddParticle(photons->GetNParticles(), daughter_list, chargedPi->GetNParticles(), &daughter_list[photons->GetNParticles()]);
+        pi0->AddParticle(photons->GetNParticles(), daughter_index, daughter_list, chargedPi->GetNParticles(), &daughter_index[photons->GetNParticles()], &daughter_list[photons->GetNParticles()]);
         //pi0->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
@@ -156,7 +156,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     }
     else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter >= 2))
     {
-        eta->AddParticle(photons->GetNParticles(), daughter_list, chargedPi->GetNParticles(), &daughter_list[photons->GetNParticles()]);
+        eta->AddParticle(photons->GetNParticles(), daughter_index, daughter_list, chargedPi->GetNParticles(), &daughter_index[photons->GetNParticles()], &daughter_list[photons->GetNParticles()]);
         //eta->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
@@ -164,13 +164,13 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     }
     else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter >= 2))
     {
-        etap->AddParticle(photons->GetNParticles(), daughter_list, chargedPi->GetNParticles(), &daughter_list[photons->GetNParticles()]);
+        etap->AddParticle(photons->GetNParticles(), daughter_index, daughter_list, chargedPi->GetNParticles(), &daughter_index[photons->GetNParticles()], &daughter_list[photons->GetNParticles()]);
         //etap->AddParticle(ndaughter, daughter_list, pdg_list);
         photons->Clear();
         chargedPi->Clear();
         return kTRUE;
     }
-
+/*
     // LEVEL 2:
     // Well that didn't work, let's try to make some 2 particle checks
     // Loop over possible 2-particle combinations (skip i=j, ij = ji)
@@ -272,7 +272,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
             else
                 chargedPi->RemoveParticle(daughter_index[index2[i]]);
         }
-    }
+    }*/
     photons->Compress();
     chargedPi->Compress();
     return kTRUE;
