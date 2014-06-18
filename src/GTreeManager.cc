@@ -114,6 +114,8 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
 {
     for(int l=0; l<treeList.GetEntries(); l++)
         ((GTree*)treeList[l])->Close();
+    for(int l=0; l<treeCorreleatedToScalerReadList.GetEntries(); l++)
+        ((GTree*)treeCorreleatedToScalerReadList[l])->Close();
 
     if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);
@@ -126,8 +128,13 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
 
     for(int l=0; l<treeList.GetEntries(); l++)
     {
-        if(file_in->Get("treeRawEvent"))
+        if(file_in->Get(((GTree*)treeList[l])->GetName()))
             ((GTree*)treeList[l])->OpenForInput();
+    }
+    for(int l=0; l<treeCorreleatedToScalerReadList.GetEntries(); l++)
+    {
+        if(file_in->Get(((GTree*)treeCorreleatedToScalerReadList[l])->GetName()))
+            ((GTree*)treeCorreleatedToScalerReadList[l])->OpenForInput();
     }
 
     if(file_out) delete file_out;
