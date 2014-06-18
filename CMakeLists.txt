@@ -65,37 +65,37 @@ add_executable(goat
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
-#add_executable(pi0-example
-#   inc/GTree.h
-#   inc/GTreeRawEvent.h
-#   inc/GTreeDetectorHits.h
-#   inc/GTreeEvent.h
-#   inc/GTreeTagger.h
-#   inc/GTreeScaler.h
-#   inc/GTreeParticle.h
-#   inc/GTreeMeson.h
-#   inc/GTreeTrigger.h
-#   inc/GTreeFit.h
-#   inc/GTreeManager.h
-#   inc/GConfigFile.h
-#   inc/PPi0Example.h
-#   inc/PPhysics.h
-#   src/GTree.cc
-#   src/GTreeRawEvent.cc
-#   src/GTreeDetectorHits.cc
-#   src/GTreeEvent.cc
-#   src/GTreeTagger.cc
-#   src/GTreeScaler.cc
-#   src/GTreeParticle.cc
-#   src/GTreeMeson.cc
-#   src/GTreeTrigger.cc
-#   src/GTreeFit.cc
-#   src/GTreeManager.cc
-#   src/GConfigFile.cc
-#   src/PPi0Example.cc
-#   src/PPhysics.cc
-#   )
-#target_link_libraries(pi0-example ${ROOT_LIBRARIES})
+add_executable(pi0-example
+   inc/GTree.h
+   inc/GTreeRawEvent.h
+   inc/GTreeDetectorHits.h
+   inc/GTreeEvent.h
+   inc/GTreeTagger.h
+   inc/GTreeLinPol.h
+   inc/GTreeScaler.h
+   inc/GTreeParticle.h
+   inc/GTreeMeson.h
+   inc/GTreeTrigger.h
+   inc/GTreeManager.h
+   inc/GConfigFile.h
+   inc/PPi0Example.h
+   inc/PPhysics.h
+   src/GTree.cc
+   src/GTreeRawEvent.cc
+   src/GTreeDetectorHits.cc
+   src/GTreeEvent.cc
+   src/GTreeTagger.cc
+   src/GTreeLinPol.cc
+   src/GTreeScaler.cc
+   src/GTreeParticle.cc
+   src/GTreeMeson.cc
+   src/GTreeTrigger.cc
+   src/GTreeManager.cc
+   src/GConfigFile.cc
+   src/PPi0Example.cc
+   src/PPhysics.cc
+   )
+target_link_libraries(pi0-example ${ROOT_LIBRARIES})
 
 #add_executable(eta-example
 #   inc/GTree.h

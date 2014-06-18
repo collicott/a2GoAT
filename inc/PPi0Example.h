@@ -28,21 +28,20 @@ private:
 
 		
 protected:
-    virtual void    ProcessEvent()  {}
-    virtual Bool_t  Start()         {}
+    virtual void    ProcessEvent();
+    virtual Bool_t  Start();
 
 public:
     PPi0Example();
     virtual ~PPi0Example();
 
-    virtual Bool_t	Init(const char* configfile);	
-    virtual Bool_t	File(const char* file_in, const char* file_out);    
-    virtual void 	Analyse();
-	virtual void	Reconstruct();
+    virtual Bool_t	Init(const char* configfile);
+    //virtual void 	Analyse();
+    //virtual void	Reconstruct();
 	void	PostReconstruction();
 
 	void	DefineHistograms();
 	Bool_t	WriteHistograms(TFile* pfile);
-	Bool_t	WriteHistograms() {return WriteHistograms(HistFile);}
+    Bool_t	WriteHistograms() {return WriteHistograms(file_out);}
 };
 #endif

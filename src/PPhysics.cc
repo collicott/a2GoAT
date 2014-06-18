@@ -20,42 +20,38 @@ void	PPhysics::Reconstruct()
 {
 }
 
-void PPhysics::MissingMassPDG(Int_t pdg, TH1* Hprompt, TH1* Hrandom)
+void PPhysics::MissingMassPDG(const GTreeParticle& tree, TH1* Hprompt, TH1* Hrandom)
 {
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
-	{
-		if (GoATTree_GetPDG(i) != pdg) continue; 
-
-		particle = GetGoATVector(i);
+    for (Int_t i = 0; i < tree.GetNParticles(); i++)
+    {
+        particle = tree.Particle(i);
 		
-		for (Int_t j = 0; j < GetNTagged(); j++)
+        for (Int_t j = 0; j < tagger->GetNTagged(); j++)
 		{
-			FillMissingMassPair(i, j, Hprompt, Hrandom);
+            FillMissingMassPair(tree, i, j, Hprompt, Hrandom);
 		}
 	}
 }	
 
-Bool_t PPhysics::FillMissingMass(Int_t particle_index, TH1* Hprompt, TH1* Hrandom)
+Bool_t PPhysics::FillMissingMass(const GTreeParticle& tree, Int_t particle_index, TH1* Hprompt, TH1* Hrandom)
 {
-	for (Int_t i = 0; i < GetNTagged(); i++)
+    for (Int_t i = 0; i < tagger->GetNTagged(); i++)
 	{
-		FillMissingMassPair(particle_index, i, Hprompt, Hrandom);
+        FillMissingMassPair(tree, particle_index, i, Hprompt, Hrandom);
 	}
 	return kTRUE;	
 }
 
-Bool_t PPhysics::FillMissingMassPair(Int_t particle_index, Int_t tagger_index, TH1* Hprompt, TH1* Hrandom)
+Bool_t PPhysics::FillMissingMassPair(const GTreeParticle& tree, Int_t particle_index, Int_t tagger_index, TH1* Hprompt, TH1* Hrandom)
 {
-	time = GetTagged_t(tagger_index) - GoATTree_GetTime(particle_index);
+    time = tagger->GetTagged_t(tagger_index) - tree.GetTime(particle_index);
 
 	Prompt = IsPrompt(time);
 	Random = IsRandom(time);
 	
 	if ((!Prompt) && (!Random)) return kFALSE;
 
-	particle	= GetGoATVector(particle_index);			
-	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
-	missingp4 	= beam + target - particle;
+    missingp4 = CalcMissingP4(tree, particle_index,tagger_index);
 
 	if (Prompt) Hprompt->Fill(missingp4.M());
 	if (Random) Hrandom->Fill(missingp4.M());						
@@ -63,38 +59,36 @@ Bool_t PPhysics::FillMissingMassPair(Int_t particle_index, Int_t tagger_index, T
 	return kTRUE;
 }
 
-Double_t PPhysics::CalcMissingMass(Int_t particle_index, Int_t tagger_index)
+Double_t PPhysics::CalcMissingMass(const GTreeParticle& tree, Int_t particle_index, Int_t tagger_index)
 {
-	missingp4 	= CalcMissingP4(particle_index, tagger_index);			
+    missingp4 	= CalcMissingP4(tree, particle_index, tagger_index);
 
 	return missingp4.M();
 }
 
-Double_t PPhysics::CalcMissingEnergy(Int_t particle_index, Int_t tagger_index)
+Double_t PPhysics::CalcMissingEnergy(const GTreeParticle& tree, Int_t particle_index, Int_t tagger_index)
 {
-	missingp4 	= CalcMissingP4(particle_index, tagger_index);						
+    missingp4 	= CalcMissingP4(tree,particle_index, tagger_index);
 
 	return missingp4.T();
 }
 
-TLorentzVector PPhysics::CalcMissingP4(Int_t particle_index, Int_t tagger_index)
+TLorentzVector PPhysics::CalcMissingP4(const GTreeParticle& tree, Int_t particle_index, Int_t tagger_index)
 {
-	particle	= GetGoATVector(particle_index);			
-	beam 		= TLorentzVector(0.,0.,GetPhotonBeam_E(tagger_index),GetPhotonBeam_E(tagger_index));
+    particle	= tree.Particle(particle_index);
+    beam 		= TLorentzVector(0.,0.,tagger->GetPhotonBeam_E(tagger_index),tagger->GetPhotonBeam_E(tagger_index));
 	missingp4 	= beam + target - particle;						
 
 	return missingp4;
 }
 
-void PPhysics::FillTimePDG(Int_t pdg, TH1* Htime)
+void PPhysics::FillTimePDG(const GTreeParticle& tree, TH1* Htime)
 {
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    for (Int_t i = 0; i < tree.GetNParticles(); i++)
 	{
-		if (GoATTree_GetPDG(i) != pdg) continue; 
-		
-		for (Int_t j = 0; j < GetNTagged(); j++)
+        for (Int_t j = 0; j < tagger->GetNTagged(); j++)
 		{
-			time = GetTagged_t(j) - GoATTree_GetTime(i);
+            time = tagger->GetTagged_t(j) - tree.GetTime(i);
 			Htime->Fill(time);
 		}
 	}

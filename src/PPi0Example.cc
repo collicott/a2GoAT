@@ -1,7 +1,10 @@
 #ifndef __CINT__
 
 #include "PPi0Example.h"
-
+#include "TSystem.h"
+#include "TSystemDirectory.h"
+#include "TSystemFile.h"
+#include <time.h>
 /**
  * @brief the main routine
  * @param argc number of parameters
@@ -190,7 +193,7 @@ int main(int argc, char *argv[])
 			}
 			
 			cout << "Output file '" << file_out << "' chosen" << endl << endl;
-			if(!ppi0->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: PPi0Example failed on file " << file_in << "!" << endl;
+            if(!ppi0->StartFile(file_in.c_str(), file_out.c_str())) cout << "ERROR: PPi0Example failed on file " << file_in << "!" << endl;
 			files_found++;
 		}
 	}
@@ -233,7 +236,7 @@ int main(int argc, char *argv[])
 
 					files_found++;
 					// Run PPi0Example
-					if(!ppi0->File(file_in.c_str(), file_out.c_str())) 
+                    if(!ppi0->StartFile(file_in.c_str(), file_out.c_str()))
 						cout << "ERROR: PPi0Example failed on file " << file_in << "!" << endl;
 
 				}
@@ -285,65 +288,41 @@ Bool_t	PPi0Example::Init(const char* configfile)
 	return kTRUE;
 }
 
-Bool_t	PPi0Example::File(const char* file_in, const char* file_out)
+Bool_t	PPi0Example::Start()
 {
-	OpenGoATFile(file_in, "READ");
-	OpenHistFile(file_out);
+
 	DefineHistograms();
 
-	cout << "Setting up tree files:" << endl;
-	if(!OpenTreeParticles(GoATFile)) 	return kFALSE;
-	if(!OpenTreeTagger(GoATFile))		return kFALSE;
-	cout << endl;
-
-	cout << "Detmining valid for analysis:" << endl;	
-	if(!FindValidGoATEvents())			return kFALSE;	
-	cout << endl;
-		
-	Analyse();	
+    TraverseEntries(0, pi0->GetNEntries());
+			
+    PostReconstruction();
+    WriteHistograms();
 	return kTRUE;
 }
 
-void	PPi0Example::Analyse()
+void	PPi0Example::ProcessEvent()
 {
-
-	TraverseGoATEntries();
-	cout << "Total Pi0s found: " << N_pi0 << endl << endl;
-	
-	PostReconstruction();		
-	WriteHistograms();
-	CloseHistFile();	
-
-}
-
-void	PPi0Example::Reconstruct()
-{
-	if(GetGoATEvent() == 0) N_pi0 = 0;
-	else if(GetGoATEvent() % 100000 == 0) cout << "Event: "<< GetGoATEvent() << " Total Pi0s found: " << N_pi0 << endl;
+    if(GetEventNumber() == 0) N_pi0 = 0;
+    else if(GetEventNumber() % 100000 == 0) cout << "Event: "<< GetEventNumber() << " Total Pi0s found: " << N_pi0 << endl;
 
 	// Fill timing histogram (all PDG matching pi0)
-	FillTimePDG(pdgDB->GetParticle("pi0")->PdgCode(),time_pi0);
+    FillTimePDG(*pi0,time_pi0);
 	
 	// Fill missing mass (all PDG matching pi0)
-	MissingMassPDG(pdgDB->GetParticle("pi0")->PdgCode(), MM_prompt_pi0, MM_random_pi0);
+    MissingMassPDG(*pi0, MM_prompt_pi0, MM_random_pi0);
 
 	// Some neutral decays
-	for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    for (Int_t i = 0; i < pi0->GetNParticles(); i++)
 	{
 		// Count total pi0s
-		if(GoATTree_GetPDG(i) == pdgDB->GetParticle("pi0")->PdgCode()) 	N_pi0++;
+        N_pi0++;
 		
-		// Check PDG: Not pi0, continue
-		if (GoATTree_GetPDG(i) != pdgDB->GetParticle("pi0")->PdgCode()) continue; 
-		
-		// Check neutrality: Not neutral, continue
-		if (GoATTree_GetCharge(i) != 0) continue;
-		
-		// Check # of daughters: Not 2, continue
-		if (GoATTree_GetNDaughters(i) != 2) continue;
-		
-		// Fill missing mass for particle i
-		FillMissingMass(i, MM_prompt_pi0_n_2g, MM_prompt_pi0_n_2g);
+        // Fill MM for 2 photon decay
+        if ((pi0->GetNSubParticles(i) == 2) & (pi0->GetNSubPhotons(i) == 2))
+        {
+            FillMissingMass(*pi0, i, MM_prompt_pi0_n_2g, MM_random_pi0_n_2g);
+        }
+
 	}
 }
 
@@ -360,8 +339,8 @@ void  PPi0Example::PostReconstruction()
 
 void	PPi0Example::DefineHistograms()
 {
-	gROOT->cd();
-	
+    gROOT->cd();
+
 	time_pi0		= new TH1D("time_pi0",		"time_pi0",		1000,-500,500);
 	time_pi0_cuts	= new TH1D("time_pi0_cuts",	"time_pi0_cuts",1000,-500,500);
 
@@ -377,12 +356,13 @@ void	PPi0Example::DefineHistograms()
 Bool_t 	PPi0Example::WriteHistograms(TFile* pfile)
 {
 	cout << "Writing histograms." << endl;
-		
-	if(!pfile) return kFALSE;
-	pfile->cd();
+    gROOT->cd();
 
-	gROOT->GetList()->Write();
-	gROOT->GetList()->Delete();
+    if(!file_out) return kFALSE;
+    file_out->cd();
+
+    gROOT->GetList()->Write();
+    gROOT->GetList()->Delete();
 		
 	return kTRUE;
 }
