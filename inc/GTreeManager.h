@@ -15,33 +15,12 @@
 #include "GTreeParticle.h"
 #include "GTreeMeson.h"
 #include "GTreeTrigger.h"
-#include "GTreeFit.h"
 #include "GTreeDetectorHits.h"
 
 
 
 class  GTreeManager : public GConfigFile
 {
-public:
-    enum    TreeFlag
-    {
-        TreeFlag_RawEvent       =      1,
-        TreeFlag_Tagger         =      2,
-        TreeFlag_Trigger        =      4,
-        TreeFlag_Scalers        =      8,
-        TreeFlag_EventFlags     =     16,
-        TreeFlag_DetectorHits   =     32,
-        TreeFlag_Photons        =     64,
-        TreeFlag_Electrons      =    128,
-        TreeFlag_ChargedPi      =    256,
-        TreeFlag_Protons        =    512,
-        TreeFlag_Neutrons       =   1024,
-        TreeFlag_Pi0            =   2048,
-        TreeFlag_Eta            =   4096,
-        TreeFlag_Etap           =   8192,
-        TreeFlag_Fit            =  16384
-    };
-
 private:
     TFile*      file_in;
     TObjArray   readList;
@@ -52,12 +31,6 @@ private:
     UInt_t  eventNumberValidScalerRead[GTreeScaler_MAX];
     UInt_t  eventNumberBeforeValidScalerRead[GTreeScaler_MAX];
     UInt_t  currentEvent;
-
-    //Bool_t  EntryChecking(const GTree* tree);
-    Bool_t  CreateMeson(GTreeMeson*& mesonTree, const TString& _Name);
-    Bool_t  CreateParticle(GTreeParticle*& particleTree, const TString& _Name);
-    Bool_t  OpenMeson(GTreeMeson*& mesonTree, const TString& _Name);
-    Bool_t  OpenParticle(GTreeParticle*& particleTree, const TString& _Name);
 
 protected:
     TFile*          file_out;
@@ -77,14 +50,12 @@ protected:
     GTreeMeson*         pi0;
     GTreeMeson*         eta;
     GTreeMeson*         etap;
-    GTreeFit*           fitData;
 
     TDatabasePDG *pdgDB;
 
 
             void    CloseFiles();
             void    FillReadList()      {for(int l=0; l<readList.GetEntriesFast(); l++) ((GTree*)readList[l])->Fill();}
-            //Bool_t  FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent);
     virtual void    ProcessEvent() = 0;
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
@@ -99,8 +70,6 @@ public:
 
     static  Int_t   CheckInput(const char* input_filename);
             UInt_t  GetEventNumber() const {return currentEvent;}
-            //UInt_t  GetEventAtFirstScalerRead() const {return EventAtFirstScalerRead;}
-            //UInt_t  GetEventAtLastScalerRead()  const {return EventAtLastScalerRead;}
     virtual Bool_t  Init() {}
             Bool_t  StartFile(const char* input_filename, const char* output_filename);
 

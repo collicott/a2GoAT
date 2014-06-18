@@ -24,7 +24,6 @@ GTreeManager::GTreeManager()    :
     pi0(0),
     eta(0),
     etap(0),
-    fitData(0),
     linpol(0),
     nValidScalerReads(0),
     currentEvent(0)
@@ -43,7 +42,6 @@ GTreeManager::GTreeManager()    :
     tagger = new GTreeTagger(this);
     trigger = new GTreeTrigger(this);
     scalers = new GTreeScaler(this);
-    fitData = new GTreeFit(this);
     linpol = new GTreeLinPol(this);
 
     pdgDB = TDatabasePDG::Instance();
@@ -132,11 +130,6 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
         if(trigger->IsOpenForInput())
             readList.Add(trigger);
     }
-    if(fitData)
-    {
-        if(fitData->IsOpenForInput())
-            readList.Add(fitData);
-    }
 
     for(UInt_t i=min; i<max; i++)
     {
@@ -175,51 +168,6 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
     return kTRUE;
 }
 
-Int_t   GTreeManager::CheckInput(const char* input_filename)
-{
-    TFile*  file = TFile::Open(input_filename);
-    if(!file)
-    {
-        cout << "#ERROR: Can not open input file " << input_filename << "!" << endl;
-        return 0;
-    }
-
-    Int_t   ret = 0;
-
-    if(file->Get("treeRawEvent"))
-        ret = ret | TreeFlag_RawEvent;
-    if(file->Get("treeTagger"))
-        ret = ret | TreeFlag_Tagger;
-    if(file->Get("treeTrigger"))
-        ret = ret | TreeFlag_Trigger;
-    if(file->Get("treeEventFlags"))
-        ret = ret | TreeFlag_EventFlags;
-    if(file->Get("treeDetectorHits"))
-        ret = ret | TreeFlag_DetectorHits;
-    if(file->Get("treeFit"))
-        ret = ret | TreeFlag_Fit;
-    if(file->Get("Etap"))
-        ret = ret | TreeFlag_Etap;
-    if(file->Get("Eta"))
-        ret = ret | TreeFlag_Eta;
-    if(file->Get("Pi0"))
-        ret = ret | TreeFlag_Pi0;
-    if(file->Get("Photons"))
-        ret = ret | TreeFlag_Photons;
-    if(file->Get("Electrons"))
-        ret = ret | TreeFlag_Electrons;
-    if(file->Get("ChargedPi"))
-        ret = ret | TreeFlag_ChargedPi;
-    if(file->Get("Protons"))
-        ret = ret | TreeFlag_Protons;
-    if(file->Get("Neutrons"))
-        ret = ret | TreeFlag_Neutrons;
-
-    delete file;
-    return ret;
-}
-
-
 
 Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
@@ -237,7 +185,6 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     tagger->Close();
     trigger->Close();
     scalers->Close();
-    fitData->Close();
     linpol->Close();
 
     if(file_in) delete file_in;
@@ -259,8 +206,6 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
         eventFlags->OpenForInput();
     if(file_in->Get("treeDetectorHits"))
         detectorHits->OpenForInput();
-    if(file_in->Get("treeFit"))
-        fitData->OpenForInput();
     if(file_in->Get("Etap"))
         etap->OpenForInput();
     if(file_in->Get("Eta"))

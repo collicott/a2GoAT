@@ -40,7 +40,6 @@ add_executable(goat
    inc/GTreeParticle.h
    inc/GTreeMeson.h
    inc/GTreeTrigger.h
-   inc/GTreeFit.h
    inc/GTreeManager.h
    inc/GConfigFile.h
    inc/GDataChecks.h
@@ -58,7 +57,6 @@ add_executable(goat
    src/GTreeParticle.cc
    src/GTreeMeson.cc
    src/GTreeTrigger.cc
-   src/GTreeFit.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
    src/GDataChecks.cc

@@ -30,8 +30,6 @@ public:
     virtual ~GMesonReconstruction();
 
             Bool_t  Init();
-    static  Int_t   InputNeeded()   {return GTreeManager::TreeFlag_Photons;}
-    static  Int_t   OutputNeeded()  {}
             void    SetPi0Width(const Double_t width)   {width_pi0 = width;}
             void    SetEtaWidth(const Double_t width)   {width_eta = width;}
             void    SetEtapWidth(const Double_t width)  {width_etap = width;}
