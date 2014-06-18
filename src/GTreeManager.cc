@@ -29,7 +29,6 @@ GTreeManager::GTreeManager()    :
     eta(0),
     etap(0),
     linpol(0),
-    nValidScalerReads(0),
     currentEvent(0)
 {
     etap = new GTreeMeson(this, TString("Etap"));

@@ -29,10 +29,6 @@ private:
     TObjArray   writeList;
     Bool_t      isWritten;
 
-    UInt_t  nValidScalerReads;
-    UInt_t  validScalerRead[GTreeScaler_MAX];
-    UInt_t  eventNumberValidScalerRead[GTreeScaler_MAX];
-    UInt_t  eventNumberBeforeValidScalerRead[GTreeScaler_MAX];
     UInt_t  currentEvent;
     UInt_t  currentScalerEntry;
 
