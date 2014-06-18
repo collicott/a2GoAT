@@ -239,6 +239,7 @@ Bool_t  GTreeManager::TraverseValidEvents()
             currentScalerEntry = i;
             accepted->SetBinContent(2, accepted->GetBinContent(2) + (scalers->GetEventNumber()-start));
             TraverseEntries(start, scalers->GetEventNumber());
+            ProcessScalerRead();
             start = scalers->GetEventNumber();
         }
     }

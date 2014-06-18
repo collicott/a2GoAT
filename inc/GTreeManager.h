@@ -60,6 +60,7 @@ protected:
             void    CloseFiles();
             void    FillReadList()      {for(int l=0; l<readList.GetEntriesFast(); l++) ((GTree*)readList[l])->Fill();}
     virtual void    ProcessEvent() = 0;
+    virtual void    ProcessScalerRead() {}
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
             Bool_t  TraverseScalerEntries(const UInt_t min, const UInt_t max);
