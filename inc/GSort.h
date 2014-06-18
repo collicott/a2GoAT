@@ -39,7 +39,7 @@ private:
 
     Int_t               n_cut_SP;				// Sort on Particles
     Int_t*              SP_n;
-    Int_t*              SP_type;
+    GTreeParticle**     SP_type;
     Sort_Condition*		SP_condition;
     Double_t*           SP_theta_min;
     Double_t*           SP_theta_max;
@@ -65,9 +65,9 @@ public:
     virtual void	Reconstruct();
 
     Bool_t	SortAnalyseEvent();
-    //Bool_t	SortFillEvent();
-    //Bool_t 	SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
-    //Bool_t 	SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
+    Bool_t	SortFillEvent();
+    Bool_t 	SortOnParticle(const GTreeParticle& tree, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
+    Bool_t 	SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
     void	CheckConfigCondition(char string[], Sort_Condition* condition, std::string& string_out);
 };
 

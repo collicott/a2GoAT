@@ -19,13 +19,13 @@ GSort::GSort() :
      SN_theta_max(0)     
 {
 	SP_n 		= new Int_t[50];
-	SP_type		= new Int_t[50];
+    SP_type		= new GTreeParticle*[50];
     SP_condition= new Sort_Condition[50];
 	SP_theta_min= new Double_t[50];
 	SP_theta_max= new Double_t[50];
 
 	SN_n 		= new Int_t[50];
-	SN_type		= new Int_t[50];
+    SN_type		= new Int_t[50];
     SN_condition= new Sort_Condition[50];
 	SN_theta_min= new Double_t[50];
 	SN_theta_max= new Double_t[50];
@@ -132,41 +132,59 @@ Bool_t	GSort::Init()
 	n_cut_SN = 0;
 	do
 	{
-        char            pdg[256], cond[256];
+        char            particleName[256], cond[256];
         Int_t           num;
         Sort_Condition  condition;
         Double_t        th_min, th_max;
 
 		config = ReadConfig("Sort-Particle",instance);
-		if( sscanf( config.c_str(), "%s %d %s %lf %lf\n", pdg, &num, cond, &th_min, &th_max) == 5 )
+        if( sscanf( config.c_str(), "%s %d %s %lf %lf\n", particleName, &num, cond, &th_min, &th_max) == 5 )
 		{			
 			CheckConfigCondition(cond, &condition, string_out1);
 			
-			if((strcmp(pdg,"charged") == 0) || (strcmp(pdg,"neutral") == 0))
+            if((strcmp(particleName,"charged") == 0) || (strcmp(particleName,"neutral") == 0))
 			{
 				SN_n[n_cut_SN] = num;
-				if (strcmp(pdg,"charged") == 0) SN_type[n_cut_SN] = 1;
+                if (strcmp(particleName,"charged") == 0) SN_type[n_cut_SN] = 1;
 				else SN_type[n_cut_SN] = 0;
 				SN_condition[n_cut_SN] = condition;
 				SN_theta_min[n_cut_SN] = th_min;
 				SN_theta_max[n_cut_SN] = th_max;
 				n_cut_SN++;
 				
-				cout << "Sort: " << pdg << " (" << num << cond <<","<<th_min<<"," << th_max<<")" << endl;
+                cout << "Sort: " << particleName << " (" << num << cond <<","<<th_min<<"," << th_max<<")" << endl;
 			}	
-			else if(pdgDB->GetParticle(pdg) != 0x0) // Check for particle in pdg database
-			{
-				SP_n[n_cut_SP] 		   = num;
-				SP_type[n_cut_SP] 	   = pdgDB->GetParticle(pdg)->PdgCode();
-				SP_condition[n_cut_SP] = condition;
-				SP_theta_min[n_cut_SP] = th_min;
-				SP_theta_max[n_cut_SP] = th_max;
-				n_cut_SP++;
-				
-				cout << "Sort: " << pdg << " (" << num << cond <<","<<th_min<<"," << th_max<<")" << endl;
+            else if(pdgDB->GetParticle(particleName) != 0x0) // Check for particle in pdg database
+            {
+                int     i       =0;
+                bool    found   =false;
+                while(i<GetTreeList().GetEntries())
+                {
+                    if(strcmp(GetTreeList()[i]->GetName(),particleName) == 0)
+                    {
+                        SP_type[n_cut_SP] 	   = (GTreeParticle*)GetTreeList()[i];
+                        break;
+                    }
+                    i++;
+                }
+                if(i<GetTreeList().GetEntries())
+                {
+                    SP_n[n_cut_SP] 		   = num;
+                    SP_condition[n_cut_SP] = condition;
+                    SP_theta_min[n_cut_SP] = th_min;
+                    SP_theta_max[n_cut_SP] = th_max;
+                    n_cut_SP++;
+                    cout << "Sort: " << particleName << " (" << num << cond <<","<<th_min<<"," << th_max<<")" << endl;
+                }
+                else
+                {
+                    cout << "tree for particle type "  << particleName  << " is not existing." << endl;
+                    return kFALSE;
+                }
 			}
-			else{
-				cout << endl << "ERROR unknown particle type ("  << pdg 
+            else
+            {
+                cout << endl << "ERROR unknown particle type ("  << particleName
 					 << ") set by Sort-Particle." << endl << endl;
 				return kFALSE;
 			}
@@ -260,7 +278,7 @@ Bool_t GSort::SortAnalyseEvent()
 	return kTRUE;
 }
 
-/*
+
 Bool_t GSort::SortFillEvent()
 {
     if(SortNParticles == 1)
@@ -268,31 +286,31 @@ Bool_t GSort::SortFillEvent()
 		switch (S_nParticles_condition) // Number of reconstructed part
 		{
             case Condion_EqualOrMore:
-				if(GoATTree_GetNParticles() < S_nParticles)  return kFALSE;
+                if(GetNReconstructed() < S_nParticles)  return kFALSE;
 				break;
             case Condion_EqualOrLess:
-				if(GoATTree_GetNParticles() > S_nParticles)  return kFALSE;
+                if(GetNReconstructed() > S_nParticles)  return kFALSE;
 				break;
             case Condion_Equal:
-				if(GoATTree_GetNParticles() != S_nParticles) return kFALSE;
+                if(GetNReconstructed() != S_nParticles) return kFALSE;
 				break;
             case Condion_NONE:
                 return kFALSE;
 		}
 	}
 
-	for(Int_t i = 0; i < n_cut_SN; i++)
+    /*for(Int_t i = 0; i < n_cut_SN; i++)
 	{
 		if(!SortOnNeutrality(SN_type[i],	
 							SN_n[i], 
 							SN_condition[i], 
 							SN_theta_min[i], 
 							SN_theta_max[i]))		return kFALSE;
-	}			
+    }*/
 
 	for(Int_t i = 0; i < n_cut_SP; i++)
 	{
-		if(!SortOnParticle( SP_type[i],	
+        if(!SortOnParticle( *SP_type[i],
 							SP_n[i], 
 							SP_condition[i], 
 							SP_theta_min[i], 
@@ -305,23 +323,20 @@ Bool_t GSort::SortFillEvent()
 }
 
 
-Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax)
+Bool_t	GSort::SortOnParticle(const GTreeParticle &tree, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax)
 {
 	Int_t NumberFound = 0;
 	
-    for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    for (Int_t i = 0; i < tree.GetNParticles(); i++)
 	{
-		if (GoATTree_GetPDG(i) == PDG)
-		{
-			// Check theta limits
-			if ((GoATTree_GetTheta(i) <= ThetaMin) || 
-				(GoATTree_GetTheta(i) >= ThetaMax))
+        // Check theta limits
+        if ((tree.Particle(i).Theta() <= ThetaMin) ||
+            (tree.Particle(i).Theta() >= ThetaMax))
 			return kFALSE;
-			NumberFound++;
-		}
-	}
+        NumberFound++;
+    }
 
-	switch (cond)
+    switch (cond)
 	{
         case Condion_EqualOrMore:
 			if (NumberFound < Num) 	return kFALSE;
@@ -338,7 +353,7 @@ Bool_t	GSort::SortOnParticle(Int_t PDG, Int_t Num, Int_t cond, Double_t ThetaMin
 
 	return kTRUE;
 }
-
+/*
 Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax)
 {
 	Int_t NumberFound = 0;
