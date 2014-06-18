@@ -4,8 +4,8 @@
 
 GTreeMeson::GTreeMeson(GTreeManager *Manager, const TString& _Name)    :
     GTreeParticle(Manager, _Name),
-    subPhotons(new TClonesArray("TClonesArray", 1)),
-    subChargedPi(new TClonesArray("TClonesArray", 1))
+    subPhotons(new TClonesArray("TClonesArray", GTreeParticle_MaxEntries)),
+    subChargedPi(new TClonesArray("TClonesArray", GTreeParticle_MaxEntries))
 {
     for(int i=0; i<GTreeParticle_MaxEntries; i++)
     {
@@ -24,9 +24,9 @@ GTreeMeson::~GTreeMeson()
 void    GTreeMeson::SetBranchAdresses()
 {
     GTreeParticle::SetBranchAdresses();
-    tree_in->SetBranchAddress("nSubParticles", &nSubParticles);
-    tree_in->SetBranchAddress("nSubPhotons", &nSubPhotons);
-    tree_in->SetBranchAddress("nSubChargedPi", &nSubChargedPi);
+    tree_in->SetBranchAddress("nSubParticles", nSubParticles);
+    tree_in->SetBranchAddress("nSubPhotons", nSubPhotons);
+    tree_in->SetBranchAddress("nSubChargedPi", nSubChargedPi);
     tree_in->SetBranchAddress("subPhotons.", &subPhotons);
     tree_in->SetBranchAddress("subChargedPi.", &subChargedPi);
 }
@@ -34,11 +34,13 @@ void    GTreeMeson::SetBranchAdresses()
 void    GTreeMeson::SetBranches()
 {
     GTreeParticle::SetBranches();
-    tree_out->Branch("nSubParticles", &nSubParticles, "nSubParticles[nParticles]/b");
-    tree_out->Branch("nSubPhotons", &nSubPhotons,"nSubParticles[nParticles]/b");
-    tree_out->Branch("nSubChargedPi", &nSubChargedPi,"nSubParticles[nParticles]/b");
+    tree_out->Branch("nSubParticles", nSubParticles, "nSubParticles[nParticles]/b");
+    tree_out->Branch("nSubPhotons", nSubPhotons,"nSubParticles[nParticles]/b");
+    tree_out->Branch("nSubChargedPi", nSubChargedPi,"nSubParticles[nParticles]/b");
     tree_out->Branch("subPhotons.", &subPhotons, 32, 0);
-    tree_out->Branch("subChargedPi.", subChargedPi, 32, 0);
+    subPhotons->BypassStreamer();
+    tree_out->Branch("subChargedPi.", &subChargedPi, 32, 0);
+    subChargedPi->BypassStreamer();
 }
 
 void    GTreeMeson::AddParticle(const Int_t _NSubPhotons, Int_t* subPhotons_index, TLorentzVector** subPhotons_list, const Int_t _NSubChargedPi, Int_t* subChargedPi_index, TLorentzVector** subChargedPi_list)

@@ -14,7 +14,7 @@
 #define MASS_PROTON 938.272046
 
 
-#define GTreeMeson_MaxSubEntries    16
+#define GTreeMeson_MaxSubEntries    32
 
 using namespace std;
 
