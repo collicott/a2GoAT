@@ -369,7 +369,7 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
             switch(CB_type)
             {
                 case ReconstructionType_AllPhotons:
-                    photons->AddParticle(rawEvent->GetVector(i), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
+                    Identified[i] = pdgDB->GetParticle("gamma")->PdgCode();
                     break;
                 case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
@@ -397,10 +397,10 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
             switch(TAPS_type)
             {
                 case ReconstructionType_AllPhotons:
-                    photons->AddParticle(rawEvent->GetVector(i), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
+                    Identified[i] = pdgDB->GetParticle("gamma")->PdgCode();
                     break;
                 case ReconstructionType_AllProtons:
-                    protons->AddParticle(rawEvent->GetVector(i), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
+                    Identified[i] = pdgDB->GetParticle("proton")->PdgCode();
                     break;
                 case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
