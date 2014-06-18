@@ -73,6 +73,7 @@ public:
     static  Int_t   CheckInput(const char* input_filename);
             UInt_t  GetEventNumber()    const   {return currentEvent;}
             UInt_t  GetNEntries()       const;
+            UInt_t  GetNScalerEntries() const;
     virtual Bool_t  Init() {}
             Bool_t  StartFile(const char* input_filename, const char* output_filename);
 

@@ -261,3 +261,20 @@ UInt_t  GTreeManager::GetNEntries()       const
 
     return  ((GTree*)readList[0])->GetNEntries();
 }
+
+UInt_t  GTreeManager::GetNScalerEntries()       const
+{
+    for(int l=1; l<readCorreleatedToScalerReadList.GetEntriesFast(); l++)
+    {
+        if(((GTree*)readCorreleatedToScalerReadList[l])->GetNEntries() != ((GTree*)readCorreleatedToScalerReadList[l-1])->GetNEntries())
+        {
+            cout << "ERROR: input trees have different number of entries!"<< endl;
+            return 0;
+        }
+    }
+
+    if(readCorreleatedToScalerReadList.GetEntriesFast() == 0)
+        return 0;
+
+    return  ((GTree*)readCorreleatedToScalerReadList[0])->GetNEntries();
+}
