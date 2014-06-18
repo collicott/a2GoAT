@@ -327,10 +327,128 @@ Bool_t  GTreeManager::TraverseValidEvents()
     }
     cout << "\tValid events from " << start << " to " << stop << "."<< endl;
     accepted->SetBinContent(2, accepted->GetBinContent(2) + (stop-start));
-    TraverseEntries(start, stop);
+    TraverseEntries(0, GetNEntries());
 
     accepted->SetBinContent(3, rawEvent->GetNEntries() - accepted->GetBinContent(2));
 
     if(!Write(accepted))  return kFALSE;
     return kTRUE;
+}
+
+UInt_t  GTreeManager::GetNEntries()       const
+{
+    UInt_t  nEntries    = 0;
+    UInt_t  entries[16];
+    if(etap)
+    {
+        if(etap->IsOpenForInput())
+        {
+            entries[nEntries]   = etap->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(eta)
+    {
+        if(eta->IsOpenForInput())
+        {
+            entries[nEntries]   = eta->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(pi0)
+    {
+        if(pi0->IsOpenForInput())
+        {
+            entries[nEntries]   = pi0->GetNEntries();
+            nEntries++;
+        }
+    }
+
+    if(photons)
+    {
+        if(photons->IsOpenForInput())
+        {
+            entries[nEntries]   = photons->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(electrons)
+    {
+        if(electrons->IsOpenForInput())
+        {
+            entries[nEntries]   = electrons->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(chargedPi)
+    {
+        if(chargedPi->IsOpenForInput())
+        {
+            entries[nEntries]   = chargedPi->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(protons)
+    {
+        if(protons->IsOpenForInput())
+        {
+            entries[nEntries]   = protons->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(neutrons)
+    {
+        if(neutrons->IsOpenForInput())
+        {
+            entries[nEntries]   = neutrons->GetNEntries();
+            nEntries++;
+        }
+    }
+
+    if(rawEvent)
+    {
+        if(rawEvent->IsOpenForInput())
+        {
+            entries[nEntries]   = rawEvent->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(tagger)
+    {
+        if(tagger->IsOpenForInput())
+        {
+            entries[nEntries]   = tagger->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(detectorHits)
+    {
+        if(detectorHits->IsOpenForInput())
+        {
+            entries[nEntries]   = detectorHits->GetNEntries();
+            nEntries++;
+        }
+    }
+    if(trigger)
+    {
+        if(trigger->IsOpenForInput())
+        {
+            entries[nEntries]   = trigger->GetNEntries();
+            nEntries++;
+        }
+    }
+
+    if(nEntries == 0)
+        return 0;
+
+    for(int i=1; i<nEntries; i++)
+    {
+        if(entries[i] != entries[i-1])
+        {
+            cout << "ERROR: input trees have different number of entries!"<< endl;
+            return 0;
+        }
+    }
+
+    return  entries[0];
 }
