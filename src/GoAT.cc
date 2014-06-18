@@ -278,6 +278,8 @@ int main(int argc, char *argv[])
 	<< (double)(end-start)/CLOCKS_PER_SEC
 	<< " seconds." << "\n\n";
 
+    if(goat)    delete goat;
+
 	return 0;
 }
 
