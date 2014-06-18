@@ -20,29 +20,6 @@ GTree::~GTree()
     if(tree_out) delete tree_out;
 }
 
-void    GTree::Clone()
-{
-    if(!IsOpenForInput())
-    {
-        if(!OpenForInput())
-        {
-            std::cout << "Can not open " << name << " in input file." << endl;
-            return;
-        }
-    }
-    if(!IsOpenForOutput())
-    {
-        if(!OpenForOutput())
-        {
-            std::cout << "Can not create " << name << " in output file." << endl;
-            return;
-        }
-    }
-    manager->file_out->cd();
-    tree_out = tree_in->CloneTree();
-}
-
-
 void    GTree::Fill()
 {
     if(!IsOpenForOutput())

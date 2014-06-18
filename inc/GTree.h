@@ -44,7 +44,6 @@ public:
     virtual ~GTree();
 
     virtual void        Clear() = 0;
-            void        Clone();
             void        CloseForInput()     {status = status & ~FLAG_OPENFORINPUT;}
             void        CloseForOutput()    {status = status & ~FLAG_OPENFOROUTPUT;}
             void        Close();
