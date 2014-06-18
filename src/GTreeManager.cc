@@ -50,20 +50,11 @@ GTreeManager::GTreeManager()    :
 
 GTreeManager::~GTreeManager()
 {
-    if(etap)        etap;
-    if(eta)         eta;
-    if(pi0)         pi0;
-    if(photons)     photons;
-    if(electrons)   electrons;
-    if(chargedPi)   chargedPi;
-    if(protons)     protons;
-    if(neutrons)    neutrons;
-    if(detectorHits)detectorHits;
-    if(rawEvent)    rawEvent;
-    if(tagger)      tagger;
-    if(trigger)     trigger;
-    if(scalers)     scalers;
-    if(linpol)      linpol;
+    while(treeList.GetEntries()>0)
+    {
+        cout << treeList.GetEntries() << endl;
+        if((GTree*)treeList[0]) delete (GTree*)treeList[0];
+    }
 
     CloseFiles();
 }
