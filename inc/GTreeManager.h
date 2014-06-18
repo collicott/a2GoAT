@@ -11,7 +11,6 @@
 #include "GTreeTagger.h"
 #include "GTreeLinPol.h"
 #include "GTreeScaler.h"
-#include "GTreeEvent.h"
 #include "GTreeParticle.h"
 #include "GTreeMeson.h"
 #include "GTreeTrigger.h"
@@ -40,7 +39,6 @@ protected:
     GTreeLinPol*        linpol;
     GTreeTrigger*       trigger;
     GTreeScaler*        scalers;
-    GTreeEvent*         eventFlags;
     GTreeDetectorHits*  detectorHits;
     GTreeParticle*      photons;
     GTreeParticle*      electrons;

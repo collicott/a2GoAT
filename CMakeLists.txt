@@ -33,7 +33,6 @@ add_executable(goat
    inc/GTree.h
    inc/GTreeRawEvent.h
    inc/GTreeDetectorHits.h
-   inc/GTreeEvent.h
    inc/GTreeTagger.h
    inc/GTreeLinPol.h
    inc/GTreeScaler.h
@@ -50,7 +49,6 @@ add_executable(goat
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeDetectorHits.cc
-   src/GTreeEvent.cc
    src/GTreeTagger.cc
    src/GTreeLinPol.cc
    src/GTreeScaler.cc

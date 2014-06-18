@@ -14,7 +14,6 @@ GTreeManager::GTreeManager()    :
     tagger(0),
     trigger(0),
     scalers(0),
-    eventFlags(0),
     detectorHits(0),
     photons(0),
     electrons(0),
@@ -37,7 +36,6 @@ GTreeManager::GTreeManager()    :
     protons = new GTreeParticle(this, TString("Protons"));
     neutrons = new GTreeParticle(this, TString("Neutrons"));
     detectorHits = new GTreeDetectorHits(this);
-    eventFlags = new GTreeEvent(this);
     rawEvent = new GTreeRawEvent(this);
     tagger = new GTreeTagger(this);
     trigger = new GTreeTrigger(this);
@@ -115,11 +113,6 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
         if(tagger->IsOpenForInput())
             readList.Add(tagger);
     }
-    if(eventFlags)
-    {
-        if(eventFlags->IsOpenForInput())
-            readList.Add(eventFlags);
-    }
     if(detectorHits)
     {
         if(detectorHits->IsOpenForInput())
@@ -180,7 +173,6 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     protons->Close();
     neutrons->Close();
     detectorHits->Close();
-    eventFlags->Close();
     rawEvent->Close();
     tagger->Close();
     trigger->Close();
@@ -202,8 +194,6 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
         tagger->OpenForInput();
     if(file_in->Get("treeTrigger"))
         trigger->OpenForInput();
-    if(file_in->Get("treeEventFlags"))
-        eventFlags->OpenForInput();
     if(file_in->Get("treeDetectorHits"))
         detectorHits->OpenForInput();
     if(file_in->Get("Etap"))
@@ -258,7 +248,6 @@ Bool_t  GTreeManager::Write()
     if(protons->IsOpenForOutput())     protons->Write();
     if(neutrons->IsOpenForOutput())    neutrons->Write();
     if(detectorHits->IsOpenForOutput())detectorHits->Write();
-    if(eventFlags->IsOpenForOutput())  eventFlags->Write();
     if(rawEvent->IsOpenForOutput())    rawEvent->Write();
     if(tagger->IsOpenForOutput())      tagger->Write();
     if(trigger->IsOpenForOutput())     trigger->Write();
