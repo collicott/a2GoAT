@@ -61,6 +61,8 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
     if(!file_in)
         return kFALSE;
 
+    readList.Clear();
+
     if(etap)
     {
         if(etap->IsOpenForInput())
@@ -332,12 +334,3 @@ Bool_t  GTreeManager::TraverseValidEvents()
     if(!Write(accepted))  return kFALSE;
     return kTRUE;
 }
-
-/*Bool_t  GTreeManager::FindValidEvents(UInt_t& firstValidEvent, UInt_t& lastValidEvent)
-{
-    if(!FindValidEvents())
-        return kFALSE;
-    firstValidEvent = EventAtFirstScalerRead+1;
-    lastValidEvent  = EventAtLastScalerRead;
-    return kTRUE;
-}*/
