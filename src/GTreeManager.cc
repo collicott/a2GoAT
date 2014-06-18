@@ -25,6 +25,7 @@ GTreeManager::GTreeManager()    :
     eta(0),
     etap(0),
     fitData(0),
+    linpol(0),
     nValidScalerReads(0),
     currentEvent(0)
 {
@@ -43,6 +44,7 @@ GTreeManager::GTreeManager()    :
     trigger = new GTreeTrigger(this);
     scalers = new GTreeScaler(this);
     fitData = new GTreeFit(this);
+    linpol = new GTreeLinPol(this);
 
     pdgDB = TDatabasePDG::Instance();
 }
@@ -236,6 +238,7 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     trigger->Close();
     scalers->Close();
     fitData->Close();
+    linpol->Close();
 
     if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);
@@ -274,8 +277,8 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
         protons->OpenForInput();
     if(file_in->Get("Neutrons"))
         neutrons->OpenForInput();
-
-
+    if(file_in->Get("treeLinPol"))
+        linpol->OpenForInput();
 
     if(file_out) delete file_out;
     file_out = TFile::Open(output_filename, "RECREATE");
@@ -315,7 +318,7 @@ Bool_t  GTreeManager::Write()
     if(tagger->IsOpenForOutput())      tagger->Write();
     if(trigger->IsOpenForOutput())     trigger->Write();
     if(scalers->IsOpenForOutput())     scalers->Write();
-    if(fitData->IsOpenForOutput())     fitData->Write();
+    if(linpol->IsOpenForOutput())      linpol->Write();
 
     isWritten   = kTRUE;
 

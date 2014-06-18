@@ -9,6 +9,7 @@
 #include "GConfigFile.h"
 #include "GTreeRawEvent.h"
 #include "GTreeTagger.h"
+#include "GTreeLinPol.h"
 #include "GTreeScaler.h"
 #include "GTreeEvent.h"
 #include "GTreeParticle.h"
@@ -63,6 +64,7 @@ protected:
 
     GTreeRawEvent*      rawEvent;
     GTreeTagger*        tagger;
+    GTreeLinPol*        linpol;
     GTreeTrigger*       trigger;
     GTreeScaler*        scalers;
     GTreeEvent*         eventFlags;
