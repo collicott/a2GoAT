@@ -67,7 +67,7 @@ public:
     Bool_t	SortAnalyseEvent();
     Bool_t	SortFillEvent();
     Bool_t 	SortOnParticle(const GTreeParticle& tree, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
-    Bool_t 	SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax);
+    Bool_t 	SortOnNeutrality(Bool_t charge, Int_t Num, Sort_Condition cond, Double_t ThetaMin, Double_t ThetaMax);
     void	CheckConfigCondition(char string[], Sort_Condition* condition, std::string& string_out);
 };
 

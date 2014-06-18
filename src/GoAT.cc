@@ -380,6 +380,7 @@ void	GoAT::ProcessEvent()
             {
                 if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
                 if(!GMesonReconstruction::ProcessEventWithoutFilling())  return;
+                if(!SortFillEvent())    return;
                 electrons->Fill();
                 protons->Fill();
                 neutrons->Fill();
@@ -390,6 +391,7 @@ void	GoAT::ProcessEvent()
             else
             {
                 if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
+                if(!SortFillEvent())    return;
                 electrons->Fill();
                 protons->Fill();
                 neutrons->Fill();
@@ -398,6 +400,7 @@ void	GoAT::ProcessEvent()
         else if(UseMesonReconstruction)
         {
             GMesonReconstruction::ProcessEventWithoutFilling();
+            if(!SortFillEvent())    return;
             pi0->Fill();
             eta->Fill();
             etap->Fill();
@@ -406,8 +409,6 @@ void	GoAT::ProcessEvent()
         chargedPi->Fill();
         FillReadList();
         nEvents_written++;
-
-        //if(SortFillEvent()) {FillEvent(); nEvents_written++;}
     }
 }
 

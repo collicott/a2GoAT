@@ -299,14 +299,14 @@ Bool_t GSort::SortFillEvent()
 		}
 	}
 
-    /*for(Int_t i = 0; i < n_cut_SN; i++)
+    for(Int_t i = 0; i < n_cut_SN; i++)
 	{
 		if(!SortOnNeutrality(SN_type[i],	
 							SN_n[i], 
 							SN_condition[i], 
 							SN_theta_min[i], 
 							SN_theta_max[i]))		return kFALSE;
-    }*/
+    }
 
 	for(Int_t i = 0; i < n_cut_SP; i++)
 	{
@@ -353,40 +353,56 @@ Bool_t	GSort::SortOnParticle(const GTreeParticle &tree, Int_t Num, Int_t cond, D
 
 	return kTRUE;
 }
-/*
-Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t ThetaMin, Double_t ThetaMax)
+
+Bool_t	GSort::SortOnNeutrality(Bool_t charge, Int_t Num, Sort_Condition cond, Double_t ThetaMin, Double_t ThetaMax)
 {
 	Int_t NumberFound = 0;
 	
-    switch (charge)
+    if(charge)
 	{
-		case 0: // Neutral sort
-			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
-			{
-				if (GoATTree_GetCharge(i) == 0) // neutral!
-				{
-					//Check theta limits
-					if ((GoATTree_GetTheta(i) <= ThetaMin) || 
-						(GoATTree_GetTheta(i) >= ThetaMax))
-					return kFALSE;
-					NumberFound++;
-				}
-			}
-			break;
-			
-		case 1: // Charged sort
-			for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
-			{
-				if (GoATTree_GetCharge(i) != 0) // charged!
-				{
-					//Check theta limits
-					if ((GoATTree_GetTheta(i) <= ThetaMin) || 
-						(GoATTree_GetTheta(i) >= ThetaMax))
-					return kFALSE;
-					NumberFound++;
-				}
-			}
-			break;
+        for (Int_t i = 0; i <electrons->GetNParticles(); i++)
+        {
+            //Check theta limits
+            if ((electrons->Particle(i).Theta() <= ThetaMin) ||
+                (electrons->Particle(i).Theta() >= ThetaMax))
+                continue;
+            NumberFound++;
+        }
+        for (Int_t i = 0; i <chargedPi->GetNParticles(); i++)
+        {
+            //Check theta limits
+            if ((chargedPi->Particle(i).Theta() <= ThetaMin) ||
+                (chargedPi->Particle(i).Theta() >= ThetaMax))
+                continue;
+            NumberFound++;
+        }
+        for (Int_t i = 0; i <protons->GetNParticles(); i++)
+        {
+            //Check theta limits
+            if ((protons->Particle(i).Theta() <= ThetaMin) ||
+                (protons->Particle(i).Theta() >= ThetaMax))
+                continue;
+            NumberFound++;
+        }
+    }
+    else
+    {
+        for (Int_t i = 0; i < photons->GetNParticles(); i++)
+        {
+            //Check theta limits
+            if ((photons->Particle(i).Theta() <= ThetaMin) ||
+                (photons->Particle(i).Theta() >= ThetaMax))
+                continue;
+            NumberFound++;
+        }
+        for (Int_t i = 0; i < neutrons->GetNParticles(); i++)
+        {
+            //Check theta limits
+            if ((neutrons->Particle(i).Theta() <= ThetaMin) ||
+                (neutrons->Particle(i).Theta() >= ThetaMax))
+                continue;
+            NumberFound++;
+        }
 	}	
 
 	switch (cond)
@@ -405,7 +421,7 @@ Bool_t	GSort::SortOnNeutrality(Int_t charge, Int_t Num, Int_t cond, Double_t The
 	}
 
 	return kTRUE;
-}*/
+}
 
 void GSort::CheckConfigCondition(char string[], Sort_Condition *condition, std::string& string_out)
 {
