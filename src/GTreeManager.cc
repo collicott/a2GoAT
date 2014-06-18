@@ -199,47 +199,51 @@ Bool_t  GTreeManager::TraverseValidEvents()
         return kFALSE;
     }
 
-    int shift = scalers->GetEventNumber() - scalers->GetEventID();
-    nValidScalerReads = 0;
-    scalers->GetEntry(0);
-    for(int i=1; i<scalers->GetNEntries(); i++)
+    // find correct shift
+    int shift;
     {
-        scalers->GetEntry(i);
-        if(scalers->GetEventNumber() - scalers->GetEventID() == shift)
+        double shiftMean = 0;
+        for(int l=1; l<scalers->GetNEntries(); l++)
         {
-            eventNumberBeforeValidScalerRead[nValidScalerReads] = scalers->GetEventNumber();
-            scalers->GetEntry(i-1);
-            eventNumberValidScalerRead[nValidScalerReads] = scalers->GetEventNumber();
-            validScalerRead[nValidScalerReads] = i;
-            nValidScalerReads++;
+            scalers->GetEntryFast(l);
+            shiftMean    += scalers->GetEventNumber() - scalers->GetEventID();
         }
+        shiftMean   /= scalers->GetNEntries()-1;
+        int bestIndex = 0;
+        scalers->GetEntryFast(0);
+        double smallestDifference = shiftMean - (scalers->GetEventNumber() - scalers->GetEventID());
+        for(int l=1; l<scalers->GetNEntries(); l++)
+        {
+            scalers->GetEntryFast(l);
+            if((shiftMean - (scalers->GetEventNumber() - scalers->GetEventID())) < smallestDifference)
+            {
+                bestIndex = l;
+                smallestDifference  = shiftMean - (scalers->GetEventNumber() - scalers->GetEventID());
+            }
+        }
+        scalers->GetEntryFast(bestIndex);
+        shift   = scalers->GetEventNumber() - scalers->GetEventID();
     }
 
     file_out->cd();
     TH1I*   accepted    = new TH1I("CountScalerValid", "Events with correct scalers (all=0,accepted=1,rejected=2)", 3, 0, 3);
-    accepted->SetBinContent(1, rawEvent->GetNEntries());
+    accepted->SetBinContent(1, GetNEntries());
 
     scalers->GetEntry(0);
-    int start = eventNumberBeforeValidScalerRead[0];
-    int stop  = eventNumberValidScalerRead[0];
-    for(int i=1; i<nValidScalerReads; i++)
+    int start = scalers->GetEventNumber();
+    for(int i=1; i<GetNScalerEntries(); i++)
     {
-        if(validScalerRead[i] == validScalerRead[i-1]+1)
-            stop    = eventNumberValidScalerRead[i];
-        else
+        scalers->GetEntry(i);
+        if(scalers->GetEventNumber() - scalers->GetEventID() == shift)
         {
-            cout << "\tValid events from " << start << " to " << stop << "."<< endl;
-            accepted->SetBinContent(2, accepted->GetBinContent(2) + (stop-start));
-            TraverseEntries(start, stop);
-            start = eventNumberBeforeValidScalerRead[i];
-            stop  = eventNumberValidScalerRead[i];
+            currentScalerEntry = i;
+            accepted->SetBinContent(2, accepted->GetBinContent(2) + (scalers->GetEventNumber()-start));
+            TraverseEntries(start, scalers->GetEventNumber());
+            start = scalers->GetEventNumber();
         }
     }
-    cout << "\tValid events from " << start << " to " << stop << "."<< endl;
-    accepted->SetBinContent(2, accepted->GetBinContent(2) + (stop-start));
-    TraverseEntries(start, stop);
 
-    accepted->SetBinContent(3, rawEvent->GetNEntries() - accepted->GetBinContent(2));
+    accepted->SetBinContent(3, accepted->GetBinContent(1) - accepted->GetBinContent(2));
 
     if(!Write(accepted))  return kFALSE;
     return kTRUE;

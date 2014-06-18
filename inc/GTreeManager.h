@@ -34,6 +34,7 @@ private:
     UInt_t  eventNumberValidScalerRead[GTreeScaler_MAX];
     UInt_t  eventNumberBeforeValidScalerRead[GTreeScaler_MAX];
     UInt_t  currentEvent;
+    UInt_t  currentScalerEntry;
 
 protected:
     TFile*          file_out;
