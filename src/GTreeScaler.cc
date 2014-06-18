@@ -4,7 +4,7 @@
 
 
 GTreeScaler::GTreeScaler(GTreeManager *Manager)    :
-    GTree(Manager, TString("treeScaler")),
+    GTree(Manager, TString("treeScaler"), kTRUE),
     EventNumber(0),
     EventID(0),
     NScaler(0)

@@ -23,7 +23,9 @@ class  GTreeManager : public GConfigFile
 private:
     TFile*      file_in;
     TObjArray   treeList;
+    TObjArray   treeCorreleatedToScalerReadList;
     TObjArray   readList;
+    TObjArray   readCorreleatedToScalerReadList;
     TObjArray   writeList;
     Bool_t      isWritten;
 

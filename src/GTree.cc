@@ -5,23 +5,43 @@
 using namespace std;
 
 
-GTree::GTree(GTreeManager *Manager, const TString& _Name)    :
+GTree::GTree(GTreeManager *Manager, const TString& _Name, const Bool_t CorrelatedToScalerRead)    :
     name(_Name),
+    correlatedToScalerRead(CorrelatedToScalerRead),
     status(FLAG_CLOSED),
     tree_in(0),
     tree_out(0),
     manager(Manager)
 {
-    if(!manager->treeList.FindObject(this))
-        manager->treeList.Add(this);
+    if(correlatedToScalerRead)
+    {
+        if(!manager->treeCorreleatedToScalerReadList.FindObject(this))
+            manager->treeCorreleatedToScalerReadList.Add(this);
+    }
+    else
+    {
+        if(!manager->treeList.FindObject(this))
+            manager->treeList.Add(this);
+    }
 }
 
 GTree::~GTree()
 {
-    if(manager->treeList.FindObject(this))
+    if(correlatedToScalerRead)
     {
-        manager->treeList.Remove(this);
-        manager->treeList.Compress();
+        if(manager->treeCorreleatedToScalerReadList.FindObject(this))
+        {
+            manager->treeCorreleatedToScalerReadList.Remove(this);
+            manager->treeCorreleatedToScalerReadList.Compress();
+        }
+    }
+    else
+    {
+        if(manager->treeList.FindObject(this))
+        {
+            manager->treeList.Remove(this);
+            manager->treeList.Compress();
+        }
     }
 
     if(tree_in) delete tree_in;
@@ -49,8 +69,16 @@ Bool_t  GTree::OpenForInput()
         SetBranchAdresses();
         status  = status | FLAG_OPENFORINPUT;
         GetEntry(0);
-        if(!manager->readList.FindObject(this))
-            manager->readList.Add(this);
+        if(correlatedToScalerRead)
+        {
+            if(!manager->readCorreleatedToScalerReadList.FindObject(this))
+                manager->readCorreleatedToScalerReadList.Add(this);
+        }
+        else
+        {
+            if(!manager->readList.FindObject(this))
+                manager->readList.Add(this);
+        }
         return kTRUE;
     }
 

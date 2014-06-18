@@ -4,7 +4,7 @@
 
 
 GTreeLinPol::GTreeLinPol(GTreeManager *Manager)    :
-    GTree(Manager, TString("treeLinPol")),
+    GTree(Manager, TString("treeLinPol"), kTRUE),
     plane(0)
 {
     for(int i=0; i<352; i++) polTable[i] = 0;
