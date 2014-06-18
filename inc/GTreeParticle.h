@@ -33,7 +33,7 @@ public:
     GTreeParticle(GTreeManager *Manager, const TString& _Name);
     virtual ~GTreeParticle();
 
-    inline  void            AddParticle(const TLorentzVector& vec, const UChar_t _Apparatus = 0, const Double_t _d_E = 0, const Double_t _WC0_E = 0, const Double_t _WC1_E = 0, const Double_t _Time = 0, const UChar_t _ClusterSize = 0);
+            void            AddParticle(const TLorentzVector& vec, const UChar_t _Apparatus = 0, const Double_t _d_E = 0, const Double_t _WC0_E = 0, const Double_t _WC1_E = 0, const Double_t _Time = 0, const UChar_t _ClusterSize = 0);
     virtual void            Clear()     {nParticles = 0; particles->Clear();}
             //void            Compress()                           {particles->Compress();}
             UChar_t         GetApparatus(const Int_t index)     const	{return Apparatus[index];}
@@ -54,17 +54,5 @@ public:
 
     friend  class GTreeMeson;
 };
-
-void    GTreeParticle::AddParticle(const TLorentzVector& vec, const UChar_t _Apparatus, const Double_t _d_E, const Double_t _WC0_E, const Double_t _WC1_E, const Double_t _Time, const UChar_t _ClusterSize)
-{
-    Apparatus[nParticles]   = _Apparatus;
-    time[nParticles]        = _Time;
-    clusterSize[nParticles] = _ClusterSize;
-    d_E[nParticles]         = _d_E;
-    WC0_E[nParticles]       = _WC0_E;
-    WC0_E[nParticles]       = _WC1_E;
-    new((*particles)[nParticles]) TLorentzVector(vec);
-    nParticles++;
-}
 
 #endif

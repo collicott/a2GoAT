@@ -83,6 +83,7 @@ void    GTreeMeson::AddParticle(const Int_t _NSubPhotons, Int_t* subPhotons_inde
     time[nParticles]         /= nSubParticles[nParticles];
     new((*particles)[nParticles]) TLorentzVector(sum);
     nParticles++;
+    manager->countReconstructed++;
 }
 
 
@@ -142,26 +143,5 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
     time[nParticles]         /= 2;
     new((*particles)[nParticles]) TLorentzVector(subParticle0 + subParticle1);
     nParticles++;
+    manager->countReconstructed++;
 }
-
-/*void    GTreeMeson::AddParticle(const Int_t _NSubPhotons, TLorentzVector** subPhotons_list, const Int_t _NSubChargedPi, TLorentzVector** subChargedPi_list)
-{
-    new((*subParticles)[nParticles]) TClonesArray("TLorentzVector", 32);
-
-    nSubParticles[nParticles]  = _NSubPhotons + _NSubChargedPi;
-    nSubPhotons[nParticles]    = _NSubPhotons;
-    nSubChargedPi[nParticles]  = _NSubChargedPi;
-    TLorentzVector  sum;
-    for(int i=0; i<_NSubPhotons; i++)
-    {
-        sum += *subPhotons_list[i];
-        new((*((TClonesArray*)subParticles->At(nParticles)))[i]) TLorentzVector(*subPhotons_list[i]);
-    }
-    for(int i=0; i<_NSubChargedPi; i++)
-    {
-        sum += *subChargedPi_list[i];
-        new((*((TClonesArray*)subParticles->At(nParticles)))[i+ _NSubPhotons]) TLorentzVector(*subChargedPi_list[i]);
-    }
-    new((*particles)[nParticles]) TLorentzVector(sum);
-    nParticles++;
-}*/

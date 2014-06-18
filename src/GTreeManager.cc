@@ -15,6 +15,7 @@ GTreeManager::GTreeManager()    :
     readList(),
     readCorreleatedToScalerReadList(),
     writeList(),
+    countReconstructed(0),
     rawEvent(0),
     tagger(0),
     trigger(0),
@@ -102,6 +103,7 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
     for(UInt_t i=min; i<=max; i++)
     {
         scalers->GetEntryFast(i);
+        countReconstructed = 0;
         ProcessEvent();
     }
 

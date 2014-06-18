@@ -72,6 +72,19 @@ Bool_t	GTreeParticle::Write()
     return GTree::Write();
 }
 
+void    GTreeParticle::AddParticle(const TLorentzVector& vec, const UChar_t _Apparatus, const Double_t _d_E, const Double_t _WC0_E, const Double_t _WC1_E, const Double_t _Time, const UChar_t _ClusterSize)
+{
+    Apparatus[nParticles]   = _Apparatus;
+    time[nParticles]        = _Time;
+    clusterSize[nParticles] = _ClusterSize;
+    d_E[nParticles]         = _d_E;
+    WC0_E[nParticles]       = _WC0_E;
+    WC0_E[nParticles]       = _WC1_E;
+    new((*particles)[nParticles]) TLorentzVector(vec);
+    nParticles++;
+    manager->countReconstructed++;
+}
+
 void    GTreeParticle::RemoveParticles(const Int_t nIndices, const Int_t* indices)
 {
     Int_t*  sort    = new Int_t[nIndices];
@@ -92,4 +105,5 @@ void    GTreeParticle::RemoveParticles(const Int_t nIndices, const Int_t* indice
         }
         particles->RemoveAt(nParticles);
     }
+    manager->countReconstructed -= nIndices;
 }
