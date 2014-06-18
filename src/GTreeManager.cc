@@ -52,8 +52,8 @@ GTreeManager::~GTreeManager()
 {
     while(treeList.GetEntries()>0)
     {
-        cout << treeList.GetEntries() << endl;
-        if((GTree*)treeList[0]) delete (GTree*)treeList[0];
+        if((GTree*)treeList[0])
+            delete (GTree*)treeList[0];
     }
 
     CloseFiles();
@@ -69,71 +69,6 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
 {
     if(!file_in)
         return kFALSE;
-
-    readList.Clear();
-
-    if(etap)
-    {
-        if(etap->IsOpenForInput())
-            readList.Add(etap);
-    }
-    if(eta)
-    {
-        if(eta->IsOpenForInput())
-            readList.Add(eta);
-    }
-    if(pi0)
-    {
-        if(pi0->IsOpenForInput())
-            readList.Add(pi0);
-    }
-
-    if(photons)
-    {
-        if(photons->IsOpenForInput())
-            readList.Add(photons);
-    }
-    if(electrons)
-    {
-        if(electrons->IsOpenForInput())
-            readList.Add(electrons);
-    }
-    if(chargedPi)
-    {
-        if(chargedPi->IsOpenForInput())
-            readList.Add(chargedPi);
-    }
-    if(protons)
-    {
-        if(protons->IsOpenForInput())
-            readList.Add(protons);
-    }
-    if(neutrons)
-    {
-        if(neutrons->IsOpenForInput())
-            readList.Add(photons);
-    }
-
-    if(rawEvent)
-    {
-        if(rawEvent->IsOpenForInput())
-            readList.Add(rawEvent);
-    }
-    if(tagger)
-    {
-        if(tagger->IsOpenForInput())
-            readList.Add(tagger);
-    }
-    if(detectorHits)
-    {
-        if(detectorHits->IsOpenForInput())
-            readList.Add(detectorHits);
-    }
-    if(trigger)
-    {
-        if(trigger->IsOpenForInput())
-            readList.Add(trigger);
-    }
 
     for(UInt_t i=min; i<max; i++)
     {
@@ -175,20 +110,8 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
 
 Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
-    pi0->Close();
-    eta->Close();
-    etap->Close();
-    photons->Close();
-    electrons->Close();
-    chargedPi->Close();
-    protons->Close();
-    neutrons->Close();
-    detectorHits->Close();
-    rawEvent->Close();
-    tagger->Close();
-    trigger->Close();
-    scalers->Close();
-    linpol->Close();
+    for(int l=0; l<treeList.GetEntries(); l++)
+        ((GTree*)treeList[l])->Close();
 
     if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);
@@ -199,32 +122,11 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     }
     cout << "Opened input file " << file_in->GetName() << "!" << file_in->GetTitle() << endl;
 
-    if(file_in->Get("treeRawEvent"))
-        rawEvent->OpenForInput();
-    if(file_in->Get("treeTagger"))
-        tagger->OpenForInput();
-    if(file_in->Get("treeTrigger"))
-        trigger->OpenForInput();
-    if(file_in->Get("treeDetectorHits"))
-        detectorHits->OpenForInput();
-    if(file_in->Get("Etap"))
-        etap->OpenForInput();
-    if(file_in->Get("Eta"))
-        eta->OpenForInput();
-    if(file_in->Get("Pi0"))
-        pi0->OpenForInput();
-    if(file_in->Get("Photons"))
-        photons->OpenForInput();
-    if(file_in->Get("Electrons"))
-        electrons->OpenForInput();
-    if(file_in->Get("ChargedPi"))
-        chargedPi->OpenForInput();
-    if(file_in->Get("Protons"))
-        protons->OpenForInput();
-    if(file_in->Get("Neutrons"))
-        neutrons->OpenForInput();
-    if(file_in->Get("treeLinPol"))
-        linpol->OpenForInput();
+    for(int l=0; l<treeList.GetEntries(); l++)
+    {
+        if(file_in->Get("treeRawEvent"))
+            ((GTree*)treeList[l])->OpenForInput();
+    }
 
     if(file_out) delete file_out;
     file_out = TFile::Open(output_filename, "RECREATE");
@@ -250,20 +152,8 @@ Bool_t  GTreeManager::Write()
     if(!file_out)   return kFALSE;
     file_out->cd();
 
-    if(pi0->IsOpenForOutput())         pi0->Write();
-    if(eta->IsOpenForOutput())         eta->Write();
-    if(etap->IsOpenForOutput())        etap->Write();
-    if(photons->IsOpenForOutput())     photons->Write();
-    if(electrons->IsOpenForOutput())   electrons->Write();
-    if(chargedPi->IsOpenForOutput())   chargedPi->Write();
-    if(protons->IsOpenForOutput())     protons->Write();
-    if(neutrons->IsOpenForOutput())    neutrons->Write();
-    if(detectorHits->IsOpenForOutput())detectorHits->Write();
-    if(rawEvent->IsOpenForOutput())    rawEvent->Write();
-    if(tagger->IsOpenForOutput())      tagger->Write();
-    if(trigger->IsOpenForOutput())     trigger->Write();
-    if(scalers->IsOpenForOutput())     scalers->Write();
-    if(linpol->IsOpenForOutput())      linpol->Write();
+    for(int l=0; l<writeList.GetEntries(); l++)
+        ((GTree*)writeList[l])->Write();
 
     isWritten   = kTRUE;
 
@@ -346,118 +236,17 @@ Bool_t  GTreeManager::TraverseValidEvents()
 
 UInt_t  GTreeManager::GetNEntries()       const
 {
-    UInt_t  nEntries    = 0;
-    UInt_t  entries[16];
-    if(etap)
+    for(int l=1; l<readList.GetEntriesFast(); l++)
     {
-        if(etap->IsOpenForInput())
-        {
-            entries[nEntries]   = etap->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(eta)
-    {
-        if(eta->IsOpenForInput())
-        {
-            entries[nEntries]   = eta->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(pi0)
-    {
-        if(pi0->IsOpenForInput())
-        {
-            entries[nEntries]   = pi0->GetNEntries();
-            nEntries++;
-        }
-    }
-
-    if(photons)
-    {
-        if(photons->IsOpenForInput())
-        {
-            entries[nEntries]   = photons->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(electrons)
-    {
-        if(electrons->IsOpenForInput())
-        {
-            entries[nEntries]   = electrons->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(chargedPi)
-    {
-        if(chargedPi->IsOpenForInput())
-        {
-            entries[nEntries]   = chargedPi->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(protons)
-    {
-        if(protons->IsOpenForInput())
-        {
-            entries[nEntries]   = protons->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(neutrons)
-    {
-        if(neutrons->IsOpenForInput())
-        {
-            entries[nEntries]   = neutrons->GetNEntries();
-            nEntries++;
-        }
-    }
-
-    if(rawEvent)
-    {
-        if(rawEvent->IsOpenForInput())
-        {
-            entries[nEntries]   = rawEvent->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(tagger)
-    {
-        if(tagger->IsOpenForInput())
-        {
-            entries[nEntries]   = tagger->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(detectorHits)
-    {
-        if(detectorHits->IsOpenForInput())
-        {
-            entries[nEntries]   = detectorHits->GetNEntries();
-            nEntries++;
-        }
-    }
-    if(trigger)
-    {
-        if(trigger->IsOpenForInput())
-        {
-            entries[nEntries]   = trigger->GetNEntries();
-            nEntries++;
-        }
-    }
-
-    if(nEntries == 0)
-        return 0;
-
-    for(int i=1; i<nEntries; i++)
-    {
-        if(entries[i] != entries[i-1])
+        if(((GTree*)readList[l])->GetNEntries() != ((GTree*)readList[l-1])->GetNEntries())
         {
             cout << "ERROR: input trees have different number of entries!"<< endl;
             return 0;
         }
     }
 
-    return  entries[0];
+    if(readList.GetEntriesFast() == 0)
+        return 0;
+
+    return  ((GTree*)readList[0])->GetNEntries();
 }
