@@ -47,6 +47,21 @@ GTreeManager::GTreeManager()    :
 
 GTreeManager::~GTreeManager()
 {
+    if(etap)        etap;
+    if(eta)         eta;
+    if(pi0)         pi0;
+    if(photons)     photons;
+    if(electrons)   electrons;
+    if(chargedPi)   chargedPi;
+    if(protons)     protons;
+    if(neutrons)    neutrons;
+    if(detectorHits)detectorHits;
+    if(rawEvent)    rawEvent;
+    if(tagger)      tagger;
+    if(trigger)     trigger;
+    if(scalers)     scalers;
+    if(linpol)      linpol;
+
     CloseFiles();
 }
 
@@ -327,7 +342,7 @@ Bool_t  GTreeManager::TraverseValidEvents()
     }
     cout << "\tValid events from " << start << " to " << stop << "."<< endl;
     accepted->SetBinContent(2, accepted->GetBinContent(2) + (stop-start));
-    TraverseEntries(0, GetNEntries());
+    TraverseEntries(start, stop);
 
     accepted->SetBinContent(3, rawEvent->GetNEntries() - accepted->GetBinContent(2));
 
