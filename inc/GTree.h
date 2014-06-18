@@ -44,8 +44,8 @@ public:
     virtual ~GTree();
 
     virtual void        Clear() = 0;
-            void        CloseForInput()     {status = status & ~FLAG_OPENFORINPUT;}
-            void        CloseForOutput()    {status = status & ~FLAG_OPENFOROUTPUT;}
+            void        CloseForInput();
+            void        CloseForOutput();
             void        Close();
             void        Fill();
     inline  Bool_t      GetEntry(const UInt_t index);

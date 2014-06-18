@@ -10,6 +10,9 @@ using namespace std;
 GTreeManager::GTreeManager()    :
     file_in(0),
     file_out(0),
+    treeList(),
+    readList(),
+    writeList(),
     rawEvent(0),
     tagger(0),
     trigger(0),

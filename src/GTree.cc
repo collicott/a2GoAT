@@ -12,10 +12,18 @@ GTree::GTree(GTreeManager *Manager, const TString& _Name)    :
     tree_out(0),
     manager(Manager)
 {
+    if(!manager->treeList.FindObject(this))
+        manager->treeList.Add(this);
 }
 
 GTree::~GTree()
 {
+    if(manager->treeList.FindObject(this))
+    {
+        manager->treeList.Remove(this);
+        manager->treeList.Compress();
+    }
+
     if(tree_in) delete tree_in;
     if(tree_out) delete tree_out;
 }
@@ -41,6 +49,8 @@ Bool_t  GTree::OpenForInput()
         SetBranchAdresses();
         status  = status | FLAG_OPENFORINPUT;
         GetEntry(0);
+        if(!manager->readList.FindObject(this))
+            manager->readList.Add(this);
         return kTRUE;
     }
 
@@ -57,6 +67,8 @@ Bool_t  GTree::OpenForOutput()
     {
         SetBranches();
         status  = status | FLAG_OPENFOROUTPUT;
+        if(!manager->writeList.FindObject(this))
+            manager->writeList.Add(this);
         return kTRUE;
     }
 
@@ -65,14 +77,39 @@ Bool_t  GTree::OpenForOutput()
     return kFALSE;
 }
 
-
 void    GTree::Close()
 {
     status = FLAG_CLOSED;
-    if(tree_in)
-        cout << tree_in->GetName() << endl;
+    if(manager->writeList.FindObject(this))
+    {
+        manager->writeList.Remove(this);
+        manager->writeList.Compress();
+    }
+    if(manager->readList.FindObject(this))
+    {
+        manager->readList.Remove(this);
+        manager->readList.Compress();
+    }
     if(tree_in)
         delete tree_in;
+    if(tree_out)
+        delete tree_out;
+}
+
+void    GTree::CloseForInput()
+{
+    status = status & ~FLAG_OPENFORINPUT;
+    if(manager->readList.FindObject(this))
+        manager->readList.Remove(this);
+    if(tree_in)
+        delete tree_in;
+}
+
+void    GTree::CloseForOutput()
+{
+    status = status & ~FLAG_OPENFOROUTPUT;
+    if(manager->writeList.FindObject(this))
+        manager->writeList.Remove(this);
     if(tree_out)
         delete tree_out;
 }
