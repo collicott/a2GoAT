@@ -69,7 +69,6 @@ add_executable(pi0-example
    inc/GTree.h
    inc/GTreeRawEvent.h
    inc/GTreeDetectorHits.h
-   inc/GTreeEvent.h
    inc/GTreeTagger.h
    inc/GTreeLinPol.h
    inc/GTreeScaler.h
@@ -83,7 +82,6 @@ add_executable(pi0-example
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeDetectorHits.cc
-   src/GTreeEvent.cc
    src/GTreeTagger.cc
    src/GTreeLinPol.cc
    src/GTreeScaler.cc
@@ -101,7 +99,6 @@ add_executable(eta-example
    inc/GTree.h
    inc/GTreeRawEvent.h
    inc/GTreeDetectorHits.h
-   inc/GTreeEvent.h
    inc/GTreeTagger.h
    inc/GTreeLinPol.h
    inc/GTreeScaler.h
@@ -115,7 +112,6 @@ add_executable(eta-example
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeDetectorHits.cc
-   src/GTreeEvent.cc
    src/GTreeTagger.cc
    src/GTreeLinPol.cc
    src/GTreeScaler.cc
