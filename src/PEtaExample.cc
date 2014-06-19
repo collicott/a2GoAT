@@ -1,12 +1,10 @@
 #ifndef __CINT__
 
-#include <TSystemFile.h>
-#include <TSystemDirectory.h>
-
 #include "PEtaExample.h"
-
-using namespace std;
-
+#include "TSystem.h"
+#include "TSystemDirectory.h"
+#include "TSystemFile.h"
+#include <time.h>
 /**
  * @brief the main routine
  * @param argc number of parameters
@@ -195,7 +193,7 @@ int main(int argc, char *argv[])
 			}
 			
 			cout << "Output file '" << file_out << "' chosen" << endl << endl;
-			if(!peta->File(file_in.c_str(), file_out.c_str())) cout << "ERROR: PEtaExample failed on file " << file_in << "!" << endl;
+            if(!peta->StartFile(file_in.c_str(), file_out.c_str())) cout << "ERROR: PEtaExample failed on file " << file_in << "!" << endl;
 			files_found++;
 		}
 	}
@@ -238,7 +236,7 @@ int main(int argc, char *argv[])
 
 					files_found++;
 					// Run PEtaExample
-					if(!peta->File(file_in.c_str(), file_out.c_str())) 
+                    if(!peta->StartFile(file_in.c_str(), file_out.c_str()))
 						cout << "ERROR: PEtaExample failed on file " << file_in << "!" << endl;
 
 				}
@@ -290,54 +288,51 @@ Bool_t	PEtaExample::Init(const char* configfile)
 	return kTRUE;
 }
 
-
 Bool_t	PEtaExample::Start()
 {
-    DefineHistograms();
 
-    //if(!FindValidGoATEvents())  return kFALSE;
+	DefineHistograms();
 
     TraverseEntries(0, eta->GetNEntries());
-    cout << "Total Etas found: " << N_eta << endl << endl;
-
+			
     PostReconstruction();
     WriteHistograms();
-    CloseHistFile();
-    return kTRUE;
+	return kTRUE;
 }
 
-void	PEtaExample::Reconstruct()
+void	PEtaExample::ProcessEvent()
 {
     if(GetEventNumber() == 0) N_eta = 0;
     else if(GetEventNumber() % 100000 == 0) cout << "Event: "<< GetEventNumber() << " Total Etas found: " << N_eta << endl;
 
-	FillTimePDG(pdgDB->GetParticle("eta")->PdgCode(),time_eta);
-	MissingMassPDG(pdgDB->GetParticle("eta")->PdgCode(), MM_prompt_eta, MM_random_eta);
+	FillTimePDG(*eta,time_eta);
+    MissingMassPDG(*eta, MM_prompt_eta, MM_random_eta);
 
-	// Some neutral decays
-    //for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
+    for (Int_t i = 0; i < eta->GetNParticles(); i++)
 	{
-        /*if(GoATTree_GetPDG(i) == pdgDB->GetParticle("eta")->PdgCode()) 	N_eta++;
+		// Count total pi0s
+        N_eta++;
 		
-		if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore
-        if(GoATTree_GetCharge(i) != 0) 	continue; // charged -> ignore*/
+        // All sub particles are photons (completely neutral)
+        if(eta->GetNSubParticles(i) == eta->GetNSubPhotons(i))
+        {
+            FillMissingMass(*eta, i, MM_prompt_eta_n, MM_random_eta_n);
 
-		FillMissingMass(i, MM_prompt_eta_n, MM_random_eta_n);
-        //if (GoATTree_GetNDaughters(i) == 2) FillMissingMass(i, MM_prompt_eta_n_2g, MM_random_eta_n_2g);
-        //if (GoATTree_GetNDaughters(i) == 6) FillMissingMass(i, MM_prompt_eta_n_6g, MM_random_eta_n_6g);
+            //2 photon decay
+            if(eta->GetNSubPhotons(i) == 2) FillMissingMass(*eta, i, MM_prompt_eta_n_2g, MM_random_eta_n_2g);
+
+            //6 photon decay
+            if(eta->GetNSubPhotons(i) == 6) FillMissingMass(*eta, i, MM_prompt_eta_n_6g, MM_random_eta_n_6g);
+        }
+        // else, eta is charged
+        else
+        {
+            FillMissingMass(*eta, i, MM_prompt_eta_c, MM_random_eta_c);
+            if(eta->GetNSubParticles(i) == 4)  FillMissingMass(*eta, i, MM_prompt_eta_c_4d, MM_random_eta_c_4d);
+        }
+
 
 	}
-
-	// Some charged decays
-    //for (Int_t i = 0; i < GoATTree_GetNParticles(); i++)
-	{
-        //if(GoATTree_GetPDG(i) != pdgDB->GetParticle("eta")->PdgCode()) 	continue; // not eta -> ignore
-        //if(GoATTree_GetCharge(i) == 0) 	continue; // neutral -> ignore
-
-		FillMissingMass(i, MM_prompt_eta_c, MM_random_eta_c);
-        //if (GoATTree_GetNDaughters(i) == 4) FillMissingMass(i, MM_prompt_eta_c_4d, MM_random_eta_c_4d);
-
-	}	
 
 }
 

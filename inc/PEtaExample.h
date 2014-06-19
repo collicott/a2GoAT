@@ -42,23 +42,21 @@ private:
 
 	Int_t 	N_eta;
 
-		
 protected:
-    virtual void    ProcessEvent()  {}
     virtual Bool_t  Start();
-
+    
+    virtual void    ProcessEvent();
+			void	PostReconstruction();	
+				
+			void	DefineHistograms();
+			Bool_t	WriteHistograms(TFile* pfile);
+			Bool_t	WriteHistograms() {return WriteHistograms(HistFile);}
+			
 public:
     PEtaExample();
     virtual ~PEtaExample();
 
-    virtual Bool_t	Init(const char* configfile);	
-    virtual Bool_t	File(const char* file_in, const char* file_out);    
-    virtual void 	Analyse();
-	virtual void	Reconstruct();
-	void	PostReconstruction();
+    virtual Bool_t	Init(const char* configfile);
 
-	void	DefineHistograms();
-	Bool_t	WriteHistograms(TFile* pfile);
-	Bool_t	WriteHistograms() {return WriteHistograms(HistFile);}
 };
 #endif

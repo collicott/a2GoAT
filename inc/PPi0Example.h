@@ -26,22 +26,21 @@ private:
 
 	Int_t 	N_pi0;
 
-		
 protected:
-    virtual void    ProcessEvent();
     virtual Bool_t  Start();
 
+    virtual void    ProcessEvent();
+			void	PostReconstruction();
+
+			void	DefineHistograms();
+			Bool_t	WriteHistograms(TFile* pfile);
+			Bool_t	WriteHistograms() {return WriteHistograms(file_out);}
+			
 public:
     PPi0Example();
     virtual ~PPi0Example();
 
     virtual Bool_t	Init(const char* configfile);
-    //virtual void 	Analyse();
-    //virtual void	Reconstruct();
-	void	PostReconstruction();
 
-	void	DefineHistograms();
-	Bool_t	WriteHistograms(TFile* pfile);
-    Bool_t	WriteHistograms() {return WriteHistograms(file_out);}
 };
 #endif
