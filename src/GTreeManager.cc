@@ -78,6 +78,7 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
             ((GTree*)readList[l])->GetEntryFast(i);
 
         currentEvent = i;
+        countReconstructed = 0;
         ProcessEvent();
     }
 
