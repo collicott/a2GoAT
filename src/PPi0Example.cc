@@ -267,9 +267,6 @@ PPi0Example::~PPi0Example()
 
 Bool_t	PPi0Example::Init(const char* configfile)
 {
-	// Initialise shared pdg database
-	pdgDB = TDatabasePDG::Instance();
-
 	// Set by user in the future...
 	SetTarget(938);
 	

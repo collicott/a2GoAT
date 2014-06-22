@@ -267,9 +267,6 @@ PEtaExample::~PEtaExample()
 
 Bool_t	PEtaExample::Init(const char* configfile)
 {
-	// Initialise shared pdg database
-	pdgDB = TDatabasePDG::Instance();
-
 	// Set by user in the future...
 	SetTarget(938);
 	
