@@ -21,6 +21,17 @@ GTreeMeson::~GTreeMeson()
     if (subChargedPi)   delete subChargedPi;
 }
 
+void    GTreeMeson::Clear()
+{
+    GTreeParticle::Clear();
+    for(int i=0; i<subPhotons->GetEntries(); i++)
+        ((TClonesArray*)subPhotons->At(i))->Clear();
+    subPhotons->Clear();
+    for(int i=0; i<subPhotons->GetEntries(); i++)
+        ((TClonesArray*)subPhotons->At(i))->Clear();
+    subChargedPi->Clear();
+}
+
 void    GTreeMeson::SetBranchAdresses()
 {
     GTreeParticle::SetBranchAdresses();
