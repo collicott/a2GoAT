@@ -118,8 +118,6 @@ void    GTree::Close()
         manager->readList.Remove(this);
         manager->readList.Compress();
     }
-    if(tree_in)
-        delete tree_in;
     if(tree_out)
         delete tree_out;
 }

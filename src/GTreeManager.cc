@@ -57,14 +57,6 @@ GTreeManager::~GTreeManager()
         if((GTree*)treeList[0])
             delete (GTree*)treeList[0];
     }
-
-    CloseFiles();
-}
-
-void    GTreeManager::CloseFiles()
-{
-    if(file_in)     delete file_in;
-    if(file_out)    delete file_out;
 }
 
 Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
@@ -114,12 +106,6 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
 
 Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
-    for(int l=0; l<treeList.GetEntries(); l++)
-        ((GTree*)treeList[l])->Close();
-    for(int l=0; l<treeCorreleatedToScalerReadList.GetEntries(); l++)
-        ((GTree*)treeCorreleatedToScalerReadList[l])->Close();
-
-    if(file_in) delete file_in;
     file_in = TFile::Open(input_filename);
     if(!file_in)
     {
@@ -155,7 +141,17 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
 
     if(isWritten)
         return kTRUE;
-    return Write();
+    Write();
+
+    for(int l=0; l<treeList.GetEntries(); l++)
+        ((GTree*)treeList[l])->Close();
+    for(int l=0; l<treeCorreleatedToScalerReadList.GetEntries(); l++)
+        ((GTree*)treeCorreleatedToScalerReadList[l])->Close();
+
+    if(file_in)
+        delete file_in;
+
+    return kTRUE;
 }
 
 Bool_t  GTreeManager::Write()
