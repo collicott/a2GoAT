@@ -17,8 +17,18 @@ GTreeMeson::GTreeMeson(GTreeManager *Manager, const TString& _Name)    :
 
 GTreeMeson::~GTreeMeson()
 {
-    if (subPhotons)     delete subPhotons;
-    if (subChargedPi)   delete subChargedPi;
+    if (subPhotons)
+    {
+        for(int i=0; i<subPhotons->GetEntries(); i++)
+            ((TClonesArray*)subPhotons->At(i))->Delete();
+        delete subPhotons;
+    }
+    if (subChargedPi)
+    {
+        for(int i=0; i<subChargedPi->GetEntries(); i++)
+            ((TClonesArray*)subChargedPi->At(i))->Delete();
+        delete subChargedPi;
+    }
 }
 
 void    GTreeMeson::Clear()
