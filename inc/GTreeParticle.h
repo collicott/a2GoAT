@@ -34,7 +34,7 @@ public:
     virtual ~GTreeParticle();
 
             void            AddParticle(const TLorentzVector& vec, const UChar_t _Apparatus = 0, const Double_t _d_E = 0, const Double_t _WC0_E = 0, const Double_t _WC1_E = 0, const Double_t _Time = 0, const UChar_t _ClusterSize = 0);
-    virtual void            Clear()     {nParticles = 0; particles->Clear();}
+    virtual void            Clear()     {nParticles = 0; particles->Clear("C");}
             //void            Compress()                           {particles->Compress();}
             UChar_t         GetApparatus(const Int_t index)     const	{return Apparatus[index];}
             UChar_t         GetClusterSize(const Int_t index)   const 	{return clusterSize[index];}

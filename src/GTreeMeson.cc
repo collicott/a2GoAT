@@ -25,10 +25,10 @@ void    GTreeMeson::Clear()
 {
     GTreeParticle::Clear();
     for(int i=0; i<subPhotons->GetEntries(); i++)
-        ((TClonesArray*)subPhotons->At(i))->Clear();
+        ((TClonesArray*)subPhotons->At(i))->Clear("C");
     subPhotons->Clear();
     for(int i=0; i<subPhotons->GetEntries(); i++)
-        ((TClonesArray*)subPhotons->At(i))->Clear();
+        ((TClonesArray*)subPhotons->At(i))->Clear("C");
     subChargedPi->Clear();
 }
 
