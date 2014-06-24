@@ -405,6 +405,7 @@ void	GoAT::ProcessEvent()
             eta->Fill();
             etap->Fill();
         }
+		rootinos->Fill();
         photons->Fill();
         chargedPi->Fill();
         FillReadList();
@@ -418,6 +419,7 @@ Bool_t	GoAT::Start()
     {
         if(UseMesonReconstruction)
         {
+			rootinos->CloseForInput();
             photons->CloseForInput();
             electrons->CloseForInput();
             chargedPi->CloseForInput();
@@ -429,6 +431,7 @@ Bool_t	GoAT::Start()
         }
         else
         {
+			rootinos->CloseForInput();
             photons->CloseForInput();
             electrons->CloseForInput();
             chargedPi->CloseForInput();
@@ -438,7 +441,6 @@ Bool_t	GoAT::Start()
     }
     else if(UseMesonReconstruction)
     {
-        GMesonReconstruction::ProcessEvent();
         pi0->CloseForInput();
         eta->CloseForInput();
         etap->CloseForInput();
