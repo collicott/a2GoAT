@@ -35,6 +35,7 @@ Bool_t GParticleReconstruction::Trigger()
 
 Bool_t GParticleReconstruction::Start()
 {
+    rootinos->CloseForInput();
     photons->CloseForInput();
     electrons->CloseForInput();
     chargedPi->CloseForInput();
@@ -353,6 +354,7 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
             return kFALSE;
     }
 
+    rootinos->Clear();
     photons->Clear();
     electrons->Clear();
     chargedPi->Clear();
@@ -431,8 +433,8 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
             electrons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("e-")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
         else if (Identified[i] == pdgDB->GetParticle("gamma")->PdgCode())
             photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
-        //else if (Identified[i] == pdg_rootino) 	AddParticle(pdg_rootino,i);
-            //photons->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), i);
+        else if (Identified[i] == pdg_rootino)
+            rootinos->AddParticle(rawEvent->GetVector(i, pdgDB->GetParticle("gamma")->Mass()*1000), rawEvent->GetApparatus(i), rawEvent->Get_dE(i), rawEvent->GetWC0_E(i), rawEvent->GetWC1_E(i), rawEvent->GetTime(i), rawEvent->GetClusterSize(i));
     }
 
     return kTRUE;
@@ -445,6 +447,7 @@ void	GParticleReconstruction::ProcessEvent()
 
     trigger->SetEventNumber(GetEventNumber());
 
+    rootinos->Fill();
     photons->Fill();
     electrons->Fill();
     chargedPi->Fill();
