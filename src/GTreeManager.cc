@@ -21,6 +21,7 @@ GTreeManager::GTreeManager()    :
     trigger(0),
     scalers(0),
     detectorHits(0),
+    rootinos(0),
     photons(0),
     electrons(0),
     chargedPi(0),
@@ -37,6 +38,7 @@ GTreeManager::GTreeManager()    :
     etap = new GTreeMeson(this, TString(pdgDB->GetParticle("eta'")->GetName()));
     eta = new GTreeMeson(this, TString(pdgDB->GetParticle("eta")->GetName()));
     pi0 = new GTreeMeson(this, TString(pdgDB->GetParticle("pi0")->GetName()));
+    rootinos = new GTreeParticle(this, TString("rootino"));
     photons = new GTreeParticle(this, TString(pdgDB->GetParticle("gamma")->GetName()));
     electrons = new GTreeParticle(this, TString(pdgDB->GetParticle("e-")->GetName()));
     chargedPi = new GTreeParticle(this, TString(pdgDB->GetParticle("pi+")->GetName()));

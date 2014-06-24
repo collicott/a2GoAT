@@ -43,6 +43,7 @@ protected:
     GTreeTrigger*       trigger;
     GTreeScaler*        scalers;
     GTreeDetectorHits*  detectorHits;
+    GTreeParticle*      rootinos;
     GTreeParticle*      photons;
     GTreeParticle*      electrons;
     GTreeParticle*      chargedPi;
