@@ -43,9 +43,6 @@ GTree::~GTree()
             manager->treeList.Compress();
         }
     }
-
-    if(tree_in) delete tree_in;
-    if(tree_out) delete tree_out;
 }
 
 void    GTree::Fill()

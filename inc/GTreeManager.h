@@ -54,8 +54,6 @@ protected:
 
     TDatabasePDG *pdgDB;
 
-
-            void    CloseFiles();
             void    FillReadList()      {for(int l=0; l<readList.GetEntriesFast(); l++) ((GTree*)readList[l])->Fill();}
     const   TObjArray&  GetTreeList()    const   {return treeList;}
     virtual void    ProcessEvent() = 0;
