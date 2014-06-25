@@ -197,9 +197,8 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     // Find all pairs within IM limits and sort by best Chi
     // Don't double count in sorting!
     // Reset daughter list
-    ndaughter = 0;
     Int_t k = 0;
-    for (int i = 0; i < maxSubs; i++)
+    for (int i = 0; i < ndaughter; i++)
     {
         if (daughter_list[i]->Theta() < meson_theta_min) continue; // user rejected theta region
         if (daughter_list[i]->Theta() > meson_theta_max) continue; // user rejected theta region
