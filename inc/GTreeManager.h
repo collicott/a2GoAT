@@ -17,6 +17,9 @@
 #include "GTreeDetectorHits.h"
 
 
+#include <stdio.h>
+#include <TSystem.h>
+
 
 class  GTreeManager : public GConfigFile
 {
@@ -29,10 +32,12 @@ private:
     TObjArray   writeList;
     Bool_t      isWritten;
 
+    FILE*   debugFile;
+
     UInt_t  currentEvent;
     UInt_t  currentScalerEntry;
 
-    UInt_t  countReconstructed;
+    Int_t   countReconstructed;
 
 protected:
     TFile*          file_out;

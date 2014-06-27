@@ -31,7 +31,8 @@ GTreeManager::GTreeManager()    :
     eta(0),
     etap(0),
     linpol(0),
-    currentEvent(0)
+    currentEvent(0),
+    debugFile(0)
 {
     pdgDB = TDatabasePDG::Instance();
 
@@ -50,6 +51,8 @@ GTreeManager::GTreeManager()    :
     trigger = new GTreeTrigger(this);
     scalers = new GTreeScaler(this);
     linpol = new GTreeLinPol(this);
+
+    debugFile   = fopen("debug","w");
 }
 
 GTreeManager::~GTreeManager()
@@ -59,6 +62,9 @@ GTreeManager::~GTreeManager()
         if((GTree*)treeList[0])
             delete (GTree*)treeList[0];
     }
+
+
+    if(debugFile)   fclose(debugFile);
 }
 
 Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
@@ -66,6 +72,10 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
     if(!file_in)
         return kFALSE;
 
+    MemInfo_t   memInfo;
+    gSystem->GetMemInfo(&memInfo);
+    fprintf(debugFile, "\tbefore Traverse: %d     %d\n", gROOT->GetNclasses(), memInfo.fMemUsed, memInfo.fSwapUsed);
+    fflush(debugFile);
     for(UInt_t i=min; i<max; i++)
     {
         for(int l=0; l<readList.GetEntriesFast(); l++)
@@ -108,6 +118,11 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
 
 Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
+
+    MemInfo_t   memInfo;
+    gSystem->GetMemInfo(&memInfo);
+    fprintf(debugFile, "file start: %d     %d\n", gROOT->GetNclasses(), memInfo.fMemUsed, memInfo.fSwapUsed);
+    fflush(debugFile);
     file_in = TFile::Open(input_filename);
     if(!file_in)
     {
@@ -153,6 +168,10 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     if(file_in)
         delete file_in;
 
+
+    gSystem->GetMemInfo(&memInfo);
+    fprintf(debugFile, "file end: %d     %d\n", gROOT->GetNclasses(), memInfo.fMemUsed, memInfo.fSwapUsed);
+    fflush(debugFile);
     return kTRUE;
 }
 
