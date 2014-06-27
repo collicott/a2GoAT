@@ -34,7 +34,7 @@ public:
     virtual ~GTreeParticle();
 
             void            AddParticle(const TLorentzVector& vec, const UChar_t _Apparatus = 0, const Double_t _d_E = 0, const Double_t _WC0_E = 0, const Double_t _WC1_E = 0, const Double_t _Time = 0, const UChar_t _ClusterSize = 0);
-    virtual void            Clear();
+    virtual void            Clear() {nParticles = 0; particles->Clear();}
             UChar_t         GetApparatus(const Int_t index)     const	{return Apparatus[index];}
             UChar_t         GetClusterSize(const Int_t index)   const 	{return clusterSize[index];}
             Double_t        Get_dE(const Int_t index)           const	{return d_E[index];}
@@ -48,6 +48,7 @@ public:
             TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
     const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
             void            RemoveParticles(const Int_t nIndices, const Int_t* indices);
+            void            RemoveAllParticles();
     virtual Bool_t          Write();
 
 

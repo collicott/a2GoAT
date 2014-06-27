@@ -85,12 +85,13 @@ void    GTreeParticle::AddParticle(const TLorentzVector& vec, const UChar_t _App
     manager->countReconstructed++;
 }
 
-void    GTreeParticle::Clear()
+
+void    GTreeParticle::RemoveAllParticles()
 {
     manager->countReconstructed -= nParticles;
-    nParticles = 0;
-    particles->Clear();
+    Clear();
 }
+
 
 void    GTreeParticle::RemoveParticles(const Int_t nIndices, const Int_t* indices)
 {
