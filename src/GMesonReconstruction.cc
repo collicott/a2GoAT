@@ -375,7 +375,8 @@ void  GMesonReconstruction::ProcessEvent()
 {
     if(!ProcessEventWithoutFilling())   return;
 
-    trigger->SetEventNumber(GetEventNumber());
+    eventParameters->SetNReconstructed(GetNReconstructed());
+    eventParameters->Fill();
 
     pi0->Fill();
     eta->Fill();

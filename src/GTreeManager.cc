@@ -31,7 +31,6 @@ GTreeManager::GTreeManager()    :
     eta(0),
     etap(0),
     linpol(0),
-    currentEvent(0),
     debugFile(0)
 {
     pdgDB = TDatabasePDG::Instance();
@@ -45,6 +44,7 @@ GTreeManager::GTreeManager()    :
     chargedPi = new GTreeParticle(this, TString(pdgDB->GetParticle("pi+")->GetName()));
     protons = new GTreeParticle(this, TString(pdgDB->GetParticle("proton")->GetName()));
     neutrons = new GTreeParticle(this, TString(pdgDB->GetParticle("neutron")->GetName()));
+    eventParameters = new GTreeEventParameters(this);
     detectorHits = new GTreeDetectorHits(this);
     rawEvent = new GTreeRawEvent(this);
     tagger = new GTreeTagger(this);
@@ -81,7 +81,7 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
         for(int l=0; l<readList.GetEntriesFast(); l++)
             ((GTree*)readList[l])->GetEntryFast(i);
 
-        currentEvent = i;
+        eventParameters->SetEventNumber(i);
         countReconstructed = 0;
         ProcessEvent();
     }

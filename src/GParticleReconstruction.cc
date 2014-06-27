@@ -445,7 +445,8 @@ void	GParticleReconstruction::ProcessEvent()
 {    
     if(!ProcessEventWithoutFilling())   return;
 
-    trigger->SetEventNumber(GetEventNumber());
+    eventParameters->SetNReconstructed(GetNReconstructed());
+    eventParameters->Fill();
 
     rootinos->Fill();
     photons->Fill();

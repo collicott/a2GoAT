@@ -375,7 +375,6 @@ void	GoAT::ProcessEvent()
     {
         if(UseParticleReconstruction)
         {
-            trigger->SetEventNumber(GetEventNumber());
             if(UseMesonReconstruction)
             {
                 if(!GParticleReconstruction::ProcessEventWithoutFilling())  return;
@@ -405,6 +404,8 @@ void	GoAT::ProcessEvent()
             eta->Fill();
             etap->Fill();
         }
+        eventParameters->SetNReconstructed(GetNReconstructed());
+        eventParameters->Fill();
 		rootinos->Fill();
         photons->Fill();
         chargedPi->Fill();

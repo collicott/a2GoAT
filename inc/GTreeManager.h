@@ -15,6 +15,7 @@
 #include "GTreeMeson.h"
 #include "GTreeTrigger.h"
 #include "GTreeDetectorHits.h"
+#include "GTreeEventParameters.h"
 
 
 #include <stdio.h>
@@ -34,7 +35,6 @@ private:
 
     FILE*   debugFile;
 
-    UInt_t  currentEvent;
     UInt_t  currentScalerEntry;
 
     Int_t   countReconstructed;
@@ -47,6 +47,8 @@ protected:
     GTreeLinPol*        linpol;
     GTreeTrigger*       trigger;
     GTreeScaler*        scalers;
+
+    GTreeEventParameters* eventParameters;
     GTreeDetectorHits*  detectorHits;
     GTreeParticle*      rootinos;
     GTreeParticle*      photons;
@@ -76,7 +78,7 @@ public:
     virtual ~GTreeManager();
 
     static  Int_t   CheckInput(const char* input_filename);
-            UInt_t  GetEventNumber()    const   {return currentEvent;}
+            UInt_t  GetEventNumber()    const   {return eventParameters->GetEventNumber();}
             UInt_t  GetNEntries()       const;
             UInt_t  GetNReconstructed() const   {return countReconstructed;}
             UInt_t  GetNScalerEntries() const;
