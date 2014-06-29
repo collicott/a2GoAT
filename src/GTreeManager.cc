@@ -74,7 +74,7 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
 
     MemInfo_t   memInfo;
     gSystem->GetMemInfo(&memInfo);
-    fprintf(debugFile, "\tbefore Traverse: %d     %d\n", gROOT->GetNclasses(), memInfo.fMemUsed, memInfo.fSwapUsed);
+    fprintf(debugFile, "\tbefore Traverse: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
     fflush(debugFile);
     for(UInt_t i=min; i<max; i++)
     {
@@ -121,7 +121,7 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
 
     MemInfo_t   memInfo;
     gSystem->GetMemInfo(&memInfo);
-    fprintf(debugFile, "file start: %d     %d\n", gROOT->GetNclasses(), memInfo.fMemUsed, memInfo.fSwapUsed);
+    fprintf(debugFile, "file start: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
     fflush(debugFile);
     file_in = TFile::Open(input_filename);
     if(!file_in)
@@ -170,7 +170,7 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
 
 
     gSystem->GetMemInfo(&memInfo);
-    fprintf(debugFile, "file end: %d     %d\n", gROOT->GetNclasses(), memInfo.fMemUsed, memInfo.fSwapUsed);
+    fprintf(debugFile, "file end: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
     fflush(debugFile);
     return kTRUE;
 }
