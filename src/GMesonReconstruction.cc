@@ -84,7 +84,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     eta->Clear();
     etap->Clear();
 
-    Int_t       maxSubs = photons->GetNParticles() + chargedPi->GetNParticles();
+    Int_t       maxSubs = rootinos->GetNParticles() + photons->GetNParticles() + chargedPi->GetNParticles();
 
     Int_t		index1	  [maxSubs * maxSubs];
     Int_t		index2	  [maxSubs * maxSubs];
@@ -108,7 +108,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         if (rootinos->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (rootinos->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
 
-        is_meson[i] = kFALSE;
+        is_meson[ndaughter] = kFALSE;
 
         reaction_p4 += rootinos->Particle(i);
         daughter_list[ndaughter] = &rootinos->Particle(i);
@@ -122,7 +122,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         if (photons->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (photons->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
 
-        is_meson[i] = kFALSE;
+        is_meson[ndaughter] = kFALSE;
 
         reaction_p4 += photons->Particle(i);
         daughter_list[ndaughter] = &photons->Particle(i);
@@ -136,7 +136,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         if (chargedPi->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (chargedPi->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
 
-        is_meson[i] = kFALSE;
+        is_meson[ndaughter] = kFALSE;
 
         reaction_p4 += chargedPi->Particle(i);
         daughter_list[ndaughter] = &chargedPi->Particle(i);
@@ -203,7 +203,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         if (daughter_list[i]->Theta() < meson_theta_min) continue; // user rejected theta region
         if (daughter_list[i]->Theta() > meson_theta_max) continue; // user rejected theta region
 
-        for (int j = i+1; j < maxSubs; j++)
+        for (int j = i+1; j < ndaughter; j++)
         {
             if (daughter_list[j]->Theta() < meson_theta_min) continue; // user rejected theta region
             if (daughter_list[j]->Theta() > meson_theta_max) continue; // user rejected theta region
