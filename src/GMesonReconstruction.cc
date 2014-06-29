@@ -248,7 +248,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     Int_t		nIndex_chargedPi_delete = 0;
     Int_t		index_rootino_delete[GTreeParticle_MaxEntries];
     Int_t		index_photon_delete[GTreeParticle_MaxEntries];
-    Int_t		index_chargedPi_delete[GTreeParticle_MaxEntries * maxSubs];
+    Int_t		index_chargedPi_delete[GTreeParticle_MaxEntries];
 
     for (Int_t i = 0; i < k; i++)
     {
