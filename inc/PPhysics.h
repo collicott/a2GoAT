@@ -12,7 +12,7 @@
 #include "GConfigFile.h"
 
 
-class	PPhysics : public GTreeManager
+class	PPhysics : virtual public GTreeManager
 {
 private:
 
