@@ -67,17 +67,14 @@ void    GTreeScaler::SetNScaler(const Int_t num)
     }
 }
 
-void    GTreeScaler::Print(const Bool_t All) const
+void    GTreeScaler::Print() const
 {
-    GTree::Print(All);
+    GTree::Print();
 
     std::cout << "GTreeScaler: EventNumber->" << EventNumber << " EventID->" << EventID << std::endl;
     std::cout << "             NScaler->" << NScaler << std::endl;
-    if(All)
-    {
-        for(int i=0; i<NScaler; i++)
-            std::cout << "Scaler " << i << ": " << Scaler[i] << std::endl;
-    }
+    for(int i=0; i<NScaler; i++)
+        std::cout << "Scaler " << i << ": " << Scaler[i] << std::endl;
 }
 
 void    GTreeScaler::CloneValidEntries()

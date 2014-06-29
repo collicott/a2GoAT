@@ -217,3 +217,29 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
     nParticles++;
     manager->countReconstructed++;
 }
+
+
+void    GTreeMeson::Print() const
+{
+    GTree::Print();
+    cout << "nParticles: " << nParticles << endl;
+    for(int i=0; i<nParticles; i++)
+    {
+        GTreeParticle::PrintParticle(i);
+        cout << "nSubParticles: " << (Int_t)nSubParticles[i] << "   nSubRootinos: " << (Int_t)nSubRootinos[i] << "   nSubPhotons: " << (Int_t)nSubPhotons[i] << "   nSubChargedPi: " << (Int_t)nSubChargedPi[i] << endl;
+        for(int l=0; l<nSubRootinos[i]; l++)
+            cout << "\t\tPx: " << SubRootinos(i, l).Px() << "   Py: " << SubRootinos(i, l).Py() << "   Pz: " << SubRootinos(i, l).Pz() << "   E: " << SubRootinos(i, l).E()<< endl;
+        for(int l=0; l<nSubPhotons[i]; l++)
+            cout << "\t\tPx: " << SubPhotons(i, l).Px() << "   Py: " << SubPhotons(i, l).Py() << "   Pz: " << SubPhotons(i, l).Pz() << "   E: " << SubPhotons(i, l).E()<< endl;
+        for(int l=0; l<nSubChargedPi[i]; l++)
+            cout << "\t\tPx: " << SubChargedPi(i, l).Px() << "   Py: " << SubChargedPi(i, l).Py() << "   Pz: " << SubChargedPi(i, l).Pz() << "   E: " << SubChargedPi(i, l).E()<< endl;
+    }
+}
+
+UChar_t             nSubParticles[GTreeParticle_MaxEntries];
+UChar_t             nSubRootinos[GTreeParticle_MaxEntries];
+UChar_t             nSubPhotons[GTreeParticle_MaxEntries];
+UChar_t             nSubChargedPi[GTreeParticle_MaxEntries];
+TClonesArray*       subRootinos;
+TClonesArray*       subPhotons;
+TClonesArray*       subChargedPi;

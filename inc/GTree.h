@@ -57,7 +57,7 @@ public:
             Bool_t      IsOpenForOutput()   {return status & FLAG_OPENFOROUTPUT;}
             Bool_t      OpenForInput();
             Bool_t      OpenForOutput();
-    virtual void        Print(const Bool_t All = kFALSE) const;
+    virtual void        Print() const;
     virtual Bool_t      Write();
 
 };

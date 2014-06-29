@@ -115,3 +115,20 @@ void    GTreeParticle::RemoveParticles(const Int_t nIndices, const Int_t* indice
     }
     manager->countReconstructed -= nIndices;
 }
+
+
+void    GTreeParticle::PrintParticle(const Int_t i) const
+{
+    cout << "\tParticle " << i << ": " << endl;
+    cout << "\tPx: " << Particle(i).Px() << "   Py: " << Particle(i).Py() << "   Pz: " << Particle(i).Pz() << "   E: " << Particle(i).E() << endl;
+    cout << "\tApparatus: " << (Int_t)Apparatus[i] << "   clusterSize: " << (Int_t)clusterSize[i]  << endl;
+    cout << "\td_E: " << d_E[i] << "   WC0_E: " << WC0_E[i] << "   WC1_E: " << WC1_E[i]  << endl;
+}
+
+void    GTreeParticle::Print() const
+{
+    GTree::Print();
+    cout << "nParticles: " << nParticles << endl;
+    for(int i=0; i<nParticles; i++)
+        PrintParticle(i);
+}

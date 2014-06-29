@@ -49,6 +49,7 @@ public:
             UInt_t          GetNSubChargedPi(const Int_t meson)     const	{return nSubChargedPi[meson];}
             TLorentzVector& Meson(const Int_t meson)             {return Particle(meson);}
     const   TLorentzVector& Meson(const Int_t meson) const       {return Particle(meson);}
+    virtual void            Print() const;
             TLorentzVector& SubRootinos(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)(((TClonesArray*)subRootinos->At(meson))->At(subParticle)));}
     const   TLorentzVector& SubRootinos(const Int_t meson, const Int_t subParticle) const {return *((TLorentzVector*)(((TClonesArray*)subRootinos->At(meson))->At(subParticle)));}
             TLorentzVector& SubPhotons(const Int_t meson, const Int_t subParticle)       {return *((TLorentzVector*)(((TClonesArray*)subPhotons->At(meson))->At(subParticle)));}

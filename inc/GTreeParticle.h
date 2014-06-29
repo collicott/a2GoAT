@@ -28,6 +28,7 @@ private:
 protected:
     virtual void    SetBranchAdresses();
     virtual void    SetBranches();
+            void    PrintParticle(const Int_t i) const;
 
 public:
     GTreeParticle(GTreeManager *Manager, const TString& _Name);
@@ -47,6 +48,7 @@ public:
             Double_t        GetWC1_E(const Int_t index)         const	{return WC1_E[index];}
             TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
     const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
+    virtual void            Print() const;
             void            RemoveParticles(const Int_t nIndices, const Int_t* indices);
             void            RemoveAllParticles();
     virtual Bool_t          Write();

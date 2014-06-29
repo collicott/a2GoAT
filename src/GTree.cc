@@ -137,7 +137,7 @@ void    GTree::CloseForOutput()
         delete tree_out;
 }
 
-void    GTree::Print(const Bool_t All) const
+void    GTree::Print() const
 {
     std::cout << "GTree: Name->" << name.Data() << " Status->";
     if(!status)
