@@ -73,11 +73,8 @@ void    GTreeMeson::SetBranches()
     tree_out->Branch("nSubPhotons", nSubPhotons,"nSubParticles[nParticles]/b");
     tree_out->Branch("nSubChargedPi", nSubChargedPi,"nSubParticles[nParticles]/b");
     tree_out->Branch("subRootinos.", &subRootinos, 32, 0);
-    subRootinos->BypassStreamer();
     tree_out->Branch("subPhotons.", &subPhotons, 32, 0);
-    subPhotons->BypassStreamer();
     tree_out->Branch("subChargedPi.", &subChargedPi, 32, 0);
-    subChargedPi->BypassStreamer();
 }
 
 void    GTreeMeson::AddParticle(const Int_t _NSubRootinos, Int_t* subRootinos_index, TLorentzVector** subRootinos_list, const Int_t _NSubPhotons, Int_t* subPhotons_index, TLorentzVector** subPhotons_list, const Int_t _NSubChargedPi, Int_t* subChargedPi_index, TLorentzVector** subChargedPi_list)
