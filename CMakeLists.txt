@@ -64,6 +64,7 @@ add_executable(goat
    src/GMesonReconstruction.cc
    src/GSort.cc
    src/GoAT.cc
+   src/goat_main.cc
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
