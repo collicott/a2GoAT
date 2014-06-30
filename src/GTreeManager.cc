@@ -158,9 +158,8 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     if(!Start())
         return kFALSE;
 
-    if(isWritten)
-        return kTRUE;
-    Write();
+    if(!isWritten)
+        Write();
 
     for(int l=0; l<treeList.GetEntries(); l++)
         ((GTree*)treeList[l])->Close();
