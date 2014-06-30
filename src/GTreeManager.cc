@@ -123,6 +123,7 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     gSystem->GetMemInfo(&memInfo);
     fprintf(debugFile, "file start: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
     fflush(debugFile);
+    if(file_in)    file_in->Close();
     file_in = TFile::Open(input_filename);
     if(!file_in)
     {
@@ -142,7 +143,8 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
             ((GTree*)treeCorreleatedToScalerReadList[l])->OpenForInput();
     }
 
-    if(file_out) delete file_out;
+    if(file_out)
+        delete file_out;
     file_out = TFile::Open(output_filename, "RECREATE");
     if(!file_out)
     {
@@ -165,8 +167,9 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     for(int l=0; l<treeCorreleatedToScalerReadList.GetEntries(); l++)
         ((GTree*)treeCorreleatedToScalerReadList[l])->Close();
 
-    if(file_in)
-        delete file_in;
+
+    if(file_in)    file_in->Close();
+    if(file_out)    file_out->Close();
 
 
     gSystem->GetMemInfo(&memInfo);
@@ -271,6 +274,8 @@ Bool_t  GTreeManager::TraverseValidEvents()
     accepted->SetBinContent(3, accepted->GetBinContent(1) - accepted->GetBinContent(2));
 
     if(!Write(accepted))  return kFALSE;
+
+    if(accepted)    delete accepted;
     return kTRUE;
 }
 
