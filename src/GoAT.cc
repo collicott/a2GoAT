@@ -2,7 +2,8 @@
 
 
 GoAT::GoAT() :
-    UseParticleReconstruction(0)
+    UseParticleReconstruction(0),
+    nEvents_written(0)
 { 
 }
 
