@@ -19,38 +19,21 @@ GTreeMeson::GTreeMeson(GTreeManager *Manager, const TString& _Name)    :
 
 GTreeMeson::~GTreeMeson()
 {
-	if (subRootinos)
-    {
-        for(int i=0; i<subRootinos->GetEntries(); i++)
-            ((TClonesArray*)subRootinos->At(i))->Delete();
+    if (subRootinos)
         delete subRootinos;
-    }
     if (subPhotons)
-    {
-        for(int i=0; i<subPhotons->GetEntries(); i++)
-            ((TClonesArray*)subPhotons->At(i))->Delete();
         delete subPhotons;
-    }
     if (subChargedPi)
-    {
-        for(int i=0; i<subChargedPi->GetEntries(); i++)
-            ((TClonesArray*)subChargedPi->At(i))->Delete();
         delete subChargedPi;
-    }
 }
 
 void    GTreeMeson::Clear()
 {
     GTreeParticle::Clear();
-    for(int i=0; i<subRootinos->GetEntries(); i++)
-        ((TClonesArray*)subRootinos->At(i))->Clear("C");
-    subRootinos->Clear("C");
-    for(int i=0; i<subPhotons->GetEntries(); i++)
-        ((TClonesArray*)subPhotons->At(i))->Clear("C");
-    subPhotons->Clear("C");
-    for(int i=0; i<subPhotons->GetEntries(); i++)
-        ((TClonesArray*)subPhotons->At(i))->Clear("C");
-    subChargedPi->Clear("C");
+    //Cause the stored object(TClonesArray) has allocated memory one has to delete to call the destructor.
+    subRootinos->Delete();
+    subPhotons->Delete();
+    subChargedPi->Delete();
 }
 
 void    GTreeMeson::SetBranchAdresses()
