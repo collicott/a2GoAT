@@ -213,6 +213,8 @@ Bool_t  GTreeManager::TraverseValidEvents()
         }
     }
 
+    if(scalers->GetNEntries()==0)
+        return kFALSE;
     if(scalers->GetNEntries()<2)
     {
         std::cout << "Less than 2 scaler reads. Can not find events with correct scalers" <<std::endl;
