@@ -206,6 +206,8 @@ Bool_t  GTreeManager::TraverseValidEvents()
     {
         if(!scalers->OpenForInput())
         {
+			if(scalers->GetNEntries()==0)
+				return kFALSE;
             cout << "No treeScaler available. Expect MC data. Loop over all events" << endl;
             cout << "\tProcess events from " << 0 << " to " << GetNEntries() << "."<< endl;
             TraverseEntries(0, GetNEntries());
