@@ -29,6 +29,10 @@ include_directories(inc)
 set(ROOT_LIBRARIES "${ROOT_LIBRARIES} -lEG")
 message(${ROOT_LIBRARIES})
 
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
+
 add_executable(goat
    inc/GTree.h
    inc/GTreeRawEvent.h
