@@ -1,4 +1,5 @@
 #include "GTreeTagger.h"
+#include "GTreeManager.h"
 
 GTreeTagger::GTreeTagger(GTreeManager *Manager)    :
     GTree(Manager, TString("treeTagger")),
@@ -31,4 +32,11 @@ void    GTreeTagger::SetBranches()
     tree_out->Branch("photonbeam_E", photonbeam_E, "photonbeam_E[nTagged]/D");
     tree_out->Branch("tagged_ch", tagged_ch, "tagged_ch[nTagged]/I");
     tree_out->Branch("tagged_t", tagged_t, "tagged_t[nTagged]/D");
+}
+
+
+
+TLorentzVector  GTreeTagger::GetVectorProtonTarget(const Int_t index)    const
+{
+    return TLorentzVector(0, 0, photonbeam_E[index], photonbeam_E[index] + (manager->pdgDB->GetParticle("proton")->Mass()*1000));
 }

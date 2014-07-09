@@ -37,6 +37,7 @@ public:
     const	Double_t*       GetTagged_t()                       const	{return tagged_t;}
             Double_t        GetTagged_t(const Int_t index)      const	{return tagged_t[index];}
     TLorentzVector          GetVector(const Int_t index)        const   {return TLorentzVector(0, 0, photonbeam_E[index], photonbeam_E[index]);}
+    TLorentzVector          GetVectorProtonTarget(const Int_t index)    const;
 };
 
 #endif
