@@ -315,3 +315,48 @@ UInt_t  GTreeManager::GetNScalerEntries()       const
 
     return  ((GTree*)readCorreleatedToScalerReadList[0])->GetNEntries();
 }
+
+void    GTreeManager::SetAsGoATFile()
+{
+    if(!file_out)
+        return;
+    TNamed flag("GoAT_File", "GoAT_File");
+    Write(&flag);
+}
+
+void    GTreeManager::SetAsPhysicsFile()
+{
+    if(!file_out)
+        return;
+    TNamed flag("Physics_File", "Physics_File");
+    Write(&flag);
+}
+
+Bool_t  GTreeManager::IsAcquFile()    const
+{
+    if(IsGoATFile())
+        return kFALSE;
+    if(IsPhysicsFile())
+        return kFALSE;
+    return kTRUE;
+}
+
+Bool_t  GTreeManager::IsGoATFile()    const
+{
+    if(!file_in)
+        return kFALSE;
+    TNamed* flag    = (TNamed*)file_in->Get("GoAT_File");
+    if(flag)
+        return kTRUE;
+    return kFALSE;
+}
+
+Bool_t  GTreeManager::IsPhysicsFile()    const
+{
+    if(!file_in)
+        return kFALSE;
+    TNamed* flag    = (TNamed*)file_in->Get("Physics_File");
+    if(flag)
+        return kTRUE;
+    return kFALSE;
+}

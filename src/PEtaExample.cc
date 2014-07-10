@@ -287,6 +287,12 @@ Bool_t	PEtaExample::Init(const char* configfile)
 
 Bool_t	PEtaExample::Start()
 {
+    if(!IsGoATFile())
+    {
+        cout << "ERROR: Input File is not a GoAT file." << endl;
+        return kFALSE;
+    }
+    SetAsPhysicsFile();
 
 	DefineHistograms();
 

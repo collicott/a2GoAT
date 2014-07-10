@@ -287,6 +287,12 @@ Bool_t	PPi0Example::Init(const char* configfile)
 
 Bool_t	PPi0Example::Start()
 {
+    if(!IsGoATFile())
+    {
+        cout << "ERROR: Input File is not a GoAT file." << endl;
+        return kFALSE;
+    }
+    SetAsPhysicsFile();
 
 	DefineHistograms();
 

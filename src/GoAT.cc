@@ -134,6 +134,13 @@ void	GoAT::ProcessEvent()
 
 Bool_t	GoAT::Start()
 {
+    if(!IsAcquFile())
+    {
+        cout << "ERROR: Input File is not a Acqu file." << endl;
+        return kFALSE;
+    }
+    SetAsGoATFile();
+
     if(UseParticleReconstruction)
     {
         if(UseMesonReconstruction)

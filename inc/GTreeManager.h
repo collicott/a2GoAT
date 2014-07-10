@@ -66,6 +66,8 @@ protected:
     const   TObjArray&  GetTreeList()    const   {return treeList;}
     virtual void    ProcessEvent() = 0;
     virtual void    ProcessScalerRead() {}
+            void    SetAsGoATFile();
+            void    SetAsPhysicsFile();
     virtual Bool_t  Start() = 0;
             Bool_t  TraverseEntries(const UInt_t min, const UInt_t max);
             Bool_t  TraverseScalerEntries(const UInt_t min, const UInt_t max);
@@ -83,6 +85,9 @@ public:
             UInt_t  GetNReconstructed() const   {return countReconstructed;}
             UInt_t  GetNScalerEntries() const;
     virtual Bool_t  Init() {}
+            Bool_t  IsAcquFile()    const;
+            Bool_t  IsGoATFile()    const;
+            Bool_t  IsPhysicsFile()    const;
             Bool_t  StartFile(const char* input_filename, const char* output_filename);
 
     friend  class GTree;
