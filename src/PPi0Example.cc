@@ -305,9 +305,6 @@ Bool_t	PPi0Example::Start()
 
 void	PPi0Example::ProcessEvent()
 {
-    if(GetEventNumber() == 0) N_pi0 = 0;
-    else if(GetEventNumber() % 100000 == 0) cout << "Event: "<< GetEventNumber() << " Total Pi0s found: " << N_pi0 << endl;
-
 	// Fill timing histogram (all PDG matching pi0)
     FillTimePDG(*pi0,time_pi0);
 	

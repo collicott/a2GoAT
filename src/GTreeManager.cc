@@ -289,7 +289,7 @@ Bool_t  GTreeManager::TraverseValidEvents_GoATTreeFile()
         return kFALSE;
 
     Int_t   event       = 0;
-    //Int_t   start       = 0;
+    Int_t   start       = 0;
     Int_t   maxEvent    = GetNEntries();
     for(int l=0; l<readList.GetEntriesFast(); l++)
         ((GTree*)readList[l])->GetEntryFast(event);
@@ -309,10 +309,17 @@ Bool_t  GTreeManager::TraverseValidEvents_GoATTreeFile()
                 ((GTree*)readList[l])->GetEntryFast(event);
             ProcessEvent();
         }
-        //cout << "\tScaler read " << i << ". Events from " << start << " to " << event << "." << endl;
-        //start   = event;
+        if(i!=0)
+        {
+            if(i%50 == 0)
+            {
+                cout << "\t" << i << " Scaler reads processed. Events from " << start << " to " << event << "." << endl;
+                start   = event;
+            }
+        }
         ProcessScalerRead();
     }
+    cout << "\t" << GetNScalerEntries() << " Scaler reads processed. Events from " << start << " to " << event << "." << endl;
 }
 
 UInt_t  GTreeManager::GetNEntries()       const

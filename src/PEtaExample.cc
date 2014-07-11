@@ -305,9 +305,6 @@ Bool_t	PEtaExample::Start()
 
 void	PEtaExample::ProcessEvent()
 {
-    if(GetEventNumber() == 0) N_eta = 0;
-    else if(GetEventNumber() % 100000 == 0) cout << "Event: "<< GetEventNumber() << " Total Etas found: " << N_eta << endl;
-
 	FillTimePDG(*eta,time_eta);
     MissingMassPDG(*eta, MM_prompt_eta, MM_random_eta);
 
