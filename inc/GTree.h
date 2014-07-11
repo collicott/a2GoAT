@@ -36,6 +36,7 @@ protected:
     TTree*          tree_in;
     TTree*          tree_out;
     GTreeManager*   manager;
+    bool            saveToFile;
 
     virtual void    SetBranchAdresses() = 0;
     virtual void    SetBranches() = 0;

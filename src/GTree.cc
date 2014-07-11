@@ -11,7 +11,8 @@ GTree::GTree(GTreeManager *Manager, const TString& _Name, const Bool_t Correlate
     status(FLAG_CLOSED),
     tree_in(0),
     tree_out(0),
-    manager(Manager)
+    manager(Manager),
+    saveToFile(true)
 {
     if(correlatedToScalerRead)
     {
@@ -117,6 +118,12 @@ void    GTree::Close()
     }
     if(tree_out)
         delete tree_out;
+
+    if(!saveToFile)
+    {
+        manager->file_out->Delete(TString(name).Append(";*").Data());
+        saveToFile  = true;
+    }
 }
 
 void    GTree::CloseForInput()
