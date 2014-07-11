@@ -261,7 +261,8 @@ Bool_t  GTreeManager::TraverseValidEvents()
 
     for(int i=1; i<GetNScalerEntries(); i++)
     {
-        scalers->GetEntry(i);
+        for(int l=0; l<readCorreleatedToScalerReadList.GetEntriesFast(); l++)
+            ((GTree*)readCorreleatedToScalerReadList[l])->GetEntry(i);
         if(scalers->GetEventNumber() - scalers->GetEventID() == shift)
         {
             currentScalerEntry = i;
