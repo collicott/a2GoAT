@@ -296,7 +296,7 @@ Bool_t	PEtaExample::Start()
 
 	DefineHistograms();
 
-    TraverseEntries(0, eta->GetNEntries());
+    TraverseValidEvents();
 			
     PostReconstruction();
     WriteHistograms();

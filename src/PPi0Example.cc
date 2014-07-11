@@ -296,7 +296,7 @@ Bool_t	PPi0Example::Start()
 
 	DefineHistograms();
 
-    TraverseEntries(0, pi0->GetNEntries());
+    TraverseValidEvents();
 			
     PostReconstruction();
     WriteHistograms();
