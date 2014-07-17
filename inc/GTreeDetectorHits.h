@@ -9,15 +9,15 @@ class  GTreeDetectorHits    : public GTree
 {
 private:
     Int_t		nNaI_Hits;
-    Int_t*		NaI_Hits;
+    Int_t		NaI_Hits[720];
     Int_t		nPID_Hits;
-    Int_t*		PID_Hits;
+    Int_t		PID_Hits[24];
     Int_t		nWC_Hits;
-    Int_t*		WC_Hits;
+    Int_t		WC_Hits[860];
     Int_t		nBaF2_PbWO4_Hits;
-    Int_t*		BaF2_PbWO4_Hits;
+    Int_t		BaF2_PbWO4_Hits[438];
     Int_t		nVeto_Hits;
-    Int_t*		Veto_Hits;
+    Int_t		Veto_Hits[438];
 
 protected:
     virtual void    SetBranchAdresses();
