@@ -85,8 +85,8 @@ add_executable(pi0-example
    inc/GTreeEventParameters.h
    inc/GTreeManager.h
    inc/GConfigFile.h
-   inc/PPi0Example.h
    inc/PPhysics.h
+   inc/PPi0Example.h
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeDetectorHits.cc
@@ -99,8 +99,9 @@ add_executable(pi0-example
    src/GTreeEventParameters.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
-   src/PPi0Example.cc
    src/PPhysics.cc
+   src/PPi0Example.cc
+   src/pi0_example_main.cc
    )
 target_link_libraries(pi0-example ${ROOT_LIBRARIES})
 
