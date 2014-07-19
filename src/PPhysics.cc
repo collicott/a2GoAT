@@ -10,7 +10,7 @@ PPhysics::~PPhysics()
 {
 }
 
-Bool_t	PPhysics::Init(Char_t* configfile)
+Bool_t	PPhysics::Init(const Char_t *configfile)
 {
 	
 	return kTRUE;

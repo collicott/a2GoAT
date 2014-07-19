@@ -31,6 +31,6 @@ public:
     GoAT();
     virtual ~GoAT();
 
-    Bool_t	Init();
+    virtual Bool_t	Init(const char* configfile);
 };
 #endif

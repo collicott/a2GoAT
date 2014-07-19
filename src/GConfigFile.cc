@@ -19,7 +19,11 @@ GConfigFile::~GConfigFile()
 
 }
 
-
+Bool_t	GConfigFile::Init(const char* configfile)
+{
+    std::cout << "No Init function specified for this class." << std::endl;
+    return kTRUE;
+}
 
 std::string GConfigFile::ReadConfig(const std::string& key_in, const Int_t instance, const Char_t* configname)
 {

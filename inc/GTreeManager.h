@@ -87,7 +87,6 @@ public:
             UInt_t  GetNEntries()       const;
             UInt_t  GetNReconstructed() const   {return countReconstructed;}
             UInt_t  GetNScalerEntries() const;
-    virtual Bool_t  Init() {}
             Bool_t  IsAcquFile()    const;
             Bool_t  IsGoATFile()    const;
             Bool_t  IsPhysicsFile()    const;

@@ -19,6 +19,8 @@ public:
     GConfigFile(const Char_t* config_file);
     virtual ~GConfigFile();
 
+    virtual Bool_t	Init(const char* configfile);
+            Bool_t	Init()                          {Init(global_config_file.c_str());}
             void    SetConfigFile(const Char_t* config_file)	{global_config_file = config_file;}
     const   Char_t* GetConfigFile() const                       {}
 

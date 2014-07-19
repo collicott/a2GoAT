@@ -11,10 +11,12 @@ GoAT::~GoAT()
 {
 }
 
-Bool_t	GoAT::Init()
+Bool_t	GoAT::Init(const char* configfile)
 {
     cout << endl << "Initialising GoAT analysis..." << endl << endl;
-		
+
+    if(configfile)
+        SetConfigFile(configfile);
     std::string config = ReadConfig("Period-Macro");
 	if( sscanf(config.c_str(),"%d\n", &period) == 1 ) UsePeriodMacro = 1;
 
