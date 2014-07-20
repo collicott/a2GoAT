@@ -46,8 +46,8 @@ public:
             Double_t        GetWC0_E(const Int_t index)         const	{return WC0_E[index];}
     const	Double_t*       GetWC1_E()                          const	{return WC1_E;}
             Double_t        GetWC1_E(const Int_t index)         const	{return WC1_E[index];}
-            TLorentzVector& Particle(const Int_t particle) {return *((TLorentzVector*)particles->At(particle));}
-    const   TLorentzVector& Particle(const Int_t particle) const {return *((TLorentzVector*)particles->At(particle));}
+    inline          TLorentzVector& Particle(const Int_t particle);
+    inline  const   TLorentzVector& Particle(const Int_t particle) const;
     virtual void            Print() const;
             void            RemoveParticles(const Int_t nIndices, const Int_t* indices);
             void            RemoveAllParticles();
@@ -56,5 +56,31 @@ public:
 
     friend  class GTreeMeson;
 };
+
+
+TLorentzVector&         GTreeParticle::Particle(const Int_t particle)
+{
+    if(particle>=nParticles)
+    {
+        std::cout << "ERROR: Try to access particle " << particle << " in " << GetName() << ". Only " << nParticles << " in tree." << std::endl;
+        static  TLorentzVector  helpVectorUnity(0,0,0,0);
+        helpVectorUnity.SetPxPyPzE(0,0,0,0);
+        return helpVectorUnity;
+    }
+    return *((TLorentzVector*)particles->At(particle));
+}
+
+const   TLorentzVector& GTreeParticle::Particle(const Int_t particle) const
+{
+    if(particle>=nParticles)
+    {
+        std::cout << "ERROR: Try to access particle " << particle << " in " << GetName() << ". Only " << nParticles << " in tree." << std::endl;
+        static  TLorentzVector  helpVectorUnity(0,0,0,0);
+        helpVectorUnity.SetPxPyPzE(0,0,0,0);
+        return helpVectorUnity;
+    }
+    return *((TLorentzVector*)particles->At(particle));
+}
+
 
 #endif
