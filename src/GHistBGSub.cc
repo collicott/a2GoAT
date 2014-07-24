@@ -136,24 +136,24 @@ Int_t   GHistBGSub::Fill(const Double_t value, const GTreeTagger& tagger)
 
 
 
-void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor)
+void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
 {
     if(GetNRandCuts()==0)
-        GHistScaCor::ScalerReadCorrection(CorrectionFactor);
+        GHistScaCor::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
     else
     {
         TString oldName(GetName());
         TString oldTitle(GetTitle());
         GHistScaCor::SetName(TString(GetName()).Append("_prompt").Data());
         GHistScaCor::SetTitle(TString(GetTitle()).Append(" prompt").Data());
-        GHistScaCor::ScalerReadCorrection(CorrectionFactor);
+        GHistScaCor::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
         GHistScaCor::SetName(oldName.Data());
         GHistScaCor::SetTitle(oldTitle.Data());
 
         TIter   iter(&rand);
         GHistScaCor*    hist;
         while(hist=(GHistScaCor*)iter.Next())
-            hist->ScalerReadCorrection(CorrectionFactor);
+            hist->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
     }
 }
 

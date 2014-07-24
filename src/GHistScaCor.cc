@@ -29,7 +29,8 @@ GHistScaCor::GHistScaCor(const char* name, const char* title, Int_t nbinsx, Doub
                          kFALSE,
                          dirName),
     singleScalerReads(128),
-    singleScalerReadsCorrected(128)
+    singleScalerReadsCorrected(128),
+    corrected(kFALSE)
 {
     accumulated.AddOutputDirectory("ScalerCorrection");
     singleScalerReads.SetOwner();
@@ -41,7 +42,8 @@ GHistScaCor::GHistScaCor(const GHistScaCor& obj, Bool_t linkHistogram) :
     accumulated(obj.accumulated, kFALSE),
     accumulatedCorrected(obj.accumulatedCorrected, kFALSE),
     singleScalerReads(obj.singleScalerReads.GetEntriesFast()),
-    singleScalerReadsCorrected(obj.singleScalerReadsCorrected.GetEntriesFast())
+    singleScalerReadsCorrected(obj.singleScalerReadsCorrected.GetEntriesFast()),
+    corrected(obj.corrected)
 {
     singleScalerReads.SetOwner();
     singleScalerReadsCorrected.SetOwner();
@@ -96,6 +98,7 @@ Bool_t	GHistScaCor::Add(const GHistScaCor *h, Double_t c)
             ((GHistLinked*)singleScalerReadsCorrected.At(i))->Add(((GHistLinked*)h->singleScalerReadsCorrected.At(i)), c);
         }
     }
+    corrected = h->corrected;
 }
 
 void    GHistScaCor::AddOutputDirectory(const TString& directoryName)
@@ -135,30 +138,37 @@ void    GHistScaCor::Reset(Option_t* option)
     singleScalerReads.Clear();
     singleScalerReadsCorrected.Clear();
     TH1D::Reset(option);
+    corrected   = kFALSE;
 }
 
-void    GHistScaCor::ScalerReadCorrection(const Double_t CorrectionFactor)
+void    GHistScaCor::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
 {
     accumulated.Add(this);
 
-    gROOT->cd();
-    GHistLinked*    uncor   = new GHistLinked(*this, kFALSE);
-    uncor->SetName(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-    uncor->SetTitle(TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-    uncor->AddOutputDirectory("ScalerCorrection/SingleScalerReads_Uncorrected");
-    singleScalerReads.Add(uncor);
+    if(CreateHistogramsForSingleScalerReads)
+    {
+        gROOT->cd();
+        GHistLinked*    uncor   = new GHistLinked(*this, kFALSE);
+        uncor->SetName(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
+        uncor->SetTitle(TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
+        uncor->AddOutputDirectory("ScalerCorrection/SingleScalerReads_Uncorrected");
+        singleScalerReads.Add(uncor);
 
-    Scale(CorrectionFactor);
+        Scale(CorrectionFactor);
 
-    gROOT->cd();
-    GHistLinked*    cor     = new GHistLinked(*this, kFALSE);
-    cor->SetName(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-    cor->SetTitle(TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-    cor->AddOutputDirectory("ScalerCorrection/SingleScalerReads");
-    singleScalerReadsCorrected.Add(cor);
+        gROOT->cd();
+        GHistLinked*    cor     = new GHistLinked(*this, kFALSE);
+        cor->SetName(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
+        cor->SetTitle(TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
+        cor->AddOutputDirectory("ScalerCorrection/SingleScalerReads");
+        singleScalerReadsCorrected.Add(cor);
+    }
+    else
+        Scale(CorrectionFactor);
 
     accumulatedCorrected.Add(this);
     TH1D::Reset();
+    corrected   = kTRUE;
 }
 
 void	GHistScaCor::SetName(const char* name)
@@ -188,7 +198,7 @@ void	GHistScaCor::SetTitle(const char* title)
 
 Int_t   GHistScaCor::Write(const char* name, Int_t option, Int_t bufsize)
 {
-    if(GetNScalerReadCorrections()==0)
+    if(corrected==kFALSE)
     {
         return GHistLinked::Write(0, option, bufsize);
     }

@@ -113,11 +113,11 @@ Int_t   GH1::Fill(const Double_t value, const GTreeTagger& tagger)
         Fill(value, tagger.GetTagged_t(i), tagger.GetTagged_ch(i));
 }
 
-void    GH1::ScalerReadCorrection(const Double_t CorrectionFactor)
+void    GH1::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
 {
-    GHistBGSub::ScalerReadCorrection(CorrectionFactor);
+    GHistBGSub::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
     for(int i=0; i<bin.GetEntriesFast(); i++)
-        ((GHistBGSub*)bin.At(i))->ScalerReadCorrection(CorrectionFactor);
+        ((GHistBGSub*)bin.At(i))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
 }
 
 void	GH1::SetName(const char* name)

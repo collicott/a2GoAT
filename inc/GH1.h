@@ -28,7 +28,7 @@ public:
     virtual void    Reset(Option_t* option = "");
     virtual Int_t   Fill(const Double_t value, const Double_t taggerTime = 0, const Int_t taggerChannel = 0);
     virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger);
-    virtual void    ScalerReadCorrection(const Double_t CorrectionFactor);
+    virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetName(const char* name);
     virtual void	SetTitle(const char* title);
     virtual void	SetNameTitle(const char* name, const char* title)   {SetName(name); SetTitle(title);}

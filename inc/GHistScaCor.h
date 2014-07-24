@@ -18,6 +18,7 @@ private:
     GHistLinked accumulatedCorrected;
     TObjArray   singleScalerReads;
     TObjArray   singleScalerReadsCorrected;
+    Bool_t      corrected;
 
     static  Int_t   WriteHistogram(GHistLinked& hist, const TString& name, const TString& title, Int_t option, Int_t bufsize);
 
@@ -33,7 +34,7 @@ public:
     virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void    Reset(Option_t* option = "");
             Int_t   GetNScalerReadCorrections() const   {return singleScalerReads.GetEntriesFast();}
-    virtual void    ScalerReadCorrection(const Double_t CorrectionFactor);
+    virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetName(const char* name);
     virtual void	SetTitle(const char* title);
     virtual void	SetNameTitle(const char* name, const char* title)   {SetName(name); SetTitle(title);}
