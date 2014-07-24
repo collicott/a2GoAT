@@ -1,9 +1,9 @@
-#include "GScaCorHist.h"
+#include "GHistScaCor.h"
 
 #include <iostream>
 
 
-Int_t   GScaCorHist::WriteHistogram(GHistLinked& hist, const TString& name, const TString& title, Int_t option, Int_t bufsize)
+Int_t   GHistScaCor::WriteHistogram(GHistLinked& hist, const TString& name, const TString& title, Int_t option, Int_t bufsize)
 {
     TString oldName(hist.GetName());
     TString oldTitle(hist.GetTitle());
@@ -16,7 +16,7 @@ Int_t   GScaCorHist::WriteHistogram(GHistLinked& hist, const TString& name, cons
 }
 
 
-GScaCorHist::GScaCorHist(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram) :
+GHistScaCor::GHistScaCor(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram) :
     GHistLinked(name, title, nbinsx, xlow, xup, linkHistogram),
     accumulated(TString(name).Append("_Acc").Data(),
                 TString(title).Append(" Accumulated"),
@@ -33,7 +33,7 @@ GScaCorHist::GScaCorHist(const char* name, const char* title, Int_t nbinsx, Doub
     singleScalerReadsCorrected.SetOwner();
 }
 
-GScaCorHist::GScaCorHist(const GScaCorHist& obj) :
+GHistScaCor::GHistScaCor(const GHistScaCor& obj) :
     GHistLinked(obj),
     accumulated(obj.accumulated),
     accumulatedCorrected(obj.accumulatedCorrected),
@@ -58,11 +58,11 @@ GScaCorHist::GScaCorHist(const GScaCorHist& obj) :
     }
 }
 
-GScaCorHist::~GScaCorHist()
+GHistScaCor::~GHistScaCor()
 {
 }
 
-Bool_t	GScaCorHist::Add(const GScaCorHist *h, Double_t c)
+Bool_t	GHistScaCor::Add(const GHistScaCor *h, Double_t c)
 {
     TH1D::Add(h, c);
     accumulated.Add(&h->accumulated, c);
@@ -91,7 +91,7 @@ Bool_t	GScaCorHist::Add(const GScaCorHist *h, Double_t c)
     }
 }
 
-void    GScaCorHist::Reset(Option_t* option)
+void    GHistScaCor::Reset(Option_t* option)
 {
     accumulated.Reset(option);
     accumulatedCorrected.Reset(option);
@@ -100,7 +100,7 @@ void    GScaCorHist::Reset(Option_t* option)
     TH1D::Reset(option);
 }
 
-void    GScaCorHist::ScalerReadCorrection(const Double_t CorrectionFactor)
+void    GHistScaCor::ScalerReadCorrection(const Double_t CorrectionFactor)
 {
     accumulated.Add(this);
 
@@ -124,7 +124,7 @@ void    GScaCorHist::ScalerReadCorrection(const Double_t CorrectionFactor)
     TH1D::Reset();
 }
 
-void	GScaCorHist::SetName(const char* name)
+void	GHistScaCor::SetName(const char* name)
 {
     TH1::SetName(name);
     accumulated.SetName(TString(name).Append("_Acc").Data());
@@ -136,7 +136,7 @@ void	GScaCorHist::SetName(const char* name)
     }
 }
 
-void	GScaCorHist::SetTitle(const char* title)
+void	GHistScaCor::SetTitle(const char* title)
 {
     TH1::SetTitle(title);
     accumulated.SetTitle(TString(title).Append(" Accumulated").Data());
@@ -149,7 +149,7 @@ void	GScaCorHist::SetTitle(const char* title)
 }
 
 
-Int_t   GScaCorHist::Write(const char* name, Int_t option, Int_t bufsize)
+Int_t   GHistScaCor::Write(const char* name, Int_t option, Int_t bufsize)
 {
     if(GetNScalerReadCorrections()==0)
     {

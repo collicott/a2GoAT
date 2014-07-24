@@ -1,5 +1,5 @@
-#ifndef __GScaCorHist_h__
-#define __GScaCorHist_h__
+#ifndef __GHistScaCor_h__
+#define __GHistScaCor_h__
 
 
 #include <TROOT.h>
@@ -11,7 +11,7 @@
 
 
 
-class   GScaCorHist : public GHistLinked
+class   GHistScaCor : public GHistLinked
 {
 private:
     GHistLinked accumulated;
@@ -24,11 +24,11 @@ private:
 protected:
 
 public:
-    GScaCorHist(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE);
-    GScaCorHist(const GScaCorHist& obj);
-    virtual ~GScaCorHist();
+    GHistScaCor(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE);
+    GHistScaCor(const GHistScaCor& obj);
+    virtual ~GHistScaCor();
 
-    virtual Bool_t	Add(const GScaCorHist* h, Double_t c = 1);
+    virtual Bool_t	Add(const GHistScaCor* h, Double_t c = 1);
     virtual void    Reset(Option_t* option = "");
             Int_t   GetNScalerReadCorrections() const   {return singleScalerReads.GetEntriesFast();}
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor);
