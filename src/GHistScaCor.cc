@@ -28,8 +28,8 @@ GHistScaCor::GHistScaCor(const char* name, const char* title, Int_t nbinsx, Doub
                          nbinsx, xlow, xup,
                          kFALSE,
                          dirName),
-    singleScalerReads(),
-    singleScalerReadsCorrected()
+    singleScalerReads(128),
+    singleScalerReadsCorrected(128)
 {
     accumulated.AddOutputDirectory("ScalerCorrection");
     singleScalerReads.SetOwner();
@@ -40,8 +40,8 @@ GHistScaCor::GHistScaCor(const GHistScaCor& obj, Bool_t linkHistogram) :
     GHistLinked(obj, linkHistogram),
     accumulated(obj.accumulated, kFALSE),
     accumulatedCorrected(obj.accumulatedCorrected, kFALSE),
-    singleScalerReads(),
-    singleScalerReadsCorrected()
+    singleScalerReads(obj.singleScalerReads.GetEntriesFast()),
+    singleScalerReadsCorrected(obj.singleScalerReadsCorrected.GetEntriesFast())
 {
     singleScalerReads.SetOwner();
     singleScalerReadsCorrected.SetOwner();

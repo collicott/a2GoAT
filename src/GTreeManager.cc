@@ -316,7 +316,7 @@ Bool_t  GTreeManager::TraverseValidEvents_GoATTreeFile()
         }
         if(i!=0)
         {
-            if(i%50 == 0)
+            if(i%5 == 0)
             {
                 cout << "\t" << i << " Scaler reads processed. Events from " << start << " to " << event << "." << endl;
                 start   = event;

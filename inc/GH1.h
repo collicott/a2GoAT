@@ -26,7 +26,7 @@ public:
     virtual void    AddOutputDirectory(const TString& directoryName);
     virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void    Reset(Option_t* option = "");
-    virtual Int_t   Fill(const Double_t value, const Double_t taggerTime = 0);
+    virtual Int_t   Fill(const Double_t value, const Double_t taggerTime = 0, const Int_t taggerChannel = 0);
     virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger);
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor);
     virtual void	SetName(const char* name);
