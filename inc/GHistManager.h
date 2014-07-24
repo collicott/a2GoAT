@@ -51,13 +51,12 @@ protected:
 public:
     GHistLinked(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
     GHistLinked(const GHistLinked& obj, Bool_t linkHistogram);
-    GHistLinked(const GHistLinked& obj);
     virtual ~GHistLinked();
 
-            void        AddOutputDirectory(const TString& directoryName);
+    virtual void        AddOutputDirectory(const TString& directoryName);
             void        AddOutputDirectory(const char* directoryName)       {AddOutputDirectory(TString(directoryName));}
     const   TString&    GetOutputDirectoryName() const                      {return dir;}
-            void        SetOutputDirectory(const TString& directoryName)    {dir = directoryName;}
+    virtual void        SetOutputDirectory(const TString& directoryName)    {dir = directoryName;}
             void        SetOutputDirectory(const char* directoryName)       {SetOutputDirectory(TString(directoryName));}
     virtual Int_t       Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0);
 };

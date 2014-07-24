@@ -85,17 +85,6 @@ GHistLinked::GHistLinked(const GHistLinked& obj, Bool_t linkHistogram) :
     }
 }
 
-GHistLinked::GHistLinked(const GHistLinked& obj) :
-    TH1D(obj),
-    linked(obj.linked)
-{
-    if(linked == kTRUE)
-    {
-        if(gGHistManager)
-            gGHistManager->AddHistogramToList(this);
-    }
-}
-
 GHistLinked::~GHistLinked()
 {
     if(linked == kTRUE)

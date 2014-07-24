@@ -24,11 +24,13 @@ private:
 protected:
 
 public:
-    GHistScaCor(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE);
+    GHistScaCor(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
     GHistScaCor(const GHistScaCor& obj);
     virtual ~GHistScaCor();
 
     virtual Bool_t	Add(const GHistScaCor* h, Double_t c = 1);
+    virtual void    AddOutputDirectory(const TString& directoryName);
+    virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void    Reset(Option_t* option = "");
             Int_t   GetNScalerReadCorrections() const   {return singleScalerReads.GetEntriesFast();}
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor);
