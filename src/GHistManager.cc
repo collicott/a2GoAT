@@ -105,6 +105,14 @@ GHistLinked::~GHistLinked()
     }
 }
 
+void        GHistLinked::AddOutputDirectory(const TString& directoryName)
+{
+    if(dir.Length()==0)
+        dir = directoryName;
+    else
+        dir.Append("/").Append(directoryName);
+}
+
 TDirectory*    GHistLinked::GetOutputDirectory()
 {
     if(gGHistManager)
