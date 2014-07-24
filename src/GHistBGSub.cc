@@ -234,13 +234,16 @@ Int_t    GHistBGSub::Write(const char* name, Int_t option, Int_t bufsize)
                                                   GetXaxis()->GetXmin(),
                                                   GetXaxis()->GetXmax(),
                                                   kFALSE,
-                                                  "RandomWindowSum");
+                                                  GetOutputDirectoryName().Data());
+
+            sum->AddOutputDirectory("RandomWindowSum");
             TIter   iter(&rand);
             GHistScaCor*    hist;
             while(hist=(GHistScaCor*)iter.Next())
                 sum->Add(hist);
             sum->Write(name, option, bufsize);
             res->Add(sum, -backgroundSubstractionFactor);
+            sum->Delete();
         }
         else
             res->Add((GHistScaCor*)rand.At(0), -backgroundSubstractionFactor);
