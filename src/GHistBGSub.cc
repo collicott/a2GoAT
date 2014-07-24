@@ -34,8 +34,8 @@ void    GHistBGSub::AddRandCut(const Double_t RandMin, const Double_t RandMax)
 
 
 
-GHistBGSub::GHistBGSub(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram) :
-    GHistScaCor(name, title, nbinsx, xlow, xup, linkHistogram),
+GHistBGSub::GHistBGSub(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
+    GHistScaCor(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
     rand(GetNRandCuts())
 {
     rand.SetOwner();
@@ -46,26 +46,47 @@ GHistBGSub::GHistBGSub(const char* name, const char* title, Int_t nbinsx, Double
                                                     TString(GetTitle()).Append(" rand").Append(TString::Itoa(i, 10)).Data(),
                                                     nbinsx, xlow, xup,
                                                     kFALSE,
-                                                    TString::Itoa(i,10).Prepend("RandomWindow").Data());
+                                                    dirName);
+        hist_rand->AddOutputDirectory(TString::Itoa(i,10).Prepend("RandomWindow_"));
         rand.AddAtFree(hist_rand);
     }
 }
 
-GHistBGSub::GHistBGSub(const GHistBGSub& obj) :
-    GHistScaCor(obj),
+GHistBGSub::GHistBGSub(const GHistBGSub& obj, Bool_t linkHistogram) :
+    GHistScaCor(obj, linkHistogram),
     rand(obj.GetNRandCuts())
 {
     rand.SetOwner();
     for(int i=0; i<GetNRandCuts(); i++)
     {
         gROOT->cd();
-        GHistScaCor*    hist_rand = new GHistScaCor(*((GHistScaCor*)obj.rand.At(i)));
+        GHistScaCor*    hist_rand = new GHistScaCor(*((GHistScaCor*)obj.rand.At(i)), kFALSE);
         rand.AddAtFree(hist_rand);
     }
 }
 
 GHistBGSub::~GHistBGSub()
 {
+}
+
+Bool_t	GHistBGSub::Add(const GHistBGSub* h, Double_t c)
+{
+    GHistScaCor::Add(h, c);
+    for(int i=0; i<h->GetNRandCuts(); i++)
+    {
+        if(i>=GetNRandCuts())
+        {
+            gROOT->cd();
+            GHistScaCor*    hist_rand = new GHistScaCor(*((GHistScaCor*)h->rand.At(i)), kFALSE);
+            hist_rand->SetName(TString(GetName()).Append(TString::Itoa(rand.GetEntriesFast(),10).Prepend("_rand")));
+            hist_rand->SetTitle(TString(GetTitle()).Append(TString::Itoa(rand.GetEntriesFast(),10).Prepend(" rand ")));
+            hist_rand->SetOutputDirectory(GetOutputDirectoryName().Data());
+            hist_rand->AddOutputDirectory(TString::Itoa(i,10).Prepend("RandomWindow_"));
+            rand.AddAtFree(hist_rand);
+        }
+        else
+            ((GHistScaCor*)rand.At(i))->Add((GHistScaCor*)h->rand.At(i), c);
+    }
 }
 
 void    GHistBGSub::Reset(Option_t* option)
@@ -88,7 +109,8 @@ void    GHistBGSub::ExpandRand(const Int_t newSize)
                                                     GetXaxis()->GetXmin(),
                                                     GetXaxis()->GetXmax(),
                                                     kFALSE,
-                                                    TString::Itoa(rand.GetEntriesFast(),10).Prepend("RandomWindow").Data());
+                                                    GHistScaCor::GetOutputDirectoryName().Data());
+        hist_rand->AddOutputDirectory(TString::Itoa(rand.GetEntriesFast(),10).Prepend("RandomWindow_"));
         rand.Add(hist_rand);
     }
 }
@@ -112,6 +134,8 @@ Int_t   GHistBGSub::Fill(const Double_t value, const GTreeTagger& tagger)
         Fill(value, tagger.GetTagged_t(i));
 }
 
+
+
 void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor)
 {
     if(GetNRandCuts()==0)
@@ -120,11 +144,11 @@ void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor)
     {
         TString oldName(GetName());
         TString oldTitle(GetTitle());
-        SetName(TString(GetName()).Append("_prompt").Data());
-        SetTitle(TString(GetTitle()).Append(" prompt").Data());
+        GHistScaCor::SetName(TString(GetName()).Append("_prompt").Data());
+        GHistScaCor::SetTitle(TString(GetTitle()).Append(" prompt").Data());
         GHistScaCor::ScalerReadCorrection(CorrectionFactor);
-        SetName(oldName.Data());
-        SetTitle(oldTitle.Data());
+        GHistScaCor::SetName(oldName.Data());
+        GHistScaCor::SetTitle(oldTitle.Data());
 
         TIter   iter(&rand);
         GHistScaCor*    hist;
@@ -133,20 +157,66 @@ void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor)
     }
 }
 
+void    GHistBGSub::AddOutputDirectory(const TString& directoryName)
+{
+    GHistScaCor::AddOutputDirectory(directoryName);
+    for(int i=0; i<GetNRandCuts(); i++)
+    {
+        ((GHistLinked*)rand.At(i))->SetOutputDirectory(GHistLinked::GetOutputDirectoryName());
+        ((GHistLinked*)rand.At(i))->AddOutputDirectory(TString::Itoa(i,10).Prepend("RandomWindow_"));
+    }
+}
+
+void    GHistBGSub::SetOutputDirectory(const TString& directoryName)
+{
+    GHistScaCor::SetOutputDirectory(directoryName);
+    for(int i=0; i<GetNRandCuts(); i++)
+    {
+        ((GHistLinked*)rand.At(i))->SetOutputDirectory(directoryName);
+        ((GHistLinked*)rand.At(i))->AddOutputDirectory(TString::Itoa(i,10).Prepend("RandomWindow_"));
+    }
+}
+
+void	GHistBGSub::SetName(const char* name)
+{
+    GHistScaCor::SetName(name);
+    for(int i=0; i<GetNRandCuts(); i++)
+        ((GHistScaCor*)rand.At(i))->SetName(TString(name).Append(TString::Itoa(rand.GetEntriesFast(),10).Prepend("_rand")));
+}
+
+void	GHistBGSub::SetTitle(const char* title)
+{
+    GHistScaCor::SetTitle(title);
+    for(int i=0; i<GetNRandCuts(); i++)
+        ((GHistScaCor*)rand.At(i))->SetTitle(TString(title).Append(TString::Itoa(rand.GetEntriesFast(),10).Prepend(" rand ")));
+}
+
 Int_t    GHistBGSub::Write(const char* name, Int_t option, Int_t bufsize)
 {
     if(GetNRandCuts()==0)
         GHistScaCor::Write();
     else
     {
-        AddOutputDirectory("PromptWindow");
+
         TString oldName(GetName());
         TString oldTitle(GetTitle());
-        SetName(TString(GetName()).Append("_prompt").Data());
-        SetTitle(TString(GetTitle()).Append(" prompt").Data());
-        TH1D::Write(name, option, bufsize);
-        SetName(oldName.Data());
-        SetTitle(oldTitle.Data());
+        TString oldDirectory(GetOutputDirectoryName());
+        GHistScaCor::SetName(TString(GetName()).Append("_prompt").Data());
+        GHistScaCor::SetTitle(TString(GetTitle()).Append(" prompt").Data());
+
+        GHistScaCor*    res = new GHistScaCor(oldName.Data(),
+                                              oldTitle.Data(),
+                                              GetNbinsX(),
+                                              GetXaxis()->GetXmin(),
+                                              GetXaxis()->GetXmax(),
+                                              kFALSE,
+                                              GetOutputDirectoryName().Data());
+
+        GHistScaCor::AddOutputDirectory("PromptWindow");
+        GHistScaCor::Write(name, option, bufsize);
+        GHistScaCor::SetOutputDirectory(oldDirectory.Data());
+        GHistScaCor::SetName(oldName.Data());
+        GHistScaCor::SetTitle(oldTitle.Data());
 
         {
             TIter   iter(&rand);
@@ -155,13 +225,6 @@ Int_t    GHistBGSub::Write(const char* name, Int_t option, Int_t bufsize)
                 hist->Write(name, option, bufsize);
         }
 
-        GHistScaCor*    res = new GHistScaCor(GetName(),
-                                              GetTitle(),
-                                              GetNbinsX(),
-                                              GetXaxis()->GetXmin(),
-                                              GetXaxis()->GetXmax(),
-                                              kFALSE,
-                                              GetOutputDirectoryName().Data());
         res->Add(this);
         if(rand.GetEntriesFast()>1)
         {
@@ -170,7 +233,8 @@ Int_t    GHistBGSub::Write(const char* name, Int_t option, Int_t bufsize)
                                                   GetNbinsX(),
                                                   GetXaxis()->GetXmin(),
                                                   GetXaxis()->GetXmax(),
-                                                  kFALSE);
+                                                  kFALSE,
+                                                  "RandomWindowSum");
             TIter   iter(&rand);
             GHistScaCor*    hist;
             while(hist=(GHistScaCor*)iter.Next())
@@ -182,6 +246,7 @@ Int_t    GHistBGSub::Write(const char* name, Int_t option, Int_t bufsize)
             res->Add((GHistScaCor*)rand.At(0), -backgroundSubstractionFactor);
 
         res->Write(name, option, bufsize);
+        res->Delete();
     }
 }
 

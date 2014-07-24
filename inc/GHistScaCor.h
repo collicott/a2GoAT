@@ -25,7 +25,7 @@ protected:
 
 public:
     GHistScaCor(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
-    GHistScaCor(const GHistScaCor& obj);
+    GHistScaCor(const GHistScaCor& obj, Bool_t linkHistogram = kTRUE);
     virtual ~GHistScaCor();
 
     virtual Bool_t	Add(const GHistScaCor* h, Double_t c = 1);

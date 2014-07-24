@@ -36,10 +36,10 @@ GHistScaCor::GHistScaCor(const char* name, const char* title, Int_t nbinsx, Doub
     singleScalerReadsCorrected.SetOwner();
 }
 
-GHistScaCor::GHistScaCor(const GHistScaCor& obj) :
-    GHistLinked(obj),
-    accumulated(obj.accumulated),
-    accumulatedCorrected(obj.accumulatedCorrected),
+GHistScaCor::GHistScaCor(const GHistScaCor& obj, Bool_t linkHistogram) :
+    GHistLinked(obj, linkHistogram),
+    accumulated(obj.accumulated, kFALSE),
+    accumulatedCorrected(obj.accumulatedCorrected, kFALSE),
     singleScalerReads(),
     singleScalerReadsCorrected()
 {
@@ -72,18 +72,22 @@ Bool_t	GHistScaCor::Add(const GHistScaCor *h, Double_t c)
     accumulatedCorrected.Add(&h->accumulatedCorrected, c);
     for(int i=0; i<h->GetNScalerReadCorrections(); i++)
     {
-        if(i<=GetNScalerReadCorrections())
+        if(i>=GetNScalerReadCorrections())
         {
             gROOT->cd();
             GHistLinked*    uncor   = new GHistLinked(*((GHistLinked*)h->singleScalerReads.At(i)), kFALSE);
             uncor->SetName(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
             uncor->SetTitle(TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
+            uncor->SetOutputDirectory(TString(GetOutputDirectoryName()));
+            uncor->AddOutputDirectory("ScalerCorrection/SingleScalerReads_Uncorrected");
             singleScalerReads.Add(uncor);
 
             gROOT->cd();
             GHistLinked*    cor     = new GHistLinked(*((GHistLinked*)h->singleScalerReadsCorrected.At(i)), kFALSE);
             cor->SetName(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
             cor->SetTitle(TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
+            cor->SetOutputDirectory(TString(GetOutputDirectoryName()));
+            cor->AddOutputDirectory("ScalerCorrection/SingleScalerReads");
             singleScalerReadsCorrected.Add(cor);
         }
         else
