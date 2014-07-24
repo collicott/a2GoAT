@@ -57,7 +57,7 @@ GHistBGSub::GHistBGSub(const GHistBGSub& obj, Bool_t linkHistogram) :
     rand(obj.GetNRandCuts())
 {
     rand.SetOwner();
-    for(int i=0; i<GetNRandCuts(); i++)
+    for(int i=0; i<obj.rand.GetEntriesFast(); i++)
     {
         gROOT->cd();
         GHistScaCor*    hist_rand = new GHistScaCor(*((GHistScaCor*)obj.rand.At(i)), kFALSE);

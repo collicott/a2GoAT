@@ -42,8 +42,6 @@ public:
     virtual void	SetTitle(const char* title);
     virtual void	SetNameTitle(const char* name, const char* title)   {SetName(name); SetTitle(title);}
     virtual Int_t   Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0);
-
-    friend class PPhysics;
 };
 
 
