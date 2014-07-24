@@ -10,16 +10,16 @@
 
 
 
-class   GLinkedHist;
+class   GHistLinked;
 
 class   GHistManager
 {
 private:
     TObjArray   histList;
 
-    void        AddHistogramToList(GLinkedHist* hist);
+    void        AddHistogramToList(GHistLinked* hist);
     virtual     TDirectory* GetOutputDirectory() = 0;
-    void        RemoveHistogramFromList(GLinkedHist* hist);
+    void        RemoveHistogramFromList(GHistLinked* hist);
 
 protected:
 
@@ -30,14 +30,14 @@ public:
     void    ClearLinkedHistograms();
     void    WriteLinkedHistograms(TDirectory* dir);
 
-    friend  class   GLinkedHist;
+    friend  class   GHistLinked;
 };
 
 
 
 
 
-class   GLinkedHist : public TH1D
+class   GHistLinked : public TH1D
 {
 private:
     Bool_t  linked;
@@ -49,10 +49,10 @@ protected:
             TDirectory* GetOutputDirectory();
 
 public:
-    GLinkedHist(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
-    GLinkedHist(const GLinkedHist& obj, Bool_t linkHistogram);
-    GLinkedHist(const GLinkedHist& obj);
-    virtual ~GLinkedHist();
+    GHistLinked(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
+    GHistLinked(const GHistLinked& obj, Bool_t linkHistogram);
+    GHistLinked(const GHistLinked& obj);
+    virtual ~GHistLinked();
 
             void    SetOutputDirectory(const TString& directoryName)    {dir = directoryName;}
             void    SetOutputDirectory(const char* directoryName)       {SetOutputDirectory(TString(directoryName));}

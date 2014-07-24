@@ -40,13 +40,16 @@ private:
 
     Int_t   countReconstructed;
 
-    virtual TDirectory* GetOutputDirectory()                {return file_out;}
             Bool_t      TraverseValidEvents_AcquTreeFile();
             Bool_t      TraverseValidEvents_GoATTreeFile();
 
 protected:
     TFile*          file_out;
 
+private:
+    virtual TDirectory* GetOutputDirectory()    {return file_out;}
+
+protected:
     GTreeRawEvent*      rawEvent;
     GTreeTagger*        tagger;
     GTreeLinPol*        linpol;

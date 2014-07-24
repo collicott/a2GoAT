@@ -17,12 +17,12 @@ GHistManager::~GHistManager()
     gGHistManager   = 0;
 }
 
-void    GHistManager::AddHistogramToList(GLinkedHist* hist)
+void    GHistManager::AddHistogramToList(GHistLinked* hist)
 {
     histList.AddAtFree(hist);
 }
 
-void    GHistManager::RemoveHistogramFromList(GLinkedHist* hist)
+void    GHistManager::RemoveHistogramFromList(GHistLinked* hist)
 {
     histList.Remove(hist);
 }
@@ -30,16 +30,16 @@ void    GHistManager::RemoveHistogramFromList(GLinkedHist* hist)
 void GHistManager::ClearLinkedHistograms()
 {
     TIter   iter(&histList);
-    GLinkedHist*    hist;
-    while(hist=(GLinkedHist*)iter.Next())
+    GHistLinked*    hist;
+    while(hist=(GHistLinked*)iter.Next())
         hist->Reset();
 }
 
 void GHistManager::WriteLinkedHistograms(TDirectory* dir)
 {
     TIter   iter(&histList);
-    GLinkedHist*    hist;
-    while(hist=(GLinkedHist*)iter.Next())
+    GHistLinked*    hist;
+    while(hist=(GHistLinked*)iter.Next())
         hist->Write(0, TObject::kWriteDelete);
 }
 
@@ -47,7 +47,7 @@ void GHistManager::WriteLinkedHistograms(TDirectory* dir)
 
 
 
-TDirectory* GLinkedHist::GetCreateDirectory(TDirectory* dir, const TString& dirName)
+TDirectory* GHistLinked::GetCreateDirectory(TDirectory* dir, const TString& dirName)
 {
     dir->cd();
     TDirectory* curDir  = dir->GetDirectory(dirName);
@@ -61,7 +61,7 @@ TDirectory* GLinkedHist::GetCreateDirectory(TDirectory* dir, const TString& dirN
 }
 
 
-GLinkedHist::GLinkedHist(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
+GHistLinked::GHistLinked(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
     TH1D(name, title, nbinsx, xlow, xup),
     linked(linkHistogram),
     dir(dirName)
@@ -73,7 +73,7 @@ GLinkedHist::GLinkedHist(const char* name, const char* title, Int_t nbinsx, Doub
     }
 }
 
-GLinkedHist::GLinkedHist(const GLinkedHist& obj, Bool_t linkHistogram) :
+GHistLinked::GHistLinked(const GHistLinked& obj, Bool_t linkHistogram) :
     TH1D(obj),
     linked(linkHistogram),
     dir(obj.dir)
@@ -85,7 +85,7 @@ GLinkedHist::GLinkedHist(const GLinkedHist& obj, Bool_t linkHistogram) :
     }
 }
 
-GLinkedHist::GLinkedHist(const GLinkedHist& obj) :
+GHistLinked::GHistLinked(const GHistLinked& obj) :
     TH1D(obj),
     linked(obj.linked)
 {
@@ -96,7 +96,7 @@ GLinkedHist::GLinkedHist(const GLinkedHist& obj) :
     }
 }
 
-GLinkedHist::~GLinkedHist()
+GHistLinked::~GHistLinked()
 {
     if(linked == kTRUE)
     {
@@ -105,7 +105,7 @@ GLinkedHist::~GLinkedHist()
     }
 }
 
-TDirectory*    GLinkedHist::GetOutputDirectory()
+TDirectory*    GHistLinked::GetOutputDirectory()
 {
     if(gGHistManager)
     {
@@ -114,7 +114,7 @@ TDirectory*    GLinkedHist::GetOutputDirectory()
     return  GetCreateDirectory((TDirectory*)GetDirectory(), dir);
 }
 
-Int_t   GLinkedHist::Write(const char* name, Int_t option, Int_t bufsize)
+Int_t   GHistLinked::Write(const char* name, Int_t option, Int_t bufsize)
 {
     if(GetOutputDirectory())
         GetOutputDirectory()->cd();
