@@ -132,8 +132,9 @@ add_executable(eta-example
    src/GTreeEventParameters.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
-   src/PEtaExample.cc
    src/PPhysics.cc
+   src/PEtaExample.cc
+   src/eta_example_main.cc
    )
 target_link_libraries(eta-example ${ROOT_LIBRARIES})
 
