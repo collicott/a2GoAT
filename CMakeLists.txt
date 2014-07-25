@@ -44,6 +44,7 @@ add_executable(goat
    inc/GTreeMeson.h
    inc/GTreeTrigger.h
    inc/GTreeEventParameters.h
+   inc/GHistManager.h
    inc/GTreeManager.h
    inc/GConfigFile.h
    inc/GDataChecks.h
@@ -61,6 +62,7 @@ add_executable(goat
    src/GTreeMeson.cc
    src/GTreeTrigger.cc
    src/GTreeEventParameters.cc
+   src/GHistManager.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
    src/GDataChecks.cc
@@ -83,6 +85,7 @@ add_executable(pi0-example
    inc/GTreeMeson.h
    inc/GTreeTrigger.h
    inc/GTreeEventParameters.h
+   inc/GHistManager.h
    inc/GTreeManager.h
    inc/GConfigFile.h
    inc/PPhysics.h
@@ -97,6 +100,7 @@ add_executable(pi0-example
    src/GTreeMeson.cc
    src/GTreeTrigger.cc
    src/GTreeEventParameters.cc
+   src/GHistManager.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
    src/PPhysics.cc
@@ -116,10 +120,11 @@ add_executable(eta-example
    inc/GTreeMeson.h
    inc/GTreeTrigger.h
    inc/GTreeEventParameters.h
+   inc/GHistManager.h
    inc/GTreeManager.h
    inc/GConfigFile.h
-   inc/PEtaExample.h
    inc/PPhysics.h
+   inc/PEtaExample.h
    src/GTree.cc
    src/GTreeRawEvent.cc
    src/GTreeDetectorHits.cc
@@ -130,6 +135,7 @@ add_executable(eta-example
    src/GTreeMeson.cc
    src/GTreeTrigger.cc
    src/GTreeEventParameters.cc
+   src/GHistManager.cc
    src/GTreeManager.cc
    src/GConfigFile.cc
    src/PPhysics.cc
@@ -137,4 +143,3 @@ add_executable(eta-example
    src/eta_example_main.cc
    )
 target_link_libraries(eta-example ${ROOT_LIBRARIES})
-
