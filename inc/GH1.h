@@ -27,7 +27,7 @@ public:
     virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void    Reset(Option_t* option = "");
     virtual Int_t   Fill(const Double_t value, const Double_t taggerTime = 0, const Int_t taggerChannel = 0);
-    virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger);
+    virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger, const Bool_t CreateHistogramsForTaggerBinning = kFALSE);
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetName(const char* name);
     virtual void	SetTitle(const char* title);

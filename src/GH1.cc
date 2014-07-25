@@ -107,10 +107,15 @@ Int_t   GH1::Fill(const Double_t value, const Double_t taggerTime, const Int_t t
     ((GHistBGSub*)bin.At(taggerChannel-1))->Fill(value, taggerTime);
 }
 
-Int_t   GH1::Fill(const Double_t value, const GTreeTagger& tagger)
+Int_t   GH1::Fill(const Double_t value, const GTreeTagger& tagger, const Bool_t CreateHistogramsForTaggerBinning)
 {
     for(int i=0; i<tagger.GetNTagged(); i++)
-        Fill(value, tagger.GetTagged_t(i), tagger.GetTagged_ch(i));
+    {
+        if(CreateHistogramsForTaggerBinning)
+            Fill(value, tagger.GetTagged_t(i), tagger.GetTagged_ch(i));
+        else
+            Fill(value, tagger.GetTagged_t(i));
+    }
 }
 
 void    GH1::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)

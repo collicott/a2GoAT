@@ -32,10 +32,10 @@ Bool_t	GH1Example::Start()
 
 void	GH1Example::ProcessEvent()
 {
-    test.Fill(pi0->Particle(0).Px());
+    test.Fill(pi0->Particle(0).Px(), *tagger, kTRUE);
 }
 
 void	GH1Example::ProcessScalerRead()
 {
-    test.ScalerReadCorrection(5);
+    //test.ScalerReadCorrection(5);
 }
