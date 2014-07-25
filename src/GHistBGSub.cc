@@ -36,25 +36,14 @@ void    GHistBGSub::AddRandCut(const Double_t RandMin, const Double_t RandMax)
 
 GHistBGSub::GHistBGSub(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
     GHistScaCor(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
-    rand(GetNRandCuts())
+    rand()
 {
     rand.SetOwner();
-    for(int i=0; i<GetNRandCuts(); i++)
-    {
-        gROOT->cd();
-        GHistScaCor*    hist_rand = new GHistScaCor(TString(GetName()).Append("_rand").Append(TString::Itoa(i, 10)).Data(),
-                                                    TString(GetTitle()).Append(" rand").Append(TString::Itoa(i, 10)).Data(),
-                                                    nbinsx, xlow, xup,
-                                                    kFALSE,
-                                                    dirName);
-        hist_rand->AddOutputDirectory(TString::Itoa(i,10).Prepend("RandomWindow_"));
-        rand.AddAtFree(hist_rand);
-    }
 }
 
 GHistBGSub::GHistBGSub(const GHistBGSub& obj, Bool_t linkHistogram) :
     GHistScaCor(obj, linkHistogram),
-    rand(obj.GetNRandCuts())
+    rand(obj.rand.GetEntriesFast())
 {
     rand.SetOwner();
     for(int i=0; i<obj.rand.GetEntriesFast(); i++)
@@ -74,7 +63,7 @@ Bool_t	GHistBGSub::Add(const GHistBGSub* h, Double_t c)
     GHistScaCor::Add(h, c);
     for(int i=0; i<h->rand.GetEntriesFast(); i++)
     {
-        if(i>=GetNRandCuts())
+        if(i>=rand.GetEntriesFast())
         {
             gROOT->cd();
             GHistScaCor*    hist_rand = new GHistScaCor(*((GHistScaCor*)h->rand.At(i)), kFALSE);
@@ -138,7 +127,7 @@ Int_t   GHistBGSub::Fill(const Double_t value, const GTreeTagger& tagger)
 
 void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
 {
-    if(GetNRandCuts()==0)
+    if(rand.GetEntriesFast()==0)
         GHistScaCor::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
     else
     {
@@ -193,7 +182,7 @@ void	GHistBGSub::SetTitle(const char* title)
 
 Int_t    GHistBGSub::Write(const char* name, Int_t option, Int_t bufsize)
 {
-    if(GetNRandCuts()==0)
+    if(rand.GetEntriesFast()==0)
         return GHistScaCor::Write();
 
     TString oldName(GetName());
