@@ -1,5 +1,5 @@
-#ifndef __GH1_h__
-#define __GH1_h__
+#ifndef __GHistTaggerBinning_h__
+#define __GHistTaggerBinning_h__
 
 
 #include <TROOT.h>
@@ -10,7 +10,7 @@
 
 class   GTreeTagger;
 
-class  GH1  : public GHistLinked
+class  GHistTaggerBinning  : public GHistLinked
 {
 private:
     TObjArray   bin;
@@ -19,11 +19,11 @@ private:
     static  void    WriteHistogram(GHistLinked *hist, const char* name, const char* title, TDirectory* dir = 0);
 
 public:
-    GH1(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
-    GH1(const GH1& obj, Bool_t linkHistogram = kTRUE);
-    virtual ~GH1();
+    GHistTaggerBinning(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
+    GHistTaggerBinning(const GHistTaggerBinning& obj, Bool_t linkHistogram = kTRUE);
+    virtual ~GHistTaggerBinning();
 
-    virtual Bool_t	Add(const GH1* h, Double_t c = 1);
+    virtual Bool_t	Add(const GHistTaggerBinning* h, Double_t c = 1);
     virtual void    AddOutputDirectory(const TString& directoryName);
     virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void    Reset(Option_t* option = "");
