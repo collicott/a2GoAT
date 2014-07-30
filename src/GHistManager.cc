@@ -61,6 +61,13 @@ TDirectory* GHistLinked::GetCreateDirectory(TDirectory* dir, const TString& dirN
 }
 
 
+GHistLinked::GHistLinked() :
+    TH1D(),
+    linked(kFALSE),
+    dir()
+{
+}
+
 GHistLinked::GHistLinked(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
     TH1D(name, title, nbinsx, xlow, xup),
     linked(linkHistogram),
