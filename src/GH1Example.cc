@@ -4,8 +4,9 @@
 
 GH1Example::GH1Example()    :
     test("test", "test", 1000, -500, 500)
-{ 
-    GHistTaggerBinning::InitTaggerBinning(5,10);
+{
+    GHistBGSub::InitCuts(-10, 10, -55, -35);
+    GHistBGSub::AddRandCut(35, 55);
 }
 
 GH1Example::~GH1Example()

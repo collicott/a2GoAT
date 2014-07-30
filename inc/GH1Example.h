@@ -7,12 +7,12 @@
 #include <string> 
 
 #include "GTreeManager.h"
-#include "GHistTaggerBinning.h"
+#include "GHistBGSub.h"
 
 class	GH1Example  : public GTreeManager
 {
 private:
-    GHistTaggerBinning     test;
+    GHistBGSub     test;
 
 protected:
     virtual Bool_t  Start();
