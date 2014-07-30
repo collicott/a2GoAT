@@ -54,10 +54,8 @@ public:
     virtual ~GHistLinked();
 
     virtual void        AddOutputDirectory(const TString& directoryName);
-            void        AddOutputDirectory(const char* directoryName)       {AddOutputDirectory(TString(directoryName));}
     const   TString&    GetOutputDirectoryName() const                      {return dir;}
     virtual void        SetOutputDirectory(const TString& directoryName)    {dir = directoryName;}
-            void        SetOutputDirectory(const char* directoryName)       {SetOutputDirectory(TString(directoryName));}
     virtual Int_t       Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0);
 };
 
