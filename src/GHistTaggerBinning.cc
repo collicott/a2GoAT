@@ -1,6 +1,12 @@
 #include "GHistTaggerBinning.h"
 #include "GTreeTagger.h"
 
+GHistTaggerBinning::GHistTaggerBinning() :
+    GHistLinked(),
+    bin(352)
+{
+    bin.SetOwner();
+}
 
 GHistTaggerBinning::GHistTaggerBinning(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
     GHistLinked(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
@@ -116,6 +122,13 @@ Int_t   GHistTaggerBinning::Fill(const Double_t value, const GTreeTagger& tagger
         else
             Fill(value);
     }
+}
+
+void	GHistTaggerBinning::SetBins(Int_t nx, Double_t xmin, Double_t xmax)
+{
+    GHistLinked::SetBins(nx, xmin, xmax);
+    for(int i=0; i<bin.GetEntriesFast(); i++)
+        ((GHistLinked*)bin.At(i))->SetBins(nx, xmin, xmax);
 }
 
 void	GHistTaggerBinning::SetName(const char* name)
