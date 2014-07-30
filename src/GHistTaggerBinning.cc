@@ -5,6 +5,7 @@ GHistTaggerBinning::GHistTaggerBinning() :
     GHistLinked(),
     bin(352)
 {
+    SetDirectory(gROOT);
     bin.SetOwner();
 }
 
@@ -12,25 +13,8 @@ GHistTaggerBinning::GHistTaggerBinning(const char* name, const char* title, Int_
     GHistLinked(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
     bin(352)
 {
+    SetDirectory(gROOT);
     bin.SetOwner();
-}
-
-GHistTaggerBinning::GHistTaggerBinning(const GHistTaggerBinning& obj, Bool_t linkHistogram) :
-    GHistLinked(obj, linkHistogram),
-    bin(352)
-{
-    bin.SetOwner();
-    for(int i=0; i<obj.bin.GetEntriesFast(); i++)
-    {
-        gROOT->cd();
-        GHistLinked*    hist = new GHistLinked(*((GHistLinked*)obj.bin.At(i)), kFALSE);
-        hist->SetName(TString(GetName()).Append("_bin").Append(TString::Itoa(i+1, 10)).Data());
-        hist->SetTitle(TString(GetTitle()).Append(" bin").Append(TString::Itoa(i+1, 10)).Data());
-        hist->SetOutputDirectory(GetOutputDirectoryName().Data());
-        hist->AddOutputDirectory("taggerBinning");
-        hist->AddOutputDirectory(TString::Itoa(i+1,10).Prepend("channel_"));
-        bin.AddAtFree(hist);
-    }
 }
 
 GHistTaggerBinning::~GHistTaggerBinning()
@@ -64,16 +48,18 @@ Bool_t	GHistTaggerBinning::Add(const GHistTaggerBinning* h, Double_t c)
         if(i>=bin.GetEntriesFast())
         {
             gROOT->cd();
-            GHistLinked*    hist = new GHistLinked(*((GHistLinked*)h->bin.At(i)), kFALSE);
-            hist->SetName(TString(GetName()).Append(TString::Itoa(bin.GetEntriesFast(),10).Prepend("_bin")));
-            hist->SetTitle(TString(GetTitle()).Append(TString::Itoa(bin.GetEntriesFast(),10).Prepend(" bin ")));
-            hist->SetOutputDirectory(GetOutputDirectoryName().Data());
-            ((GHistLinked*)bin.At(i))->AddOutputDirectory("taggerBinning");
-            ((GHistLinked*)bin.At(i))->AddOutputDirectory(TString::Itoa(i+1,10).Prepend("channel_"));
+            GHistLinked*    hist = new GHistLinked(TString(GetName()).Append(TString::Itoa(bin.GetEntriesFast(),10).Prepend("_bin")).Data(),
+                                                   TString(GetTitle()).Append(TString::Itoa(bin.GetEntriesFast(),10).Prepend(" bin ")).Data(),
+                                                   GetNbinsX(),
+                                                   GetXaxis()->GetXmin(),
+                                                   GetXaxis()->GetXmax(),
+                                                   kFALSE,
+                                                   GetOutputDirectoryName().Data());
+            hist->AddOutputDirectory("taggerBinning");
+            hist->AddOutputDirectory(TString::Itoa(i+1,10).Prepend("channel_"));
             bin.AddAtFree(hist);
         }
-        else
-            ((GHistLinked*)bin.At(i))->Add((GHistLinked*)h->bin.At(i), c);
+        ((GHistLinked*)bin.At(i))->Add((GHistLinked*)h->bin.At(i), c);
     }
 }
 

@@ -51,7 +51,6 @@ protected:
 public:
     GHistLinked();
     GHistLinked(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
-    GHistLinked(const GHistLinked& obj, Bool_t linkHistogram);
     virtual ~GHistLinked();
 
     virtual void        AddOutputDirectory(const TString& directoryName);

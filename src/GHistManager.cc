@@ -77,15 +77,6 @@ GHistLinked::GHistLinked(const char* name, const char* title, Int_t nbinsx, Doub
         Link();
 }
 
-GHistLinked::GHistLinked(const GHistLinked& obj, Bool_t linkHistogram) :
-    TH1D(obj),
-    linked(linkHistogram),
-    dir(obj.dir)
-{
-    if(linked == kTRUE)
-        Link();
-}
-
 GHistLinked::~GHistLinked()
 {
     Unlink();

@@ -21,7 +21,6 @@ private:
 public:
     GHistTaggerBinning();
     GHistTaggerBinning(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram = kTRUE, const char* dirName = "");
-    GHistTaggerBinning(const GHistTaggerBinning& obj, Bool_t linkHistogram = kTRUE);
     virtual ~GHistTaggerBinning();
 
     virtual Bool_t	Add(const GHistTaggerBinning* h, Double_t c = 1);
