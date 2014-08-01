@@ -6,41 +6,32 @@
 #include <cstdio>
 #include <string> 
 
+#include "GTreeManager.h"
 #include "PPhysics.h"
 
-class	PPi0Example : public PPhysics
+class	PPi0Example  : public PPhysics
 {
 private:
-
-	Double_t time;
-	TH1* 	time_pi0;
-	TH1* 	time_pi0_cuts;	
-
-	TH1* 	MM_prompt_pi0;
-	TH1* 	MM_random_pi0;
-	TH1* 	MM_pi0;
-	
-	TH1* 	MM_prompt_pi0_n_2g;
-	TH1* 	MM_random_pi0_n_2g;
-	TH1* 	MM_pi0_n_2g;		
-
-	Int_t 	N_pi0;
-
+    GH1*	time;
+    GH1*	time_2g;   
+     
+    GH1*	IM;
+    GH1*	IM_2g;
+    
+    GH1*	MM;
+    GH1*	MM_2g; 
+    
 protected:
     virtual Bool_t  Start();
 
     virtual void    ProcessEvent();
-			void	PostReconstruction();
-
-			void	DefineHistograms();
-			Bool_t	WriteHistograms(TFile* pfile);
-			Bool_t	WriteHistograms() {return WriteHistograms(file_out);}
+    virtual void	ProcessScalerRead();
 			
 public:
     PPi0Example();
     virtual ~PPi0Example();
 
-    virtual Bool_t	Init(const char* configfile);
+    //virtual Bool_t	Init(const char* configfile);
 
 };
 #endif
