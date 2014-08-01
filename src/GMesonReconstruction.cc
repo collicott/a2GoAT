@@ -92,16 +92,41 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     Double_t 	diff_meson[maxSubs * maxSubs];
     Int_t 		sort_index[maxSubs * maxSubs];
     Bool_t 		is_meson  [maxSubs];
-    Int_t 		ndaughter   = 0;
-    TLorentzVector* daughter_list[maxSubs];
-    Int_t       daughter_index[maxSubs];
-    Int_t       pdg_list[maxSubs];
+
     Int_t       countRootinos	= 0;
     Int_t       countPhotons	= 0;
     Int_t       countChargedPi	= 0;
 
-    //	TLorentzVector	initialParticle[GetNParticles()];
+
+    TLorentzVector* daughter_list[maxSubs];
+    Int_t       	daughter_index[maxSubs];
+    Int_t       	pdg_list[maxSubs];
+
+	// one list including only rootinos and photons
+    Int_t 			ndaughter   = 0;
+    
+	// another list including charged pions ((and electrons)) too (eta/eta')
+    Int_t 			ndaughter_full   = 0;
+
+//###################################
+//************From Here**************
+//###################################
+
     TLorentzVector	reaction_p4;
+    TLorentzVector	reaction_p4_full;
+    
+    // LEVEL 1:
+    // Test full reaction 4 momentum
+    // We will ignoring protons and neutrons in all reconstructions
+    // We will include only photons and rootinos in the pi0 reconstruction
+    // This is to test the following complex decays
+    // n' -> pi+  pi-  n
+    // n' -> pi0  pi0  n
+    // n  -> pi0  pi0  pi0
+    // n  -> pi0  pi+  pi-
+    // n  -> pi0 (pi+  pi-  g)  - omega meson intermediate state
+    // n  -> pi+  pi-  g		- direct n decay
+    // 							    (or rho_0 intermediate state)    
 
 	for (int i = 0; i < rootinos->GetNParticles(); i++)
     {
@@ -110,12 +135,18 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
         is_meson[ndaughter] = kFALSE;
 
-        reaction_p4 += rootinos->Particle(i);
-        daughter_list[ndaughter] = &rootinos->Particle(i);
-        daughter_index[ndaughter]= i;
-        pdg_list[ndaughter] = pdg_rootino;
+        daughter_list[ ndaughter] = &rootinos->Particle(i);
+        daughter_index[ndaughter] = i;
+        pdg_list[ndaughter] 	  = pdg_rootino;
+
+        reaction_p4 	 += rootinos->Particle(i);     
+        reaction_p4_full += rootinos->Particle(i);  
+        
+		ndaughter++;   
+        ndaughter_full++;
+        
         countRootinos++;
-        ndaughter++;
+
     }
     for (int i = 0; i < photons->GetNParticles(); i++)
     {
@@ -124,12 +155,17 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
         is_meson[ndaughter] = kFALSE;
 
-        reaction_p4 += photons->Particle(i);
-        daughter_list[ndaughter] = &photons->Particle(i);
-        daughter_index[ndaughter]= i;
-        pdg_list[ndaughter] = pdgDB->GetParticle("gamma")->PdgCode();
+        daughter_list[ ndaughter] = &photons->Particle(i);
+        daughter_index[ndaughter] = i;
+        pdg_list[ndaughter] 	  = pdgDB->GetParticle("gamma")->PdgCode();;
+
+        reaction_p4 	 += photons->Particle(i);     
+        reaction_p4_full += photons->Particle(i);  
+        
+		ndaughter++;   
+        ndaughter_full++;
+        
         countPhotons++;
-        ndaughter++;
     }
     for (int i = 0; i < chargedPi->GetNParticles(); i++)
     {
@@ -138,55 +174,63 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
         is_meson[ndaughter] = kFALSE;
 
-        reaction_p4 += chargedPi->Particle(i);
-        daughter_list[ndaughter] = &chargedPi->Particle(i);
-        daughter_index[ndaughter]= i;
-        pdg_list[ndaughter] = pdgDB->GetParticle("pi+")->PdgCode();
+        daughter_list[ ndaughter] = &chargedPi->Particle(i);
+        daughter_index[ndaughter] = i;
+        pdg_list[ndaughter] 	  = pdgDB->GetParticle("pi+")->PdgCode();;
+
+        reaction_p4_full += chargedPi->Particle(i);  
+        ndaughter_full++;
+      
         countChargedPi++;
-        ndaughter++;
+
     }
 
-//###################################
-//************From Here**************
-//###################################
-
-    // LEVEL 1:
-    // Test full reaction 4 momentum (ignoring protons and neutrons)
-    // This is to test the following complex decays
-    // n' -> pi+  pi-  n
-    // n' -> pi0  pi0  n
-    // n  -> pi0  pi0  pi0
-    // n  -> pi0  pi+  pi-
-    // n  -> pi0 (pi+  pi-  g)  - omega meson intermediate state
-    // n  -> pi+  pi-  g		- direct n decay
-    // 							    (or rho_0 intermediate state)
-
-    Double_t diff_pi0  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("pi0" )->Mass()*1000)  )/width_pi0;
-    Double_t diff_eta  = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta" )->Mass()*1000)  )/width_eta;
-    Double_t diff_etap = TMath::Abs( reaction_p4.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etap;
+    Double_t diff_pi0  = TMath::Abs( reaction_p4.M() 	  - (pdgDB->GetParticle("pi0" )->Mass()*1000) )/width_pi0;
+    Double_t diff_eta  = TMath::Abs( reaction_p4_full.M() - (pdgDB->GetParticle("eta" )->Mass()*1000) )/width_eta;
+    Double_t diff_etap = TMath::Abs( reaction_p4_full.M() - (pdgDB->GetParticle("eta'")->Mass()*1000) )/width_etap;
 
     if ((diff_pi0 <= 1.0) && (diff_pi0 < diff_eta) && (diff_pi0 < diff_etap) && (ndaughter >= 2))
     {
-        pi0->AddParticle(countRootinos, daughter_index, daughter_list, countPhotons, &daughter_index[countRootinos], &daughter_list[countRootinos], countChargedPi, &daughter_index[countRootinos+countPhotons], &daughter_list[countRootinos+countPhotons]);
+		// Add pi0 (charged pion list not included)
+        pi0->AddParticle(countRootinos, daughter_index, daughter_list, 
+						countPhotons, &daughter_index[countRootinos], &daughter_list[countRootinos], 
+						0, &daughter_index[0], &daughter_list[0]);
+						
+		// Remove rootinos and photons from original particle list
         rootinos->RemoveParticles(countRootinos, daughter_index);
         photons->RemoveParticles(countPhotons, &daughter_index[countRootinos]);
-        chargedPi->RemoveParticles(countChargedPi, &daughter_index[countRootinos+countPhotons]);
+
+		// Complete reaction satisfied, return kTRUE
         return kTRUE;
     }
     else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter >= 2))
     {
-        eta->AddParticle(countRootinos, daughter_index, daughter_list, countPhotons, &daughter_index[countRootinos], &daughter_list[countRootinos], countChargedPi, &daughter_index[countRootinos+countPhotons], &daughter_list[countRootinos+countPhotons]);
+        // Add eta 
+        eta->AddParticle(countRootinos, daughter_index, daughter_list, 
+						countPhotons, &daughter_index[countRootinos], &daughter_list[countRootinos], 
+						countChargedPi, &daughter_index[countRootinos+countPhotons], &daughter_list[countRootinos+countPhotons]);
+
+		// Remove daughters from original particle list
         rootinos->RemoveParticles(countRootinos, daughter_index);
         photons->RemoveParticles(countPhotons, &daughter_index[countRootinos]);
         chargedPi->RemoveParticles(countChargedPi, &daughter_index[countRootinos+countPhotons]);
+        
+        // Complete reaction satisfied, return kTRUE
         return kTRUE;
     }
     else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter >= 2))
     {
-        etap->AddParticle(countRootinos, daughter_index, daughter_list, countPhotons, &daughter_index[countRootinos], &daughter_list[countRootinos], countChargedPi, &daughter_index[countRootinos+countPhotons], &daughter_list[countRootinos+countPhotons]);
+        // Add eta 
+        etap->AddParticle(countRootinos, daughter_index, daughter_list, 
+						countPhotons, &daughter_index[countRootinos], &daughter_list[countRootinos], 
+						countChargedPi, &daughter_index[countRootinos+countPhotons], &daughter_list[countRootinos+countPhotons]);
+
+		// Remove daughters from original particle list
         rootinos->RemoveParticles(countRootinos, daughter_index);
         photons->RemoveParticles(countPhotons, &daughter_index[countRootinos]);
         chargedPi->RemoveParticles(countChargedPi, &daughter_index[countRootinos+countPhotons]);
+        
+        // Complete reaction satisfied, return kTRUE
         return kTRUE;
     }
 
@@ -195,8 +239,9 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     // Loop over possible 2-particle combinations (skip i=j, ij = ji)
     // to check pi0 -> 2g, n -> 2g , n' -> 2g
     // Find all pairs within IM limits and sort by best Chi
+    // Use only photons and rootinos    
     // Don't double count in sorting!
-    // Reset daughter list
+
     Int_t k = 0;
     for (int i = 0; i < ndaughter; i++)
     {
@@ -245,10 +290,10 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 
     Int_t		nIndex_rootino_delete    = 0;
     Int_t		nIndex_photon_delete    = 0;
-    Int_t		nIndex_chargedPi_delete = 0;
+ //   Int_t		nIndex_chargedPi_delete = 0;
     Int_t		index_rootino_delete[GTreeParticle_MaxEntries];
     Int_t		index_photon_delete[GTreeParticle_MaxEntries];
-    Int_t		index_chargedPi_delete[GTreeParticle_MaxEntries];
+  //  Int_t		index_chargedPi_delete[GTreeParticle_MaxEntries];
 
     for (Int_t i = 0; i < k; i++)
     {
@@ -274,11 +319,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index_photon_delete[nIndex_photon_delete] = daughter_index[index1[sort_index[i]]];
                 nIndex_photon_delete++;
             }
-            else
+ /*           else
             {
                 index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index1[sort_index[i]]];
                 nIndex_chargedPi_delete++;
-            }
+            }*/
             if(index2[sort_index[i]] < countRootinos)
             {
                 index_rootino_delete[nIndex_rootino_delete] = daughter_index[index2[sort_index[i]]];
@@ -289,11 +334,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index_photon_delete[nIndex_photon_delete] = daughter_index[index2[sort_index[i]]];
                 nIndex_photon_delete++;
             }
-            else
+/*            else
             {
                 index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index2[sort_index[i]]];
                 nIndex_chargedPi_delete++;
-            }
+            }*/
         }
         else if(tempID[sort_index[i]] == pdgDB->GetParticle("eta")->PdgCode())
         {
@@ -308,11 +353,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index_photon_delete[nIndex_photon_delete] = daughter_index[index1[sort_index[i]]];
                 nIndex_photon_delete++;
             }
-            else
+/*          else
             {
                 index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index1[sort_index[i]]];
                 nIndex_chargedPi_delete++;
-            }
+            }*/
             if(index2[sort_index[i]] < countRootinos)
             {
                 index_rootino_delete[nIndex_rootino_delete] = daughter_index[index2[sort_index[i]]];
@@ -323,11 +368,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index_photon_delete[nIndex_photon_delete] = daughter_index[index2[sort_index[i]]];
                 nIndex_photon_delete++;
             }
-            else
+/*            else
             {
                 index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index2[sort_index[i]]];
                 nIndex_chargedPi_delete++;
-            }
+            }*/
         }
         else if(tempID[sort_index[i]] == pdgDB->GetParticle("eta'")->PdgCode())
         {
@@ -342,11 +387,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index_photon_delete[nIndex_photon_delete] = daughter_index[index1[sort_index[i]]];
                 nIndex_photon_delete++;
             }
-            else
+ /*           else
             {
                 index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index1[sort_index[i]]];
                 nIndex_chargedPi_delete++;
-            }
+            }*/
             if(index2[sort_index[i]] < countRootinos)
             {
                 index_rootino_delete[nIndex_rootino_delete] = daughter_index[index2[sort_index[i]]];
@@ -357,16 +402,17 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
                 index_photon_delete[nIndex_photon_delete] = daughter_index[index2[sort_index[i]]];
                 nIndex_photon_delete++;
             }
-            else
+/*            else
             {
                 index_chargedPi_delete[nIndex_chargedPi_delete] = daughter_index[index2[sort_index[i]]];
                 nIndex_chargedPi_delete++;
-            }
+            }*/
         }
     }
     rootinos->RemoveParticles(nIndex_rootino_delete, index_rootino_delete);
     photons->RemoveParticles(nIndex_photon_delete, index_photon_delete);
-    chargedPi->RemoveParticles(nIndex_chargedPi_delete, index_chargedPi_delete);
+//    chargedPi->RemoveParticles(nIndex_chargedPi_delete, index_chargedPi_delete);
+
 
     return kTRUE;
 }
