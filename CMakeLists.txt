@@ -74,6 +74,7 @@ add_executable(goat
    )
 target_link_libraries(goat ${ROOT_LIBRARIES})
 
+
 add_executable(pi0-example
    inc/GTree.h
    inc/GTreeRawEvent.h
@@ -114,84 +115,3 @@ add_executable(pi0-example
    src/pi0_example_main.cc
    )
 target_link_libraries(pi0-example ${ROOT_LIBRARIES})
-
-add_executable(eta-example
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeDetectorHits.h
-   inc/GTreeTagger.h
-   inc/GTreeLinPol.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeTrigger.h
-   inc/GTreeEventParameters.h
-   inc/GHistManager.h
-   inc/GTreeManager.h
-   inc/GConfigFile.h
-   inc/GHistScaCor.h
-   inc/GHistBGSub.h
-   inc/GH1.h
-   inc/PPhysics.h
-   inc/PEtaExample.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeDetectorHits.cc
-   src/GTreeTagger.cc
-   src/GTreeLinPol.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeTrigger.cc
-   src/GTreeEventParameters.cc
-   src/GHistManager.cc
-   src/GTreeManager.cc
-   src/GConfigFile.cc
-   src/GHistScaCor.cc
-   src/GHistBGSub.cc
-   src/GH1.cc
-   src/PPhysics.cc
-   src/PEtaExample.cc
-   src/eta_example_main.cc
-   )
-target_link_libraries(eta-example ${ROOT_LIBRARIES})
-
-
-add_executable(GH1-example
-   inc/GTree.h
-   inc/GTreeRawEvent.h
-   inc/GTreeDetectorHits.h
-   inc/GTreeTagger.h
-   inc/GTreeLinPol.h
-   inc/GTreeScaler.h
-   inc/GTreeParticle.h
-   inc/GTreeMeson.h
-   inc/GTreeTrigger.h
-   inc/GTreeEventParameters.h
-   inc/GHistManager.h
-   inc/GTreeManager.h
-   inc/GConfigFile.h
-   inc/GHistScaCor.h
-   inc/GHistBGSub.h
-   inc/GH1.h
-   inc/GH1Example.h
-   src/GTree.cc
-   src/GTreeRawEvent.cc
-   src/GTreeDetectorHits.cc
-   src/GTreeTagger.cc
-   src/GTreeLinPol.cc
-   src/GTreeScaler.cc
-   src/GTreeParticle.cc
-   src/GTreeMeson.cc
-   src/GTreeTrigger.cc
-   src/GTreeEventParameters.cc
-   src/GHistManager.cc
-   src/GTreeManager.cc
-   src/GConfigFile.cc
-   src/GHistScaCor.cc
-   src/GHistBGSub.cc
-   src/GH1.cc
-   src/GH1Example.cc
-   src/GH1_example_main.cc
-   )
-target_link_libraries(GH1-example ${ROOT_LIBRARIES})
