@@ -132,7 +132,10 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     {
         if (rootinos->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (rootinos->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
-
+		
+		// reject zero energy particles (no CB cluster involved)
+		if (rootinos->Particle(i).T() == 0) continue;
+		
         is_meson[ndaughter] = kFALSE;
 
         daughter_list[ ndaughter] = &rootinos->Particle(i);
@@ -153,6 +156,9 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         if (photons->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (photons->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
 
+		// reject zero energy particles (no CB cluster involved)
+		if (photons->Particle(i).T() == 0) continue;
+
         is_meson[ndaughter] = kFALSE;
 
         daughter_list[ ndaughter] = &photons->Particle(i);
@@ -171,6 +177,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
     {
         if (chargedPi->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (chargedPi->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
+
+		// reject zero energy particles (no CB cluster involved)
+		// note, not currently possible for charged pions 
+		// included for completeness
+		if (chargedPi->Particle(i).T() == 0) continue;
 
         is_meson[ndaughter_full] = kFALSE;
 
