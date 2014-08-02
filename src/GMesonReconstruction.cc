@@ -172,11 +172,11 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         if (chargedPi->Particle(i).Theta() < meson_theta_min) continue; // user rejected theta region
         if (chargedPi->Particle(i).Theta() > meson_theta_max) continue; // user rejected theta region
 
-        is_meson[ndaughter] = kFALSE;
+        is_meson[ndaughter_full] = kFALSE;
 
-        daughter_list[ ndaughter] = &chargedPi->Particle(i);
-        daughter_index[ndaughter] = i;
-        pdg_list[ndaughter] 	  = pdgDB->GetParticle("pi+")->PdgCode();;
+        daughter_list[ ndaughter_full] = &chargedPi->Particle(i);
+        daughter_index[ndaughter_full] = i;
+        pdg_list[ndaughter_full] 	   = pdgDB->GetParticle("pi+")->PdgCode();;
 
         reaction_p4_full += chargedPi->Particle(i);  
         ndaughter_full++;
