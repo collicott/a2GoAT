@@ -100,13 +100,13 @@ void PPhysics::FillMass(const GTreeParticle& tree, GH1* gHist)
 {
     for (Int_t i = 0; i < tree.GetNParticles(); i++)
 	{
-		gHist->Fill(pi0->Particle(i).M());
+		gHist->Fill(tree.Particle(i).M());
 	}
 }
 
 void PPhysics::FillMass(const GTreeParticle& tree, Int_t particle_index, GH1* gHist)
 {
-	gHist->Fill(pi0->Particle(particle_index).M());
+	gHist->Fill(tree.Particle(particle_index).M());
 }
 
 Bool_t 	PPhysics::Write()
