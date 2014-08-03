@@ -214,7 +214,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
 		// Complete reaction satisfied, return kTRUE
         return kTRUE;
     }
-    else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter >= 2))
+    else if ((diff_eta <= 1.0) && (diff_eta < diff_pi0) && (diff_eta < diff_etap) && (ndaughter_full >= 2))
     {
         // Add eta 
         eta->AddParticle(countRootinos, daughter_index, daughter_list, 
@@ -229,7 +229,7 @@ Bool_t  GMesonReconstruction::ProcessEventWithoutFilling()
         // Complete reaction satisfied, return kTRUE
         return kTRUE;
     }
-    else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter >= 2))
+    else if ((diff_etap <= 1.0) && (diff_etap < diff_pi0) && (diff_etap < diff_eta) && (ndaughter_full >= 2))
     {
         // Add eta 
         etap->AddParticle(countRootinos, daughter_index, daughter_list, 
