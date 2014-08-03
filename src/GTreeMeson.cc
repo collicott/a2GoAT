@@ -139,7 +139,7 @@ void    GTreeMeson::AddParticle(const Int_t subParticle_index0, const TLorentzVe
         WC1_E[nParticles]        = manager->photons->GetWC1_E(subParticle_index0);
         nSubPhotons[nParticles]++;
     }
-    if(pdg0 == manager->pdgDB->GetParticle("pi+")->PdgCode())
+    else if(pdg0 == manager->pdgDB->GetParticle("pi+")->PdgCode())
     {
         new((*((TClonesArray*)subChargedPi->At(nParticles)))[nSubChargedPi[nParticles]]) TLorentzVector(subParticle0);
         Apparatus[nParticles]    = manager->chargedPi->GetApparatus(subParticle_index0);
