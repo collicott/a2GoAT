@@ -103,12 +103,12 @@ void    GTreeMeson::AddParticle(const Int_t _NSubRootinos, Int_t* subRootinos_in
     {
         sum += *subChargedPi_list[i];
         new((*((TClonesArray*)subChargedPi->At(nParticles)))[i]) TLorentzVector(*subChargedPi_list[i]);
-        Apparatus[nParticles]    = Apparatus[nParticles] | manager->chargedPi->GetApparatus(subPhotons_index[i]);
-        time[nParticles]         += manager->chargedPi->GetTime(subPhotons_index[i]);
-        clusterSize[nParticles]  += manager->chargedPi->GetClusterSize(subPhotons_index[i]);
-        d_E[nParticles]          += manager->chargedPi->Get_dE(subPhotons_index[i]);
-        WC0_E[nParticles]        += manager->chargedPi->GetWC0_E(subPhotons_index[i]);
-        WC1_E[nParticles]        += manager->chargedPi->GetWC1_E(subPhotons_index[i]);
+        Apparatus[nParticles]    = Apparatus[nParticles] | manager->chargedPi->GetApparatus(subChargedPi_index[i]);
+        time[nParticles]         += manager->chargedPi->GetTime(subChargedPi_index[i]);
+        clusterSize[nParticles]  += manager->chargedPi->GetClusterSize(subChargedPi_index[i]);
+        d_E[nParticles]          += manager->chargedPi->Get_dE(subChargedPi_index[i]);
+        WC0_E[nParticles]        += manager->chargedPi->GetWC0_E(subChargedPi_index[i]);
+        WC1_E[nParticles]        += manager->chargedPi->GetWC1_E(subChargedPi_index[i]);
     }
     time[nParticles]         /= nSubParticles[nParticles];
     new((*particles)[nParticles]) TLorentzVector(sum);
