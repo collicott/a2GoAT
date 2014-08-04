@@ -5,12 +5,12 @@
 #include <TROOT.h>
 #include <TDirectory.h>
 
-#include "GHistManager.h"
+#include "GHistScaCor.h"
 
 
 class   GTreeTagger;
 
-class  GHistTaggerBinning  : public GHistLinked
+class  GHistTaggerBinning  : public GHistScaCor
 {
 private:
     TObjArray   bin;
@@ -32,6 +32,7 @@ public:
     virtual Int_t   Fill(const Double_t value, const Int_t taggerChannel = 0);
     virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger, const Bool_t CreateHistogramsForTaggerBinning = kFALSE);
     virtual void    Reset(Option_t* option = "");
+    virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetBins(Int_t nx, Double_t xmin, Double_t xmax);
     virtual void	SetName(const char* name);
     virtual void    SetOutputDirectory(const TString& directoryName);

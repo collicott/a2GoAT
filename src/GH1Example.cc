@@ -38,5 +38,5 @@ void	GH1Example::ProcessEvent()
 
 void	GH1Example::ProcessScalerRead()
 {
-    //test.ScalerReadCorrection(5);
+    test.ScalerReadCorrection(5);
 }

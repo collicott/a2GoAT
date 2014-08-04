@@ -6,6 +6,7 @@
 
 #include "GHistTaggerBinning.h"
 
+#define GH1 GHistBGSub
 
 class   GTreeTagger;
 
@@ -36,6 +37,7 @@ public:
     static  Int_t   GetNRandCuts()   {cutRandMin.size();}
     static  void    InitCuts(const Double_t PromptMin, const Double_t PromptMax, const Double_t RandMin, const Double_t RandMax);
     virtual void    Reset(Option_t* option = "");
+    virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetName(const char* name);
     virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void	SetTitle(const char* title);

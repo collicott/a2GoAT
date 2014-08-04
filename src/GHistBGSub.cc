@@ -143,6 +143,13 @@ void    GHistBGSub::SetOutputDirectory(const TString& directoryName)
     }
 }
 
+void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
+{
+    GHistTaggerBinning::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+    for(int i=0; i<rand.GetEntriesFast(); i++)
+        ((GHistTaggerBinning*)rand.At(i))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+}
+
 void	GHistBGSub::SetName(const char* name)
 {
     GHistTaggerBinning::SetName(name);

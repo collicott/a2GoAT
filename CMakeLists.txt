@@ -161,6 +161,7 @@ add_executable(GH1-example
    inc/GConfigFile.h
    inc/GHistTaggerBinning.h
    inc/GHistBGSub.h
+   inc/GHistScaCor.h
    inc/GH1Example.h
    src/GTree.cc
    src/GTreeRawEvent.cc
@@ -177,6 +178,7 @@ add_executable(GH1-example
    src/GConfigFile.cc
    src/GHistTaggerBinning.cc
    src/GHistBGSub.cc
+   src/GHistScaCor.cc
    src/GH1Example.cc
    src/GH1_example_main.cc
    )

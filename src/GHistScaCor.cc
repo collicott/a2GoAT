@@ -15,6 +15,17 @@ Int_t   GHistScaCor::WriteHistogram(GHistLinked& hist, const TString& name, cons
     return ret;
 }
 
+GHistScaCor::GHistScaCor() :
+    GHistLinked(),
+    accumulated(),
+    accumulatedCorrected(),
+    singleScalerReads(),
+    singleScalerReadsCorrected(),
+    corrected(kFALSE)
+{
+    singleScalerReads.SetOwner();
+    singleScalerReadsCorrected.SetOwner();
+}
 
 GHistScaCor::GHistScaCor(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
     GHistLinked(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
@@ -37,32 +48,6 @@ GHistScaCor::GHistScaCor(const char* name, const char* title, Int_t nbinsx, Doub
     singleScalerReadsCorrected.SetOwner();
 }
 
-GHistScaCor::GHistScaCor(const GHistScaCor& obj, Bool_t linkHistogram) :
-    GHistLinked(obj, linkHistogram),
-    accumulated(obj.accumulated, kFALSE),
-    accumulatedCorrected(obj.accumulatedCorrected, kFALSE),
-    singleScalerReads(obj.singleScalerReads.GetEntriesFast()),
-    singleScalerReadsCorrected(obj.singleScalerReadsCorrected.GetEntriesFast()),
-    corrected(obj.corrected)
-{
-    singleScalerReads.SetOwner();
-    singleScalerReadsCorrected.SetOwner();
-    for(int i=0; i<obj.GetNScalerReadCorrections(); i++)
-    {
-        gROOT->cd();
-        GHistLinked*    uncor   = new GHistLinked(*((GHistLinked*)obj.singleScalerReads.At(i)), kFALSE);
-        uncor->SetName(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-        uncor->SetTitle(TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-        singleScalerReads.Add(uncor);
-
-        gROOT->cd();
-        GHistLinked*    cor     = new GHistLinked(*((GHistLinked*)obj.singleScalerReadsCorrected.At(i)), kFALSE);
-        cor->SetName(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-        cor->SetTitle(TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-        singleScalerReadsCorrected.Add(cor);
-    }
-}
-
 GHistScaCor::~GHistScaCor()
 {
 }
@@ -77,18 +62,24 @@ Bool_t	GHistScaCor::Add(const GHistScaCor *h, Double_t c)
         if(i>=GetNScalerReadCorrections())
         {
             gROOT->cd();
-            GHistLinked*    uncor   = new GHistLinked(*((GHistLinked*)h->singleScalerReads.At(i)), kFALSE);
-            uncor->SetName(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-            uncor->SetTitle(TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-            uncor->SetOutputDirectory(TString(GetOutputDirectoryName()));
+            GHistLinked*    uncor   = new GHistLinked(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)),
+                                                      TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)),
+                                                      GetNbinsX(),
+                                                      GetXaxis()->GetXmin(),
+                                                      GetXaxis()->GetXmax(),
+                                                      kFALSE,
+                                                      GetOutputDirectoryName().Data());
             uncor->AddOutputDirectory("ScalerCorrection/SingleScalerReads_Uncorrected");
             singleScalerReads.Add(uncor);
 
             gROOT->cd();
-            GHistLinked*    cor     = new GHistLinked(*((GHistLinked*)h->singleScalerReadsCorrected.At(i)), kFALSE);
-            cor->SetName(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-            cor->SetTitle(TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-            cor->SetOutputDirectory(TString(GetOutputDirectoryName()));
+            GHistLinked*    cor     = new GHistLinked(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)),
+                                                      TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)),
+                                                      GetNbinsX(),
+                                                      GetXaxis()->GetXmin(),
+                                                      GetXaxis()->GetXmax(),
+                                                      kFALSE,
+                                                      GetOutputDirectoryName().Data());
             cor->AddOutputDirectory("ScalerCorrection/SingleScalerReads");
             singleScalerReadsCorrected.Add(cor);
         }
@@ -148,18 +139,24 @@ void    GHistScaCor::ScalerReadCorrection(const Double_t CorrectionFactor, const
     if(CreateHistogramsForSingleScalerReads)
     {
         gROOT->cd();
-        GHistLinked*    uncor   = new GHistLinked(*this, kFALSE);
-        uncor->SetName(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
-        uncor->SetTitle(TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)));
+        GHistLinked*    uncor   = new GHistLinked(TString(GetName()).Append("_UnCor_ScaRead").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)),
+                                                  TString(GetTitle()).Append(" Uncorrected Scaler Read ").Append(TString::Itoa(singleScalerReads.GetEntriesFast(), 10)),
+                                                  GetNbinsX(),
+                                                  GetXaxis()->GetXmin(),
+                                                  GetXaxis()->GetXmax(),
+                                                  kFALSE,
+                                                  GetOutputDirectoryName().Data());
         uncor->AddOutputDirectory("ScalerCorrection/SingleScalerReads_Uncorrected");
         singleScalerReads.Add(uncor);
 
-        Scale(CorrectionFactor);
-
         gROOT->cd();
-        GHistLinked*    cor     = new GHistLinked(*this, kFALSE);
-        cor->SetName(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
-        cor->SetTitle(TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)));
+        GHistLinked*    cor     = new GHistLinked(TString(GetName()).Append("_ScaRead").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)),
+                                                  TString(GetTitle()).Append(" Scaler Read ").Append(TString::Itoa(singleScalerReadsCorrected.GetEntriesFast(), 10)),
+                                                  GetNbinsX(),
+                                                  GetXaxis()->GetXmin(),
+                                                  GetXaxis()->GetXmax(),
+                                                  kFALSE,
+                                                  GetOutputDirectoryName().Data());
         cor->AddOutputDirectory("ScalerCorrection/SingleScalerReads");
         singleScalerReadsCorrected.Add(cor);
     }

@@ -13,7 +13,7 @@ void    GHistTaggerBinning::InitTaggerBinning(const Int_t min, const Int_t max)
 
 
 GHistTaggerBinning::GHistTaggerBinning() :
-    GHistLinked(),
+    GHistScaCor(),
     bin()
 {
     SetDirectory(gROOT);
@@ -21,7 +21,7 @@ GHistTaggerBinning::GHistTaggerBinning() :
 }
 
 GHistTaggerBinning::GHistTaggerBinning(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
-    GHistLinked(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
+    GHistScaCor(name, title, nbinsx, xlow, xup, linkHistogram, dirName),
     bin()
 {
     SetDirectory(gROOT);
@@ -38,13 +38,13 @@ void    GHistTaggerBinning::ExpandBin(const Int_t newSize)
     while(bin.GetEntriesFast()<newSize)
     {
         gROOT->cd();
-        GHistLinked*    hist = new GHistLinked(TString(GetName()).Append("_bin").Append(TString::Itoa(bin.GetEntriesFast()+1+TaggerBinningRangeMin, 10)).Data(),
+        GHistScaCor*    hist = new GHistScaCor(TString(GetName()).Append("_bin").Append(TString::Itoa(bin.GetEntriesFast()+1+TaggerBinningRangeMin, 10)).Data(),
                                              TString(GetTitle()).Append(" bin").Append(TString::Itoa(bin.GetEntriesFast()+1+TaggerBinningRangeMin, 10)).Data(),
                                              GetNbinsX(),
                                              GetXaxis()->GetXmin(),
                                              GetXaxis()->GetXmax(),
                                              kFALSE,
-                                             GHistLinked::GetOutputDirectoryName().Data());
+                                             GHistScaCor::GetOutputDirectoryName().Data());
         hist->AddOutputDirectory("taggerBinning");
         hist->AddOutputDirectory(TString::Itoa(bin.GetEntriesFast()+1+TaggerBinningRangeMin,10).Prepend("channel_"));
         bin.Add(hist);
@@ -53,13 +53,13 @@ void    GHistTaggerBinning::ExpandBin(const Int_t newSize)
 
 Bool_t	GHistTaggerBinning::Add(const GHistTaggerBinning* h, Double_t c)
 {
-    GHistLinked::Add(h, c);
+    GHistScaCor::Add(h, c);
     for(int i=0; i<h->bin.GetEntriesFast(); i++)
     {
         if(i>=bin.GetEntriesFast())
         {
             gROOT->cd();
-            GHistLinked*    hist = new GHistLinked(TString(GetName()).Append(TString::Itoa(bin.GetEntriesFast()+TaggerBinningRangeMin,10).Prepend("_bin")).Data(),
+            GHistScaCor*    hist = new GHistScaCor(TString(GetName()).Append(TString::Itoa(bin.GetEntriesFast()+TaggerBinningRangeMin,10).Prepend("_bin")).Data(),
                                                    TString(GetTitle()).Append(TString::Itoa(bin.GetEntriesFast()+TaggerBinningRangeMin,10).Prepend(" bin ")).Data(),
                                                    GetNbinsX(),
                                                    GetXaxis()->GetXmin(),
@@ -70,35 +70,35 @@ Bool_t	GHistTaggerBinning::Add(const GHistTaggerBinning* h, Double_t c)
             hist->AddOutputDirectory(TString::Itoa(i+1+TaggerBinningRangeMin,10).Prepend("channel_"));
             bin.AddAtFree(hist);
         }
-        ((GHistLinked*)bin.At(i))->Add((GHistLinked*)h->bin.At(i), c);
+        ((GHistScaCor*)bin.At(i))->Add((GHistScaCor*)h->bin.At(i), c);
     }
 }
 
 void    GHistTaggerBinning::AddOutputDirectory(const TString& directoryName)
 {
-    GHistLinked::AddOutputDirectory(directoryName);
+    GHistScaCor::AddOutputDirectory(directoryName);
     for(int i=0; i<bin.GetEntriesFast(); i++)
     {
-        ((GHistLinked*)bin.At(i))->SetOutputDirectory(GetOutputDirectoryName().Data());
-        ((GHistLinked*)bin.At(i))->AddOutputDirectory("taggerBinning");
-        ((GHistLinked*)bin.At(i))->AddOutputDirectory(TString::Itoa(i+1+TaggerBinningRangeMin,10).Prepend("channel_"));
+        ((GHistScaCor*)bin.At(i))->SetOutputDirectory(GetOutputDirectoryName().Data());
+        ((GHistScaCor*)bin.At(i))->AddOutputDirectory("taggerBinning");
+        ((GHistScaCor*)bin.At(i))->AddOutputDirectory(TString::Itoa(i+1+TaggerBinningRangeMin,10).Prepend("channel_"));
     }
 }
 
 void    GHistTaggerBinning::SetOutputDirectory(const TString& directoryName)
 {
-    GHistLinked::SetOutputDirectory(directoryName);
+    GHistScaCor::SetOutputDirectory(directoryName);
     for(int i=0; i<bin.GetEntriesFast(); i++)
     {
-        ((GHistLinked*)bin.At(i))->SetOutputDirectory(directoryName);
-        ((GHistLinked*)bin.At(i))->AddOutputDirectory("taggerBinning");
-        ((GHistLinked*)bin.At(i))->AddOutputDirectory(TString::Itoa(i+1+TaggerBinningRangeMin,10).Prepend("channel_"));
+        ((GHistScaCor*)bin.At(i))->SetOutputDirectory(directoryName);
+        ((GHistScaCor*)bin.At(i))->AddOutputDirectory("taggerBinning");
+        ((GHistScaCor*)bin.At(i))->AddOutputDirectory(TString::Itoa(i+1+TaggerBinningRangeMin,10).Prepend("channel_"));
     }
 }
 
 void    GHistTaggerBinning::Reset(Option_t* option)
 {
-    GHistLinked::Reset(option);
+    GHistScaCor::Reset(option);
 }
 
 Int_t   GHistTaggerBinning::Fill(const Double_t value, const Int_t taggerChannel)
@@ -106,20 +106,20 @@ Int_t   GHistTaggerBinning::Fill(const Double_t value, const Int_t taggerChannel
     if(TaggerBinningRangeMax==-1)
     {
         if(taggerChannel==0)
-            return GHistLinked::Fill(value);
+            return GHistScaCor::Fill(value);
         if(taggerChannel>bin.GetEntriesFast())
             ExpandBin(taggerChannel);
-        ((GHistLinked*)bin.At(taggerChannel-1))->Fill(value);
+        ((GHistScaCor*)bin.At(taggerChannel-1))->Fill(value);
     }
     else
     {
         if(taggerChannel<TaggerBinningRangeMin || taggerChannel>TaggerBinningRangeMax)
             return 0;
         if(taggerChannel==TaggerBinningRangeMin)
-            return GHistLinked::Fill(value);
+            return GHistScaCor::Fill(value);
         if(taggerChannel>(bin.GetEntriesFast()+TaggerBinningRangeMin))
             ExpandBin(taggerChannel-TaggerBinningRangeMin);
-        ((GHistLinked*)bin.At(taggerChannel-TaggerBinningRangeMin-1))->Fill(value);
+        ((GHistScaCor*)bin.At(taggerChannel-TaggerBinningRangeMin-1))->Fill(value);
     }
 }
 
@@ -134,41 +134,48 @@ Int_t   GHistTaggerBinning::Fill(const Double_t value, const GTreeTagger& tagger
     }
 }
 
+void    GHistTaggerBinning::ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
+{
+    GHistScaCor::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+    for(int i=0; i<bin.GetEntriesFast(); i++)
+        ((GHistScaCor*)bin.At(i))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+}
+
 void	GHistTaggerBinning::SetBins(Int_t nx, Double_t xmin, Double_t xmax)
 {
-    GHistLinked::SetBins(nx, xmin, xmax);
+    GHistScaCor::SetBins(nx, xmin, xmax);
     for(int i=0; i<bin.GetEntriesFast(); i++)
-        ((GHistLinked*)bin.At(i))->SetBins(nx, xmin, xmax);
+        ((GHistScaCor*)bin.At(i))->SetBins(nx, xmin, xmax);
 }
 
 void	GHistTaggerBinning::SetName(const char* name)
 {
-    GHistLinked::SetName(name);
+    GHistScaCor::SetName(name);
     for(int i=0; i<bin.GetEntriesFast(); i++)
-        ((GHistLinked*)bin.At(i))->SetName(TString(GetName()).Append("_bin").Append(TString::Itoa(i+1+TaggerBinningRangeMin, 10)).Data());
+        ((GHistScaCor*)bin.At(i))->SetName(TString(GetName()).Append("_bin").Append(TString::Itoa(i+1+TaggerBinningRangeMin, 10)).Data());
 }
 
 void	GHistTaggerBinning::SetTitle(const char* title)
 {
-    GHistLinked::SetTitle(title);
+    GHistScaCor::SetTitle(title);
     for(int i=0; i<bin.GetEntriesFast(); i++)
-        ((GHistLinked*)bin.At(i))->SetTitle(TString(GetTitle()).Append(" bin ").Append(TString::Itoa(i+1+TaggerBinningRangeMin, 10)).Data());
+        ((GHistScaCor*)bin.At(i))->SetTitle(TString(GetTitle()).Append(" bin ").Append(TString::Itoa(i+1+TaggerBinningRangeMin, 10)).Data());
 }
 
 Int_t   GHistTaggerBinning::Write(const char* name, Int_t option, Int_t bufsize)
 {
     if(bin.GetEntriesFast()==0)
     {
-        return  GHistLinked::Write(name, option, bufsize);
+        return  GHistScaCor::Write(name, option, bufsize);
     }
 
     TString oldName(GetName());
     TString oldTitle(GetTitle());
     TString oldDirectory(GetOutputDirectoryName());
-    GHistLinked::SetName(TString(GetName()).Append(TString::Itoa(TaggerBinningRangeMin,10).Prepend("_bin")).Data());
-    GHistLinked::SetTitle(TString(GetTitle()).Append(TString::Itoa(TaggerBinningRangeMin,10).Prepend(" bin ")).Data());
+    GHistScaCor::SetName(TString(GetName()).Append(TString::Itoa(TaggerBinningRangeMin,10).Prepend("_bin")).Data());
+    GHistScaCor::SetTitle(TString(GetTitle()).Append(TString::Itoa(TaggerBinningRangeMin,10).Prepend(" bin ")).Data());
 
-    GHistLinked*    res = new GHistLinked(oldName.Data(),
+    GHistScaCor*    res = new GHistScaCor(oldName.Data(),
                                         oldTitle.Data(),
                                         GetNbinsX(),
                                         GetXaxis()->GetXmin(),
@@ -176,15 +183,15 @@ Int_t   GHistTaggerBinning::Write(const char* name, Int_t option, Int_t bufsize)
                                         kFALSE,
                                         GetOutputDirectoryName().Data());
 
-    GHistLinked::AddOutputDirectory(TString("taggerBinning"));
-    GHistLinked::AddOutputDirectory(TString::Itoa(TaggerBinningRangeMin,10).Prepend("channel_"));
-    GHistLinked::Write(name, option, bufsize);
+    GHistScaCor::AddOutputDirectory(TString("taggerBinning"));
+    GHistScaCor::AddOutputDirectory(TString::Itoa(TaggerBinningRangeMin,10).Prepend("channel_"));
+    GHistScaCor::Write(name, option, bufsize);
 
     res->Add(this);
     {
         TIter   iter(&bin);
-        GHistLinked*    hist;
-        while(hist=(GHistLinked*)iter.Next())
+        GHistScaCor*    hist;
+        while(hist=(GHistScaCor*)iter.Next())
         {
             hist->Write(name, option, bufsize);
             res->Add(hist);
@@ -194,9 +201,9 @@ Int_t   GHistTaggerBinning::Write(const char* name, Int_t option, Int_t bufsize)
     res->Write(name, option, bufsize);
     res->Delete();
 
-    GHistLinked::SetName(oldName.Data());
-    GHistLinked::SetTitle(oldTitle.Data());
-    GHistLinked::SetOutputDirectory(oldDirectory.Data());
+    GHistScaCor::SetName(oldName.Data());
+    GHistScaCor::SetTitle(oldTitle.Data());
+    GHistScaCor::SetOutputDirectory(oldDirectory.Data());
 
 }
 
