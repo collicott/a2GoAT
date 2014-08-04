@@ -5,7 +5,7 @@
 GH1Example::GH1Example()    :
     test("test", "test", 1000, -500, 500)
 { 
-
+    GHistTaggerBinning::InitTaggerBinning(5,10);
 }
 
 GH1Example::~GH1Example()
