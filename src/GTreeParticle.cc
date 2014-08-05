@@ -80,7 +80,7 @@ void    GTreeParticle::AddParticle(const TLorentzVector& vec, const UChar_t _App
     clusterSize[nParticles] = _ClusterSize;
     d_E[nParticles]         = _d_E;
     WC0_E[nParticles]       = _WC0_E;
-    WC0_E[nParticles]       = _WC1_E;
+    WC1_E[nParticles]       = _WC1_E;
     new((*particles)[nParticles]) TLorentzVector(vec);
     nParticles++;
     manager->countReconstructed++;
