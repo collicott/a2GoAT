@@ -62,6 +62,11 @@ private:
 
     Int_t* 		Identified;
     Int_t* 		Charge;
+    
+    Bool_t 		charge_ignore_PID;
+    Bool_t 		charge_ignore_WC0;
+    Bool_t 		charge_ignore_WC1;
+    Bool_t 		charge_ignore_VETO;    
 
     Double_t    CBTimeCut[2];
     Double_t    TAPSTimeCut[2];

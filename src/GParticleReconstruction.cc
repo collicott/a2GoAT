@@ -11,7 +11,11 @@ GParticleReconstruction::GParticleReconstruction() :
     E_Sum(50),
     multiplicity(1),
     charged_theta_min(0),
-    charged_theta_max(180)
+    charged_theta_max(180),
+    charge_ignore_PID(kFALSE),
+    charge_ignore_WC0(kFALSE),
+    charge_ignore_WC1(kFALSE),
+    charge_ignore_VETO(kFALSE)    
 {
     CBTimeCut[0] = -1000000.0;
     CBTimeCut[1] = 1000000.0;
@@ -208,7 +212,22 @@ Bool_t	GParticleReconstruction::Init()
 			}
 		}
 	}
+	
+    // Option to ignore energy deposit in detectors when determining charge
+    config = ReadConfig("charge-ignore-PID");
+    if (strcmp(config.c_str(), "nokey") != 0) charge_ignore_PID = kTRUE;
 
+    config = ReadConfig("charge-ignore-WC0");
+    if (strcmp(config.c_str(), "nokey") != 0) charge_ignore_WC0 = kTRUE;
+    
+    config = ReadConfig("charge-ignore-WC1");
+    if (strcmp(config.c_str(), "nokey") != 0) charge_ignore_WC1 = kTRUE;
+    
+    config = ReadConfig("charge-ignore-VETO");
+    if (strcmp(config.c_str(), "nokey") != 0) charge_ignore_VETO = kTRUE;
+    
+    
+	// Particle timing cuts
     config = ReadConfig("CB-PARTICLE-TIME-CUT");
     if (strcmp(config.c_str(), "nokey") != 0)
     {
@@ -262,8 +281,9 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
                 case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
                     Charge[i] = 0;
-                    if ((rawEvent->GetWC0_E(i) > 0.0) || (rawEvent->GetWC1_E(i) > 0.0)) 	Charge[i] = 1;
-                    if ((rawEvent->Get_dE(i) > 0.0) && (rawEvent->Get_dE(i) < 1000.0)) 		Charge[i] = 1;
+                    if ((!charge_ignore_PID) && (rawEvent->Get_dE(i) > 0.0))	Charge[i] = 1;
+                    if ((!charge_ignore_WC0) && (rawEvent->GetWC0_E(i) > 0.0))	Charge[i] = 1;
+                    if ((!charge_ignore_WC1) && (rawEvent->GetWC1_E(i) > 0.0))	Charge[i] = 1;
                     /**
                      * @todo Do TOF here!
                      * @todo Do Neutron ID here! (TOF + Cluster size)
@@ -294,7 +314,7 @@ Bool_t	GParticleReconstruction::ProcessEventWithoutFilling()
                 case ReconstructionType_dEoverE:
                     Identified[i] = pdg_rootino;
                     Charge[i] = 0;
-                    if ((rawEvent->Get_dE(i) > 0.0) && (rawEvent->Get_dE(i) < 1000.0)) 		Charge[i] = 1;
+                    if ((!charge_ignore_VETO) && (rawEvent->Get_dE(i) > 0.0))	Charge[i] = 1;
                     /**
                      * @todo Do TOF here!
                      * @todo Do Neutron ID here! (TOF + Cluster size)
