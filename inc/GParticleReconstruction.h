@@ -26,6 +26,8 @@ public:
     };
 
 private:
+	std::string config;
+
     ReconstructionType                 CB_type;
     dEoverE_Type    CB_dEoverE_type;
     ReconstructionType                 TAPS_type;
