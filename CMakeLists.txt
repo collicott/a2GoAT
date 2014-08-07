@@ -54,3 +54,11 @@ add_executable(eta-example
    src/GAcquTreeManager.cc
    )
 target_link_libraries(eta-example ${ROOT_LIBRARIES})
+
+add_executable(compton
+   src/PCompton.cc
+   src/PPhysics.cc
+   src/GoATTreeManager.cc
+   src/GAcquTreeManager.cc
+   )
+target_link_libraries(compton ${ROOT_LIBRARIES})
