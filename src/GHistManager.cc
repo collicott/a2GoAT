@@ -61,37 +61,25 @@ TDirectory* GHistLinked::GetCreateDirectory(TDirectory* dir, const TString& dirN
 }
 
 
+GHistLinked::GHistLinked() :
+    TH1D(),
+    linked(kFALSE),
+    dir()
+{
+}
+
 GHistLinked::GHistLinked(const char* name, const char* title, Int_t nbinsx, Double_t xlow, Double_t xup, Bool_t linkHistogram, const char* dirName) :
     TH1D(name, title, nbinsx, xlow, xup),
     linked(linkHistogram),
     dir(dirName)
 {
     if(linked == kTRUE)
-    {
-        if(gGHistManager)
-            gGHistManager->AddHistogramToList(this);
-    }
-}
-
-GHistLinked::GHistLinked(const GHistLinked& obj, Bool_t linkHistogram) :
-    TH1D(obj),
-    linked(linkHistogram),
-    dir(obj.dir)
-{
-    if(linked == kTRUE)
-    {
-        if(gGHistManager)
-            gGHistManager->AddHistogramToList(this);
-    }
+        Link();
 }
 
 GHistLinked::~GHistLinked()
 {
-    if(linked == kTRUE)
-    {
-        if(gGHistManager)
-            gGHistManager->RemoveHistogramFromList(this);
-    }
+    Unlink();
 }
 
 void        GHistLinked::AddOutputDirectory(const TString& directoryName)
@@ -109,6 +97,24 @@ TDirectory*    GHistLinked::GetOutputDirectory()
         return GetCreateDirectory((TDirectory*)gGHistManager->GetOutputDirectory(), dir);
     }
     return  GetCreateDirectory((TDirectory*)GetDirectory(), dir);
+}
+
+void    GHistLinked::Link()
+{
+    if(linked)
+        Unlink();
+    if(gGHistManager)
+    {
+        gGHistManager->AddHistogramToList(this);
+        linked = kTRUE;
+    }
+}
+
+void    GHistLinked::Unlink()
+{
+    linked = kFALSE;
+    if(gGHistManager)
+        gGHistManager->RemoveHistogramFromList(this);
 }
 
 Int_t   GHistLinked::Write(const char* name, Int_t option, Int_t bufsize)
