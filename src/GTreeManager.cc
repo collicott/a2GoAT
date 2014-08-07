@@ -209,19 +209,19 @@ Bool_t  GTreeManager::TraverseValidEvents_AcquTreeFile()
 {
     if(!scalers->IsOpenForInput())
     {
-        if(!scalers->OpenForInput())
-        {
-			if(scalers->GetNEntries()==0)
-				return kFALSE;
-            cout << "No treeScaler available. Expect MC data. Loop over all events" << endl;
-            cout << "\tProcess events from " << 0 << " to " << GetNEntries() << "."<< endl;
-            TraverseEntries(0, GetNEntries());
-            return true;
-        }
+        cout << "No treeScaler available. Expect MC data. Loop over all events" << endl;
+        cout << "\tProcess events from " << 0 << " to " << GetNEntries() << "."<< endl;
+        TraverseEntries(0, GetNEntries());
+        return true;
+    }
+    if(scalers->GetNEntries()==0)
+    {
+        cout << "No treeScaler available. Expect MC data. Loop over all events" << endl;
+        cout << "\tProcess events from " << 0 << " to " << GetNEntries() << "."<< endl;
+        TraverseEntries(0, GetNEntries());
+        return true;
     }
 
-    if(scalers->GetNEntries()==0)
-        return kFALSE;
     if(scalers->GetNEntries()<2)
     {
         std::cout << "Less than 2 scaler reads. Can not find events with correct scalers" <<std::endl;
@@ -290,8 +290,20 @@ Bool_t  GTreeManager::TraverseValidEvents_AcquTreeFile()
 
 Bool_t  GTreeManager::TraverseValidEvents_GoATTreeFile()
 {
-    if(!file_in)
-        return kFALSE;
+    if(!scalers->IsOpenForInput())
+    {
+        cout << "No treeScaler available. Expect MC data. Loop over all events" << endl;
+        cout << "\tProcess events from " << 0 << " to " << GetNEntries() << "."<< endl;
+        TraverseEntries(0, GetNEntries());
+        return true;
+    }
+    if(scalers->GetNEntries()==0)
+    {
+        cout << "No treeScaler available. Expect MC data. Loop over all events" << endl;
+        cout << "\tProcess events from " << 0 << " to " << GetNEntries() << "."<< endl;
+        TraverseEntries(0, GetNEntries());
+        return true;
+    }
 
     Int_t   event       = 0;
     Int_t   start       = 0;
