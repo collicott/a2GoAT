@@ -32,8 +32,7 @@ GTreeManager::GTreeManager()    :
     pi0(0),
     eta(0),
     etap(0),
-    linpol(0),
-    debugFile(0)
+    linpol(0)
 {
     pdgDB = TDatabasePDG::Instance();
 
@@ -53,8 +52,6 @@ GTreeManager::GTreeManager()    :
     trigger = new GTreeTrigger(this);
     scalers = new GTreeScaler(this);
     linpol = new GTreeLinPol(this);
-
-    debugFile   = fopen("debug","w");
 }
 
 GTreeManager::~GTreeManager()
@@ -64,9 +61,6 @@ GTreeManager::~GTreeManager()
         if((GTree*)treeList[0])
             delete (GTree*)treeList[0];
     }
-
-
-    if(debugFile)   fclose(debugFile);
 }
 
 Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
@@ -74,10 +68,6 @@ Bool_t  GTreeManager::TraverseEntries(const UInt_t min, const UInt_t max)
     if(!file_in)
         return kFALSE;
 
-    MemInfo_t   memInfo;
-    gSystem->GetMemInfo(&memInfo);
-    fprintf(debugFile, "\tbefore Traverse: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
-    fflush(debugFile);
     for(UInt_t i=min; i<max; i++)
     {
         for(int l=0; l<readList.GetEntriesFast(); l++)
@@ -120,11 +110,6 @@ Bool_t  GTreeManager::TraverseScalerEntries(const UInt_t min, const UInt_t max)
 
 Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_filename)
 {
-
-    MemInfo_t   memInfo;
-    gSystem->GetMemInfo(&memInfo);
-    fprintf(debugFile, "file start: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
-    fflush(debugFile);
     if(file_in)    file_in->Close();
     file_in = TFile::Open(input_filename);
     if(!file_in)
@@ -173,10 +158,6 @@ Bool_t  GTreeManager::StartFile(const char* input_filename, const char* output_f
     if(file_in)    file_in->Close();
     if(file_out)    file_out->Close();
 
-
-    gSystem->GetMemInfo(&memInfo);
-    fprintf(debugFile, "file end: %d     %d     %d\n", gROOT->GetNclasses(), gROOT->GetListOfFiles()->GetSize(), memInfo.fMemUsed, memInfo.fSwapUsed);
-    fflush(debugFile);
     return kTRUE;
 }
 

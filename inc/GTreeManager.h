@@ -34,8 +34,6 @@ private:
     TObjArray   writeList;
     Bool_t      isWritten;
 
-    FILE*   debugFile;
-
     UInt_t  currentScalerEntry;
 
     Int_t   countReconstructed;
