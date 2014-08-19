@@ -51,3 +51,11 @@ add_executable(eta
    src/GAcquTreeManager.cc
    )
 target_link_libraries(eta ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
+
+add_executable(compton
+   src/PCompton.cc
+   src/PPhysics.cc
+   src/GoATTreeManager.cc
+   src/GAcquTreeManager.cc
+   )
+target_link_libraries(compton ${ROOT_LIBRARIES} ${ROOT_INSTALL_DIR}/lib/libEG.so)
