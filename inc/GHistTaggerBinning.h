@@ -33,6 +33,7 @@ public:
     virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger, const Bool_t CreateHistogramsForTaggerBinning = kFALSE);
     virtual void    Reset(Option_t* option = "");
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
+    virtual void    ScalerReadCorrection(const Int_t taggerChannel, const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetBins(Int_t nx, Double_t xmin, Double_t xmax);
     virtual void	SetName(const char* name);
     virtual void    SetOutputDirectory(const TString& directoryName);

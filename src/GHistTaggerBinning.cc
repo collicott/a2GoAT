@@ -141,6 +141,27 @@ void    GHistTaggerBinning::ScalerReadCorrection(const Double_t CorrectionFactor
         ((GHistScaCor*)bin.At(i))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
 }
 
+void    GHistTaggerBinning::ScalerReadCorrection(const Int_t taggerChannel, const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
+{
+    if(TaggerBinningRangeMax==-1)
+    {
+        if(taggerChannel==0)
+            GHistScaCor::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+
+        else if(taggerChannel<=bin.GetEntriesFast())
+            ((GHistScaCor*)bin.At(taggerChannel-1))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+    }
+    else
+    {
+        if(taggerChannel<TaggerBinningRangeMin || taggerChannel>TaggerBinningRangeMax)
+            return;
+        else if(taggerChannel==TaggerBinningRangeMin)
+            GHistScaCor::ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+        else if(taggerChannel<=(bin.GetEntriesFast()+TaggerBinningRangeMin))
+            ((GHistScaCor*)bin.At(taggerChannel-TaggerBinningRangeMin-1))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
+    }
+}
+
 void	GHistTaggerBinning::SetBins(Int_t nx, Double_t xmin, Double_t xmax)
 {
     GHistScaCor::SetBins(nx, xmin, xmax);

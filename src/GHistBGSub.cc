@@ -162,6 +162,13 @@ void    GHistBGSub::ScalerReadCorrection(const Double_t CorrectionFactor, const 
         ((GHistTaggerBinning*)rand.At(i))->ScalerReadCorrection(CorrectionFactor, CreateHistogramsForSingleScalerReads);
 }
 
+void    GHistBGSub::ScalerReadCorrection(const Int_t taggerChannel, const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads)
+{
+    GHistTaggerBinning::ScalerReadCorrection(taggerChannel, CorrectionFactor, CreateHistogramsForSingleScalerReads);
+    for(int i=0; i<rand.GetEntriesFast(); i++)
+        ((GHistTaggerBinning*)rand.At(i))->ScalerReadCorrection(taggerChannel,CorrectionFactor, CreateHistogramsForSingleScalerReads);
+}
+
 void	GHistBGSub::SetName(const char* name)
 {
     GHistTaggerBinning::SetName(name);

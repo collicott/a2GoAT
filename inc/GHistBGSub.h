@@ -39,6 +39,7 @@ public:
     static Bool_t  IsRandom(const Double_t value);
     virtual void    Reset(Option_t* option = "");
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
+    virtual void    ScalerReadCorrection(const Int_t taggerChannel, const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetName(const char* name);
     virtual void    SetOutputDirectory(const TString& directoryName);
     virtual void	SetTitle(const char* title);
