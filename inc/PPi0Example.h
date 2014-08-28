@@ -13,7 +13,9 @@ class	PPi0Example  : public PPhysics
 {
 private:
     GH1*	time;
-    GH1*	time_2g;   
+    GH1*	time_cut;
+    GH1*	time_2g;      
+    GH1*	time_2g_cut;   
      
     GH1*	IM;
     GH1*	IM_2g;
