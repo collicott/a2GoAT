@@ -35,6 +35,8 @@ public:
     virtual Int_t   Fill(const Double_t value, const GTreeTagger& tagger, const Bool_t DoTaggerBinning = kFALSE);
     static  Int_t   GetNRandCuts()   {cutRandMin.size();}
     static  void    InitCuts(const Double_t PromptMin, const Double_t PromptMax, const Double_t RandMin, const Double_t RandMax);
+    static Bool_t  IsPrompt(const Double_t value);
+    static Bool_t  IsRandom(const Double_t value);
     virtual void    Reset(Option_t* option = "");
     virtual void    ScalerReadCorrection(const Double_t CorrectionFactor, const Bool_t CreateHistogramsForSingleScalerReads = kFALSE);
     virtual void	SetName(const char* name);

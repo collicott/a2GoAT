@@ -29,9 +29,21 @@ void    GHistBGSub::AddRandCut(const Double_t RandMin, const Double_t RandMax)
     backgroundSubstractionFactor    = (cutPromptMax - cutPromptMin)/backgroundSubstractionFactor;
 }
 
+Bool_t    GHistBGSub::IsPrompt(const Double_t value)
+{
+   if ((value >= cutPromptMin) && (value <= cutPromptMax)) return kTRUE;
+   return kFALSE;
+}
 
+Bool_t    GHistBGSub::IsRandom(const Double_t value)
+{
+    for(int i=0; i<cutRandMin.size(); i++)
+    {
+	if ((value >= cutRandMin[i]) && (value <= cutRandMax[i])) return kTRUE;
+    }
 
-
+    return kFALSE;
+}
 
 GHistBGSub::GHistBGSub() :
     GHistTaggerBinning(),
