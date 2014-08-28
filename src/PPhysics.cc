@@ -96,6 +96,27 @@ void PPhysics::FillTime(const GTreeParticle& tree, Int_t particle_index, GH1* gH
 	}
 }
 
+void PPhysics::FillTimeCut(const GTreeParticle& tree, GH1* gHist)
+{
+    for (Int_t i = 0; i < tree.GetNParticles(); i++)
+	{
+        for (Int_t j = 0; j < tagger->GetNTagged(); j++)
+		{
+            		time = tagger->GetTagged_t(j) - tree.GetTime(i);
+			if((GHistBGSub::IsPrompt(time)) || (GHistBGSub::IsRandom(time))) gHist->Fill(time);
+		}
+	}
+}
+
+void PPhysics::FillTimeCut(const GTreeParticle& tree, Int_t particle_index, GH1* gHist)
+{
+	for (Int_t j = 0; j < tagger->GetNTagged(); j++)
+	{
+		time = tagger->GetTagged_t(j) - tree.GetTime(particle_index);
+		if((GHistBGSub::IsPrompt(time)) || (GHistBGSub::IsRandom(time))) gHist->Fill(time);
+	}
+}
+
 void PPhysics::FillMass(const GTreeParticle& tree, GH1* gHist)
 {
     for (Int_t i = 0; i < tree.GetNParticles(); i++)
