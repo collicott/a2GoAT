@@ -108,20 +108,17 @@ do
     if [ ! -f "${subfile}.done" ]; then
 	
 	#count no of jobs already queued on farm
-	jobcount=`qstat -u ${USER} | gawk '{if(($10=="Q")||($10=="H")) print $0}' | wc -l`
+	jobcount=`qstat -u ${USER} | gawk '{if(($10=="Q")||($10=="H")||($10=="R")) print $0}' | wc -l`
 
 	#go if less than the (self imposed) maximum
-	jobgo=`echo $jobcount | gawk -v maxq=$maxq '{if ($1>maxq){print"wait"}else{print"go"}}'`
+	jobgo=`echo $jobcount | gawk -v maxq=$maxq '{if ($1>=maxq){print"wait"}else{print"go"}}'`
 
-	if [ "$jobgo" = "wait" ]; then
-	    while [ "$jobgo" = "wait" ]; do
-	        jobcount=`qstat -u ${USER} | gawk '{if(($10=="Q")||($10=="H")) print $0}' | wc -l`
-		echo "There are aleady $jobcount jobs queued. Waiting until it drops below $maxq. Trying again in 1hr"
-		jobgo=`echo $jobcount | gawk -v maxq=$maxq '{if ($1>maxq){print"wait"}else{print"go"}}'`
-		sleep 5m
-##		sleep 10
-	    done
-	fi
+	while [ "$jobgo" = "wait" ]; do
+	    jobcount=`qstat -u ${USER} | gawk '{if(($10=="Q")||($10=="H")||($10=="R")) print $0}' | wc -l`
+	    echo "There are aleady $jobcount jobs queued. Waiting until it drops below $maxq. Trying again in 5 min"
+	    jobgo=`echo $jobcount | gawk -v maxq=$maxq '{if ($1>=maxq){print"wait"}else{print"go"}}'`
+	    sleep 5m
+	done
 
 	#OK to go
         #echo "$jobcount jobs on already in the queue, submitting $subfile "

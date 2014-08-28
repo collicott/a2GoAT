@@ -93,14 +93,14 @@ do
 
     #now make the job file
     echo "#!/bin/sh" > $JobFile;
-    echo "#PBS -N GoATFarm_${USER}" >> $JobFile;
+    echo "#PBS -N GoAT_${USER}" >> $JobFile;
     echo "#PBS -m abe" >> $JobFile;
     echo "#PBS -M $MailAddress"  >> $JobFile;
     echo "#PBS -V"  >> $JobFile;
-    echo "#PBS -lwalltime=${WALLTIME}" >> $JobFile;
+    echo "#PBS -l ncpus=3,walltime=${WALLTIME}" >> $JobFile;
     echo "#PBS -e ${JobDir}/jobfiles"  >> $JobFile;
     echo "#PBS -o ${JobDir}/jobfiles"  >> $JobFile;
-    echo "#PBS -q batch_x86_64" >> $JobFile;
+    echo "#PBS -q batch" >> $JobFile;
     echo "#"  >> $JobFile;
     echo "#InputFiles: $line"   >> $JobFile;
     echo "#"  >> $JobFile;
