@@ -1,0 +1,46 @@
+#!/bin/sh
+#This is called from the when a farm job is submitted to a node.
+#It cannot take arguments, rather it pick up environmental variables 
+#
+#Currently expecting the following to be set up in the submission script.
+#GoAT_MAINDIR:    Top level directory for GoAT analysis package
+#GoAT_CONFIGFILE: Top level GoAT config file
+#GoAT_INPUTFILE:  Input root file
+#GoAT_OUTPUTFILE: Output root file
+#GoAT_OUTPUTDIR:  Where to put the output files on /local/raid
+ 
+cd $GoAT_MAINDIR
+
+dir=`dirname ${GoAT_OUTPUTFILE}`
+GoAT_NODEDIR="$dir/"
+tag=`basename ${GoAT_OUTPUTFILE} .root`
+
+#make these in case they don't exist
+mkdir -p ${GoAT_NODEDIR}
+
+mkdir -p ${GoAT_OUTPUTDIR}
+mkdir -p "${GoAT_OUTPUTDIR}/log"
+mkdir -p "${GoAT_OUTPUTDIR}/root"
+
+LogFile="${GoAT_OUTPUTDIR}/log/${tag}.log"
+
+#Now run GoAT
+echo "goat $GoAT_CONFIGFILE -f $GoAT_INPUTFILE -F $GoAT_OUTPUTFILE &> $LogFile"
+goat $GoAT_CONFIGFILE -f $GoAT_INPUTFILE -F $GoAT_OUTPUTFILE &> $LogFile
+
+#list all the files in the output directory                                     
+echo
+echo "List all the files in the output directory:"
+echo "ls -lrt ${GoAT_NODEDIR}"
+ls -lrt ${GoAT_NODEDIR}
+echo "Copying all the files from temporary directory $directory to ${GoAT_OUTPUTDIR}"
+echo "cp ${GoAT_NODEDIR}*.root ${GoAT_OUTPUTDIR}/root"
+cp ${GoAT_NODEDIR}*.root ${GoAT_OUTPUTDIR}/root
+
+echo "deleting temporary directory ${GoAT_NODEDIR}"
+echo "/bin/rm -f  ${GoAT_NODE}*.*"
+/bin/rm -f ${GoAT_NODEDIR}*.*
+echo "rmdir ${GoAT_NODEDIR}"
+rmdir ${GoAT_NODEDIR}
+
+exit 0;

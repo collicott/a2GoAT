@@ -116,3 +116,12 @@ add_executable(pi0-example
    src/pi0_example_main.cc
    )
 target_link_libraries(pi0-example ${ROOT_LIBRARIES})
+
+# install some scripts to the bin directory
+# by creating symlinks
+file(GLOB CORE_EXTRA_SCRIPTS "scripts/*")
+foreach(f ${CORE_EXTRA_SCRIPTS})
+  get_filename_component(f_name ${f} NAME)
+  add_custom_target(link_${f_name} ALL
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${f}" "${EXECUTABLE_OUTPUT_PATH}/${f_name}")
+endforeach()

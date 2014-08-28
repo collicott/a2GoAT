@@ -1,0 +1,134 @@
+#!/bin/sh
+#Give the args some sensible names
+ConfigFile=$1
+ServerFile=$2
+JobName=$3
+
+
+####################################################
+###### Beginning of section requiring editing ######
+####################################################
+
+#Who'll get the emails from the farm
+MailAddress="martel@kph.uni-mainz.de"
+
+####################################################
+###### End of section requiring editing ############
+####################################################
+
+
+#get the name of this executable
+exe=`basename $0`
+
+#the maximum time the job will be allowed HH:MM:SS
+#This is the max allowed on the batch_x86 queue.
+#Set high in case 
+WALLTIME=24:00:00
+
+print_usage(){
+    echo
+    echo "Usage:"
+    echo "$exe <GoATConfig> <GoATServer> <JobName>"
+    echo
+    echo "<GoATConfig>:   Top level GoAT config file"
+    echo "<GoATServer>:   Top level GoAT server file"
+    echo "<JobName>:       A directory jobs/<JobName> will be created"
+    echo "                 if it doesn't exist and scripts put there"
+    echo "Example: "
+    echo "$exe configfiles/GoAT-Compton.dat configfiles/GoAT-Server.dat myjob"
+}
+
+#check that we have all the args, otherwise print use
+if [ $# -lt 3 ]; then
+    print_usage;
+    exit 0;
+fi
+
+#Location and suffix for input files
+InputDir=`gawk '{if($1=="Input-Directory:")print $2}' $ServerFile`
+InputPre=`gawk '{if($1=="Input-Prefix:")print $2}' $ServerFile`
+
+#Location and suffix for output files
+OutputDir=`gawk '{if($1=="Output-Directory:")print $2}' $ServerFile`
+OutputPre=`gawk '{if($1=="Output-Prefix:")print $2}' $ServerFile`
+
+MainDir=`pwd`
+
+if [ -z $InputDir ]; then InputDir=`pwd`; fi
+if [ -z $InputPre ]; then InputPre="Acqu"; fi
+if [ -z $OutputDir ]; then OutputDir=`pwd`; fi
+if [ -z $OutputPre ]; then OutputPre="GoAT"; fi
+
+#make some subdirectories for job and setup files
+JobDir="jobs/$JobName"
+mkdir -p $JobDir
+mkdir -p "$JobDir/jobfiles"
+
+mkdir -p $OutputDir
+mkdir -p "${OutputDir}/root"
+mkdir -p "${OutputDir}/log"
+
+FileList="${JobDir}/FileList.dat"
+gawk '{if($1=="Input-File:")print $2}' $ServerFile >> $FileList
+
+#if there are no input files specified, then scan input directory into temp
+Number=`wc -l ${FileList} | awk '{print $1}'`
+if [ $Number -eq 0 ]; then
+    ls -1 $InputDir/${InputPre}*.root | xargs -n1 basename > $FileList
+fi
+
+#Loop over each line and create the job files
+while read line           
+do
+
+    echo "Making a job for File: $line";
+        
+    #strip off the .root, and any directory paths
+    BaseName=`basename $line .root | sed "s/${InputPre}/${OutputPre}/"`
+    JobFile="${JobDir}/jobfiles/${BaseName}.sub"
+    NodeDir="/scratch/${USER}/${BaseName}"
+
+    InputFile="$InputDir/$line"
+    OutputFile="$NodeDir/${BaseName}.root"
+
+    #now make the job file
+    echo "#!/bin/sh" > $JobFile;
+    echo "#PBS -N GoATFarm_${USER}" >> $JobFile;
+    echo "#PBS -m abe" >> $JobFile;
+    echo "#PBS -M $MailAddress"  >> $JobFile;
+    echo "#PBS -V"  >> $JobFile;
+    echo "#PBS -lwalltime=${WALLTIME}" >> $JobFile;
+    echo "#PBS -e ${JobDir}/jobfiles"  >> $JobFile;
+    echo "#PBS -o ${JobDir}/jobfiles"  >> $JobFile;
+    echo "#PBS -q batch_x86_64" >> $JobFile;
+    echo "#"  >> $JobFile;
+    echo "#InputFiles: $line"   >> $JobFile;
+    echo "#"  >> $JobFile;
+    echo "export GoAT_MAINDIR=\"$MainDir\""  >> $JobFile;
+    echo "export GoAT_CONFIGFILE=\"$ConfigFile\""  >> $JobFile;
+    echo "export GoAT_INPUTFILE=\"$InputFile\""  >> $JobFile;
+    echo "export GoAT_OUTPUTFILE=\"$OutputFile\""  >> $JobFile;
+    echo "export GoAT_OUTPUTDIR=\"$OutputDir\""  >> $JobFile;
+    echo "#"  >> $JobFile;
+    echo "#This is the executable that gets run on the node"  >> $JobFile;
+    echo "GoATNode"  >> $JobFile;
+    echo "#"  >> $JobFile;
+    echo "exit 0"  >> $JobFile;
+    echo "##end of job script"  >> $JobFile;
+
+    chmod +x $JobFile;
+
+done < $FileList
+
+topJob=`ls -1 -r ${JobDir}/jobfiles/*.sub | tail -1`
+
+echo
+echo "Job submission scripts are in ${JobDir}/jobfiles."
+echo 
+echo "Here's the corrseponding job submission script:"
+echo "cat $topJob"
+echo
+cat $topJob
+
+echo
+echo
